@@ -1,2 +1,2 @@
 [workspace]
-members = [ "harmony_api" ]
+members = [ "harmony_api", "harmony_client" ]
