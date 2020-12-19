@@ -9,7 +9,7 @@
   outputs = { self, nixpkgs, flakeUtils }:
     flakeUtils.lib.simpleFlake {
       inherit self nixpkgs;
-      name = "harmony-rs";
+      name = "harmony_rust_sdk";
       shell = ./shell.nix;
     };
 }
