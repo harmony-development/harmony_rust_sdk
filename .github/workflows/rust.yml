@@ -1,0 +1,26 @@
+name: Rust
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Check
+      run: cargo check --verbose
+    - name: Build
+      run: cargo build --verbose
+    - name: Check (parking_lot)
+      run: cargo check --features use_parking_lot --verbose
+    - name: Build (parking_lot)
+      run: cargo build --features use_parking_lot --verbose
