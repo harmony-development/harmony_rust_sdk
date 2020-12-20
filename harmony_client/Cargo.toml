@@ -7,3 +7,9 @@ license = "MIT"
 
 [dependencies]
 harmony_api = { path = "../harmony_api" }
+http = "0.2"
+hyper = "0.13"
+hyper-rustls = "0.21"
+
+[dev-dependencies]
+tokio = { version = "0.2", features = [ "rt-threaded", "macros" ] }
