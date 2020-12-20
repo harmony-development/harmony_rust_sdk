@@ -17,7 +17,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Add protobuf
-      run: apt update -yy && apt install -yy protobuf-compiler protobuf-compiler-grpc
+      run: sudo apt update -yy && sudo apt install -yy protobuf-compiler protobuf-compiler-grpc
     - name: Check
       run: cargo check --verbose
     - name: Build
