@@ -16,6 +16,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+    - uses: textbook/git-checkout-submodule-action@master
     - name: Add protobuf
       run: sudo apt update -yy && sudo apt install -yy protobuf-compiler protobuf-compiler-grpc
     - name: Check
