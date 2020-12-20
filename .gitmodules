@@ -1,4 +1,4 @@
 
-[submodule "harmony_api/protocol"]
-	path = harmony_api/protocol
+[submodule "protocol"]
+	path = protocol
 	url = https://github.com/harmony-development/protocol.git
