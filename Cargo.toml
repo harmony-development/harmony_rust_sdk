@@ -1,2 +1,26 @@
-[workspace]
-members = [ "harmony_api", "harmony_client" ]
+[package]
+name = "harmony_rust_sdk"
+version = "0.1.0"
+authors = ["Yusuf Bera Ertan <y.bera003.06@protonmail.com>"]
+edition = "2018"
+license = "MIT"
+
+[dependencies]
+prost = "0.6"
+prost-types = "0.6"
+tonic = "0.3"
+log = "0.4"
+http = "0.2"
+assign = "1.1"
+parking_lot = { version = "0.11", optional = true }
+
+[build-dependencies]
+tonic-build = "0.3"
+
+[features]
+deafult = [ ]
+use_parking_lot = [ "parking_lot" ]
+
+[dev-dependencies]
+tokio = { version = "0.2", features = [ "rt-threaded", "macros" ] }
+env_logger = "0.8"
