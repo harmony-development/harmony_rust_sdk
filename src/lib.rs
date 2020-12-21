@@ -15,6 +15,7 @@ pub mod api {
 
 /// Exports of some deps used in this crate's public API.
 pub mod exports {
+    pub use futures;
     pub use http;
 }
 
