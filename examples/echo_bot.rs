@@ -23,15 +23,9 @@ async fn main() -> ClientResult<()> {
     log::info!("Successfully created client.");
 
     // We try to login, if it fails we register (which also authenticates)
-    if let Err(_) = client.login(EMAIL.to_string(), PASSWORD.to_string()).await {
+    if let Err(_) = client.login(EMAIL, PASSWORD).await {
         log::info!("Login failed, let's try registering.");
-        client
-            .register(
-                EMAIL.to_string(),
-                USERNAME.to_string(),
-                PASSWORD.to_string(),
-            )
-            .await?;
+        client.register(EMAIL, USERNAME, PASSWORD).await?;
         log::info!("Successfully registered.");
     } else {
         log::info!("Successfully logon.");

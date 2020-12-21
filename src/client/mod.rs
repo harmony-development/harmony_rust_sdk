@@ -13,12 +13,12 @@
 //!
 //!     // Login:
 //!     let session = client
-//!         .login("example@example.com".to_string(), "password".to_string())
+//!         .login("example@example.com", "password")
 //!         .await?;
 //!
 //!     // Or register:
 //!     let session = client
-//!         .register("example@example.com".to_string(), "example".to_string(), "password".to_string())
+//!         .register("example@example.com", "example", "password")
 //!         .await?;
 //!
 //!     // You're now logged in / registered!
@@ -51,12 +51,16 @@
 //! You can also use the API methods in the [`api`] module
 //! (note that you *won't* be able to store a [`Session`] that you got from these APIs inside a [`Client`]):
 //! ```no_run
-//! use harmony_rust_sdk::client::{Client, Session, api::foundation::login};
+//! use harmony_rust_sdk::client::{Client, Session, api::core::create_guild};
 //!
 //! let work = async {
 //!     let homeserver_url = "https://example.org".parse().unwrap();
 //!     let client = Client::new(homeserver_url, None).await?;
-//!     let session = login(&client, "example@example.org".to_string(), "password".to_string()).await?;
+//!
+//!     // Auth here
+//!
+//!     // Create a guild and get the guild_id from the response
+//!     let created_guild_id = create_guild(&client, String::from("Example Guild"), None).await?.guild_id;
 //!
 //!     // make more API calls
 //! # harmony_rust_sdk::client::ClientResult::Ok(())
@@ -195,8 +199,8 @@ impl Client {
     }
 
     /// Send a [`api::foundation::login`] request to the server and store the returned session.
-    pub async fn login(&self, email: String, password: String) -> ClientResult<()> {
-        let session = api::foundation::login(self, email, password).await?;
+    pub async fn login(&self, email: impl ToString, password: impl ToString) -> ClientResult<()> {
+        let session = api::foundation::login(self, email.to_string(), password.to_string()).await?;
         *self.session_lock() = Some(session);
 
         Ok(())
@@ -205,11 +209,17 @@ impl Client {
     /// Send a [`api::foundation::register`] request to the server and store the returned session.
     pub async fn register(
         &self,
-        email: String,
-        username: String,
-        password: String,
+        email: impl ToString,
+        username: impl ToString,
+        password: impl ToString,
     ) -> ClientResult<()> {
-        let session = api::foundation::register(self, email, username, password).await?;
+        let session = api::foundation::register(
+            self,
+            email.to_string(),
+            username.to_string(),
+            password.to_string(),
+        )
+        .await?;
         *self.session_lock() = Some(session);
 
         Ok(())
