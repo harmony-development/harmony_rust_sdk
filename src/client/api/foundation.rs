@@ -3,7 +3,7 @@ use crate::{
     client::{Client, ClientResult},
     client_api,
 };
-use tonic::Response;
+use tonic::{Request, Response};
 
 client_api! {
     api_func: register,

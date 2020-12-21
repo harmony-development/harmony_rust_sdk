@@ -20,11 +20,16 @@ macro_rules! client_api {
         paste::paste! {
             $(#[$meta])*
             pub async fn $fn_name (client: &Client, $( $arg_name: $arg_type, )*) -> ClientResult<$resp> {
-                    let request = $req {
+                    let mut request = Request::new($req {
                         $(
                             $req_arg: $convert($arg_name),
                         )*
-                    };
+                    });
+
+                    if let Some(session) = &*client.session_lock() {
+                        // Session access_token should be ASCII, so this unwrap won't panic
+                        request.metadata_mut().insert("auth", session.session_token.parse().unwrap());
+                    }
 
                     client
                         .[<$service _lock>]()
