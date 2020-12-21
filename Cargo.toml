@@ -1,9 +1,19 @@
 [package]
 name = "harmony_rust_sdk"
 version = "0.1.0"
-authors = ["Yusuf Bera Ertan <y.bera003.06@protonmail.com>"]
+authors = [ "Yusuf Bera Ertan <y.bera003.06@protonmail.com>" ]
 edition = "2018"
 license = "MIT"
+description = "Rust library to work with the Harmony chat protocol."
+repository = "https://github.com/yusdacra/harmony_rust_sdk"
+homepage = "https://github.com/yusdacra/harmony_rust_sdk"
+keywords = [ "harmony", "protocol", "api", "client" ]
+categories = [ "api-bindings" ]
+exclude = [
+	"*.nix",
+	"flake.lock",
+	".github/*",
+]
 
 [dependencies]
 prost = "0.6"

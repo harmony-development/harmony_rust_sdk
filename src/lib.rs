@@ -1,3 +1,7 @@
+//! Rust library to work with the Harmony chat protocol.
+//!
+//! This crate currently contains the generated API code and client API with a lightweight client implementation.
+
 /// Harmony protocol code generated with [`tonic-build`](https://lib.rs/crates/tonic-build).
 pub mod api {
     pub mod core {
