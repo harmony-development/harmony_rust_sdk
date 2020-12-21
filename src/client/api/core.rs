@@ -5,7 +5,7 @@ use crate::{
     client_api, client_api_action,
 };
 use http::Uri;
-use tonic::Response;
+use tonic::{Request, Response};
 
 // Export everything a client may need for this service
 pub use crate::api::core::{
@@ -25,7 +25,7 @@ client_api_action! {
 
     args {
         name: String => guild_name: (|n| n);
-        picture_url: Uri => picture_url: (|u: Uri| u.to_string());
+        picture_url: Option<Uri> => picture_url: (|u: Option<Uri>| u.map_or_else(String::default, |u| u.to_string()));
     }
 }
 
@@ -182,8 +182,8 @@ client_api_action! {
         name: String => channel_name: (|n| n);
         guild_id: u64 => guild_id: (|g| g);
         is_category: bool => is_category: (|i| i);
-        previous_channel_id: u64 => previous_id: (|p| p);
-        next_channel_id: u64 => next_id: (|n| n);
+        previous_channel_id: Option<u64> => previous_id: Option::unwrap_or_default;
+        next_channel_id: Option<u64> => next_id: Option::unwrap_or_default;
     }
 }
 
@@ -195,7 +195,7 @@ client_api_action! {
     args {
         guild_id: u64 => guild_id: (|g| g);
         channel_id: u64 => channel_id: (|c| c);
-        before_message_id: u64 => before_message: (|b| b);
+        before_message_id: Option<u64> => before_message: Option::unwrap_or_default;
     }
 }
 

@@ -4,7 +4,7 @@ use crate::{
     client::{Client, ClientResult},
     client_api, client_api_action,
 };
-use tonic::Response;
+use tonic::{Request, Response};
 
 // Export everything a client may need for this service
 pub use crate::api::profile::UserStatus;
