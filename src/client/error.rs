@@ -1,4 +1,4 @@
-pub use tonic::{transport::Error as TransportError, Status};
+pub use tonic::{transport::Error as TransportError, Code, Status};
 
 /// Result type used by many `Client` methods.
 pub type ClientResult<T> = Result<T, ClientError>;

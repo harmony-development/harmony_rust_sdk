@@ -21,3 +21,4 @@ Rust implementation of [the Harmony chat protocol](https://github.com/harmony-de
 
 ## Crate features
 - Enable the `use_parking_lot` feature if you want to use [parking_lot](https://github.com/Amanieu/parking_lot) `sync` types instead of `std::sync`.
+- Enable the `client` feature for a lightweight client implementation and the client API. Enabled by default.

@@ -221,8 +221,8 @@ client_api! {
     args {
         guild_id: u64 => guild_id: (|g| g);
         channel_id: u64 => channel_id: (|g| g);
-        previous_channel_id: u64 => previous_id: (|p| p);
-        next_channel_id: u64 => next_id: (|n| n);
+        previous_channel_id: Option<u64> => previous_id: Option::unwrap_or_default;
+        next_channel_id: Option<u64> => next_id: Option::unwrap_or_default;
     }
 }
 
@@ -454,7 +454,7 @@ client_api! {
         guild_id: u64 => guild_id: (|g| g);
         channel_id: u64 => channel_id: (|g| g);
         role_id: u64 => role_id: (|g| g);
-        permissions: Option<PermissionList> => perms: (|p| p);
+        permissions: PermissionList => perms: Some;
     }
 }
 
@@ -518,8 +518,8 @@ client_api_action! {
     args {
         guild_id: u64 => guild_id: (|g| g);
         role_id: u64 => role_id: (|g| g);
-        before_role_id: u64 => before_id: (|g| g);
-        after_role_id: u64 => after_id: (|g| g);
+        before_role_id: Option<u64> => before_id: Option::unwrap_or_default;
+        after_role_id: Option<u64> => after_id: Option::unwrap_or_default;
     }
 }
 
