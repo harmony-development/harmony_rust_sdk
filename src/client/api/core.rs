@@ -1,11 +1,20 @@
 use super::Unit;
 use crate::{
     api::core::*,
-    client::{Client, ClientError, ClientResult, Status},
+    client::{Client, ClientResult},
     client_api, client_api_action,
 };
 use http::Uri;
 use tonic::Response;
+
+// Export everything a client may need for this service
+pub use crate::api::core::{
+    event, get_emote_pack_emotes_response::Emote, get_emote_packs_response::EmotePack,
+    get_guild_channels_response::Channel, get_guild_invites_response::Invite,
+    get_guild_list_response::GuildListEntry, permission::Mode, r#override::Reason,
+    stream_events_request, Action, ActionPresentation, ActionType, Embed, Event, FieldPresentation,
+    Override, PermissionList, Role,
+};
 
 // GUILD
 
@@ -548,7 +557,7 @@ pub async fn stream_events<
     requests: S,
 ) -> ClientResult<tonic::Streaming<Event>> {
     use futures::StreamExt;
-    
+
     let requests = requests.map(|r| StreamEventsRequest { request: Some(r) });
 
     client

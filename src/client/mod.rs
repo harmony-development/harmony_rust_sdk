@@ -72,9 +72,9 @@ pub use crate::api::foundation::Session;
 pub use error::*;
 
 use crate::api::{
-    core::{self, core_service_client::CoreServiceClient},
-    foundation::{self, foundation_service_client::FoundationServiceClient},
-    profile::{self, profile_service_client::ProfileServiceClient},
+    core::core_service_client::CoreServiceClient,
+    foundation::foundation_service_client::FoundationServiceClient,
+    profile::profile_service_client::ProfileServiceClient,
 };
 
 use tonic::transport::Channel;
