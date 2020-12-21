@@ -4,7 +4,9 @@ pub mod profile;
 
 type Unit = ();
 
+/// This is NOT a part of the public API and should NOT be used.
 #[macro_export]
+#[doc(hidden)]
 macro_rules! client_api {
     {
         api_func: $fn_name:ident,
@@ -42,7 +44,9 @@ macro_rules! client_api {
     };
 }
 
+/// This is NOT a part of the public API and should NOT be used.
 #[macro_export]
+#[doc(hidden)]
 macro_rules! client_api_action {
     {
         api_func: $fn_name:ident,
