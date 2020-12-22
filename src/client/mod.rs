@@ -95,18 +95,18 @@ type CoreService = CoreServiceClient<Channel>;
 type ProfileService = ProfileServiceClient<Channel>;
 
 #[derive(Debug)]
-pub(self) struct ClientData {
-    pub(self) homeserver_url: Uri,
-    pub(self) session: Mutex<Option<Session>>,
-    pub(self) core: Mutex<CoreService>,
-    pub(self) foundation: Mutex<FoundationService>,
-    pub(self) profile: Mutex<ProfileService>,
+struct ClientData {
+    homeserver_url: Uri,
+    session: Mutex<Option<Session>>,
+    core: Mutex<CoreService>,
+    foundation: Mutex<FoundationService>,
+    profile: Mutex<ProfileService>,
 }
 
 /// Client implementation for Harmony.
 #[derive(Clone, Debug)]
 pub struct Client {
-    pub(self) data: Arc<ClientData>,
+    data: Arc<ClientData>,
 }
 
 impl Client {
