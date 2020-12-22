@@ -139,9 +139,10 @@ client_api! {
 
 client_api! {
     args: {
-        name: String,
+        channel_name: String,
         guild_id: u64,
         is_category: bool,
+        channel_kind: String,
         previous_channel_id: Option<u64>,
         next_channel_id: Option<u64>,
     },
@@ -149,8 +150,7 @@ client_api! {
     request_fields: {
         previous_id: previous_channel_id.unwrap_or_default(),
         next_id: next_channel_id.unwrap_or_default(),
-        channel_name: name,
-        = guild_id, is_category,
+        = guild_id, is_category, channel_kind, channel_name,
     },
     api_func: create_channel,
     service: core,
@@ -295,6 +295,7 @@ client_api! {
     args: {
         guild_id: u64,
         channel_id: u64,
+        echo_id: Option<u64>,
         in_reply_to: Option<u64>,
         content: Option<String>,
         embeds: Option<Vec<Embed>>,
@@ -304,6 +305,7 @@ client_api! {
     },
     action: SendMessage,
     request_fields: {
+        echo_id: echo_id.unwrap_or_default(),
         in_reply_to: in_reply_to.unwrap_or_default(),
         content: content.unwrap_or_default(),
         embeds: embeds.unwrap_or_default(),
