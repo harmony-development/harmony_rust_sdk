@@ -14,11 +14,11 @@ Rust implementation of [the Harmony chat protocol](https://github.com/harmony-de
 - For tests to work, you'll need to run [legato](https://github.com/harmony-development/legato) on `http://127.0.0.1:2289`.
 
 ## Examples
-- `echo_bot`: Showcases a simple message echo bot that operates in one channel.
+- `echo_bot`: Showcases a simple message echo bot that operates in a guild. It will repost messages whenever someone else posts a message.
     - Make sure legato is running on `http://127.0.0.1:2289` or whatever you set `HOMESERVER` constant to.
     - Run the bot once with `cargo run --example echo_bot`, it will register to the homeserver.
     - Login as bot with a client, and join your guild (eg. by creating an invite and using it with bot's account).
-    - Save your `guild_id` to `guild_id` and `channel_id` to `channel_id`.
+    - Save your `guild_id` to `guild_id`.
     - Run the bot again and it should now work!
 
 ## Crate features

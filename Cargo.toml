@@ -24,14 +24,14 @@ http = { version = "0.2", optional = true }
 assign = { version = "1.1", optional = true }
 paste = { version = "1.0", optional = true }
 parking_lot = { version = "0.11", optional = true }
-futures = { version = "0.3", optional = true }
+futures-util = { version = "0.3", optional = true }
 
 [build-dependencies]
 tonic-build = "0.3"
 
 [features]
 default = [ "client" ]
-client = [ "futures", "paste", "assign", "http", "log" ]
+client = [ "futures-util", "paste", "assign", "http", "log" ]
 
 use_parking_lot = [ "parking_lot" ]
 

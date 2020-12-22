@@ -1,52 +1,37 @@
-use super::Unit;
 use crate::{
     api::profile::*,
     client::{Client, ClientResult},
-    client_api, client_api_action,
+    client_api,
 };
 use tonic::{Request, Response};
 
 // Export everything a client may need for this service
 pub use crate::api::profile::UserStatus;
 
-client_api_action! {
+client_api! {
+    args: { user_id: u64, },
+    action: GetUser,
     api_func: get_user,
     service: profile,
-    action: GetUser,
-
-    args {
-        user_id: u64 => user_id: (|u| u);
-    }
 }
 
-client_api_action! {
+client_api! {
+    args: { app_id: String, },
+    action: GetUserMetadata,
     api_func: get_user_metadata,
     service: profile,
-    action: GetUserMetadata,
-
-    args {
-        app_id: String => app_id: (|u| u);
-    }
 }
 
 client_api! {
+    args: { new_username: String, },
+    request: UsernameUpdateRequest { user_name: new_username },
     api_func: username_update,
     service: profile,
-    resp: Unit,
-    req: UsernameUpdateRequest,
-
-    args {
-        new_username: String => user_name: (|u| u);
-    }
 }
 
 client_api! {
+    args: { new_status: UserStatus, },
+    request: StatusUpdateRequest { new_status: new_status.into(), },
     api_func: status_update,
     service: profile,
-    resp: Unit,
-    req: StatusUpdateRequest,
-
-    args {
-        new_status: UserStatus => new_status: (|u: UserStatus| u.into());
-    }
 }

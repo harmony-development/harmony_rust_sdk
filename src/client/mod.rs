@@ -74,6 +74,7 @@ pub mod error;
 
 pub use crate::api::foundation::Session;
 pub use error::*;
+pub use prost::Message;
 
 use crate::api::{
     core::core_service_client::CoreServiceClient,
@@ -81,14 +82,18 @@ use crate::api::{
     profile::profile_service_client::ProfileServiceClient,
 };
 
-use tonic::transport::Channel;
-
+use futures_util::{
+    future,
+    stream::{self, Stream},
+    StreamExt, TryStreamExt,
+};
 use http::Uri;
 #[cfg(feature = "use_parking_lot")]
 use parking_lot::{Mutex, MutexGuard};
 use std::sync::Arc;
 #[cfg(not(feature = "use_parking_lot"))]
 use std::sync::{Mutex, MutexGuard};
+use tonic::transport::Channel;
 
 type FoundationService = FoundationServiceClient<Channel>;
 type CoreService = CoreServiceClient<Channel>;
@@ -152,7 +157,7 @@ impl Client {
         })
     }
 
-    pub(self) fn core_lock(&self) -> MutexGuard<CoreService> {
+    fn core_lock(&self) -> MutexGuard<CoreService> {
         let lock = self.data.core.lock();
 
         #[cfg(not(feature = "use_parking_lot"))]
@@ -161,7 +166,7 @@ impl Client {
         lock
     }
 
-    pub(self) fn foundation_lock(&self) -> MutexGuard<FoundationService> {
+    fn foundation_lock(&self) -> MutexGuard<FoundationService> {
         let lock = self.data.foundation.lock();
 
         #[cfg(not(feature = "use_parking_lot"))]
@@ -170,7 +175,7 @@ impl Client {
         lock
     }
 
-    pub(self) fn profile_lock(&self) -> MutexGuard<ProfileService> {
+    fn profile_lock(&self) -> MutexGuard<ProfileService> {
         let lock = self.data.profile.lock();
 
         #[cfg(not(feature = "use_parking_lot"))]
@@ -179,7 +184,7 @@ impl Client {
         lock
     }
 
-    pub(self) fn session_lock(&self) -> MutexGuard<Option<Session>> {
+    fn session_lock(&self) -> MutexGuard<Option<Session>> {
         let lock = self.data.session.lock();
 
         #[cfg(not(feature = "use_parking_lot"))]
@@ -194,8 +199,8 @@ impl Client {
     }
 
     /// Get the stored homeserver URL.
-    pub fn homeserver_url(&self) -> Uri {
-        self.data.homeserver_url.clone()
+    pub fn homeserver_url(&self) -> &Uri {
+        &self.data.homeserver_url
     }
 
     /// Send a [`api::foundation::login`] request to the server and store the returned session.
@@ -224,6 +229,45 @@ impl Client {
 
         Ok(())
     }
+
+    pub async fn subscribe_events(
+        &self,
+        guilds: Vec<u64>,
+        actions: bool,
+        homeserver: bool,
+    ) -> ClientResult<impl Stream<Item = ClientResult<api::core::event::Event>>> {
+        use api::core::{stream_events, stream_events_request::*};
+
+        let mut requests = guilds
+            .into_iter()
+            .map(|guild_id| Request::SubscribeToGuild(SubscribeToGuild { guild_id }))
+            .collect::<Vec<_>>();
+
+        if actions {
+            requests.push(Request::SubscribeToActions(SubscribeToActions {}));
+        };
+
+        if homeserver {
+            requests.push(Request::SubscribeToHomeserverEvents(
+                SubscribeToHomeserverEvents {},
+            ));
+        };
+
+        stream_events(self, stream::iter(requests))
+            .await
+            .map(|stream| {
+                stream
+                    .map_err(Into::into)
+                    .map_ok(|outer_event| outer_event.event)
+                    .filter_map(|result| {
+                        // Remove items which dont have an event
+                        future::ready(match result {
+                            Ok(maybe_event) => maybe_event.map_or(None, |event| Some(Ok(event))),
+                            Err(err) => Some(Err(err)),
+                        })
+                    })
+            })
+    }
 }
 
 #[cfg(test)]
@@ -234,28 +278,85 @@ mod test {
         let _ = env_logger::builder().is_test(true).try_init();
     }
 
-    #[tokio::test]
-    async fn client_new() {
-        init();
-        let url: Uri = "http://127.0.0.1".parse().unwrap();
-        let client = Client::new(url.clone(), None).await.unwrap();
-        assert_eq!(
-            client.homeserver_url(),
-            "http://127.0.0.1:2289".parse::<Uri>().unwrap()
-        );
+    async fn make_client() -> ClientResult<Client> {
+        Client::new("http://127.0.0.1".parse().unwrap(), None).await
     }
 
     #[tokio::test]
-    async fn client_new_with_session() {
+    async fn new() -> ClientResult<()> {
         init();
-        let url: Uri = "http://127.0.0.1".parse().unwrap();
-        let session = Session {
-            session_token: String::from("secret"),
-            user_id: 123456789,
-        };
-        let client = Client::new(url.clone(), Some(session.clone()))
-            .await
-            .unwrap();
-        assert_eq!(client.session(), Some(session))
+        let _client = make_client().await?;
+        Ok(())
+    }
+
+    #[tokio::test]
+    async fn login() -> ClientResult<()> {
+        init();
+
+        let client = make_client().await?;
+        client.login("example@example.org", "123456789").await?;
+
+        Ok(())
+    }
+
+    #[tokio::test]
+    async fn register() -> ClientResult<()> {
+        use std::time::{SystemTime, UNIX_EPOCH};
+        init();
+
+        let current_time = SystemTime::now()
+            .duration_since(UNIX_EPOCH)
+            .unwrap()
+            .as_secs();
+        let client = make_client().await?;
+        client
+            .register(
+                format!("example{}@example.org", current_time),
+                format!("example{}", current_time),
+                "123456789",
+            )
+            .await?;
+
+        Ok(())
+    }
+
+    async fn client_sub(guilds: Vec<u64>, actions: bool, homeserver: bool) -> ClientResult<()> {
+        let client = make_client().await?;
+        client.login("example@example.org", "123456789").await?;
+        let _ = client.subscribe_events(guilds, actions, homeserver).await?;
+
+        Ok(())
+    }
+
+    #[tokio::test]
+    async fn subscribe_nothing() -> ClientResult<()> {
+        init();
+        client_sub(Vec::new(), false, false).await?;
+
+        Ok(())
+    }
+
+    #[tokio::test]
+    async fn subscribe_homeserver() -> ClientResult<()> {
+        init();
+        client_sub(Vec::new(), false, true).await?;
+
+        Ok(())
+    }
+
+    #[tokio::test]
+    async fn subscribe_actions() -> ClientResult<()> {
+        init();
+        client_sub(Vec::new(), true, false).await?;
+
+        Ok(())
+    }
+
+    #[tokio::test]
+    async fn subscribe_actions_and_homeserver() -> ClientResult<()> {
+        init();
+        client_sub(Vec::new(), true, true).await?;
+
+        Ok(())
     }
 }

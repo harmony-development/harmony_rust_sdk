@@ -2,31 +2,24 @@ pub mod core;
 pub mod foundation;
 pub mod profile;
 
-type Unit = ();
-
 /// This is NOT a part of the public API and should NOT be used.
 #[macro_export]
 #[doc(hidden)]
 macro_rules! client_api {
     {
+        $(#[$meta:meta])*
+        args: {
+            $( $arg_name:ident: $arg_type:ty, )*
+        },
+        response: $resp:ty,
+        request: $req:expr,
         api_func: $fn_name:ident,
         service: $service:ident,
-        resp: $resp:ident,
-        req: $req:ident,
-
-        $(#[$meta:meta])*
-        args {
-            $( $arg_name:ident: $arg_type:ty => $req_arg:ident: $convert:expr; )*
-        }
     } => {
         paste::paste! {
             $(#[$meta])*
             pub async fn $fn_name (client: &Client, $( $arg_name: $arg_type, )*) -> ClientResult<$resp> {
-                    let mut request = Request::new($req {
-                        $(
-                            $req_arg: $convert($arg_name),
-                        )*
-                    });
+                    let mut request = Request::new($req);
 
                     if let Some(session) = &*client.session_lock() {
                         // Session access_token should be ASCII, so this unwrap won't panic
@@ -42,34 +35,158 @@ macro_rules! client_api {
             }
         }
     };
-}
-
-/// This is NOT a part of the public API and should NOT be used.
-#[macro_export]
-#[doc(hidden)]
-macro_rules! client_api_action {
     {
+        $(#[$meta:meta])*
+        response: $resp:ty,
+        request: $req:expr,
         api_func: $fn_name:ident,
         service: $service:ident,
-        action: $action:ident,
-
-        $(#[$meta:meta])*
-        args {
-            $( $arg_name:ident: $arg_type:ty => $req_arg:ident: $convert:expr; )*
+    } => {
+        $crate::client_api! {
+            $(#[$meta])*
+            args: { },
+            response: $resp,
+            request: $req,
+            api_func: $fn_name,
+            service: $service,
         }
+    };
+    {
+        $(#[$meta:meta])*
+        args: {
+            $( $arg_name:ident: $arg_type:ty, )*
+        },
+        request: $req:expr,
+        api_func: $fn_name:ident,
+        service: $service:ident,
+    } => {
+        $crate::client_api! {
+            $(#[$meta])*
+            args: {
+                $( $arg_name: $arg_type, )*
+            },
+            response: (),
+            request: $req,
+            api_func: $fn_name,
+            service: $service,
+        }
+    };
+    {
+        $(#[$meta:meta])*
+        args: {
+            $( $arg_name:ident: $arg_type:ty, )*
+        },
+        request_type: $req:ident,
+        api_func: $fn_name:ident,
+        service: $service:ident,
+    } => {
+        $crate::client_api! {
+            $(#[$meta])*
+            args: {
+                $( $arg_name: $arg_type, )*
+            },
+            response: (),
+            request: ($req {
+                $( $arg_name, )*
+            }),
+            api_func: $fn_name,
+            service: $service,
+        }
+    };
+    {
+        $(#[$meta:meta])*
+        args: {
+            $( $arg_name:ident: $arg_type:ty, )*
+        },
+        action: $act:ident,
+        request_fields: {
+            $( $field_name:ident: $field_value:expr, )*
+            = $( $field:ident, )*
+        },
+        api_func: $fn_name:ident,
+        service: $service:ident,
     } => {
         paste::paste! {
             $crate::client_api! {
+                $(#[$meta])*
+                args: {
+                    $( $arg_name: $arg_type, )*
+                },
+                response: [<$act Response>],
+                request: ([<$act Request>] {
+                    $( $field_name: $field_value, )*
+                    $( $field, )*
+                }),
                 api_func: $fn_name,
                 service: $service,
-                resp: [<$action Response>],
-                req: [<$action Request>],
-
-                $(#[$meta])*
-                args {
-                    $( $arg_name: $arg_type => $req_arg: $convert; )*
-                }
             }
         }
-    }
+    };
+    {
+        $(#[$meta:meta])*
+        args: {
+            $( $arg_name:ident: $arg_type:ty, )*
+        },
+        action: $act:ident,
+        request_fields: {
+            $( $field_name:ident: $field_value:expr, )*
+        },
+        api_func: $fn_name:ident,
+        service: $service:ident,
+    } => {
+        paste::paste! {
+            $crate::client_api! {
+                $(#[$meta])*
+                args: {
+                    $( $arg_name: $arg_type, )*
+                },
+                response: [<$act Response>],
+                request: ([<$act Request>] {
+                    $( $field_name: $field_value, )*
+                }),
+                api_func: $fn_name,
+                service: $service,
+            }
+        }
+    };
+    {
+        $(#[$meta:meta])*
+        args: {
+            $( $arg_name:ident: $arg_type:ty, )*
+        },
+        action: $act:ident,
+        api_func: $fn_name:ident,
+        service: $service:ident,
+    } => {
+        paste::paste! {
+            $crate::client_api! {
+                $(#[$meta])*
+                args: {
+                    $( $arg_name: $arg_type, )*
+                },
+                response: [<$act Response>],
+                request: ([<$act Request>] {
+                    $( $arg_name, )*
+                }),
+                api_func: $fn_name,
+                service: $service,
+            }
+        }
+    };
+    {
+        $(#[$meta:meta])*
+        action: $act:ident,
+        api_func: $fn_name:ident,
+        service: $service:ident,
+    } => {
+        paste::paste! {
+            $crate::client_api! {
+                $(#[$meta])*
+                args: { },
+                action: $act,
+                api_func: $fn_name,
+                service: $service,
+            }
+        }
+    };
 }
