@@ -1,5 +1,5 @@
 use crate::{
-    api::foundation::{login_request::*, *},
+    api::auth::{login_request::*, *},
     client::{Client, ClientResult},
     client_api,
 };
@@ -17,7 +17,7 @@ client_api! {
         password: password.into_bytes(),
     },
     api_func: register,
-    service: foundation,
+    service: auth,
 }
 
 client_api! {
@@ -33,5 +33,5 @@ client_api! {
         })),
     },
     api_func: login,
-    service: foundation,
+    service: auth,
 }

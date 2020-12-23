@@ -1,6 +1,6 @@
 //! Example showcasing a very simple message logging bot.
 use futures_util::StreamExt;
-use harmony_rust_sdk::client::{api::core::*, Client, ClientResult};
+use harmony_rust_sdk::client::{api::chat::*, Client, ClientResult};
 
 const EMAIL: &str = "message_log_bot@example.org";
 const USERNAME: &str = "message_log_bot";

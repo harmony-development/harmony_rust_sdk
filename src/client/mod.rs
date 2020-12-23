@@ -51,7 +51,7 @@
 //! You can also use the API methods in the [`api`] module
 //! (note that you *won't* be able to store a [`Session`] that you got from these APIs inside a [`Client`]):
 //! ```no_run
-//! use harmony_rust_sdk::client::{Client, Session, api::core::create_guild};
+//! use harmony_rust_sdk::client::{Client, Session, api::chat::create_guild};
 //!
 //! let work = async {
 //!     let homeserver_url = "https://example.org".parse().unwrap();
@@ -72,14 +72,12 @@ pub mod api;
 /// Error related code used by [`Client`].
 pub mod error;
 
-pub use crate::api::foundation::Session;
+pub use crate::api::auth::Session;
 pub use error::*;
 pub use prost::Message;
 
 use crate::api::{
-    core::core_service_client::CoreServiceClient,
-    foundation::foundation_service_client::FoundationServiceClient,
-    profile::profile_service_client::ProfileServiceClient,
+    auth::auth_service_client::AuthServiceClient, chat::chat_service_client::ChatServiceClient,
 };
 
 use futures_util::{
@@ -95,17 +93,15 @@ use std::sync::Arc;
 use std::sync::{Mutex, MutexGuard};
 use tonic::transport::Channel;
 
-type FoundationService = FoundationServiceClient<Channel>;
-type CoreService = CoreServiceClient<Channel>;
-type ProfileService = ProfileServiceClient<Channel>;
+type AuthService = AuthServiceClient<Channel>;
+type ChatService = ChatServiceClient<Channel>;
 
 #[derive(Debug)]
 struct ClientData {
     homeserver_url: Uri,
     session: Mutex<Option<Session>>,
-    core: Mutex<CoreService>,
-    foundation: Mutex<FoundationService>,
-    profile: Mutex<ProfileService>,
+    chat: Mutex<ChatService>,
+    auth: Mutex<AuthService>,
 }
 
 /// Client implementation for Harmony.
@@ -140,16 +136,14 @@ impl Client {
             session
         );
 
-        let foundation = FoundationService::connect(homeserver_url.clone()).await?;
-        let core = CoreService::connect(homeserver_url.clone()).await?;
-        let profile = ProfileService::connect(homeserver_url.clone()).await?;
+        let foundation = AuthService::connect(homeserver_url.clone()).await?;
+        let core = ChatService::connect(homeserver_url.clone()).await?;
 
         let data = ClientData {
             homeserver_url,
             session: Mutex::new(session),
-            core: Mutex::new(core),
-            foundation: Mutex::new(foundation),
-            profile: Mutex::new(profile),
+            chat: Mutex::new(core),
+            auth: Mutex::new(foundation),
         };
 
         Ok(Self {
@@ -157,8 +151,8 @@ impl Client {
         })
     }
 
-    fn core_lock(&self) -> MutexGuard<CoreService> {
-        let lock = self.data.core.lock();
+    fn chat_lock(&self) -> MutexGuard<ChatService> {
+        let lock = self.data.chat.lock();
 
         #[cfg(not(feature = "use_parking_lot"))]
         return lock.expect("core service mutex was poisoned");
@@ -166,20 +160,11 @@ impl Client {
         lock
     }
 
-    fn foundation_lock(&self) -> MutexGuard<FoundationService> {
-        let lock = self.data.foundation.lock();
+    fn auth_lock(&self) -> MutexGuard<AuthService> {
+        let lock = self.data.auth.lock();
 
         #[cfg(not(feature = "use_parking_lot"))]
         return lock.expect("foundation service mutex was poisoned");
-        #[cfg(feature = "use_parking_lot")]
-        lock
-    }
-
-    fn profile_lock(&self) -> MutexGuard<ProfileService> {
-        let lock = self.data.profile.lock();
-
-        #[cfg(not(feature = "use_parking_lot"))]
-        return lock.expect("profile service mutex was poisoned");
         #[cfg(feature = "use_parking_lot")]
         lock
     }
@@ -203,22 +188,22 @@ impl Client {
         &self.data.homeserver_url
     }
 
-    /// Send a [`api::foundation::login`] request to the server and store the returned session.
+    /// Send a [`api::auth::login`] request to the server and store the returned session.
     pub async fn login(&self, email: impl ToString, password: impl ToString) -> ClientResult<()> {
-        let session = api::foundation::login(self, email.to_string(), password.to_string()).await?;
+        let session = api::auth::login(self, email.to_string(), password.to_string()).await?;
         *self.session_lock() = Some(session);
 
         Ok(())
     }
 
-    /// Send a [`api::foundation::register`] request to the server and store the returned session.
+    /// Send a [`api::auth::register`] request to the server and store the returned session.
     pub async fn register(
         &self,
         email: impl ToString,
         username: impl ToString,
         password: impl ToString,
     ) -> ClientResult<()> {
-        let session = api::foundation::register(
+        let session = api::auth::register(
             self,
             email.to_string(),
             username.to_string(),
@@ -235,8 +220,8 @@ impl Client {
         guilds: Vec<u64>,
         actions: bool,
         homeserver: bool,
-    ) -> ClientResult<impl Stream<Item = ClientResult<api::core::event::Event>>> {
-        use api::core::{stream_events, stream_events_request::*};
+    ) -> ClientResult<impl Stream<Item = ClientResult<api::chat::event::Event>>> {
+        use api::chat::{stream_events, stream_events_request::*};
 
         let mut requests = guilds
             .into_iter()

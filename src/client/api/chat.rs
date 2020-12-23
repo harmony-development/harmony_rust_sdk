@@ -1,5 +1,5 @@
 use crate::{
-    api::core::*,
+    api::chat::*,
     client::{Client, ClientResult},
     client_api,
 };
@@ -8,12 +8,15 @@ use http::Uri;
 use tonic::{Request, Response};
 
 // Export everything a client may need for this service
-pub use crate::api::core::{
+pub use crate::api::chat::{
     event, get_emote_pack_emotes_response::Emote, get_emote_packs_response::EmotePack,
     get_guild_channels_response::Channel, get_guild_invites_response::Invite,
-    get_guild_list_response::GuildListEntry, permission::Mode, r#override::Reason,
-    stream_events_request, Action, ActionPresentation, ActionType, Embed, Event, FieldPresentation,
-    Override, PermissionList, Role,
+    get_guild_list_response::GuildListEntry, permission::Mode, stream_events_request, Event,
+    PermissionList, Role,
+};
+pub use crate::api::harmonytypes::{
+    r#override::Reason, Action, ActionPresentation, ActionType, Embed, FieldPresentation, Override,
+    UserStatus,
 };
 
 // GUILD
@@ -26,41 +29,41 @@ client_api! {
         picture_url: picture_url.map_or_else(String::default, |u| u.to_string()),
     },
     api_func: create_guild,
-    service: core,
+    service: chat,
 }
 
 client_api! {
     args: { guild_id: u64, },
     action: GetGuild,
     api_func: get_guild,
-    service: core,
+    service: chat,
 }
 
 client_api! {
     args: { guild_id: u64, },
     action: GetGuildInvites,
     api_func: get_guild_invites,
-    service: core,
+    service: chat,
 }
 
 client_api! {
     args: { guild_id: u64, },
     action: GetGuildMembers,
     api_func: get_guild_members,
-    service: core,
+    service: chat,
 }
 
 client_api! {
     args: { guild_id: u64, },
     action: GetGuildChannels,
     api_func: get_guild_channels,
-    service: core,
+    service: chat,
 }
 
 client_api! {
     action: GetGuildList,
     api_func: get_guild_list,
-    service: core,
+    service: chat,
 }
 
 client_api! {
@@ -71,7 +74,7 @@ client_api! {
         = guild_id,
     },
     api_func: add_guild_to_guild_list,
-    service: core,
+    service: chat,
 }
 
 client_api! {
@@ -82,35 +85,35 @@ client_api! {
         = guild_id,
     },
     api_func: remove_guild_from_guild_list,
-    service: core,
+    service: chat,
 }
 
 client_api! {
     args: { guild_id: u64, new_guild_name: String, },
     request_type: UpdateGuildNameRequest,
     api_func: update_guild_name,
-    service: core,
+    service: chat,
 }
 
 client_api! {
     args: { guild_id: u64, },
     request_type: DeleteGuildRequest,
     api_func: delete_guild,
-    service: core,
+    service: chat,
 }
 
 client_api! {
     args: { invite_id: String, },
     action: JoinGuild,
     api_func: join_guild,
-    service: core,
+    service: chat,
 }
 
 client_api! {
     args: { guild_id: u64, },
     request_type: LeaveGuildRequest,
     api_func: leave_guild,
-    service: core,
+    service: chat,
 }
 
 // GUILD
@@ -124,14 +127,14 @@ client_api! {
     },
     action: CreateInvite,
     api_func: create_invite,
-    service: core,
+    service: chat,
 }
 
 client_api! {
     args: { guild_id: u64, invite_id: String, },
     request_type: DeleteInviteRequest,
     api_func: delete_invite,
-    service: core,
+    service: chat,
 }
 
 // INVITE
@@ -153,7 +156,7 @@ client_api! {
         = guild_id, is_category, channel_kind, channel_name,
     },
     api_func: create_channel,
-    service: core,
+    service: chat,
 }
 
 client_api! {
@@ -168,7 +171,7 @@ client_api! {
         = guild_id, channel_id,
     },
     api_func: get_channel_messages,
-    service: core,
+    service: chat,
 }
 
 client_api! {
@@ -179,7 +182,7 @@ client_api! {
     },
     request_type: UpdateChannelNameRequest,
     api_func: update_channel_name,
-    service: core,
+    service: chat,
 }
 
 client_api! {
@@ -195,7 +198,7 @@ client_api! {
         channel_id, guild_id,
     },
     api_func: update_channel_order,
-    service: core,
+    service: chat,
 }
 
 client_api! {
@@ -205,7 +208,7 @@ client_api! {
     },
     request_type: DeleteChannelRequest,
     api_func: delete_channel,
-    service: core,
+    service: chat,
 }
 
 // CHANNEL
@@ -215,20 +218,20 @@ client_api! {
     args: { pack_name: String, },
     action: CreateEmotePack,
     api_func: create_emote_pack,
-    service: core,
+    service: chat,
 }
 
 client_api! {
     action: GetEmotePacks,
     api_func: get_emote_packs,
-    service: core,
+    service: chat,
 }
 
 client_api! {
     args: { pack_id: u64, },
     action: GetEmotePackEmotes,
     api_func: get_emote_pack_emotes,
-    service: core,
+    service: chat,
 }
 
 client_api! {
@@ -239,7 +242,7 @@ client_api! {
     },
     request_type: AddEmoteToPackRequest,
     api_func: add_emote_to_pack,
-    service: core,
+    service: chat,
 }
 
 client_api! {
@@ -249,21 +252,21 @@ client_api! {
     },
     request_type: DeleteEmoteFromPackRequest,
     api_func: delete_emote_from_pack,
-    service: core,
+    service: chat,
 }
 
 client_api! {
     args: { pack_id: u64, },
     request_type: DeleteEmotePackRequest,
     api_func: delete_emote_pack,
-    service: core,
+    service: chat,
 }
 
 client_api! {
     args: { pack_id: u64, },
     request_type: DequipEmotePackRequest,
     api_func: dequip_emote_pack,
-    service: core,
+    service: chat,
 }
 
 // EMOTE
@@ -277,7 +280,7 @@ client_api! {
     },
     action: GetMessage,
     api_func: get_message,
-    service: core,
+    service: chat,
 }
 
 client_api! {
@@ -288,7 +291,7 @@ client_api! {
     },
     request_type: DeleteMessageRequest,
     api_func: delete_message,
-    service: core,
+    service: chat,
 }
 
 client_api! {
@@ -315,7 +318,7 @@ client_api! {
         = guild_id, channel_id,
     },
     api_func: send_message,
-    service: core,
+    service: chat,
 }
 
 client_api! {
@@ -343,7 +346,7 @@ client_api! {
         guild_id, channel_id, message_id,
     },
     api_func: update_message,
-    service: core,
+    service: chat,
 }
 
 // MESSAGE
@@ -358,7 +361,7 @@ client_api! {
     },
     request_type: TriggerActionRequest,
     api_func: trigger_action,
-    service: core,
+    service: chat,
 }
 
 // PERMISSIONS
@@ -371,7 +374,7 @@ client_api! {
     },
     action: GetPermissions,
     api_func: get_permissions,
-    service: core,
+    service: chat,
 }
 
 client_api! {
@@ -387,7 +390,7 @@ client_api! {
         = guild_id, channel_id, check_for,
     },
     api_func: query_has_permission,
-    service: core,
+    service: chat,
 }
 
 client_api! {
@@ -402,7 +405,7 @@ client_api! {
         perms: Some(permissions),
     },
     api_func: set_permissions,
-    service: core,
+    service: chat,
 }
 
 // PERMISSIONS
@@ -412,7 +415,7 @@ client_api! {
     args: { guild_id: u64, },
     action: GetGuildRoles,
     api_func: get_guild_roles,
-    service: core,
+    service: chat,
 }
 
 client_api! {
@@ -423,14 +426,14 @@ client_api! {
         = guild_id,
     },
     api_func: add_guild_role,
-    service: core,
+    service: chat,
 }
 
 client_api! {
     args: { guild_id: u64, role_id: u64, },
     request_type: DeleteGuildRoleRequest,
     api_func: delete_guild_role,
-    service: core,
+    service: chat,
 }
 
 client_api! {
@@ -451,7 +454,7 @@ client_api! {
         modify_pingable,
     },
     api_func: modify_guild_role,
-    service: core,
+    service: chat,
 }
 
 client_api! {
@@ -468,7 +471,7 @@ client_api! {
         = guild_id, role_id,
     },
     api_func: move_role,
-    service: core,
+    service: chat,
 }
 
 client_api! {
@@ -480,7 +483,7 @@ client_api! {
     },
     request_type: ManageUserRolesRequest,
     api_func: manage_user_roles,
-    service: core,
+    service: chat,
 }
 
 client_api! {
@@ -490,17 +493,45 @@ client_api! {
     },
     action: GetUserRoles,
     api_func: get_user_roles,
-    service: core,
+    service: chat,
 }
 
 // ROLE
 
 client_api! {
     args: {
-        requests: impl futures_util::stream::Stream<Item = stream_events_request::Request> + Send + Sync + 'static,
+        requests: impl futures_util::stream::Stream<Item = stream_events_request::Request> + Send + Sync + 'static + std::fmt::Debug,
     },
     response: tonic::Streaming<Event>,
     request: requests.map(|r| StreamEventsRequest { request: Some(r) }),
     api_func: stream_events,
-    service: core,
+    service: chat,
+}
+
+client_api! {
+    args: { user_id: u64, },
+    action: GetUser,
+    api_func: get_user,
+    service: chat,
+}
+
+client_api! {
+    args: { app_id: String, },
+    action: GetUserMetadata,
+    api_func: get_user_metadata,
+    service: chat,
+}
+
+client_api! {
+    args: { new_username: Option<String>, new_status: Option<UserStatus>, new_avatar: Option<Uri>, },
+    request: ProfileUpdateRequest {
+        update_username: new_username.is_some(),
+        update_status: new_status.is_some(),
+        update_avatar: new_avatar.is_some(),
+        new_username: new_username.unwrap_or_default(),
+        new_status: new_status.unwrap_or_default().into(),
+        new_avatar: new_avatar.map(|u| u.to_string()).unwrap_or_default(),
+    },
+    api_func: profile_update,
+    service: chat,
 }

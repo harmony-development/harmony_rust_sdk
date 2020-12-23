@@ -3,11 +3,18 @@ fn main() {
         .build_server(false)
         .compile(
             &[
-                "core/v1/core.proto",
-                "foundation/v1/foundation.proto",
-                "profile/v1/profile.proto",
+                "harmonytypes/v1/types.proto",
+                "auth/v1/auth.proto",
+                "chat/v1/chat.proto",
+                "chat/v1/messages.proto",
+                "chat/v1/channels.proto",
+                "chat/v1/emotes.proto",
+                "chat/v1/guilds.proto",
+                "chat/v1/permissions.proto",
+                "chat/v1/profile.proto",
+                "chat/v1/streaming.proto",
             ],
-            &["protocol/"],
+            &["protocol"],
         )
         .unwrap();
 }

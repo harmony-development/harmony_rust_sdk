@@ -1,6 +1,6 @@
 //! Example showcasing a very simple echo bot.
 use futures_util::StreamExt;
-use harmony_rust_sdk::client::{api::core::*, Client, ClientResult};
+use harmony_rust_sdk::client::{api::chat::*, Client, ClientResult};
 
 const EMAIL: &str = "echo_bot@example.org";
 const USERNAME: &str = "echo_bot";

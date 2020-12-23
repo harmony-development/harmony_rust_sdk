@@ -1,6 +1,5 @@
-pub mod core;
-pub mod foundation;
-pub mod profile;
+pub mod auth;
+pub mod chat;
 
 /// This is NOT a part of the public API and should NOT be used.
 #[macro_export]
@@ -25,11 +24,15 @@ macro_rules! client_api {
                         // Session access_token should be ASCII, so this unwrap won't panic
                         request.metadata_mut().insert("auth", session.session_token.parse().unwrap());
                     }
+                    log::debug!("Sending request: {:?}", request);
 
-                    client
+                    let response = client
                         .[<$service _lock>]()
                         .$fn_name (request)
-                        .await
+                        .await;
+                    log::debug!("Got response: {:?}", response);
+
+                    response
                         .map(Response::into_inner)
                         .map_err(Into::into)
             }

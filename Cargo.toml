@@ -42,3 +42,7 @@ env_logger = "0.8"
 [[example]]
 name = "echo_bot"
 required-features = [ "client" ]
+
+[[example]]
+name = "message_log"
+required-features = [ "client" ]
