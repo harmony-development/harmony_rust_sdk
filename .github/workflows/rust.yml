@@ -39,8 +39,8 @@ jobs:
       with:
         go-version: ^1.13
       id: go
-    - name: Check dir again
-      run: pwd && ls -l
+    - name: Legato dir again
+      run: cd legato
     - name: Fetch legato
       run: git clone --depth=1 https://github.com/harmony-development/legato.git .
     - name: Get legato deps
