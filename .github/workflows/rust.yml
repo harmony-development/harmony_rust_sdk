@@ -37,15 +37,11 @@ jobs:
       with:
         go-version: ^1.13
 
-    - name: Make legato folder
-      run: mkdir legato && cd legato
     - name: Fetch legato
-      uses: actions/checkout@v2
-      with:
-        repository: harmony-development/legato
+      run: git clone --depth=1 https://github.com/harmony-development/legato.git legato && cd legato
     - name: Get legato deps
       run: sudo apt install -yy --no-install-recommends libvips libvips-dev && go get -v -t -d ./...  
     - name: Build and run legato
-      run: go build -v . && cp default.hcl config.hcl && sed -i -e 's/Password = ""/Password = "harmony"/g' -e 's/Username = ""/Username = "harmony"/g' && ./legato &
+      run: go build -v . && cp default.hcl config.hcl && sed -i -e 's/Password = ""/Password = "harmony"/g' -e 's/Username = ""/Username = "harmony"/g' -e 's/MaximumCacheSizes/Caches/g' config.hcl && ./legato &
     - name: Run tests
       run: cd .. && cargo test --verbose
