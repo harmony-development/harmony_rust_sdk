@@ -33,12 +33,14 @@ jobs:
       run: cargo build --verbose
 
     - name: Legato dir
-      run: mkdir legato && cd legato
+      run: mkdir legato && cd legato && pwd && ls -l
     - name: Setup go
       uses: actions/setup-go@v2.1.3
       with:
         go-version: ^1.13
       id: go
+    - name: Check dir again
+      run: pwd && ls -l
     - name: Fetch legato
       run: git clone --depth=1 https://github.com/harmony-development/legato.git .
     - name: Get legato deps
