@@ -15,6 +15,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - uses: actions/cache@v2
+      with:
+        path: |
+          ~/.cargo/registry
+          ~/.cargo/git
+          target
+        key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
     - uses: actions/checkout@v2
     - uses: textbook/git-checkout-submodule-action@master
     - name: Add protobuf
@@ -24,24 +31,31 @@ jobs:
       run: cargo check --verbose
     - name: Build
       run: cargo build --verbose
-      
+
+    - name: Legato dir
+      run: mkdir legato && cd legato
+    - name: Setup go
+      uses: actions/setup-go@v2.1.3
+      with:
+        go-version: ^1.13
+      id: go
+    - name: Fetch legato
+      run: git clone --depth=1 https://github.com/harmony-development/legato.git .
+    - name: Get legato deps
+      run: sudo apt install -yy --no-install-recommends libvips libvips-dev && go get -v -t -d ./...
+    - name: Build legato
+      run: go build -v .
+    - name: Configure legato
+      run: cp default.hcl config.hcl && sed -i -e 's/Password = ""/Password = "harmony"/g' -e 's/Username = ""/Username = "harmony"/g' -e 's/MaximumCacheSizes/Caches/g' config.hcl
+            
     - name: Setup postgres
       uses: Harmon758/postgresql-action@v1.0.0
       with:
         postgresql db: harmony
         postgresql user: harmony
         postgresql password: harmony
-
-    - name: Setup go
-      uses: actions/setup-go@v2.1.3
-      with:
-        go-version: ^1.13
-
-    - name: Fetch legato
-      run: git clone --depth=1 https://github.com/harmony-development/legato.git legato && cd legato
-    - name: Get legato deps
-      run: sudo apt install -yy --no-install-recommends libvips libvips-dev && go get -v -t -d ./...  
-    - name: Build and run legato
-      run: go build -v . && cp default.hcl config.hcl && sed -i -e 's/Password = ""/Password = "harmony"/g' -e 's/Username = ""/Username = "harmony"/g' -e 's/MaximumCacheSizes/Caches/g' config.hcl && ./legato &
+  
+    - name: Run legato
+      run: ./legato &
     - name: Run tests
       run: cd .. && cargo test --verbose
