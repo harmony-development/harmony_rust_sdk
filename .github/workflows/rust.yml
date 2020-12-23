@@ -37,6 +37,8 @@ jobs:
       with:
         go-version: ^1.13
 
+    - name: Make legato folder
+      run: mkdir legato && cd legato
     - name: Fetch legato
       uses: actions/checkout@v2
       with:
@@ -46,4 +48,4 @@ jobs:
     - name: Build and run legato
       run: go build -v . && cp default.hcl config.hcl && sed -i -e 's/Password = ""/Password = "harmony"/g' -e 's/Username = ""/Username = "harmony"/g' && ./legato &
     - name: Run tests
-      run: cargo test --verbose
+      run: cd .. && cargo test --verbose
