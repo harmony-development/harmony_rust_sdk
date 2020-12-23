@@ -264,7 +264,7 @@ mod test {
     }
 
     async fn make_client() -> ClientResult<Client> {
-        Client::new("http://127.0.0.1".parse().unwrap(), None).await
+        Client::new("https://127.0.0.1".parse().unwrap(), None).await
     }
 
     #[tokio::test]

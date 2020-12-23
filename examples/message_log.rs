@@ -5,7 +5,7 @@ use harmony_rust_sdk::client::{api::chat::*, Client, ClientResult};
 const EMAIL: &str = "message_log_bot@example.org";
 const USERNAME: &str = "message_log_bot";
 const PASSWORD: &str = "very secret password!";
-const HOMESERVER: &str = "http://127.0.0.1:2289";
+const HOMESERVER: &str = "https://127.0.0.1:2289";
 
 const GUILD_ID_FILE: &str = "guild_id";
 
