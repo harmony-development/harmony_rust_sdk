@@ -32,7 +32,7 @@ jobs:
           ~/.cargo/registry
           ~/.cargo/git
           ./target
-        key: cargo-${{ runner.os }}-${{ hashFiles('Cargo.lock') }}-${{ hashFiles('src/**/*.rs') }}
+        key: cargo-${{ runner.os }}-${{ hashFiles('Cargo.lock') }}-${{ hashFiles('**/*.rs') }}
         restore-keys: cargo-${{ runner.os }}-${{ hashFiles('Cargo.lock') }}-
     - name: Check
       run: cargo check --all-targets --verbose
