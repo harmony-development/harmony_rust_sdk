@@ -33,8 +33,9 @@ features = ["tls"]
 tonic-build = "0.3"
 
 [features]
-default = [ "client" ]
+default = [ "client", "server" ]
 client = [ "futures-util", "paste", "assign", "http", "log" ]
+server = [ ]
 
 use_parking_lot = [ "parking_lot" ]
 

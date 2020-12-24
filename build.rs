@@ -1,6 +1,15 @@
 fn main() {
-    tonic_build::configure()
-        .build_server(false)
+    #[allow(unused_mut)]
+    let mut builder = tonic_build::configure();
+    #[cfg(not(feature = "server"))]
+    {
+        builder = builder.build_server(false);
+    }
+    #[cfg(not(feature = "client"))]
+    {
+        builder = builder.build_client(false);
+    }
+    builder
         .compile(
             &[
                 "harmonytypes/v1/types.proto",
