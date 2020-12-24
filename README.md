@@ -28,4 +28,5 @@ Currently implements a lightweight client and a client API (powered by `tonic`),
 
 ## Crate features
 - Enable the `use_parking_lot` feature if you want to use [parking_lot](https://github.com/Amanieu/parking_lot) `sync` types instead of `std::sync`.
-- Enable the `client` feature for a lightweight client implementation and the client API. Enabled by default.
+- Enable the `client` feature to generate client service code, a lightweight client implementation and the client API. Enabled by default.
+- Enable the `server` feature to generate server service code. Enabled by default.
