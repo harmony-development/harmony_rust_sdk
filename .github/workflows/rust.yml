@@ -10,20 +10,22 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  build:
-
+  check-compile:
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v2
     - uses: textbook/git-checkout-submodule-action@master
-    - name: Add protobuf
-      run: sudo apt update -yy && sudo apt install -yy protobuf-compiler protobuf-compiler-grpc
+    - name: Install deps
+      run: |
+        sudo apt update -yy
+        sudo apt install -yy --no-install-recommends protobuf-compiler protobuf-compiler-grpc
+        rustup component add clippy
+    - uses: Swatinem/rust-cache@v1
     - name: Check
       run: cargo check --verbose
+    - name: Clippy
+      uses: actions-rs/clippy-check@v1.0.7
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
     - name: Build
       run: cargo build --verbose
-    - name: Check (parking_lot)
-      run: cargo check --features use_parking_lot --verbose
-    - name: Build (parking_lot)
-      run: cargo build --features use_parking_lot --verbose
