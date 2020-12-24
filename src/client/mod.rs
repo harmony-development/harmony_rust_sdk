@@ -255,6 +255,8 @@ impl Client {
     }
 }
 
+// A user with username "example", email "example@example.org" and password "123456789"
+// must be registered on the server for tests to work properly.
 #[cfg(test)]
 mod test {
     use super::*;
