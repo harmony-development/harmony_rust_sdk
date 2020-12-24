@@ -3,6 +3,10 @@ name: Rust
 on:
   push:
     branches: [ master ]
+    paths-ignore:
+      - 'README.md'
+      - '*.nix'
+      - 'flake.lock'
   pull_request:
     branches: [ master ]
 
@@ -22,10 +26,13 @@ jobs:
         rustup component add clippy
     - uses: Swatinem/rust-cache@v1
     - name: Check
-      run: cargo check --verbose
+      run: cargo check --all-targets --verbose
     - name: Clippy
       uses: actions-rs/clippy-check@v1.0.7
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
+        args: --all-targets
+    - name: Doc
+      run: cargo doc --verbose
     - name: Build
-      run: cargo build --verbose
+      run: cargo build --all-targets --verbose
