@@ -15,15 +15,23 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - uses: actions/cache@v2
+      with:
+        path: |
+          ~/.cargo/registry
+          ~/.cargo/git
+          target
+        key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
     - uses: actions/checkout@v2
     - uses: textbook/git-checkout-submodule-action@master
     - name: Add protobuf
-      run: sudo apt update -yy && sudo apt install -yy protobuf-compiler protobuf-compiler-grpc
+      run: sudo apt update -yy && sudo apt install -yy --no-install-recommends protobuf-compiler protobuf-compiler-grpc
+      
     - name: Check
       run: cargo check --verbose
     - name: Build
       run: cargo build --verbose
-    - name: Check (parking_lot)
-      run: cargo check --features use_parking_lot --verbose
-    - name: Build (parking_lot)
-      run: cargo build --features use_parking_lot --verbose
+    - name: Check use_parking_lot feature
+      run: cargo check --verbose --features use_parking_lot
+    - name: Build use_parking_lot feature
+      run: cargo build --verbose --features use_parking_lot
