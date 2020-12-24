@@ -10,18 +10,22 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  build:
-
+  check-compile:
     runs-on: ubuntu-latest
-
     steps:
+    - name: Get Date
+      id: get-date
+      run: |
+        echo "::set-output name=date::$(/bin/date -u "+%Y%m%d")"
+      shell: bash
     - uses: actions/cache@v2
       with:
         path: |
           ~/.cargo/registry
           ~/.cargo/git
           target
-        key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+        key: ${{ runner.os }}-cargo-${{ steps.get-data.outputs.date }}-${{ hashFiles('Cargo.lock') }}
+        restore-keys: ${{ runner.os }}-cargo-
     - uses: actions/checkout@v2
     - uses: textbook/git-checkout-submodule-action@master
     - name: Install deps
