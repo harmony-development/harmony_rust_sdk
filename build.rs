@@ -1,11 +1,11 @@
 fn main() {
     #[allow(unused_mut)]
     let mut builder = tonic_build::configure();
-    #[cfg(not(feature = "server"))]
+    #[cfg(not(feature = "gen_server"))]
     {
         builder = builder.build_server(false);
     }
-    #[cfg(not(feature = "client"))]
+    #[cfg(not(feature = "gen_client"))]
     {
         builder = builder.build_client(false);
     }
