@@ -52,21 +52,20 @@ client_api! {
 }
 
 client_api! {
-    /// Update a guild's name.
-    args: { guild_id: u64, new_guild_name: String, },
-    request_type: UpdateGuildNameRequest,
-    api_func: update_guild_name,
-    service: chat,
-}
-
-client_api! {
-    /// Update a guild's picture.
-    args: { guild_id: u64, new_guild_picture: Uri, },
-    request: UpdateGuildPictureRequest {
-        guild_id,
-        new_guild_picture: new_guild_picture.to_string(),
+    /// Update a guild's information.
+    args: {
+        guild_id: u64,
+        new_guild_name: Option<String>,
+        new_guild_picture: Option<Uri>,
     },
-    api_func: update_guild_picture,
+    request: UpdateGuildInformationRequest {
+        guild_id,
+        update_guild_name: new_guild_name.is_some(),
+        update_guild_picture: new_guild_picture.is_some(),
+        new_guild_name: new_guild_name.unwrap_or_default(),
+        new_guild_picture: new_guild_picture.map(|u| u.to_string()).unwrap_or_default(),
+    },
+    api_func: update_guild_information,
     service: chat,
 }
 

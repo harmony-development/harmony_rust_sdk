@@ -35,13 +35,13 @@ jobs:
         key: cargo-${{ runner.os }}-${{ hashFiles('Cargo.lock') }}-${{ hashFiles('**/*.rs') }}
         restore-keys: cargo-${{ runner.os }}-${{ hashFiles('Cargo.lock') }}-
     - name: Check
-      run: cargo check --all-targets --verbose
+      run: cargo check --all-targets --features client,gen_server --verbose
     - name: Clippy
       uses: actions-rs/clippy-check@v1.0.7
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
-        args: --all-targets
+        args: --all-targets --features client,gen_server
     - name: Doc
-      run: cargo doc --verbose
+      run: cargo doc --features client,gen_server --verbose
     - name: Build
-      run: cargo build --all-targets --verbose
+      run: cargo build --all-targets --features client,gen_server --verbose
