@@ -51,7 +51,7 @@
 //! You can also use the API methods in the [`api`] module
 //! (note that you *won't* be able to store a [`Session`] that you got from these APIs inside a [`Client`]):
 //! ```no_run
-//! use harmony_rust_sdk::client::{Client, Session, api::chat::create_guild};
+//! use harmony_rust_sdk::client::{Client, Session, api::chat::guild::create_guild};
 //!
 //! let work = async {
 //!     let homeserver_url = "https://example.org".parse().unwrap();

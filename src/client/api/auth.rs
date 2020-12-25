@@ -6,6 +6,7 @@ use crate::{
 use tonic::{Request, Response};
 
 client_api! {
+    /// Register.
     args: {
         email: String,
         username: String,
@@ -21,6 +22,7 @@ client_api! {
 }
 
 client_api! {
+    /// Login.
     args: {
         email: String,
         password: String,

@@ -32,7 +32,9 @@ async fn main() -> ClientResult<()> {
 
     // Join the guild if invite is specified
     let guild_id = if let Ok(invite) = guild_invite {
-        join_guild(&client, invite).await?.guild_id
+        guild::join_guild(&client, InviteId::new(invite).unwrap())
+            .await?
+            .guild_id
     } else {
         std::fs::read_to_string(GUILD_ID_FILE)
             .unwrap()
@@ -59,7 +61,7 @@ async fn main() -> ClientResult<()> {
                 // Dont sent message if we sent it
                 if message.author_id != self_id {
                     log::info!("Echoing message: {}", message.message_id);
-                    send_message(
+                    message::send_message(
                         &client,
                         guild_id,
                         message.channel_id,

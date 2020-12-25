@@ -1,4 +1,6 @@
+/// Auth service client API.
 pub mod auth;
+/// Chat service client API.
 pub mod chat;
 
 /// This is NOT a part of the public API and should NOT be used.
