@@ -60,6 +60,17 @@ client_api! {
 }
 
 client_api! {
+    /// Update a guild's picture.
+    args: { guild_id: u64, new_guild_picture: Uri, },
+    request: UpdateGuildPictureRequest {
+        guild_id,
+        new_guild_picture: new_guild_picture.to_string(),
+    },
+    api_func: update_guild_picture,
+    service: chat,
+}
+
+client_api! {
     /// Delete a guild.
     args: { guild_id: u64, },
     request_type: DeleteGuildRequest,
