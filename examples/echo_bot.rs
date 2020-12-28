@@ -9,7 +9,7 @@ const HOMESERVER: &str = "https://127.0.0.1:2289";
 
 const GUILD_ID_FILE: &str = "guild_id";
 
-// Be sure to add the bot to your server once it registers and give it the necessary permissions.
+// Be sure to add the bot to your server once it and give it the necessary permissions.
 #[tokio::main]
 async fn main() -> ClientResult<()> {
     // Init logging

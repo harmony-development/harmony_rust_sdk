@@ -345,8 +345,23 @@ impl Client {
 mod test {
     use super::*;
 
+    const PASSWORD: &str = "123456789";
+
     fn init() {
         let _ = env_logger::builder().is_test(true).try_init();
+    }
+
+    fn generate_auth_info() -> (String, String) {
+        use std::time::{SystemTime, UNIX_EPOCH};
+
+        let current_time = SystemTime::now()
+            .duration_since(UNIX_EPOCH)
+            .unwrap();
+
+        let email = format!("example{}{}@example.org", current_time.as_secs(), current_time.as_nanos());
+        let username = format!("example{}{}", current_time.as_secs(), current_time.as_nanos());
+
+        (email, username)
     }
 
     async fn make_client() -> ClientResult<Client> {
@@ -357,6 +372,68 @@ mod test {
     async fn new() -> ClientResult<()> {
         init();
         let _client = make_client().await?;
+        Ok(())
+    }
+
+    #[tokio::test]
+    async fn auth() -> ClientResult<()> {
+        init();
+
+        let (email, username) = generate_auth_info();
+        let client = make_client().await?;
+        
+        client
+            .register(
+                &email,
+                &username,
+                PASSWORD,
+            )
+            .await?;
+        client.login(email, PASSWORD).await?;
+
+        Ok(())
+    }
+
+    async fn client_sub(guilds: Vec<u64>, actions: bool, homeserver: bool) -> ClientResult<()> {
+        let client = make_client().await?;
+
+        let (email, username) = generate_auth_info();
+        
+        client.register(email, username, PASSWORD).await?;
+        let _ = client.subscribe_events(guilds, actions, homeserver).await?;
+
+        Ok(())
+    }
+
+    #[tokio::test]
+    async fn subscribe_nothing() -> ClientResult<()> {
+        init();
+        client_sub(Vec::new(), false, false).await?;
+
+        Ok(())
+    }
+
+    #[tokio::test]
+    async fn subscribe_homeserver() -> ClientResult<()> {
+        init();
+        client_sub(Vec::new(), false, true).await?;
+
+        Ok(())
+    }
+
+    #[tokio::test]
+    async fn subscribe_actions() -> ClientResult<()> {
+        init();
+        client_sub(Vec::new(), true, false).await?;
+
+        Ok(())
+    }
+
+    #[tokio::test]
+    async fn subscribe_actions_and_homeserver() -> ClientResult<()> {
+        init();
+        client_sub(Vec::new(), true, true).await?;
+
         Ok(())
     }
 }
