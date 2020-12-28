@@ -48,30 +48,5 @@ jobs:
       run: cargo doc --features client,gen_server --verbose
     - name: Build
       run: cargo build --all-targets --features client,gen_server --verbose
-
-    - name: Fetch legato
-      uses: dawidd6/action-download-artifact@v2
-      with:
-        workflow: main.yml
-        workflow_conclusion: completed
-        name: legato
-        branch: main
-        repo: harmony-development/legato
-
-    - name: Configure legato
-      run: |
-        chmod +x ./legato
-        ./legato
-        sed -i -e 's/Password = ""/Password = "harmony"/g' -e 's/Username = ""/Username = "harmony"/g' config.hcl
-
-    - name: Setup postgres
-      uses: Harmon758/postgresql-action@v1
-      with:
-        postgresql db: harmony
-        postgresql user: harmony
-        postgresql password: harmony
-  
-    - name: Run legato
-      run: ./legato &
-    - name: Run tests
-      run: cargo test --features client,gen_server --verbose
+    - name: Test
+      run: cargo test --features client,gen_server --verbose --no-fail-fast

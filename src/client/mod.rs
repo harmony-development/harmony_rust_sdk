@@ -345,23 +345,12 @@ impl Client {
 mod test {
     use super::*;
 
-    const PASSWORD: &str = "123456789";
+    const EMAIL: &str = "rust_sdk_test@example.org";
+    const USERNAME: &str = "rust_sdk_test";
+    const PASSWORD: &str = "123456789Ab";
 
     fn init() {
         let _ = env_logger::builder().is_test(true).try_init();
-    }
-
-    fn generate_auth_info() -> (String, String) {
-        use std::time::{SystemTime, UNIX_EPOCH};
-
-        let current_time = SystemTime::now()
-            .duration_since(UNIX_EPOCH)
-            .unwrap();
-
-        let email = format!("example{}{}@example.org", current_time.as_secs(), current_time.as_nanos());
-        let username = format!("example{}{}", current_time.as_secs(), current_time.as_nanos());
-
-        (email, username)
     }
 
     async fn make_client() -> ClientResult<Client> {
@@ -379,27 +368,20 @@ mod test {
     async fn auth() -> ClientResult<()> {
         init();
 
-        let (email, username) = generate_auth_info();
         let client = make_client().await?;
         
-        client
-            .register(
-                &email,
-                &username,
-                PASSWORD,
-            )
-            .await?;
-        client.login(email, PASSWORD).await?;
+        if let Err(e) = client.login(EMAIL, PASSWORD).await {
+            log::error!("login failed in auth test: {:?}", e);
+            client.register(EMAIL, USERNAME, PASSWORD).await?;
+        }
 
         Ok(())
     }
 
     async fn client_sub(guilds: Vec<u64>, actions: bool, homeserver: bool) -> ClientResult<()> {
         let client = make_client().await?;
-
-        let (email, username) = generate_auth_info();
         
-        client.register(email, username, PASSWORD).await?;
+        client.login(EMAIL, PASSWORD).await?;
         let _ = client.subscribe_events(guilds, actions, homeserver).await?;
 
         Ok(())
