@@ -17,11 +17,16 @@ client_api! {
 
 client_api! {
     /// Create a new guild.
-    args: { name: String, picture_url: Option<Uri>, },
+    args: {
+        name: String,
+        picture_url: Option<Uri>,
+        metadata: Option<Metadata>,
+    },
     action: CreateGuild,
     request_fields: {
         guild_name: name,
         picture_url: picture_url.map_or_else(String::default, |u| u.to_string()),
+        = metadata,
     },
     api_func: create_guild,
     service: chat,
@@ -57,13 +62,16 @@ client_api! {
         guild_id: u64,
         new_guild_name: Option<String>,
         new_guild_picture: Option<Uri>,
+        new_metadata: Option<Option<Metadata>>,
     },
     request: UpdateGuildInformationRequest {
         guild_id,
         update_guild_name: new_guild_name.is_some(),
         update_guild_picture: new_guild_picture.is_some(),
+        update_metadata: new_metadata.is_some(),
         new_guild_name: new_guild_name.unwrap_or_default(),
         new_guild_picture: new_guild_picture.map(|u| u.to_string()).unwrap_or_default(),
+        metadata: new_metadata.unwrap_or_default(),
     },
     api_func: update_guild_information,
     service: chat,

@@ -2,6 +2,14 @@
 pub mod auth;
 /// Chat service client API.
 pub mod chat;
+/// Media proxy service client API.
+pub mod mediaproxy;
+
+use crate::client::{Client, ClientResult};
+use tonic::{Request, Response};
+
+// Re export common types
+pub use crate::api::harmonytypes::{r#override::Reason, *};
 
 /// This is NOT a part of the public API and should NOT be used.
 #[macro_export]

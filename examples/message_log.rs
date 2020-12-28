@@ -51,23 +51,21 @@ async fn main() -> ClientResult<()> {
         .await?;
 
     // Poll events
-    // If stream is finished (should not happen) or an error occurs, abort processing
-    while let Some(Ok(received_event)) = subscription.next().await {
-        if let event::Event::SentMessage(sent_message) = received_event {
-            if let Some(message) = sent_message.message {
-                log::info!("Received new message: {:?}", message);
-                println!(
-                    "Received new message with ID {}, from guild {} in channel {} sent by {}:\n {}",
-                    message.message_id,
-                    message.guild_id,
-                    message.channel_id,
-                    message.author_id,
-                    message.content
-                );
+    loop {
+        if let Some(Ok(received_event)) = subscription.next().await {
+            if let event::Event::SentMessage(sent_message) = received_event {
+                if let Some(message) = sent_message.message {
+                    log::info!("Received new message: {:?}", message);
+                    println!(
+                        "Received new message with ID {}, from guild {} in channel {} sent by {}:\n {}",
+                        message.message_id,
+                        message.guild_id,
+                        message.channel_id,
+                        message.author_id,
+                        message.content
+                    );
+                }
             }
         }
     }
-    log::error!("An error occured while getting events from the server. Aborting!");
-
-    Ok(())
 }

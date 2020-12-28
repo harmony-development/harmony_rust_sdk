@@ -78,6 +78,7 @@ pub use prost::Message;
 
 use crate::api::{
     auth::auth_service_client::AuthServiceClient, chat::chat_service_client::ChatServiceClient,
+    mediaproxy::media_proxy_service_client::MediaProxyServiceClient,
 };
 
 use futures_util::{
@@ -95,6 +96,7 @@ use tonic::transport::Channel;
 
 type AuthService = AuthServiceClient<Channel>;
 type ChatService = ChatServiceClient<Channel>;
+type MediaProxyService = MediaProxyServiceClient<Channel>;
 
 #[derive(Debug)]
 struct ClientData {
@@ -102,6 +104,7 @@ struct ClientData {
     session: Mutex<Option<Session>>,
     chat: Mutex<ChatService>,
     auth: Mutex<AuthService>,
+    mediaproxy: Mutex<MediaProxyService>,
 }
 
 /// Client implementation for Harmony.
@@ -136,14 +139,16 @@ impl Client {
             session
         );
 
-        let foundation = AuthService::connect(homeserver_url.clone()).await?;
-        let core = ChatService::connect(homeserver_url.clone()).await?;
+        let auth = AuthService::connect(homeserver_url.clone()).await?;
+        let chat = ChatService::connect(homeserver_url.clone()).await?;
+        let mediaproxy = MediaProxyService::connect(homeserver_url.clone()).await?;
 
         let data = ClientData {
             homeserver_url,
             session: Mutex::new(session),
-            chat: Mutex::new(core),
-            auth: Mutex::new(foundation),
+            chat: Mutex::new(chat),
+            auth: Mutex::new(auth),
+            mediaproxy: Mutex::new(mediaproxy),
         };
 
         Ok(Self {
@@ -155,7 +160,7 @@ impl Client {
         let lock = self.data.chat.lock();
 
         #[cfg(not(feature = "use_parking_lot"))]
-        return lock.expect("core service mutex was poisoned");
+        return lock.expect("chat service mutex was poisoned");
         #[cfg(feature = "use_parking_lot")]
         lock
     }
@@ -164,7 +169,16 @@ impl Client {
         let lock = self.data.auth.lock();
 
         #[cfg(not(feature = "use_parking_lot"))]
-        return lock.expect("foundation service mutex was poisoned");
+        return lock.expect("auth service mutex was poisoned");
+        #[cfg(feature = "use_parking_lot")]
+        lock
+    }
+
+    fn mediaproxy_lock(&self) -> MutexGuard<MediaProxyService> {
+        let lock = self.data.mediaproxy.lock();
+
+        #[cfg(not(feature = "use_parking_lot"))]
+        return lock.expect("media proxy service mutex was poisoned");
         #[cfg(feature = "use_parking_lot")]
         lock
     }

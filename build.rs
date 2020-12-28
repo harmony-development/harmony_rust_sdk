@@ -14,6 +14,7 @@ fn main() {
             &[
                 "harmonytypes/v1/types.proto",
                 "auth/v1/auth.proto",
+                "mediaproxy/v1/mediaproxy.proto",
                 "chat/v1/chat.proto",
                 "chat/v1/messages.proto",
                 "chat/v1/channels.proto",

@@ -32,17 +32,17 @@ client_api! {
 client_api! {
     /// Create a channel.
     args: {
-        channel_name: String,
         guild_id: u64,
+        channel_name: String,
         is_category: bool,
-        channel_kind: String,
         channel_place: Place,
+        metadata: Option<Metadata>,
     },
     action: CreateChannel,
     request_fields: {
         previous_id: channel_place.previous(),
         next_id: channel_place.next(),
-        = guild_id, is_category, channel_kind, channel_name,
+        = guild_id, is_category, channel_name, metadata,
     },
     api_func: create_channel,
     service: chat,
@@ -60,14 +60,21 @@ client_api! {
 }
 
 client_api! {
-    /// Update a channel's name.
+    /// Update a channel's information.
     args: {
-        new_channel_name: String,
+        new_channel_name: Option<String>,
+        new_metadata: Option<Option<Metadata>>,
         guild_id: u64,
         channel_id: u64,
     },
-    request_type: UpdateChannelNameRequest,
-    api_func: update_channel_name,
+    request: UpdateChannelInformationRequest {
+        update_name: new_channel_name.is_some(),
+        update_metadata: new_metadata.is_some(),
+        name: new_channel_name.unwrap_or_default(),
+        metadata: new_metadata.unwrap_or_default(),
+        guild_id, channel_id,
+    },
+    api_func: update_channel_information,
     service: chat,
 }
 

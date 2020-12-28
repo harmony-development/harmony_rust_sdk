@@ -1,12 +1,9 @@
-use crate::{
-    api::chat::*,
-    client::{Client, ClientResult},
-    client_api,
-};
+use super::*;
+
+use crate::{api::chat::*, client_api};
 use futures_util::StreamExt;
 use http::Uri;
 use std::fmt::{self, Display, Formatter};
-use tonic::{Request, Response};
 
 // Export everything a client may need for this service
 pub use crate::api::chat::{
@@ -14,10 +11,6 @@ pub use crate::api::chat::{
     get_guild_channels_response::Channel, get_guild_invites_response::Invite,
     get_guild_list_response::GuildListEntry, permission::Mode, stream_events_request, Event,
     PermissionList, Role,
-};
-pub use crate::api::harmonytypes::{
-    r#override::Reason, Action, ActionPresentation, ActionType, Embed, FieldPresentation, Override,
-    UserStatus,
 };
 
 /// Describes a place in a list.
@@ -114,6 +107,17 @@ client_api! {
     },
     request_type: TriggerActionRequest,
     api_func: trigger_action,
+    service: chat,
+}
+
+client_api! {
+    /// Notifies the server that the local user is typing.
+    args: {
+        guild_id: u64,
+        channel_id: u64,
+    },
+    request_type: TypingRequest,
+    api_func: typing,
     service: chat,
 }
 

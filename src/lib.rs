@@ -24,6 +24,13 @@ pub mod api {
         }
         pub use v1::*;
     }
+
+    pub mod mediaproxy {
+        pub mod v1 {
+            tonic::include_proto!("protocol.mediaproxy.v1");
+        }
+        pub use v1::*;
+    }
 }
 
 #[cfg(feature = "client")]

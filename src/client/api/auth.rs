@@ -1,9 +1,9 @@
+use super::*;
+
 use crate::{
     api::auth::{login_request::*, *},
-    client::{Client, ClientResult},
     client_api,
 };
-use tonic::{Request, Response};
 
 client_api! {
     /// Register.
