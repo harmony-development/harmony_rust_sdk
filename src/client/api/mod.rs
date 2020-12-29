@@ -30,12 +30,12 @@ macro_rules! client_api {
             pub async fn $fn_name (client: &Client, $( $arg_name: $arg_type, )*) -> ClientResult<$resp> {
                     let mut request = Request::new($req);
 
-                    if let Some(session) = &*client.session_lock() {
+                    if let $crate::client::AuthStatus::Complete(session) = &*client.auth_status_lock() {
                         // Session access_token should be ASCII, so this unwrap won't panic
                         request.metadata_mut().insert("auth", session.session_token.parse().unwrap());
                     }
-                    log::debug!("Sending request: {:?}", request);
 
+                    log::debug!("Sending request: {:?}", request);
                     let response = client
                         .[<$service _lock>]()
                         .$fn_name (request)
@@ -99,6 +99,29 @@ macro_rules! client_api {
                 $( $arg_name: $arg_type, )*
             },
             response: (),
+            request: ($req {
+                $( $arg_name, )*
+            }),
+            api_func: $fn_name,
+            service: $service,
+        }
+    };
+    {
+        $(#[$meta:meta])*
+        args: {
+            $( $arg_name:ident: $arg_type:ty, )*
+        },
+        response: $resp:ty,
+        request_type: $req:ident,
+        api_func: $fn_name:ident,
+        service: $service:ident,
+    } => {
+        $crate::client_api! {
+            $(#[$meta])*
+            args: {
+                $( $arg_name: $arg_type, )*
+            },
+            response: $resp,
             request: ($req {
                 $( $arg_name, )*
             }),

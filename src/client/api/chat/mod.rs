@@ -16,8 +16,11 @@ pub use crate::api::chat::{
 /// Describes a place in a list.
 #[derive(Debug, Clone, Copy, Eq, PartialEq)]
 pub enum Place {
+    /// Top of the list.
     Top { before: u64 },
+    /// Between two items in the list.
     Between { after: u64, before: u64 },
+    /// Bottom of the list.
     Bottom { after: u64 },
 }
 
@@ -54,6 +57,7 @@ impl Place {
     }
 }
 
+/// An invite ID.
 #[derive(Debug, Clone, Eq, PartialEq)]
 pub struct InviteId(String);
 

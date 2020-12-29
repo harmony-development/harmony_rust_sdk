@@ -1,6 +1,6 @@
 //! Example showcasing a very simple message logging bot.
 use futures_util::StreamExt;
-use harmony_rust_sdk::client::{api::chat::*, Client, ClientResult};
+use harmony_rust_sdk::client::{api::chat::*, Client, ClientResult, AuthStepResponse};
 
 const EMAIL: &str = "message_log_bot@example.org";
 const USERNAME: &str = "message_log_bot";
@@ -22,9 +22,11 @@ async fn main() -> ClientResult<()> {
     log::info!("Successfully created client.");
 
     // We try to login, if it fails we register (which also authenticates)
-    if let Err(_) = client.login(EMAIL, PASSWORD).await {
+    let login_result = client.auth_with_steps(vec![AuthStepResponse::login_choice(), AuthStepResponse::login_form(EMAIL, PASSWORD)]).await;
+
+    if login_result.map_or(false, |maybe_step| maybe_step.is_some()) {
         log::info!("Login failed, let's try registering.");
-        client.register(EMAIL, USERNAME, PASSWORD).await?;
+        client.auth_with_steps(vec![AuthStepResponse::register_choice(), AuthStepResponse::register_form(EMAIL, USERNAME, PASSWORD)]).await?;
         log::info!("Successfully registered.");
     } else {
         log::info!("Successfully logon.");

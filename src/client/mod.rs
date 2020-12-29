@@ -1,71 +1,6 @@
 //! Rust client implementation for Harmony, powered by [`tonic`].
 //!
-//! # Usage
-//!
-//! Begin by creating a [`Client`] type, then either log in or register:
-//!
-//! ```no_run
-//! use harmony_rust_sdk::client::Client;
-//!
-//! let work = async {
-//!     let homeserver_url = "https://example.org".parse().unwrap();
-//!     let client = Client::new(homeserver_url, None).await?;
-//!
-//!     // Login:
-//!     let session = client
-//!         .login("example@example.com", "password")
-//!         .await?;
-//!
-//!     // Or register:
-//!     let session = client
-//!         .register("example@example.com", "example", "password")
-//!         .await?;
-//!
-//!     // You're now logged in / registered!
-//!     // Write the session (and homeserver URL!) to a file if you want to restore it later.
-//!
-//!     // make calls to the API here
-//! # harmony_rust_sdk::client::ClientResult::Ok(())
-//! };
-//! ```
-//!
-//! You can also pass an existing session to the [`Client`] constructor to restore a previous session
-//! rather than calling [`Client::login`]:
-//!
-//! ```no_run
-//! use harmony_rust_sdk::client::{Client, Session};
-//!
-//! let work = async {
-//!     let homeserver_url = "https://example.org".parse().unwrap();
-//!     let session = Session {
-//!         session_token: "secret".to_string(),
-//!         user_id: 123456789,
-//!     };
-//!     let client = Client::new(homeserver_url, Some(session));
-//!
-//!     // make calls to the API here
-//! # harmony_rust_sdk::client::ClientResult::Ok(())
-//! };
-//! ```
-//!
-//! You can also use the API methods in the [`api`] module
-//! (note that you *won't* be able to store a [`Session`] that you got from these APIs inside a [`Client`]):
-//! ```no_run
-//! use harmony_rust_sdk::client::{Client, Session, api::chat::guild::create_guild};
-//!
-//! let work = async {
-//!     let homeserver_url = "https://example.org".parse().unwrap();
-//!     let client = Client::new(homeserver_url, None).await?;
-//!
-//!     // Auth here
-//!
-//!     // Create a guild and get the guild_id from the response
-//!     let created_guild_id = create_guild(&client, String::from("Example Guild"), None).await?.guild_id;
-//!
-//!     // make more API calls
-//! # harmony_rust_sdk::client::ClientResult::Ok(())
-//! };
-//! ```
+//! See the `examples` directory in the repository on how to use this.
 
 /// [`Client`] API implementations.
 pub mod api;
@@ -80,6 +15,7 @@ use crate::api::{
     auth::auth_service_client::AuthServiceClient, chat::chat_service_client::ChatServiceClient,
     mediaproxy::media_proxy_service_client::MediaProxyServiceClient,
 };
+use api::auth::{next_step_request::form_fields::Field, *};
 
 use futures_util::{
     future,
@@ -98,10 +34,110 @@ type AuthService = AuthServiceClient<Channel>;
 type ChatService = ChatServiceClient<Channel>;
 type MediaProxyService = MediaProxyServiceClient<Channel>;
 
+/// Represents an authentication state in which a [`Client`] can be.
+#[derive(Debug, Clone)]
+pub enum AuthStatus {
+    /// [`Client`] is not currently authenticated.
+    None,
+    /// [`Client`] is in the progress of authenticating.
+    InProgress(String),
+    /// [`Client`] completed an authentication session and is now authenticated.
+    Complete(Session),
+}
+
+impl AuthStatus {
+    pub fn session(&self) -> Option<&Session> {
+        match self {
+            AuthStatus::None => None,
+            AuthStatus::InProgress(_) => None,
+            AuthStatus::Complete(session) => Some(session),
+        }
+    } 
+}
+
+/// A response to an [`AuthStep`].
+#[derive(Debug, Clone)]
+pub enum AuthStepResponse {
+    /// A choice selection.
+    Choice(String),
+    /// A form.
+    Form(Vec<Field>),
+    /// Used as the "initial" response, since we won't have any [`AuthStep`] to respond to.
+    Initial,
+}
+
+impl AuthStepResponse {
+    /// Create a new [`AuthStepResponse`] with the specified choice.
+    #[inline(always)]
+    pub fn choice(choice: impl ToString) -> Self {
+        Self::Choice(choice.to_string())
+    }
+
+    /// Create a new [`AuthStepResponse`] with the specified form fields.
+    #[inline(always)]
+    pub fn form(fields: Vec<Field>) -> Self {
+        Self::Form(fields)
+    }
+
+    /// A login choice response.
+    #[inline(always)]
+    pub fn login_choice() -> Self {
+        Self::choice("login")
+    }
+
+    /// A register choice response.
+    #[inline(always)]
+    pub fn register_choice() -> Self {
+        Self::choice("register")
+    }
+
+    /// Create a login form response from specified email and password.
+    pub fn login_form(email: impl ToString, password: impl ToString) -> Self {
+        Self::form(vec![
+            Field::String(email.to_string()),
+            Field::String(password.to_string()),
+        ])
+    }
+
+    /// Create a register form response from specified email, username and password.
+    pub fn register_form(
+        email: impl ToString,
+        username: impl ToString,
+        password: impl ToString,
+    ) -> Self {
+        Self::form(vec![
+            Field::String(email.to_string()),
+            Field::String(username.to_string()),
+            Field::String(password.to_string()),
+        ])
+    }
+}
+
+impl Into<Option<next_step_request::Step>> for AuthStepResponse {
+    fn into(self) -> Option<next_step_request::Step> {
+        match self {
+            AuthStepResponse::Choice(choice) => {
+                Some(next_step_request::Step::Choice(next_step_request::Choice {
+                    choice,
+                }))
+            }
+            AuthStepResponse::Form(fields) => {
+                Some(next_step_request::Step::Form(next_step_request::Form {
+                    fields: fields
+                        .into_iter()
+                        .map(|f| next_step_request::FormFields { field: Some(f) })
+                        .collect(),
+                }))
+            }
+            AuthStepResponse::Initial => None,
+        }
+    }
+}
+
 #[derive(Debug)]
 struct ClientData {
     homeserver_url: Uri,
-    session: Mutex<Option<Session>>,
+    auth_status: Mutex<AuthStatus>,
     chat: Mutex<ChatService>,
     auth: Mutex<AuthService>,
     mediaproxy: Mutex<MediaProxyService>,
@@ -145,7 +181,7 @@ impl Client {
 
         let data = ClientData {
             homeserver_url,
-            session: Mutex::new(session),
+            auth_status: Mutex::new(AuthStatus::None),
             chat: Mutex::new(chat),
             auth: Mutex::new(auth),
             mediaproxy: Mutex::new(mediaproxy),
@@ -183,18 +219,18 @@ impl Client {
         lock
     }
 
-    fn session_lock(&self) -> MutexGuard<Option<Session>> {
-        let lock = self.data.session.lock();
+    fn auth_status_lock(&self) -> MutexGuard<AuthStatus> {
+        let lock = self.data.auth_status.lock();
 
         #[cfg(not(feature = "use_parking_lot"))]
-        return lock.expect("session mutex was poisoned");
+        return lock.expect("auth status mutex was poisoned");
         #[cfg(feature = "use_parking_lot")]
         lock
     }
 
-    /// Get the stored session.
-    pub fn session(&self) -> Option<Session> {
-        self.session_lock().clone()
+    /// Get the current auth status.
+    pub fn auth_status(&self) -> AuthStatus {
+        self.auth_status_lock().clone()
     }
 
     /// Get the stored homeserver URL.
@@ -202,33 +238,67 @@ impl Client {
         &self.data.homeserver_url
     }
 
-    /// Send a [`api::auth::login`] request to the server and store the returned session.
-    pub async fn login(&self, email: impl ToString, password: impl ToString) -> ClientResult<()> {
-        let session = api::auth::login(self, email.to_string(), password.to_string()).await?;
-        *self.session_lock() = Some(session);
-
+    /// Start an authentication session.
+    pub async fn begin_auth(&self) -> ClientResult<()> {
+        let auth_id = api::auth::begin_auth(self).await?.auth_id;
+        *self.auth_status_lock() = AuthStatus::InProgress(auth_id);
         Ok(())
     }
 
-    /// Send a [`api::auth::register`] request to the server and store the returned session.
-    pub async fn register(
+    /// Request the next authentication step from the server.
+    ///
+    /// Returns `Ok(None)` if authentication was completed.
+    /// Returns `Ok(Some(AuthStep))` if extra step is requested from the server.
+    pub async fn next_auth_step(
         &self,
-        email: impl ToString,
-        username: impl ToString,
-        password: impl ToString,
-    ) -> ClientResult<()> {
-        let session = api::auth::register(
-            self,
-            email.to_string(),
-            username.to_string(),
-            password.to_string(),
-        )
-        .await?;
-        *self.session_lock() = Some(session);
+        response: AuthStepResponse,
+    ) -> ClientResult<Option<AuthStep>> {
+        if let AuthStatus::InProgress(auth_id) = self.auth_status_lock().clone() {
+            let step = api::auth::next_step(self, auth_id, response.into()).await?;
 
-        Ok(())
+            Ok(if let Some(auth_step::Step::Session(session)) = step.step {
+                *self.auth_status_lock() = AuthStatus::Complete(session);
+                None
+            } else {
+                Some(step)
+            })
+        } else {
+            Err(ClientError::NoAuthId)
+        }
     }
 
+    /// Go back to the previous authentication step.
+    pub async fn prev_auth_step(
+        &self,
+    ) -> ClientResult<AuthStep> {
+        if let AuthStatus::InProgress(auth_id) = self.auth_status_lock().clone() {
+            api::auth::step_back(self, auth_id).await
+        } else {
+            Err(ClientError::NoAuthId)
+        }
+    }
+
+    /// Begin an authentication session and perform the given steps.
+    ///
+    /// Returns `Ok(None)` if authentication was completed.
+    /// Returns `Ok(Some(AuthStep))` if extra step is requested from the server.
+    pub async fn auth_with_steps(&self, mut steps: Vec<AuthStepResponse>) -> ClientResult<Option<AuthStep>> {
+        self.begin_auth().await?;
+        steps.insert(0, AuthStepResponse::Initial);
+
+        let mut step_response = None;
+        for step in steps {
+            step_response = self.next_auth_step(step).await?;
+                
+            if step_response.is_none() {
+                return Ok(None);
+            }
+        }
+
+        Ok(step_response)
+    }
+
+    /// Subscribe to events relating to specified guilds, homeserver or actions.
     pub async fn subscribe_events(
         &self,
         guilds: Vec<u64>,
@@ -269,7 +339,7 @@ impl Client {
     }
 }
 
-// A user with username "example", email "example@example.org" and password "123456789"
+// A user with username "rust_test_bot", email "rust_test_bot@example.org" and password "123456789"
 // must be registered on the server for tests to work properly.
 #[cfg(test)]
 mod test {
@@ -280,84 +350,13 @@ mod test {
     }
 
     async fn make_client() -> ClientResult<Client> {
-        Client::new("https://127.0.0.1".parse().unwrap(), None).await
+        Client::new("https://chat.harmonyapp.io".parse().unwrap(), None).await
     }
 
     #[tokio::test]
     async fn new() -> ClientResult<()> {
         init();
         let _client = make_client().await?;
-        Ok(())
-    }
-
-    #[tokio::test]
-    async fn login() -> ClientResult<()> {
-        init();
-
-        let client = make_client().await?;
-        client.login("example@example.org", "123456789").await?;
-
-        Ok(())
-    }
-
-    #[tokio::test]
-    async fn register() -> ClientResult<()> {
-        use std::time::{SystemTime, UNIX_EPOCH};
-        init();
-
-        let current_time = SystemTime::now()
-            .duration_since(UNIX_EPOCH)
-            .unwrap()
-            .as_secs();
-        let client = make_client().await?;
-        client
-            .register(
-                format!("example{}@example.org", current_time),
-                format!("example{}", current_time),
-                "123456789",
-            )
-            .await?;
-
-        Ok(())
-    }
-
-    async fn client_sub(guilds: Vec<u64>, actions: bool, homeserver: bool) -> ClientResult<()> {
-        let client = make_client().await?;
-        client.login("example@example.org", "123456789").await?;
-        let _ = client.subscribe_events(guilds, actions, homeserver).await?;
-
-        Ok(())
-    }
-
-    #[tokio::test]
-    async fn subscribe_nothing() -> ClientResult<()> {
-        init();
-        client_sub(Vec::new(), false, false).await?;
-
-        Ok(())
-    }
-
-    #[tokio::test]
-    async fn subscribe_homeserver() -> ClientResult<()> {
-        init();
-        client_sub(Vec::new(), false, true).await?;
-
-        Ok(())
-    }
-
-    #[tokio::test]
-    async fn subscribe_actions() -> ClientResult<()> {
-        init();
-        client_sub(Vec::new(), true, false).await?;
-
-        Ok(())
-    }
-
-    #[tokio::test]
-    async fn subscribe_actions_and_homeserver() -> ClientResult<()> {
-        init();
-        client_sub(Vec::new(), true, true).await?;
-
         Ok(())
     }
 }

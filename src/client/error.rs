@@ -8,6 +8,7 @@ pub type ClientResult<T> = Result<T, ClientError>;
 pub enum ClientError {
     Grpc(Status),
     Transport(TransportError),
+    NoAuthId,
 }
 
 impl From<Status> for ClientError {
