@@ -346,8 +346,6 @@ impl Client {
     }
 }
 
-// A user with username "rust_test_bot", email "rust_test_bot@example.org" and password "123456789"
-// must be registered on the server for tests to work properly.
 #[cfg(test)]
 mod test {
     use super::*;

@@ -134,24 +134,9 @@ jobs:
     - name: Doc
       run: cargo doc --no-deps --all-features --verbose
     
-  publish-docs:
-    needs: docs
-    runs-on: ubuntu-latest
-    steps:
-    - name: Cache Rust artifacts
-      uses: actions/cache@v2
-      with:
-        path: |
-          ~/.cargo/registry
-          ~/.cargo/git
-          ./target
-        key: cargo-${{ runner.os }}-${{ hashFiles('Cargo.lock') }}-${{ hashFiles('**/*.rs') }}
-        restore-keys: cargo-${{ runner.os }}-${{ hashFiles('Cargo.lock') }}-
-
     - name: Publish docs
       uses: peaceiris/actions-gh-pages@v3
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_dir: ./target/doc
         publish_branch: gh-pages
-        keep_files: true
