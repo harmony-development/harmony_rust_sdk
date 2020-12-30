@@ -14,29 +14,12 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  compile-test:
+  check:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout repo
-      uses: actions/checkout@v2
-    - name: Checkout submodules
-      uses: textbook/git-checkout-submodule-action@master
-
-    - name: Install dependencies
-      run: |
-        sudo apt update -yy
-        sudo apt install -yy --no-install-recommends protobuf-compiler protobuf-compiler-grpc
-
-    - name: Cache Rust artifacts
-      uses: actions/cache@v2
-      with:
-        path: |
-          ~/.cargo/registry
-          ~/.cargo/git
-          ./target
-        key: cargo-${{ runner.os }}-${{ hashFiles('Cargo.lock') }}-${{ hashFiles('**/*.rs') }}
-        restore-keys: cargo-${{ runner.os }}-${{ hashFiles('Cargo.lock') }}-
-
+    - name: Common actions
+      uses: ./
+        
     - name: Check
       run: cargo check --all-targets --features client,gen_server --verbose
     - name: Clippy
@@ -44,9 +27,25 @@ jobs:
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         args: --all-targets --features client,gen_server
+
+  compile:
+    needs: check
+    runs-on: ubuntu-latest
+    steps:
+    - name: Common actions
+      uses: ./
+
     - name: Doc
       run: cargo doc --features client,gen_server --verbose
     - name: Build
       run: cargo build --all-targets --features client,gen_server --verbose
+
+  tests:
+    needs: compile
+    runs-on: ubuntu-latest
+    steps:
+    - name: Common actions
+      uses: ./
+
     - name: Test
       run: cargo test --features client,gen_server --verbose --no-fail-fast
