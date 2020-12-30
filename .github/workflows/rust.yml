@@ -36,8 +36,8 @@ jobs:
           ~/.cargo/registry
           ~/.cargo/git
           ./target
-        key: cargo-${{ runner.os }}-${{ hashFiles('Cargo.lock') }}-${{ hashFiles('**/*.rs') }}
-        restore-keys: cargo-${{ runner.os }}-${{ hashFiles('Cargo.lock') }}-
+        key: cargo-${{ runner.os }}-${{ github.sha }}
+        restore-keys: cargo-${{ runner.os }}-
         
     - name: Check
       run: cargo check --all-targets --all-features --verbose
@@ -70,8 +70,8 @@ jobs:
           ~/.cargo/registry
           ~/.cargo/git
           ./target
-        key: cargo-${{ runner.os }}-${{ hashFiles('Cargo.lock') }}-${{ hashFiles('**/*.rs') }}
-        restore-keys: cargo-${{ runner.os }}-${{ hashFiles('Cargo.lock') }}-
+        key: cargo-${{ runner.os }}-${{ github.sha }}
+        restore-keys: cargo-${{ runner.os }}-
 
     - name: Build
       run: cargo build --all-targets --all-features --verbose
@@ -99,8 +99,8 @@ jobs:
           ~/.cargo/registry
           ~/.cargo/git
           ./target
-        key: cargo-${{ runner.os }}-${{ hashFiles('Cargo.lock') }}-${{ hashFiles('**/*.rs') }}
-        restore-keys: cargo-${{ runner.os }}-${{ hashFiles('Cargo.lock') }}-
+        key: cargo-${{ runner.os }}-${{ github.sha }}
+        restore-keys: cargo-${{ runner.os }}-
 
     - name: Test
       run: cargo test --all-features --verbose
@@ -128,11 +128,17 @@ jobs:
           ~/.cargo/registry
           ~/.cargo/git
           ./target
-        key: cargo-${{ runner.os }}-${{ hashFiles('Cargo.lock') }}-${{ hashFiles('**/*.rs') }}
-        restore-keys: cargo-${{ runner.os }}-${{ hashFiles('Cargo.lock') }}-
+        key: cargo-${{ runner.os }}-${{ github.sha }}
+        restore-keys: cargo-${{ runner.os }}-
     
     - name: Doc
       run: cargo doc --no-deps --all-features --verbose
+
+    - name: Finalize documentation
+      run: |
+        CRATE_NAME=$(echo '${{ github.repository }}' | tr '[:upper:]' '[:lower:]' | cut -f2 -d"/")
+        echo "<meta http-equiv=\"refresh\" content=\"0; url=${CRATE_NAME/-/_}\">" > target/doc/index.html
+        touch target/doc/.nojekyll
     
     - name: Publish docs
       uses: peaceiris/actions-gh-pages@v3
