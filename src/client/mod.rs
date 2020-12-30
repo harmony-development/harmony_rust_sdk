@@ -52,7 +52,11 @@ impl AuthStatus {
             AuthStatus::InProgress(_) => None,
             AuthStatus::Complete(session) => Some(session),
         }
-    } 
+    }
+
+    pub fn is_authenticated(&self) -> bool {
+        matches!(self, AuthStatus::Complete(_))
+    }
 }
 
 /// A response to an [`AuthStep`].
@@ -268,9 +272,7 @@ impl Client {
     }
 
     /// Go back to the previous authentication step.
-    pub async fn prev_auth_step(
-        &self,
-    ) -> ClientResult<AuthStep> {
+    pub async fn prev_auth_step(&self) -> ClientResult<AuthStep> {
         if let AuthStatus::InProgress(auth_id) = self.auth_status_lock().clone() {
             api::auth::step_back(self, auth_id).await
         } else {
@@ -282,14 +284,17 @@ impl Client {
     ///
     /// Returns `Ok(None)` if authentication was completed.
     /// Returns `Ok(Some(AuthStep))` if extra step is requested from the server.
-    pub async fn auth_with_steps(&self, mut steps: Vec<AuthStepResponse>) -> ClientResult<Option<AuthStep>> {
+    pub async fn auth_with_steps(
+        &self,
+        mut steps: Vec<AuthStepResponse>,
+    ) -> ClientResult<Option<AuthStep>> {
         self.begin_auth().await?;
         steps.insert(0, AuthStepResponse::Initial);
 
         let mut step_response = None;
         for step in steps {
             step_response = self.next_auth_step(step).await?;
-                
+
             if step_response.is_none() {
                 return Ok(None);
             }
@@ -304,7 +309,9 @@ impl Client {
         guilds: Vec<u64>,
         actions: bool,
         homeserver: bool,
-    ) -> ClientResult<impl Stream<Item = ClientResult<api::chat::event::Event>>> {
+    ) -> ClientResult<
+        impl Stream<Item = ClientResult<api::chat::event::Event>> + Send + Sync + 'static,
+    > {
         use api::chat::{stream_events, stream_events_request::*};
 
         let mut requests = guilds
@@ -346,7 +353,6 @@ mod test {
     use super::*;
 
     const EMAIL: &str = "rust_sdk_test@example.org";
-    const USERNAME: &str = "rust_sdk_test";
     const PASSWORD: &str = "123456789Ab";
 
     fn init() {
@@ -357,6 +363,23 @@ mod test {
         Client::new("https://chat.harmonyapp.io".parse().unwrap(), None).await
     }
 
+    async fn login_client() -> ClientResult<Client> {
+        let client = make_client().await?;
+
+        client
+            .auth_with_steps(vec![
+                AuthStepResponse::login_choice(),
+                AuthStepResponse::login_form(EMAIL, PASSWORD),
+            ])
+            .await?;
+
+        if client.auth_status().is_authenticated() {
+            panic!("missing test user in server?");
+        }
+
+        Ok(client)
+    }
+
     #[tokio::test]
     async fn new() -> ClientResult<()> {
         init();
@@ -365,26 +388,72 @@ mod test {
     }
 
     #[tokio::test]
-    async fn auth() -> ClientResult<()> {
+    async fn login() -> ClientResult<()> {
         init();
 
-        let client = make_client().await?;
-        
-        let login_result = client.auth_with_steps(vec![AuthStepResponse::login_choice(), AuthStepResponse::login_form(EMAIL, PASSWORD)]).await;
-        if login_result.map_or(false, |maybe_step| maybe_step.is_some()) {
-            client.auth_with_steps(vec![AuthStepResponse::register_choice(), AuthStepResponse::register_form(EMAIL, USERNAME, PASSWORD)]).await?;
-        }
+        let client = login_client().await?;
+        assert_eq!(client.auth_status().is_authenticated(), true);
+
+        Ok(())
+    }
+
+    #[tokio::test]
+    async fn register() -> ClientResult<()> {
+        init();
+
+        let client = login_client().await?;
+        assert_eq!(client.auth_status().is_authenticated(), true);
+
+        Ok(())
+    }
+
+    #[tokio::test]
+    async fn send_message() -> ClientResult<()> {
+        use api::chat::message;
+
+        init();
+
+        let client = login_client().await?;
+        message::send_message(
+            &client,
+            2699074975217745925, // harmony dev guild
+            2699489358242643973, // offtopic channel
+            None,
+            None,
+            Some("test".to_string()),
+            None,
+            None,
+            None,
+            None,
+            None,
+        )
+        .await?;
+
+        Ok(())
+    }
+
+    #[tokio::test]
+    async fn instant_view() -> ClientResult<()> {
+        init();
+
+        let client = login_client().await?;
+        api::mediaproxy::instant_view(&client, "https://duckduckgo.com".parse().unwrap()).await?;
+
+        Ok(())
+    }
+
+    #[tokio::test]
+    async fn can_instant_view() -> ClientResult<()> {
+        init();
+
+        let client = login_client().await?;
+        api::mediaproxy::can_instant_view(&client, "https://duckduckgo.com".parse().unwrap()).await?;
 
         Ok(())
     }
 
     async fn client_sub(guilds: Vec<u64>, actions: bool, homeserver: bool) -> ClientResult<()> {
-        let client = make_client().await?;
-        
-        let login_result = client.auth_with_steps(vec![AuthStepResponse::login_choice(), AuthStepResponse::login_form(EMAIL, PASSWORD)]).await;
-        if login_result.map_or(false, |maybe_step| maybe_step.is_some()) {
-            panic!("missing test user in server?");
-        }
+        let client = login_client().await?;
         let _ = client.subscribe_events(guilds, actions, homeserver).await?;
 
         Ok(())
