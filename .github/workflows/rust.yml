@@ -17,6 +17,8 @@ jobs:
   check:
     runs-on: ubuntu-latest
     steps:
+    - name: Checkout repo
+      uses: actions/checkout@v2
     - name: Common actions
       uses: ./
         
@@ -32,6 +34,8 @@ jobs:
     needs: check
     runs-on: ubuntu-latest
     steps:
+    - name: Checkout repo
+      uses: actions/checkout@v2
     - name: Common actions
       uses: ./
 
@@ -44,6 +48,8 @@ jobs:
     needs: compile
     runs-on: ubuntu-latest
     steps:
+    - name: Checkout repo
+      uses: actions/checkout@v2
     - name: Common actions
       uses: ./
 
