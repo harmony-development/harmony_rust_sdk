@@ -36,7 +36,7 @@ jobs:
           ~/.cargo/registry
           ~/.cargo/git
           ./target
-        key: cargo-${{ runner.os }}-${{ github.sha }}
+        key: cargo-${{ runner.os }}-${{ github.sha }}-${{ github.job }}
         restore-keys: cargo-${{ runner.os }}-
         
     - name: Check
@@ -70,7 +70,7 @@ jobs:
           ~/.cargo/registry
           ~/.cargo/git
           ./target
-        key: cargo-${{ runner.os }}-${{ github.sha }}
+        key: cargo-${{ runner.os }}-${{ github.sha }}-${{ github.job }}
         restore-keys: cargo-${{ runner.os }}-
 
     - name: Build
@@ -99,7 +99,7 @@ jobs:
           ~/.cargo/registry
           ~/.cargo/git
           ./target
-        key: cargo-${{ runner.os }}-${{ github.sha }}
+        key: cargo-${{ runner.os }}-${{ github.sha }}-${{ github.job }}
         restore-keys: cargo-${{ runner.os }}-
 
     - name: Test
@@ -128,7 +128,7 @@ jobs:
           ~/.cargo/registry
           ~/.cargo/git
           ./target
-        key: cargo-${{ runner.os }}-${{ github.sha }}
+        key: cargo-${{ runner.os }}-${{ github.sha }}-${{ github.job }}
         restore-keys: cargo-${{ runner.os }}-
     
     - name: Doc
