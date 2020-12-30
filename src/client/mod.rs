@@ -370,9 +370,9 @@ mod test {
 
         let client = make_client().await?;
         
-        if let Err(e) = client.login(EMAIL, PASSWORD).await {
-            log::error!("login failed in auth test: {:?}", e);
-            client.register(EMAIL, USERNAME, PASSWORD).await?;
+        let login_result = client.auth_with_steps(vec![AuthStepResponse::login_choice(), AuthStepResponse::login_form(EMAIL, PASSWORD)]).await;
+        if login_result.map_or(false, |maybe_step| maybe_step.is_some()) {
+            client.auth_with_steps(vec![AuthStepResponse::register_choice(), AuthStepResponse::register_form(EMAIL, USERNAME, PASSWORD)]).await?;
         }
 
         Ok(())
@@ -381,7 +381,10 @@ mod test {
     async fn client_sub(guilds: Vec<u64>, actions: bool, homeserver: bool) -> ClientResult<()> {
         let client = make_client().await?;
         
-        client.login(EMAIL, PASSWORD).await?;
+        let login_result = client.auth_with_steps(vec![AuthStepResponse::login_choice(), AuthStepResponse::login_form(EMAIL, PASSWORD)]).await;
+        if login_result.map_or(false, |maybe_step| maybe_step.is_some()) {
+            panic!("missing test user in server?");
+        }
         let _ = client.subscribe_events(guilds, actions, homeserver).await?;
 
         Ok(())
