@@ -132,7 +132,7 @@ jobs:
         restore-keys: cargo-${{ runner.os }}-${{ hashFiles('Cargo.lock') }}-
     
     - name: Doc
-      run: cargo doc --all-features --verbose
+      run: cargo doc --no-deps --all-features --verbose
     
   publish-docs:
     needs: docs
