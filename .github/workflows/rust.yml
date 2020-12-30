@@ -103,7 +103,7 @@ jobs:
         restore-keys: cargo-${{ runner.os }}-${{ hashFiles('Cargo.lock') }}-
 
     - name: Test
-      run: cargo test all-features --verbose
+      run: cargo test --all-features --verbose
 
   docs:
     needs: compile
