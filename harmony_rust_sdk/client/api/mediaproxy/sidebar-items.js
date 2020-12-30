@@ -1,0 +1,1 @@
+initSidebarItems({"fn":[["can_instant_view","Ask the server if it can provide an Instant View for a specified URL."],["fetch_link_metadata","Request a link's (site) metadata from the server."],["instant_view","Request an Instant View from the server."]]});
