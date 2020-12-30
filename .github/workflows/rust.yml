@@ -26,6 +26,8 @@ jobs:
       run: |
         sudo apt update -yy
         sudo apt install -yy --no-install-recommends protobuf-compiler protobuf-compiler-grpc
+    - name: Install rust
+      run: rustup default stable && rustup update
 
     - name: Cache Rust artifacts
       uses: actions/cache@v2
@@ -38,12 +40,12 @@ jobs:
         restore-keys: cargo-${{ runner.os }}-${{ hashFiles('Cargo.lock') }}-
         
     - name: Check
-      run: cargo check --all-targets --features client,gen_server --verbose
+      run: cargo check --all-targets --all-features --verbose
     - name: Clippy
       uses: actions-rs/clippy-check@v1.0.7
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
-        args: --all-targets --features client,gen_server
+        args: --all-targets --all-features
 
   compile:
     needs: check
@@ -58,6 +60,8 @@ jobs:
       run: |
         sudo apt update -yy
         sudo apt install -yy --no-install-recommends protobuf-compiler protobuf-compiler-grpc
+    - name: Install rust
+      run: rustup default stable && rustup update
 
     - name: Cache Rust artifacts
       uses: actions/cache@v2
@@ -69,10 +73,8 @@ jobs:
         key: cargo-${{ runner.os }}-${{ hashFiles('Cargo.lock') }}-${{ hashFiles('**/*.rs') }}
         restore-keys: cargo-${{ runner.os }}-${{ hashFiles('Cargo.lock') }}-
 
-    - name: Doc
-      run: cargo doc --features client,gen_server --verbose
     - name: Build
-      run: cargo build --all-targets --features client,gen_server --verbose
+      run: cargo build --all-targets --all-features --verbose
 
   tests:
     needs: compile
@@ -87,6 +89,8 @@ jobs:
       run: |
         sudo apt update -yy
         sudo apt install -yy --no-install-recommends protobuf-compiler protobuf-compiler-grpc
+    - name: Install rust
+      run: rustup default stable && rustup update
 
     - name: Cache Rust artifacts
       uses: actions/cache@v2
@@ -99,4 +103,55 @@ jobs:
         restore-keys: cargo-${{ runner.os }}-${{ hashFiles('Cargo.lock') }}-
 
     - name: Test
-      run: cargo test --features client,gen_server --verbose --no-fail-fast
+      run: cargo test all-features --verbose
+
+  docs:
+    needs: compile
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v2
+    - name: Checkout submodules
+      uses: textbook/git-checkout-submodule-action@master
+
+    - name: Install dependencies
+      run: |
+        sudo apt update -yy
+        sudo apt install -yy --no-install-recommends protobuf-compiler protobuf-compiler-grpc
+    - name: Install rust
+      run: rustup default stable && rustup update
+
+    - name: Cache Rust artifacts
+      uses: actions/cache@v2
+      with:
+        path: |
+          ~/.cargo/registry
+          ~/.cargo/git
+          ./target
+        key: cargo-${{ runner.os }}-${{ hashFiles('Cargo.lock') }}-${{ hashFiles('**/*.rs') }}
+        restore-keys: cargo-${{ runner.os }}-${{ hashFiles('Cargo.lock') }}-
+    
+    - name: Doc
+      run: cargo doc --all-features --verbose
+    
+  publish-docs:
+    needs: docs
+    runs-on: ubuntu-latest
+    steps:
+    - name: Cache Rust artifacts
+      uses: actions/cache@v2
+      with:
+        path: |
+          ~/.cargo/registry
+          ~/.cargo/git
+          ./target
+        key: cargo-${{ runner.os }}-${{ hashFiles('Cargo.lock') }}-${{ hashFiles('**/*.rs') }}
+        restore-keys: cargo-${{ runner.os }}-${{ hashFiles('Cargo.lock') }}-
+
+    - name: Publish docs
+      uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./target/doc
+          publish_branch: gh-pages
+          keep_files: true
