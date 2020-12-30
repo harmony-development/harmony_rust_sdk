@@ -26,14 +26,21 @@ client_api! {
 
 client_api! {
     /// Update local user's profile.
-    args: { new_username: Option<String>, new_status: Option<UserStatus>, new_avatar: Option<Uri>, },
+    args: {
+        new_username: Option<String>,
+        new_status: Option<UserStatus>,
+        new_avatar: Option<Uri>,
+        new_is_bot: Option<bool>,
+    },
     request: ProfileUpdateRequest {
         update_username: new_username.is_some(),
         update_status: new_status.is_some(),
         update_avatar: new_avatar.is_some(),
+        update_is_bot: new_is_bot.is_some(),
         new_username: new_username.unwrap_or_default(),
         new_status: new_status.unwrap_or_default().into(),
         new_avatar: new_avatar.map(|u| u.to_string()).unwrap_or_default(),
+        is_bot: new_is_bot.unwrap_or_default(),
     },
     api_func: profile_update,
     service: chat,
