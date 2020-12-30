@@ -19,8 +19,23 @@ jobs:
     steps:
     - name: Checkout repo
       uses: actions/checkout@v2
-    - name: Common actions
-      uses: ./
+    - name: Checkout submodules
+      uses: textbook/git-checkout-submodule-action@master
+
+    - name: Install dependencies
+      run: |
+        sudo apt update -yy
+        sudo apt install -yy --no-install-recommends protobuf-compiler protobuf-compiler-grpc
+
+    - name: Cache Rust artifacts
+      uses: actions/cache@v2
+      with:
+        path: |
+          ~/.cargo/registry
+          ~/.cargo/git
+          ./target
+        key: cargo-${{ runner.os }}-${{ hashFiles('Cargo.lock') }}-${{ hashFiles('**/*.rs') }}
+        restore-keys: cargo-${{ runner.os }}-${{ hashFiles('Cargo.lock') }}-
         
     - name: Check
       run: cargo check --all-targets --features client,gen_server --verbose
@@ -36,8 +51,23 @@ jobs:
     steps:
     - name: Checkout repo
       uses: actions/checkout@v2
-    - name: Common actions
-      uses: ./
+    - name: Checkout submodules
+      uses: textbook/git-checkout-submodule-action@master
+
+    - name: Install dependencies
+      run: |
+        sudo apt update -yy
+        sudo apt install -yy --no-install-recommends protobuf-compiler protobuf-compiler-grpc
+
+    - name: Cache Rust artifacts
+      uses: actions/cache@v2
+      with:
+        path: |
+          ~/.cargo/registry
+          ~/.cargo/git
+          ./target
+        key: cargo-${{ runner.os }}-${{ hashFiles('Cargo.lock') }}-${{ hashFiles('**/*.rs') }}
+        restore-keys: cargo-${{ runner.os }}-${{ hashFiles('Cargo.lock') }}-
 
     - name: Doc
       run: cargo doc --features client,gen_server --verbose
@@ -50,8 +80,23 @@ jobs:
     steps:
     - name: Checkout repo
       uses: actions/checkout@v2
-    - name: Common actions
-      uses: ./
+    - name: Checkout submodules
+      uses: textbook/git-checkout-submodule-action@master
+
+    - name: Install dependencies
+      run: |
+        sudo apt update -yy
+        sudo apt install -yy --no-install-recommends protobuf-compiler protobuf-compiler-grpc
+
+    - name: Cache Rust artifacts
+      uses: actions/cache@v2
+      with:
+        path: |
+          ~/.cargo/registry
+          ~/.cargo/git
+          ./target
+        key: cargo-${{ runner.os }}-${{ hashFiles('Cargo.lock') }}-${{ hashFiles('**/*.rs') }}
+        restore-keys: cargo-${{ runner.os }}-${{ hashFiles('Cargo.lock') }}-
 
     - name: Test
       run: cargo test --features client,gen_server --verbose --no-fail-fast
