@@ -1,3 +1,0 @@
-(function() {var implementors = {};
-implementors["harmony_rust_sdk"] = [{"text":"impl Eq for Mode","synthetic":false,"types":[]},{"text":"impl Eq for UserStatus","synthetic":false,"types":[]},{"text":"impl Eq for ActionType","synthetic":false,"types":[]},{"text":"impl Eq for ActionPresentation","synthetic":false,"types":[]},{"text":"impl Eq for FieldPresentation","synthetic":false,"types":[]},{"text":"impl Eq for Place","synthetic":false,"types":[]},{"text":"impl Eq for InviteId","synthetic":false,"types":[]}];
-if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()

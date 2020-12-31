@@ -1,1 +1,0 @@
-initSidebarItems({"fn":[["create_invite","Create an invite with a name and a number of uses for the specified guild."],["delete_invite","Delete an invite with the specified name in the specified guild."],["get_guild_invites","Get invites for the specified guild."]]});

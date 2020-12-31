@@ -1,1 +1,0 @@
-initSidebarItems({"enum":[["ClientError","Error type used by `Client`."],["Code","gRPC status codes used by [`Status`]."]],"struct":[["Status","A gRPC status describing the result of an RPC call."],["TransportError","Error's that originate from the client or server;"]],"type":[["ClientResult","Result type used by many `Client` methods."]]});

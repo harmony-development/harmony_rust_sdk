@@ -1,1 +1,0 @@
-initSidebarItems({"enum":[["Step",""]],"mod":[["form_fields",""]],"struct":[["Choice","A simple choice string indicating which option the user chose"],["Form","An array of form fields, in the same order they came in from the server"],["FormFields","Form fields can either be bytes, string, or int64."]]});

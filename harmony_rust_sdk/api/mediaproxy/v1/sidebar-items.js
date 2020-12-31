@@ -1,1 +1,0 @@
-initSidebarItems({"mod":[["media_proxy_service_client","Generated client implementations."],["media_proxy_service_server","Generated server implementations."]],"struct":[["CanInstantViewResponse",""],["FetchLinkMetadataRequest",""],["InstantViewRequest",""],["InstantViewResponse",""],["SiteMetadata",""]]});
