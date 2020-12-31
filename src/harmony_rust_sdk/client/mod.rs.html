@@ -1,6 +1,6 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `src/client/mod.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>mod.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../light.css"  id="themeStyle"><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled ><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled ><script src="../../../storage.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/client/mod.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>mod.rs - source</title><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../light.css"  id="themeStyle"><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled ><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled ><script id="default-settings"></script><script src="../../../storage.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">
 <link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png">
-<link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><style type="text/css">#crate-search{background-image:url("../../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../../harmony_rust_sdk/index.html'><div class='logo-container rust-logo'><img src='../../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../../theme.js"></script><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><span class="help-button">?</span>
+<link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><style type="text/css">#crate-search{background-image:url("../../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../../harmony_rust_sdk/index.html'><div class='logo-container rust-logo'><img src='../../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu"><img src="../../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices" role="menu"></div></div><script src="../../../theme.js"></script><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><span class="help-button">?</span>
                 <a id="settings-menu" href="../../../settings.html"><img src="../../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
 <span id="2">  2</span>
 <span id="3">  3</span>
@@ -492,6 +492,96 @@
 <span id="489">489</span>
 <span id="490">490</span>
 <span id="491">491</span>
+<span id="492">492</span>
+<span id="493">493</span>
+<span id="494">494</span>
+<span id="495">495</span>
+<span id="496">496</span>
+<span id="497">497</span>
+<span id="498">498</span>
+<span id="499">499</span>
+<span id="500">500</span>
+<span id="501">501</span>
+<span id="502">502</span>
+<span id="503">503</span>
+<span id="504">504</span>
+<span id="505">505</span>
+<span id="506">506</span>
+<span id="507">507</span>
+<span id="508">508</span>
+<span id="509">509</span>
+<span id="510">510</span>
+<span id="511">511</span>
+<span id="512">512</span>
+<span id="513">513</span>
+<span id="514">514</span>
+<span id="515">515</span>
+<span id="516">516</span>
+<span id="517">517</span>
+<span id="518">518</span>
+<span id="519">519</span>
+<span id="520">520</span>
+<span id="521">521</span>
+<span id="522">522</span>
+<span id="523">523</span>
+<span id="524">524</span>
+<span id="525">525</span>
+<span id="526">526</span>
+<span id="527">527</span>
+<span id="528">528</span>
+<span id="529">529</span>
+<span id="530">530</span>
+<span id="531">531</span>
+<span id="532">532</span>
+<span id="533">533</span>
+<span id="534">534</span>
+<span id="535">535</span>
+<span id="536">536</span>
+<span id="537">537</span>
+<span id="538">538</span>
+<span id="539">539</span>
+<span id="540">540</span>
+<span id="541">541</span>
+<span id="542">542</span>
+<span id="543">543</span>
+<span id="544">544</span>
+<span id="545">545</span>
+<span id="546">546</span>
+<span id="547">547</span>
+<span id="548">548</span>
+<span id="549">549</span>
+<span id="550">550</span>
+<span id="551">551</span>
+<span id="552">552</span>
+<span id="553">553</span>
+<span id="554">554</span>
+<span id="555">555</span>
+<span id="556">556</span>
+<span id="557">557</span>
+<span id="558">558</span>
+<span id="559">559</span>
+<span id="560">560</span>
+<span id="561">561</span>
+<span id="562">562</span>
+<span id="563">563</span>
+<span id="564">564</span>
+<span id="565">565</span>
+<span id="566">566</span>
+<span id="567">567</span>
+<span id="568">568</span>
+<span id="569">569</span>
+<span id="570">570</span>
+<span id="571">571</span>
+<span id="572">572</span>
+<span id="573">573</span>
+<span id="574">574</span>
+<span id="575">575</span>
+<span id="576">576</span>
+<span id="577">577</span>
+<span id="578">578</span>
+<span id="579">579</span>
+<span id="580">580</span>
+<span id="581">581</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! Rust client implementation for Harmony, powered by [`tonic`].</span>
 <span class="doccomment">//!</span>
@@ -848,12 +938,16 @@
     <span class="kw">const</span> <span class="ident">EMAIL</span>: <span class="kw-2">&amp;</span><span class="ident">str</span> <span class="op">=</span> <span class="string">&quot;rust_sdk_test@example.org&quot;</span>;
     <span class="kw">const</span> <span class="ident">PASSWORD</span>: <span class="kw-2">&amp;</span><span class="ident">str</span> <span class="op">=</span> <span class="string">&quot;123456789Ab&quot;</span>;
 
+    <span class="kw">const</span> <span class="ident">TEST_SERVER</span>: <span class="kw-2">&amp;</span><span class="ident">str</span> <span class="op">=</span> <span class="string">&quot;https://chat.harmonyapp.io&quot;</span>;
+    <span class="kw">const</span> <span class="ident">TEST_GUILD</span>: <span class="ident">u64</span> <span class="op">=</span> <span class="number">2699074975217745925</span>;
+    <span class="kw">const</span> <span class="ident">TEST_CHANNEL</span>: <span class="ident">u64</span> <span class="op">=</span> <span class="number">2699489358242643973</span>;
+
     <span class="kw">fn</span> <span class="ident">init</span>() {
         <span class="kw">let</span> <span class="kw">_</span> <span class="op">=</span> <span class="ident">env_logger</span>::<span class="ident">builder</span>().<span class="ident">is_test</span>(<span class="bool-val">true</span>).<span class="ident">try_init</span>();
     }
 
     <span class="ident">async</span> <span class="kw">fn</span> <span class="ident">make_client</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">ClientResult</span><span class="op">&lt;</span><span class="ident">Client</span><span class="op">&gt;</span> {
-        <span class="ident">Client</span>::<span class="ident">new</span>(<span class="string">&quot;https://chat.harmonyapp.io&quot;</span>.<span class="ident">parse</span>().<span class="ident">unwrap</span>(), <span class="prelude-val">None</span>).<span class="ident">await</span>
+        <span class="ident">Client</span>::<span class="ident">new</span>(<span class="ident">TEST_SERVER</span>.<span class="ident">parse</span>().<span class="ident">unwrap</span>(), <span class="prelude-val">None</span>).<span class="ident">await</span>
     }
 
     <span class="ident">async</span> <span class="kw">fn</span> <span class="ident">login_client</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">ClientResult</span><span class="op">&lt;</span><span class="ident">Client</span><span class="op">&gt;</span> {
@@ -891,11 +985,91 @@
     }
 
     <span class="attribute">#[<span class="ident">tokio</span>::<span class="ident">test</span>]</span>
-    <span class="ident">async</span> <span class="kw">fn</span> <span class="ident">register</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">ClientResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
+    <span class="ident">async</span> <span class="kw">fn</span> <span class="ident">preview_guild</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">ClientResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
+        <span class="kw">use</span> <span class="ident">api</span>::<span class="ident">chat</span>::<span class="kw-2">*</span>;
         <span class="ident">init</span>();
 
         <span class="kw">let</span> <span class="ident">client</span> <span class="op">=</span> <span class="ident">login_client</span>().<span class="ident">await</span><span class="question-mark">?</span>;
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">client</span>.<span class="ident">auth_status</span>().<span class="ident">is_authenticated</span>(), <span class="bool-val">true</span>);
+        <span class="kw">let</span> <span class="ident">response</span> <span class="op">=</span> <span class="ident">guild</span>::<span class="ident">preview_guild</span>(<span class="kw-2">&amp;</span><span class="ident">client</span>, <span class="ident">InviteId</span>::<span class="ident">new</span>(<span class="string">&quot;harmony&quot;</span>).<span class="ident">unwrap</span>()).<span class="ident">await</span><span class="question-mark">?</span>;
+        <span class="ident">log</span>::<span class="macro">info</span><span class="macro">!</span>(<span class="string">&quot;Preview guild response: {:?}&quot;</span>, <span class="ident">response</span>);
+
+        <span class="prelude-val">Ok</span>(())
+    }
+
+    <span class="attribute">#[<span class="ident">tokio</span>::<span class="ident">test</span>]</span>
+    <span class="ident">async</span> <span class="kw">fn</span> <span class="ident">get_guild_list</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">ClientResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
+        <span class="ident">init</span>();
+
+        <span class="kw">let</span> <span class="ident">client</span> <span class="op">=</span> <span class="ident">login_client</span>().<span class="ident">await</span><span class="question-mark">?</span>;
+        <span class="kw">let</span> <span class="ident">response</span> <span class="op">=</span> <span class="ident">api</span>::<span class="ident">chat</span>::<span class="ident">guild</span>::<span class="ident">get_guild_list</span>(<span class="kw-2">&amp;</span><span class="ident">client</span>).<span class="ident">await</span><span class="question-mark">?</span>;
+        <span class="ident">log</span>::<span class="macro">info</span><span class="macro">!</span>(<span class="string">&quot;Get guild list response: {:?}&quot;</span>, <span class="ident">response</span>);
+
+        <span class="prelude-val">Ok</span>(())
+    }
+
+    <span class="attribute">#[<span class="ident">tokio</span>::<span class="ident">test</span>]</span>
+    <span class="ident">async</span> <span class="kw">fn</span> <span class="ident">get_guild_roles</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">ClientResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
+        <span class="ident">init</span>();
+
+        <span class="kw">let</span> <span class="ident">client</span> <span class="op">=</span> <span class="ident">login_client</span>().<span class="ident">await</span><span class="question-mark">?</span>;
+        <span class="kw">let</span> <span class="ident">response</span> <span class="op">=</span> <span class="ident">api</span>::<span class="ident">chat</span>::<span class="ident">permissions</span>::<span class="ident">get_guild_roles</span>(<span class="kw-2">&amp;</span><span class="ident">client</span>, <span class="ident">TEST_GUILD</span>).<span class="ident">await</span><span class="question-mark">?</span>;
+        <span class="ident">log</span>::<span class="macro">info</span><span class="macro">!</span>(<span class="string">&quot;Get guild roles response: {:?}&quot;</span>, <span class="ident">response</span>);
+
+        <span class="prelude-val">Ok</span>(())
+    }
+
+    <span class="attribute">#[<span class="ident">tokio</span>::<span class="ident">test</span>]</span>
+    <span class="ident">async</span> <span class="kw">fn</span> <span class="ident">get_guild_members</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">ClientResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
+        <span class="ident">init</span>();
+
+        <span class="kw">let</span> <span class="ident">client</span> <span class="op">=</span> <span class="ident">login_client</span>().<span class="ident">await</span><span class="question-mark">?</span>;
+        <span class="kw">let</span> <span class="ident">response</span> <span class="op">=</span> <span class="ident">api</span>::<span class="ident">chat</span>::<span class="ident">profile</span>::<span class="ident">get_guild_members</span>(<span class="kw-2">&amp;</span><span class="ident">client</span>, <span class="ident">TEST_GUILD</span>).<span class="ident">await</span><span class="question-mark">?</span>;
+        <span class="ident">log</span>::<span class="macro">info</span><span class="macro">!</span>(<span class="string">&quot;Get guild members response: {:?}&quot;</span>, <span class="ident">response</span>);
+
+        <span class="prelude-val">Ok</span>(())
+    }
+
+    <span class="attribute">#[<span class="ident">tokio</span>::<span class="ident">test</span>]</span>
+    <span class="ident">async</span> <span class="kw">fn</span> <span class="ident">profile_update</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">ClientResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
+        <span class="ident">init</span>();
+
+        <span class="kw">let</span> <span class="ident">client</span> <span class="op">=</span> <span class="ident">login_client</span>().<span class="ident">await</span><span class="question-mark">?</span>;
+        <span class="ident">api</span>::<span class="ident">chat</span>::<span class="ident">profile</span>::<span class="ident">profile_update</span>(<span class="kw-2">&amp;</span><span class="ident">client</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">Some</span>(<span class="bool-val">true</span>)).<span class="ident">await</span><span class="question-mark">?</span>;
+
+        <span class="prelude-val">Ok</span>(())
+    }
+
+    <span class="attribute">#[<span class="ident">tokio</span>::<span class="ident">test</span>]</span>
+    <span class="ident">async</span> <span class="kw">fn</span> <span class="ident">get_emote_packs</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">ClientResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
+        <span class="ident">init</span>();
+
+        <span class="kw">let</span> <span class="ident">client</span> <span class="op">=</span> <span class="ident">login_client</span>().<span class="ident">await</span><span class="question-mark">?</span>;
+        <span class="kw">let</span> <span class="ident">response</span> <span class="op">=</span> <span class="ident">api</span>::<span class="ident">chat</span>::<span class="ident">emote</span>::<span class="ident">get_emote_packs</span>(<span class="kw-2">&amp;</span><span class="ident">client</span>).<span class="ident">await</span><span class="question-mark">?</span>;
+        <span class="ident">log</span>::<span class="macro">info</span><span class="macro">!</span>(<span class="string">&quot;Get emote packs response: {:?}&quot;</span>, <span class="ident">response</span>);
+
+        <span class="prelude-val">Ok</span>(())
+    }
+
+    <span class="attribute">#[<span class="ident">tokio</span>::<span class="ident">test</span>]</span>
+    <span class="ident">async</span> <span class="kw">fn</span> <span class="ident">get_guild_channels</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">ClientResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
+        <span class="ident">init</span>();
+
+        <span class="kw">let</span> <span class="ident">client</span> <span class="op">=</span> <span class="ident">login_client</span>().<span class="ident">await</span><span class="question-mark">?</span>;
+        <span class="kw">let</span> <span class="ident">response</span> <span class="op">=</span> <span class="ident">api</span>::<span class="ident">chat</span>::<span class="ident">channel</span>::<span class="ident">get_guild_channels</span>(<span class="kw-2">&amp;</span><span class="ident">client</span>, <span class="ident">TEST_GUILD</span>).<span class="ident">await</span><span class="question-mark">?</span>;
+        <span class="ident">log</span>::<span class="macro">info</span><span class="macro">!</span>(<span class="string">&quot;Get guild channels response: {:?}&quot;</span>, <span class="ident">response</span>);
+
+        <span class="prelude-val">Ok</span>(())
+    }
+
+    <span class="attribute">#[<span class="ident">tokio</span>::<span class="ident">test</span>]</span>
+    <span class="ident">async</span> <span class="kw">fn</span> <span class="ident">get_channel_messages</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">ClientResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
+        <span class="ident">init</span>();
+
+        <span class="kw">let</span> <span class="ident">client</span> <span class="op">=</span> <span class="ident">login_client</span>().<span class="ident">await</span><span class="question-mark">?</span>;
+        <span class="kw">let</span> <span class="ident">response</span> <span class="op">=</span>
+            <span class="ident">api</span>::<span class="ident">chat</span>::<span class="ident">channel</span>::<span class="ident">get_channel_messages</span>(<span class="kw-2">&amp;</span><span class="ident">client</span>, <span class="ident">TEST_GUILD</span>, <span class="ident">TEST_CHANNEL</span>, <span class="prelude-val">None</span>)
+                .<span class="ident">await</span><span class="question-mark">?</span>;
+        <span class="ident">log</span>::<span class="macro">info</span><span class="macro">!</span>(<span class="string">&quot;Get channel messages response: {:?}&quot;</span>, <span class="ident">response</span>);
 
         <span class="prelude-val">Ok</span>(())
     }
@@ -909,8 +1083,8 @@
         <span class="kw">let</span> <span class="ident">client</span> <span class="op">=</span> <span class="ident">login_client</span>().<span class="ident">await</span><span class="question-mark">?</span>;
         <span class="ident">message</span>::<span class="ident">send_message</span>(
             <span class="kw-2">&amp;</span><span class="ident">client</span>,
-            <span class="number">2699074975217745925</span>, <span class="comment">// harmony dev guild</span>
-            <span class="number">2699489358242643973</span>, <span class="comment">// offtopic channel</span>
+            <span class="ident">TEST_GUILD</span>,
+            <span class="ident">TEST_CHANNEL</span>,
             <span class="prelude-val">None</span>,
             <span class="prelude-val">None</span>,
             <span class="prelude-val">Some</span>(<span class="string">&quot;test&quot;</span>.<span class="ident">to_string</span>()),
@@ -930,7 +1104,10 @@
         <span class="ident">init</span>();
 
         <span class="kw">let</span> <span class="ident">client</span> <span class="op">=</span> <span class="ident">login_client</span>().<span class="ident">await</span><span class="question-mark">?</span>;
-        <span class="ident">api</span>::<span class="ident">mediaproxy</span>::<span class="ident">instant_view</span>(<span class="kw-2">&amp;</span><span class="ident">client</span>, <span class="string">&quot;https://duckduckgo.com&quot;</span>.<span class="ident">parse</span>().<span class="ident">unwrap</span>()).<span class="ident">await</span><span class="question-mark">?</span>;
+        <span class="kw">let</span> <span class="ident">instant_view</span> <span class="op">=</span>
+            <span class="ident">api</span>::<span class="ident">mediaproxy</span>::<span class="ident">instant_view</span>(<span class="kw-2">&amp;</span><span class="ident">client</span>, <span class="string">&quot;https://duckduckgo.com&quot;</span>.<span class="ident">parse</span>().<span class="ident">unwrap</span>())
+                .<span class="ident">await</span><span class="question-mark">?</span>;
+        <span class="ident">log</span>::<span class="macro">info</span><span class="macro">!</span>(<span class="string">&quot;Instant view response: {:?}&quot;</span>, <span class="ident">instant_view</span>);
 
         <span class="prelude-val">Ok</span>(())
     }
@@ -940,7 +1117,10 @@
         <span class="ident">init</span>();
 
         <span class="kw">let</span> <span class="ident">client</span> <span class="op">=</span> <span class="ident">login_client</span>().<span class="ident">await</span><span class="question-mark">?</span>;
-        <span class="ident">api</span>::<span class="ident">mediaproxy</span>::<span class="ident">can_instant_view</span>(<span class="kw-2">&amp;</span><span class="ident">client</span>, <span class="string">&quot;https://duckduckgo.com&quot;</span>.<span class="ident">parse</span>().<span class="ident">unwrap</span>()).<span class="ident">await</span><span class="question-mark">?</span>;
+        <span class="kw">let</span> <span class="ident">can_instant_view</span> <span class="op">=</span>
+            <span class="ident">api</span>::<span class="ident">mediaproxy</span>::<span class="ident">can_instant_view</span>(<span class="kw-2">&amp;</span><span class="ident">client</span>, <span class="string">&quot;https://duckduckgo.com&quot;</span>.<span class="ident">parse</span>().<span class="ident">unwrap</span>())
+                .<span class="ident">await</span><span class="question-mark">?</span>;
+        <span class="ident">log</span>::<span class="macro">info</span><span class="macro">!</span>(<span class="string">&quot;Can instant view response: {:?}&quot;</span>, <span class="ident">can_instant_view</span>);
 
         <span class="prelude-val">Ok</span>(())
     }
