@@ -1,0 +1,1 @@
+initSidebarItems({"fn":[["delete_message","Delete a message."],["get_message","Get a message."],["send_message","Send a message."],["update_message","Update a message."]]});
