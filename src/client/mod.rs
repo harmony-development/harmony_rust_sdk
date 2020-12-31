@@ -353,12 +353,16 @@ mod test {
     const EMAIL: &str = "rust_sdk_test@example.org";
     const PASSWORD: &str = "123456789Ab";
 
+    const TEST_SERVER: &str = "https://chat.harmonyapp.io";
+    const TEST_GUILD: u64 = 2699074975217745925;
+    const TEST_CHANNEL: u64 = 2699489358242643973;
+
     fn init() {
         let _ = env_logger::builder().is_test(true).try_init();
     }
 
     async fn make_client() -> ClientResult<Client> {
-        Client::new("https://chat.harmonyapp.io".parse().unwrap(), None).await
+        Client::new(TEST_SERVER.parse().unwrap(), None).await
     }
 
     async fn login_client() -> ClientResult<Client> {
@@ -396,11 +400,91 @@ mod test {
     }
 
     #[tokio::test]
-    async fn register() -> ClientResult<()> {
+    async fn preview_guild() -> ClientResult<()> {
+        use api::chat::*;
         init();
 
         let client = login_client().await?;
-        assert_eq!(client.auth_status().is_authenticated(), true);
+        let response = guild::preview_guild(&client, InviteId::new("harmony").unwrap()).await?;
+        log::info!("Preview guild response: {:?}", response);
+
+        Ok(())
+    }
+
+    #[tokio::test]
+    async fn get_guild_list() -> ClientResult<()> {
+        init();
+
+        let client = login_client().await?;
+        let response = api::chat::guild::get_guild_list(&client).await?;
+        log::info!("Get guild list response: {:?}", response);
+
+        Ok(())
+    }
+
+    #[tokio::test]
+    async fn get_guild_roles() -> ClientResult<()> {
+        init();
+
+        let client = login_client().await?;
+        let response = api::chat::permissions::get_guild_roles(&client, TEST_GUILD).await?;
+        log::info!("Get guild roles response: {:?}", response);
+
+        Ok(())
+    }
+
+    #[tokio::test]
+    async fn get_guild_members() -> ClientResult<()> {
+        init();
+
+        let client = login_client().await?;
+        let response = api::chat::profile::get_guild_members(&client, TEST_GUILD).await?;
+        log::info!("Get guild members response: {:?}", response);
+
+        Ok(())
+    }
+
+    #[tokio::test]
+    async fn profile_update() -> ClientResult<()> {
+        init();
+
+        let client = login_client().await?;
+        api::chat::profile::profile_update(&client, None, None, None, Some(true)).await?;
+
+        Ok(())
+    }
+
+    #[tokio::test]
+    async fn get_emote_packs() -> ClientResult<()> {
+        init();
+
+        let client = login_client().await?;
+        let response = api::chat::emote::get_emote_packs(&client).await?;
+        log::info!("Get emote packs response: {:?}", response);
+
+        Ok(())
+    }
+
+    #[tokio::test]
+    async fn get_guild_channels() -> ClientResult<()> {
+        init();
+
+        let client = login_client().await?;
+        let response = api::chat::channel::get_guild_channels(&client, TEST_GUILD).await?;
+        log::info!("Get guild channels response: {:?}", response);
+
+        Ok(())
+    }
+
+    #[tokio::test]
+    async fn get_channel_messages() -> ClientResult<()> {
+        init();
+
+        let client = login_client().await?;
+        let response =
+            api::chat::channel::get_channel_messages(&client, TEST_GUILD, TEST_CHANNEL, None)
+                .await?;
+        log::info!("Get channel messages response: {:?}", response);
 
         Ok(())
     }
@@ -414,8 +498,8 @@ mod test {
         let client = login_client().await?;
         message::send_message(
             &client,
-            2699074975217745925, // harmony dev guild
-            2699489358242643973, // offtopic channel
+            TEST_GUILD,
+            TEST_CHANNEL,
             None,
             None,
             Some("test".to_string()),
@@ -435,7 +519,10 @@ mod test {
         init();
 
         let client = login_client().await?;
-        api::mediaproxy::instant_view(&client, "https://duckduckgo.com".parse().unwrap()).await?;
+        let instant_view =
+            api::mediaproxy::instant_view(&client, "https://duckduckgo.com".parse().unwrap())
+                .await?;
+        log::info!("Instant view response: {:?}", instant_view);
 
         Ok(())
     }
@@ -445,7 +532,10 @@ mod test {
         init();
 
         let client = login_client().await?;
-        api::mediaproxy::can_instant_view(&client, "https://duckduckgo.com".parse().unwrap()).await?;
+        let can_instant_view =
+            api::mediaproxy::can_instant_view(&client, "https://duckduckgo.com".parse().unwrap())
+                .await?;
+        log::info!("Can instant view response: {:?}", can_instant_view);
 
         Ok(())
     }

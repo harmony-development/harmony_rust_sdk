@@ -103,3 +103,14 @@ client_api! {
     api_func: leave_guild,
     service: chat,
 }
+
+client_api! {
+    /// Preview a guild.
+    args: { invite_id: InviteId, },
+    action: PreviewGuild,
+    request_fields: {
+        invite_id: invite_id.into_name(),
+    },
+    api_func: preview_guild,
+    service: chat,
+}

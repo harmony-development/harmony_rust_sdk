@@ -66,7 +66,8 @@ impl InviteId {
     ///
     /// `name` cannot be empty.
     /// If `name` is empty `None` is returned.
-    pub fn new(name: String) -> Option<Self> {
+    pub fn new(name: impl ToString) -> Option<Self> {
+        let name = name.to_string();
         if name.is_empty() {
             None
         } else {
