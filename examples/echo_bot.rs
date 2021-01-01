@@ -22,20 +22,23 @@ async fn main() -> ClientResult<()> {
     log::info!("Successfully created client.");
 
     // We try to login, if it fails we register (which also authenticates)
+    client.begin_auth().await?;
+    client.next_auth_step(AuthStepResponse::Initial).await?;
+    client
+        .next_auth_step(AuthStepResponse::login_choice())
+        .await?;
     let login_result = client
-        .auth_with_steps(vec![
-            AuthStepResponse::login_choice(),
-            AuthStepResponse::login_form(EMAIL, PASSWORD),
-        ])
+        .next_auth_step(AuthStepResponse::login_form(EMAIL, PASSWORD))
         .await;
 
     if login_result.map_or(false, |maybe_step| maybe_step.is_some()) {
         log::info!("Login failed, let's try registering.");
+        client.prev_auth_step().await?;
         client
-            .auth_with_steps(vec![
-                AuthStepResponse::register_choice(),
-                AuthStepResponse::register_form(EMAIL, USERNAME, PASSWORD),
-            ])
+            .next_auth_step(AuthStepResponse::register_choice())
+            .await?;
+        client
+            .next_auth_step(AuthStepResponse::register_form(EMAIL, USERNAME, PASSWORD))
             .await?;
         log::info!("Successfully registered.");
     } else {

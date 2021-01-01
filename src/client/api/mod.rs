@@ -31,7 +31,7 @@ macro_rules! client_api {
                     let mut request = Request::new($req);
 
                     if let $crate::client::AuthStatus::Complete(session) = &*client.auth_status_lock() {
-                        // Session access_token should be ASCII, so this unwrap won't panic
+                        // Session session_token should be ASCII, so this unwrap won't panic
                         request.metadata_mut().insert("auth", session.session_token.parse().unwrap());
                     }
 

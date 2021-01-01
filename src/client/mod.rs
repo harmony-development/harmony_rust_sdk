@@ -66,7 +66,6 @@ pub enum AuthStepResponse {
     Choice(String),
     /// A form.
     Form(Vec<Field>),
-    /// Used as the "initial" response, since we won't have any [`AuthStep`] to respond to.
     Initial,
 }
 
@@ -99,7 +98,7 @@ impl AuthStepResponse {
     pub fn login_form(email: impl ToString, password: impl ToString) -> Self {
         Self::form(vec![
             Field::String(email.to_string()),
-            Field::String(password.to_string()),
+            Field::Bytes(password.to_string().into_bytes()),
         ])
     }
 
@@ -112,7 +111,7 @@ impl AuthStepResponse {
         Self::form(vec![
             Field::String(email.to_string()),
             Field::String(username.to_string()),
-            Field::String(password.to_string()),
+            Field::Bytes(password.to_string().into_bytes()),
         ])
     }
 }
@@ -157,9 +156,10 @@ impl Client {
     /// Create a new [`Client`] from a homeserver [`Uri`] (URL) and an (optional) session.
     ///
     /// If port is not specified in the URL, this will add the default port `2289` to it.
-    pub async fn new(homeserver_url: Uri, session: Option<Session>) -> ClientResult<Self> {
+    /// If scheme is not specified, this will assume the scheme is `https`.
+    pub async fn new(mut homeserver_url: Uri, session: Option<Session>) -> ClientResult<Self> {
         // Add the default port if not specified
-        let homeserver_url = if let (None, Some(authority)) =
+        homeserver_url = if let (None, Some(authority)) =
             (homeserver_url.port(), homeserver_url.authority())
         {
             let new_authority = format!("{}:2289", authority);
@@ -173,15 +173,32 @@ impl Client {
             homeserver_url
         };
 
+        // Add the default scheme if not specified
+        homeserver_url = if homeserver_url.scheme().is_none() {
+            Uri::from_parts(assign::assign!(homeserver_url.into_parts(), { scheme: Some("https".parse().unwrap()) })).unwrap()
+        } else {
+            homeserver_url
+        };
+
         log::debug!(
             "Using homeserver URL {} with session {:?} to create a `Client`",
             homeserver_url,
             session
         );
 
-        let auth = AuthService::connect(homeserver_url.clone()).await?;
-        let chat = ChatService::connect(homeserver_url.clone()).await?;
-        let mediaproxy = MediaProxyService::connect(homeserver_url.clone()).await?;
+        let mut endpoint = Channel::builder(homeserver_url.clone());
+
+        if homeserver_url.scheme_str().unwrap() == "https" {
+            endpoint = endpoint.tls_config(tonic::transport::ClientTlsConfig::new())?;
+        }
+
+        let auth_channel = endpoint.connect().await?;
+        let chat_channel = endpoint.connect().await?;
+        let mediaproxy_channel = endpoint.connect().await?;
+
+        let auth = AuthService::new(auth_channel);
+        let chat = ChatService::new(chat_channel);
+        let mediaproxy = MediaProxyService::new(mediaproxy_channel);
 
         let data = ClientData {
             homeserver_url,
@@ -257,7 +274,7 @@ impl Client {
         &self,
         response: AuthStepResponse,
     ) -> ClientResult<Option<AuthStep>> {
-        if let AuthStatus::InProgress(auth_id) = self.auth_status_lock().clone() {
+        if let AuthStatus::InProgress(auth_id) = self.auth_status() {
             let step = api::auth::next_step(self, auth_id, response.into()).await?;
 
             Ok(if let Some(auth_step::Step::Session(session)) = step.step {
@@ -273,34 +290,20 @@ impl Client {
 
     /// Go back to the previous authentication step.
     pub async fn prev_auth_step(&self) -> ClientResult<AuthStep> {
-        if let AuthStatus::InProgress(auth_id) = self.auth_status_lock().clone() {
+        if let AuthStatus::InProgress(auth_id) = self.auth_status() {
             api::auth::step_back(self, auth_id).await
         } else {
             Err(ClientError::NoAuthId)
         }
     }
 
-    /// Begin an authentication session and perform the given steps.
-    ///
-    /// Returns `Ok(None)` if authentication was completed.
-    /// Returns `Ok(Some(AuthStep))` if extra step is requested from the server.
-    pub async fn auth_with_steps(
-        &self,
-        mut steps: Vec<AuthStepResponse>,
-    ) -> ClientResult<Option<AuthStep>> {
-        self.begin_auth().await?;
-        steps.insert(0, AuthStepResponse::Initial);
-
-        let mut step_response = None;
-        for step in steps {
-            step_response = self.next_auth_step(step).await?;
-
-            if step_response.is_none() {
-                return Ok(None);
-            }
+    /// Begin an authentication steps stream for the current authentication session.
+    pub async fn auth_stream(&self) -> ClientResult<tonic::Streaming<AuthStep>> {
+        if let AuthStatus::InProgress(auth_id) = self.auth_status() {
+            api::auth::stream_steps(self, auth_id).await
+        } else {
+            Err(ClientError::NoAuthId)
         }
-
-        Ok(step_response)
     }
 
     /// Subscribe to events relating to specified guilds, homeserver or actions.
@@ -353,7 +356,7 @@ mod test {
     const EMAIL: &str = "rust_sdk_test@example.org";
     const PASSWORD: &str = "123456789Ab";
 
-    const TEST_SERVER: &str = "https://chat.harmonyapp.io";
+    const TEST_SERVER: &str = "https://chat.harmonyapp.io:2289";
     const TEST_GUILD: u64 = 2699074975217745925;
     const TEST_CHANNEL: u64 = 2699489358242643973;
 
@@ -368,16 +371,15 @@ mod test {
     async fn login_client() -> ClientResult<Client> {
         let client = make_client().await?;
 
+        client.begin_auth().await?;
+        client.next_auth_step(AuthStepResponse::Initial).await?;
         client
-            .auth_with_steps(vec![
-                AuthStepResponse::login_choice(),
-                AuthStepResponse::login_form(EMAIL, PASSWORD),
-            ])
+            .next_auth_step(AuthStepResponse::login_choice())
             .await?;
-
-        if client.auth_status().is_authenticated() {
-            panic!("missing test user in server?");
-        }
+        client
+            .next_auth_step(AuthStepResponse::login_form(EMAIL, PASSWORD))
+            .await?;
+        assert_eq!(client.auth_status().is_authenticated(), true);
 
         Ok(client)
     }
@@ -392,10 +394,7 @@ mod test {
     #[tokio::test]
     async fn login() -> ClientResult<()> {
         init();
-
-        let client = login_client().await?;
-        assert_eq!(client.auth_status().is_authenticated(), true);
-
+        let _client = login_client().await?;
         Ok(())
     }
 
@@ -423,6 +422,7 @@ mod test {
     }
 
     #[tokio::test]
+    #[ignore]
     async fn get_guild_roles() -> ClientResult<()> {
         init();
 
@@ -449,7 +449,7 @@ mod test {
         init();
 
         let client = login_client().await?;
-        api::chat::profile::profile_update(&client, None, None, None, Some(true)).await?;
+        api::chat::profile::profile_update(&client, None, Some(api::UserStatus::OnlineUnspecified), None, Some(true)).await?;
 
         Ok(())
     }
