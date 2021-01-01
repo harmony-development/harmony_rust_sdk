@@ -263,7 +263,7 @@
                     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">request</span> <span class="op">=</span> <span class="ident">Request</span>::<span class="ident">new</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">req</span>);
 
                     <span class="kw">if</span> <span class="kw">let</span> <span class="macro-nonterminal">$</span><span class="kw">crate</span>::<span class="macro-nonterminal">client</span>::<span class="ident">AuthStatus</span>::<span class="ident">Complete</span>(<span class="ident">session</span>) <span class="op">=</span> <span class="kw-2">&amp;</span><span class="kw-2">*</span><span class="ident">client</span>.<span class="ident">auth_status_lock</span>() {
-                        <span class="comment">// Session access_token should be ASCII, so this unwrap won&#39;t panic</span>
+                        <span class="comment">// Session session_token should be ASCII, so this unwrap won&#39;t panic</span>
                         <span class="ident">request</span>.<span class="ident">metadata_mut</span>().<span class="ident">insert</span>(<span class="string">&quot;auth&quot;</span>, <span class="ident">session</span>.<span class="ident">session_token</span>.<span class="ident">parse</span>().<span class="ident">unwrap</span>());
                     }
 
