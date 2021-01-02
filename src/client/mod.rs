@@ -12,7 +12,10 @@ pub use error::*;
 
 /// Some crates exported for user convenience.
 pub mod exports {
+    pub use futures_util;
+    pub use http;
     pub use prost;
+    pub use reqwest;
 }
 
 use crate::api::{
@@ -25,6 +28,7 @@ use futures_util::{future, stream::Stream, StreamExt, TryStreamExt};
 use http::Uri;
 #[cfg(feature = "use_parking_lot")]
 use parking_lot::{Mutex, MutexGuard};
+use reqwest::Client as HttpClient;
 use std::sync::Arc;
 #[cfg(not(feature = "use_parking_lot"))]
 use std::sync::{Mutex, MutexGuard};
@@ -46,6 +50,7 @@ pub enum AuthStatus {
 }
 
 impl AuthStatus {
+    /// Gets the session, if authentication is completed.
     pub fn session(&self) -> Option<&Session> {
         match self {
             AuthStatus::None => None,
@@ -54,6 +59,7 @@ impl AuthStatus {
         }
     }
 
+    /// Checks whetever authentication is complete or not.
     pub fn is_authenticated(&self) -> bool {
         matches!(self, AuthStatus::Complete(_))
     }
@@ -66,6 +72,7 @@ struct ClientData {
     chat: Mutex<ChatService>,
     auth: Mutex<AuthService>,
     mediaproxy: Mutex<MediaProxyService>,
+    http: HttpClient,
 }
 
 /// Client implementation for Harmony.
@@ -127,6 +134,7 @@ impl Client {
             chat: Mutex::new(chat),
             auth: Mutex::new(auth),
             mediaproxy: Mutex::new(mediaproxy),
+            http: HttpClient::builder().build()?,
         };
 
         Ok(Self {
@@ -248,215 +256,5 @@ impl Client {
                     Err(err) => Some(Err(err)),
                 })
             }))
-    }
-}
-
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    const EMAIL: &str = "rust_sdk_test@example.org";
-    const PASSWORD: &str = "123456789Ab";
-
-    const TEST_SERVER: &str = "https://chat.harmonyapp.io:2289";
-    const TEST_GUILD: u64 = 2699074975217745925;
-    const TEST_CHANNEL: u64 = 2699489358242643973;
-
-    fn init() {
-        let _ = env_logger::builder().is_test(true).try_init();
-    }
-
-    async fn make_client() -> ClientResult<Client> {
-        Client::new(Uri::from_static(TEST_SERVER), None).await
-    }
-
-    async fn login_client() -> ClientResult<Client> {
-        let client = make_client().await?;
-
-        client.begin_auth().await?;
-        client.next_auth_step(AuthStepResponse::Initial).await?;
-        client
-            .next_auth_step(AuthStepResponse::login_choice())
-            .await?;
-        client
-            .next_auth_step(AuthStepResponse::login_form(EMAIL, PASSWORD))
-            .await?;
-        assert_eq!(client.auth_status().is_authenticated(), true);
-
-        Ok(client)
-    }
-
-    #[tokio::test]
-    async fn new() -> ClientResult<()> {
-        init();
-        let _client = make_client().await?;
-        Ok(())
-    }
-
-    #[tokio::test]
-    async fn login() -> ClientResult<()> {
-        init();
-        let _client = login_client().await?;
-        Ok(())
-    }
-
-    #[tokio::test]
-    async fn preview_guild() -> ClientResult<()> {
-        use api::chat::*;
-        init();
-
-        let client = login_client().await?;
-        let response = guild::preview_guild(&client, InviteId::new("harmony").unwrap()).await?;
-        log::info!("Preview guild response: {:?}", response);
-
-        Ok(())
-    }
-
-    #[tokio::test]
-    async fn get_guild_list() -> ClientResult<()> {
-        init();
-
-        let client = login_client().await?;
-        let response = api::chat::guild::get_guild_list(&client).await?;
-        log::info!("Get guild list response: {:?}", response);
-
-        Ok(())
-    }
-
-    #[tokio::test]
-    #[ignore]
-    async fn get_guild_roles() -> ClientResult<()> {
-        init();
-
-        let client = login_client().await?;
-        let response = api::chat::permissions::get_guild_roles(&client, TEST_GUILD).await?;
-        log::info!("Get guild roles response: {:?}", response);
-
-        Ok(())
-    }
-
-    #[tokio::test]
-    async fn get_guild_members() -> ClientResult<()> {
-        init();
-
-        let client = login_client().await?;
-        let response = api::chat::profile::get_guild_members(&client, TEST_GUILD).await?;
-        log::info!("Get guild members response: {:?}", response);
-
-        Ok(())
-    }
-
-    #[tokio::test]
-    async fn profile_update() -> ClientResult<()> {
-        init();
-
-        let client = login_client().await?;
-        api::chat::profile::profile_update(
-            &client,
-            None,
-            Some(api::UserStatus::OnlineUnspecified),
-            None,
-            Some(true),
-        )
-        .await?;
-
-        Ok(())
-    }
-
-    #[tokio::test]
-    async fn get_emote_packs() -> ClientResult<()> {
-        init();
-
-        let client = login_client().await?;
-        let response = api::chat::emote::get_emote_packs(&client).await?;
-        log::info!("Get emote packs response: {:?}", response);
-
-        Ok(())
-    }
-
-    #[tokio::test]
-    async fn get_guild_channels() -> ClientResult<()> {
-        init();
-
-        let client = login_client().await?;
-        let response = api::chat::channel::get_guild_channels(&client, TEST_GUILD).await?;
-        log::info!("Get guild channels response: {:?}", response);
-
-        Ok(())
-    }
-
-    #[tokio::test]
-    async fn get_channel_messages() -> ClientResult<()> {
-        init();
-
-        let client = login_client().await?;
-        let response =
-            api::chat::channel::get_channel_messages(&client, TEST_GUILD, TEST_CHANNEL, None)
-                .await?;
-        log::info!("Get channel messages response: {:?}", response);
-
-        Ok(())
-    }
-
-    #[tokio::test]
-    async fn send_message() -> ClientResult<()> {
-        use api::chat::message;
-
-        init();
-
-        let client = login_client().await?;
-        message::send_message(
-            &client,
-            TEST_GUILD,
-            TEST_CHANNEL,
-            None,
-            None,
-            Some("test".to_string()),
-            None,
-            None,
-            None,
-            None,
-            None,
-        )
-        .await?;
-
-        Ok(())
-    }
-
-    #[tokio::test]
-    async fn instant_view() -> ClientResult<()> {
-        init();
-
-        let client = login_client().await?;
-        let instant_view =
-            api::mediaproxy::instant_view(&client, Uri::from_static("https://duckduckgo.com"))
-                .await?;
-        log::info!("Instant view response: {:?}", instant_view);
-
-        Ok(())
-    }
-
-    #[tokio::test]
-    async fn can_instant_view() -> ClientResult<()> {
-        init();
-
-        let client = login_client().await?;
-        let can_instant_view =
-            api::mediaproxy::can_instant_view(&client, Uri::from_static("https://duckduckgo.com"))
-                .await?;
-        log::info!("Can instant view response: {:?}", can_instant_view);
-
-        Ok(())
-    }
-
-    #[tokio::test]
-    async fn subscription() -> ClientResult<()> {
-        let client = login_client().await?;
-
-        let _event_stream = client
-            .subscribe_events(vec![EventSource::Homeserver])
-            .await?;
-
-        Ok(())
     }
 }
