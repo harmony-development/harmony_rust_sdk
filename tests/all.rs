@@ -66,6 +66,9 @@ async fn main() -> ClientResult<()> {
         api::chat::channel::get_channel_messages(&client, TEST_GUILD, TEST_CHANNEL, None).await?;
     log::info!("Get channel messages response: {:?}", response);
 
+    typing(&client, TEST_GUILD, TEST_CHANNEL).await?;
+    log::info!("Notified the server that we are typing");
+
     message::send_message(
         &client,
         TEST_GUILD,
@@ -80,6 +83,7 @@ async fn main() -> ClientResult<()> {
         None,
     )
     .await?;
+    log::info!("Sent a test message");
 
     let instant_view =
         api::mediaproxy::instant_view(&client, Uri::from_static("https://duckduckgo.com")).await?;

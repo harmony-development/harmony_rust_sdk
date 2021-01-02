@@ -21,36 +21,8 @@
 //!     - Enable the `gen_client` feature to generate client service code.
 //!    - Enable the `gen_server` feature to generate server service code.
 
-/// Harmony protocol code generated with [`tonic-build`](https://crates.io/crates/tonic-build).
-pub mod api {
-    pub mod chat {
-        pub mod v1 {
-            tonic::include_proto!("protocol.chat.v1");
-        }
-        pub use v1::*;
-    }
-
-    pub mod auth {
-        pub mod v1 {
-            tonic::include_proto!("protocol.auth.v1");
-        }
-        pub use v1::*;
-    }
-
-    pub mod harmonytypes {
-        pub mod v1 {
-            tonic::include_proto!("protocol.harmonytypes.v1");
-        }
-        pub use v1::*;
-    }
-
-    pub mod mediaproxy {
-        pub mod v1 {
-            tonic::include_proto!("protocol.mediaproxy.v1");
-        }
-        pub use v1::*;
-    }
-}
+/// Harmony protocol API.
+pub mod api;
 
 #[cfg(feature = "client")]
 pub mod client;

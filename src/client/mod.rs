@@ -13,8 +13,6 @@ pub use error::*;
 /// Some crates exported for user convenience.
 pub mod exports {
     pub use futures_util;
-    pub use http;
-    pub use prost;
     pub use reqwest;
 }
 
@@ -86,6 +84,16 @@ impl Client {
     ///
     /// If port is not specified in the URL, this will add the default port `2289` to it.
     /// If scheme is not specified, this will assume the scheme is `https`.
+    ///
+    /// # Example
+    /// ```no_run
+    /// # use harmony_rust_sdk::client::*;
+    /// # #[tokio::main]
+    /// # async fn main() -> ClientResult<()> {
+    /// let client = Client::new("https://example.org".parse().unwrap(), None).await?;
+    /// # Ok(())
+    /// # }
+    /// ```
     pub async fn new(mut homeserver_url: Uri, session: Option<Session>) -> ClientResult<Self> {
         // Add the default port if not specified
         homeserver_url = if let (None, Some(authority)) =

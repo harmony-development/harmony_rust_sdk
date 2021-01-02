@@ -90,7 +90,7 @@ client_api! {
     args: { invite_id: InviteId, },
     action: JoinGuild,
     request_fields: {
-        invite_id: invite_id.into_name(),
+        invite_id: invite_id.into(),
     },
     api_func: join_guild,
     service: chat,
@@ -109,7 +109,7 @@ client_api! {
     args: { invite_id: InviteId, },
     action: PreviewGuild,
     request_fields: {
-        invite_id: invite_id.into_name(),
+        invite_id: invite_id.into(),
     },
     api_func: preview_guild,
     service: chat,

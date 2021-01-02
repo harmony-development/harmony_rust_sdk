@@ -20,7 +20,7 @@ client_api! {
     action: CreateInvite,
     request_fields: {
         possible_uses: if possible_uses == 0 { -1 } else { possible_uses as i32 },
-        name: name.into_name(),
+        name: name.into(),
         = guild_id,
     },
     api_func: create_invite,
@@ -31,7 +31,7 @@ client_api! {
     /// Delete an invite with the specified name in the specified guild.
     args: { guild_id: u64, invite_id: InviteId, },
     request: DeleteInviteRequest {
-        invite_id: invite_id.into_name(),
+        invite_id: invite_id.into(),
         guild_id,
     },
     api_func: delete_invite,
