@@ -25,7 +25,49 @@
 <span id="22">22</span>
 <span id="23">23</span>
 <span id="24">24</span>
+<span id="25">25</span>
+<span id="26">26</span>
+<span id="27">27</span>
+<span id="28">28</span>
+<span id="29">29</span>
+<span id="30">30</span>
+<span id="31">31</span>
+<span id="32">32</span>
+<span id="33">33</span>
+<span id="34">34</span>
+<span id="35">35</span>
+<span id="36">36</span>
+<span id="37">37</span>
+<span id="38">38</span>
+<span id="39">39</span>
+<span id="40">40</span>
+<span id="41">41</span>
+<span id="42">42</span>
+<span id="43">43</span>
+<span id="44">44</span>
+<span id="45">45</span>
+<span id="46">46</span>
+<span id="47">47</span>
+<span id="48">48</span>
+<span id="49">49</span>
+<span id="50">50</span>
+<span id="51">51</span>
+<span id="52">52</span>
+<span id="53">53</span>
+<span id="54">54</span>
+<span id="55">55</span>
+<span id="56">56</span>
+<span id="57">57</span>
+<span id="58">58</span>
+<span id="59">59</span>
+<span id="60">60</span>
+<span id="61">61</span>
+<span id="62">62</span>
 </pre><div class="example-wrap"><pre class="rust ">
+<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">fmt</span>::{<span class="self">self</span>, <span class="ident">Display</span>, <span class="ident">Formatter</span>};
+
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">http</span>::<span class="ident">Error</span> <span class="kw">as</span> <span class="ident">HttpError</span>;
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">reqwest</span>::<span class="ident">Error</span> <span class="kw">as</span> <span class="ident">ReqwestError</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">tonic</span>::{<span class="ident">transport</span>::<span class="ident">Error</span> <span class="kw">as</span> <span class="ident">TransportError</span>, <span class="ident">Code</span>, <span class="ident">Status</span>};
 
 <span class="doccomment">/// Result type used by many `Client` methods.</span>
@@ -34,9 +76,31 @@
 <span class="doccomment">/// Error type used by `Client`.</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>)]</span>
 <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">ClientError</span> {
+    <span class="doccomment">/// Returned if an error occurs in the gRPC server or client.</span>
     <span class="ident">Grpc</span>(<span class="ident">Status</span>),
+    <span class="doccomment">/// Returned if an error occurs on gRPC&#39;s transport layer.</span>
     <span class="ident">Transport</span>(<span class="ident">TransportError</span>),
+    <span class="doccomment">/// Returned if an error occurs with the HTTP client.</span>
+    <span class="ident">Reqwest</span>(<span class="ident">ReqwestError</span>),
+    <span class="doccomment">/// Returned if an error occurs while creating HTTP requests / parsing for URLs.</span>
+    <span class="ident">Http</span>(<span class="ident">HttpError</span>),
+    <span class="doccomment">/// Returned if an authentication session isn&#39;t in progress, but authentication step methods were called.</span>
     <span class="ident">NoAuthId</span>,
+    <span class="doccomment">/// Returned if the client is unauthenticated, but an API endpoint requires authentication.</span>
+    <span class="ident">Unauthenticated</span>,
+}
+
+<span class="kw">impl</span> <span class="ident">Display</span> <span class="kw">for</span> <span class="ident">ClientError</span> {
+    <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Formatter</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">fmt</span>::<span class="prelude-ty">Result</span> {
+        <span class="kw">match</span> <span class="self">self</span> {
+            <span class="ident">ClientError</span>::<span class="ident">Grpc</span>(<span class="ident">status</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;An error occured in the gRPC server or client: {}&quot;</span>, <span class="ident">status</span>),
+            <span class="ident">ClientError</span>::<span class="ident">Transport</span>(<span class="ident">transport_err</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;And error occured in gRPC&#39;s transport layer: {}&quot;</span>, <span class="ident">transport_err</span>),
+            <span class="ident">ClientError</span>::<span class="ident">Reqwest</span>(<span class="ident">reqwest_err</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;An error occured in HTTP client, or request was unsuccessful: {}&quot;</span>, <span class="ident">reqwest_err</span>),
+            <span class="ident">ClientError</span>::<span class="ident">Http</span>(<span class="ident">http_err</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;An error occured while parsing an URL / creating an HTTP request: {}&quot;</span>, <span class="ident">http_err</span>),
+            <span class="ident">ClientError</span>::<span class="ident">NoAuthId</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;No authentication session is in progress, but client tries to call auth API methods that need it&quot;</span>),
+            <span class="ident">ClientError</span>::<span class="ident">Unauthenticated</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;Client is not authenticated, but the API it tries to call requires authentication&quot;</span>),
+        }
+    }
 }
 
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">Status</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ClientError</span> {
@@ -48,6 +112,18 @@
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">TransportError</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ClientError</span> {
     <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">e</span>: <span class="ident">TransportError</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
         <span class="self">Self</span>::<span class="ident">Transport</span>(<span class="ident">e</span>)
+    }
+}
+
+<span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">ReqwestError</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ClientError</span> {
+    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">e</span>: <span class="ident">ReqwestError</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+        <span class="self">Self</span>::<span class="ident">Reqwest</span>(<span class="ident">e</span>)
+    }
+}
+
+<span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">HttpError</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ClientError</span> {
+    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">e</span>: <span class="ident">HttpError</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+        <span class="self">Self</span>::<span class="ident">Http</span>(<span class="ident">e</span>)
     }
 }
 </pre></div>
