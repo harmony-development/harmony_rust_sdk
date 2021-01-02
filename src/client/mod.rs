@@ -9,19 +9,19 @@ pub mod error;
 
 pub use crate::api::auth::Session;
 pub use error::*;
-pub use prost::Message;
+
+/// Some crates exported for user convenience.
+pub mod exports {
+    pub use prost;
+}
 
 use crate::api::{
     auth::auth_service_client::AuthServiceClient, chat::chat_service_client::ChatServiceClient,
     mediaproxy::media_proxy_service_client::MediaProxyServiceClient,
 };
-use api::auth::{next_step_request::form_fields::Field, *};
+use api::{auth::*, chat::EventSource};
 
-use futures_util::{
-    future,
-    stream::{self, Stream},
-    StreamExt, TryStreamExt,
-};
+use futures_util::{future, stream::Stream, StreamExt, TryStreamExt};
 use http::Uri;
 #[cfg(feature = "use_parking_lot")]
 use parking_lot::{Mutex, MutexGuard};
@@ -56,84 +56,6 @@ impl AuthStatus {
 
     pub fn is_authenticated(&self) -> bool {
         matches!(self, AuthStatus::Complete(_))
-    }
-}
-
-/// A response to an [`AuthStep`].
-#[derive(Debug, Clone)]
-pub enum AuthStepResponse {
-    /// A choice selection.
-    Choice(String),
-    /// A form.
-    Form(Vec<Field>),
-    Initial,
-}
-
-impl AuthStepResponse {
-    /// Create a new [`AuthStepResponse`] with the specified choice.
-    #[inline(always)]
-    pub fn choice(choice: impl ToString) -> Self {
-        Self::Choice(choice.to_string())
-    }
-
-    /// Create a new [`AuthStepResponse`] with the specified form fields.
-    #[inline(always)]
-    pub fn form(fields: Vec<Field>) -> Self {
-        Self::Form(fields)
-    }
-
-    /// A login choice response.
-    #[inline(always)]
-    pub fn login_choice() -> Self {
-        Self::choice("login")
-    }
-
-    /// A register choice response.
-    #[inline(always)]
-    pub fn register_choice() -> Self {
-        Self::choice("register")
-    }
-
-    /// Create a login form response from specified email and password.
-    pub fn login_form(email: impl ToString, password: impl ToString) -> Self {
-        Self::form(vec![
-            Field::String(email.to_string()),
-            Field::Bytes(password.to_string().into_bytes()),
-        ])
-    }
-
-    /// Create a register form response from specified email, username and password.
-    pub fn register_form(
-        email: impl ToString,
-        username: impl ToString,
-        password: impl ToString,
-    ) -> Self {
-        Self::form(vec![
-            Field::String(email.to_string()),
-            Field::String(username.to_string()),
-            Field::Bytes(password.to_string().into_bytes()),
-        ])
-    }
-}
-
-impl Into<Option<next_step_request::Step>> for AuthStepResponse {
-    fn into(self) -> Option<next_step_request::Step> {
-        match self {
-            AuthStepResponse::Choice(choice) => {
-                Some(next_step_request::Step::Choice(next_step_request::Choice {
-                    choice,
-                }))
-            }
-            AuthStepResponse::Form(fields) => {
-                Some(next_step_request::Step::Form(next_step_request::Form {
-                    fields: fields
-                        .into_iter()
-                        .map(|f| next_step_request::FormFields { field: Some(f) })
-                        .collect(),
-                }))
-            }
-            AuthStepResponse::Initial => None,
-        }
     }
 }
 
@@ -188,17 +110,16 @@ impl Client {
 
         let mut endpoint = Channel::builder(homeserver_url.clone());
 
+        // Use tls if scheme is https
         if homeserver_url.scheme_str().unwrap() == "https" {
             endpoint = endpoint.tls_config(tonic::transport::ClientTlsConfig::new())?;
         }
 
-        let auth_channel = endpoint.connect().await?;
-        let chat_channel = endpoint.connect().await?;
-        let mediaproxy_channel = endpoint.connect().await?;
+        let channel = endpoint.connect().await?;
 
-        let auth = AuthService::new(auth_channel);
-        let chat = ChatService::new(chat_channel);
-        let mediaproxy = MediaProxyService::new(mediaproxy_channel);
+        let auth = AuthService::new(channel.clone());
+        let chat = ChatService::new(channel.clone());
+        let mediaproxy = MediaProxyService::new(channel);
 
         let data = ClientData {
             homeserver_url,
@@ -298,54 +219,35 @@ impl Client {
     }
 
     /// Begin an authentication steps stream for the current authentication session.
-    pub async fn auth_stream(&self) -> ClientResult<tonic::Streaming<AuthStep>> {
+    pub async fn auth_stream(
+        &self,
+    ) -> ClientResult<impl Stream<Item = ClientResult<AuthStep>> + Send + Sync> {
         if let AuthStatus::InProgress(auth_id) = self.auth_status() {
-            api::auth::stream_steps(self, auth_id).await
+            api::auth::stream_steps(self, auth_id)
+                .await
+                .map(|stream| stream.map_err(Into::into))
         } else {
             Err(ClientError::NoAuthId)
         }
     }
 
-    /// Subscribe to events relating to specified guilds, homeserver or actions.
+    /// Subscribe to events coming from specified event sources.
     pub async fn subscribe_events(
         &self,
-        guilds: Vec<u64>,
-        actions: bool,
-        homeserver: bool,
-    ) -> ClientResult<
-        impl Stream<Item = ClientResult<api::chat::event::Event>> + Send + Sync + 'static,
-    > {
-        use api::chat::{stream_events, stream_events_request::*};
+        subscriptions: Vec<EventSource>,
+    ) -> ClientResult<impl Stream<Item = ClientResult<api::chat::event::Event>> + Send + Sync> {
+        let sub = api::chat::stream_events(self, futures_util::stream::iter(subscriptions)).await?;
 
-        let mut requests = guilds
-            .into_iter()
-            .map(|guild_id| Request::SubscribeToGuild(SubscribeToGuild { guild_id }))
-            .collect::<Vec<_>>();
-
-        if actions {
-            requests.push(Request::SubscribeToActions(SubscribeToActions {}));
-        };
-
-        if homeserver {
-            requests.push(Request::SubscribeToHomeserverEvents(
-                SubscribeToHomeserverEvents {},
-            ));
-        };
-
-        stream_events(self, stream::iter(requests))
-            .await
-            .map(|stream| {
-                stream
-                    .map_err(Into::into)
-                    .map_ok(|outer_event| outer_event.event)
-                    .filter_map(|result| {
-                        // Remove items which dont have an event
-                        future::ready(match result {
-                            Ok(maybe_event) => maybe_event.map_or(None, |event| Some(Ok(event))),
-                            Err(err) => Some(Err(err)),
-                        })
-                    })
-            })
+        Ok(sub
+            .map_err(Into::into)
+            .map_ok(|outer_event| outer_event.event)
+            .filter_map(|result| {
+                // Remove items which dont have an event
+                future::ready(match result {
+                    Ok(maybe_event) => maybe_event.map_or(None, |event| Some(Ok(event))),
+                    Err(err) => Some(Err(err)),
+                })
+            }))
     }
 }
 
@@ -365,7 +267,7 @@ mod test {
     }
 
     async fn make_client() -> ClientResult<Client> {
-        Client::new(TEST_SERVER.parse().unwrap(), None).await
+        Client::new(Uri::from_static(TEST_SERVER), None).await
     }
 
     async fn login_client() -> ClientResult<Client> {
@@ -449,7 +351,14 @@ mod test {
         init();
 
         let client = login_client().await?;
-        api::chat::profile::profile_update(&client, None, Some(api::UserStatus::OnlineUnspecified), None, Some(true)).await?;
+        api::chat::profile::profile_update(
+            &client,
+            None,
+            Some(api::UserStatus::OnlineUnspecified),
+            None,
+            Some(true),
+        )
+        .await?;
 
         Ok(())
     }
@@ -520,7 +429,7 @@ mod test {
 
         let client = login_client().await?;
         let instant_view =
-            api::mediaproxy::instant_view(&client, "https://duckduckgo.com".parse().unwrap())
+            api::mediaproxy::instant_view(&client, Uri::from_static("https://duckduckgo.com"))
                 .await?;
         log::info!("Instant view response: {:?}", instant_view);
 
@@ -533,48 +442,20 @@ mod test {
 
         let client = login_client().await?;
         let can_instant_view =
-            api::mediaproxy::can_instant_view(&client, "https://duckduckgo.com".parse().unwrap())
+            api::mediaproxy::can_instant_view(&client, Uri::from_static("https://duckduckgo.com"))
                 .await?;
         log::info!("Can instant view response: {:?}", can_instant_view);
 
         Ok(())
     }
 
-    async fn client_sub(guilds: Vec<u64>, actions: bool, homeserver: bool) -> ClientResult<()> {
+    #[tokio::test]
+    async fn subscription() -> ClientResult<()> {
         let client = login_client().await?;
-        let _ = client.subscribe_events(guilds, actions, homeserver).await?;
 
-        Ok(())
-    }
-
-    #[tokio::test]
-    async fn subscribe_nothing() -> ClientResult<()> {
-        init();
-        client_sub(Vec::new(), false, false).await?;
-
-        Ok(())
-    }
-
-    #[tokio::test]
-    async fn subscribe_homeserver() -> ClientResult<()> {
-        init();
-        client_sub(Vec::new(), false, true).await?;
-
-        Ok(())
-    }
-
-    #[tokio::test]
-    async fn subscribe_actions() -> ClientResult<()> {
-        init();
-        client_sub(Vec::new(), true, false).await?;
-
-        Ok(())
-    }
-
-    #[tokio::test]
-    async fn subscribe_actions_and_homeserver() -> ClientResult<()> {
-        init();
-        client_sub(Vec::new(), true, true).await?;
+        let _event_stream = client
+            .subscribe_events(vec![EventSource::Homeserver])
+            .await?;
 
         Ok(())
     }

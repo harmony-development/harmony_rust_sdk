@@ -35,12 +35,12 @@ macro_rules! client_api {
                         request.metadata_mut().insert("auth", session.session_token.parse().unwrap());
                     }
 
-                    log::debug!("Sending request: {:?}", request);
+                    log::debug!("Sending request");
                     let response = client
                         .[<$service _lock>]()
                         .$fn_name (request)
                         .await;
-                    log::debug!("Got response: {:?}", response);
+                    log::debug!("Received response: {:?}", response);
 
                     response
                         .map(Response::into_inner)

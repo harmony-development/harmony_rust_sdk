@@ -86,6 +86,14 @@ impl Display for InviteId {
     }
 }
 
+/// Describes where to subscribe for events.
+#[derive(Debug, Clone, Copy)]
+pub enum EventSource {
+    Guild(u64),
+    Homeserver,
+    Action,
+}
+
 /// Manage and query channels.
 pub mod channel;
 /// Manage and query emotes and emote packs.
@@ -127,12 +135,22 @@ client_api! {
 }
 
 client_api! {
-    /// Streams specified events (guild, homeserver or action) from the server.
+    /// Streams events from specified event sources from the server.
     args: {
-        requests: impl futures_util::stream::Stream<Item = stream_events_request::Request> + Send + Sync + 'static + std::fmt::Debug,
+        requests: impl futures_util::stream::Stream<Item = EventSource> + Send + Sync + 'static,
     },
     response: tonic::Streaming<Event>,
-    request: requests.map(|r| StreamEventsRequest { request: Some(r) }),
+    request: requests.map(|r| {
+        use stream_events_request::*;
+
+        StreamEventsRequest {
+            request: Some(match r {
+                EventSource::Action => Request::SubscribeToActions(SubscribeToActions {}),
+                EventSource::Homeserver => Request::SubscribeToHomeserverEvents(SubscribeToHomeserverEvents {}),
+                EventSource::Guild(guild_id) => Request::SubscribeToGuild(SubscribeToGuild { guild_id }),
+            })
+        }
+    }),
     api_func: stream_events,
     service: chat,
 }

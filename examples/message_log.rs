@@ -1,6 +1,9 @@
 //! Example showcasing a very simple message logging bot.
 use futures_util::StreamExt;
-use harmony_rust_sdk::client::{api::chat::*, AuthStepResponse, Client, ClientResult};
+use harmony_rust_sdk::client::{
+    api::{auth::*, chat::*, *},
+    Client, ClientResult,
+};
 
 const EMAIL: &str = "message_log_bot@example.org";
 const USERNAME: &str = "message_log_bot";
@@ -44,6 +47,15 @@ async fn main() -> ClientResult<()> {
     } else {
         log::info!("Successfully logon.");
     }
+    // Change our bots status to online and make sure its marked as a bot
+    profile::profile_update(
+        &client,
+        None,
+        Some(UserStatus::OnlineUnspecified),
+        None,
+        Some(true),
+    )
+    .await?;
 
     // Join the guild if invite is specified
     let guild_id = if let Ok(invite) = guild_invite {
@@ -51,23 +63,26 @@ async fn main() -> ClientResult<()> {
             .await?
             .guild_id
     } else {
-        std::fs::read_to_string(GUILD_ID_FILE)
+        tokio::fs::read_to_string(GUILD_ID_FILE)
+            .await
             .unwrap()
             .trim()
             .parse::<u64>()
             .unwrap()
     };
-    std::fs::write(GUILD_ID_FILE, guild_id.to_string()).unwrap();
+    tokio::fs::write(GUILD_ID_FILE, guild_id.to_string())
+        .await
+        .unwrap();
     log::info!("In guild: {}", guild_id);
 
     // Subscribe to guild events
-    let mut subscription = client
-        .subscribe_events(vec![guild_id], false, false)
+    let mut event_stream = client
+        .subscribe_events(vec![EventSource::Guild(guild_id)])
         .await?;
 
     // Poll events
     loop {
-        if let Some(Ok(received_event)) = subscription.next().await {
+        if let Some(Ok(received_event)) = event_stream.next().await {
             if let event::Event::SentMessage(sent_message) = received_event {
                 if let Some(message) = sent_message.message {
                     log::info!("Received new message: {:?}", message);

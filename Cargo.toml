@@ -40,7 +40,7 @@ gen_server = [ ]
 use_parking_lot = [ "parking_lot" ]
 
 [dev-dependencies]
-tokio = { version = "0.2", features = [ "rt-threaded", "macros" ] }
+tokio = { version = "0.2", features = [ "rt-threaded", "macros", "fs" ] }
 env_logger = "0.8"
 
 [[example]]
