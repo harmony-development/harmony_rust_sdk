@@ -1,1 +1,1 @@
-initSidebarItems({"mod":[["api","Harmony protocol code generated with `tonic-build`."],["client","Rust client implementation for Harmony, powered by [`tonic`]."]]});
+initSidebarItems({"mod":[["api","Harmony protocol API."],["client","Rust client implementation for Harmony, powered by [`tonic`]."]]});

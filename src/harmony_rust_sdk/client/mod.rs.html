@@ -261,6 +261,14 @@
 <span id="258">258</span>
 <span id="259">259</span>
 <span id="260">260</span>
+<span id="261">261</span>
+<span id="262">262</span>
+<span id="263">263</span>
+<span id="264">264</span>
+<span id="265">265</span>
+<span id="266">266</span>
+<span id="267">267</span>
+<span id="268">268</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! Rust client implementation for Harmony, powered by [`tonic`].</span>
 <span class="doccomment">//!</span>
@@ -277,8 +285,6 @@
 <span class="doccomment">/// Some crates exported for user convenience.</span>
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">exports</span> {
     <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">futures_util</span>;
-    <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">http</span>;
-    <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">prost</span>;
     <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">reqwest</span>;
 }
 
@@ -350,6 +356,16 @@
     <span class="doccomment">///</span>
     <span class="doccomment">/// If port is not specified in the URL, this will add the default port `2289` to it.</span>
     <span class="doccomment">/// If scheme is not specified, this will assume the scheme is `https`.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// # Example</span>
+    <span class="doccomment">/// ```no_run</span>
+    <span class="doccomment">/// # use harmony_rust_sdk::client::*;</span>
+    <span class="doccomment">/// # #[tokio::main]</span>
+    <span class="doccomment">/// # async fn main() -&gt; ClientResult&lt;()&gt; {</span>
+    <span class="doccomment">/// let client = Client::new(&quot;https://example.org&quot;.parse().unwrap(), None).await?;</span>
+    <span class="doccomment">/// # Ok(())</span>
+    <span class="doccomment">/// # }</span>
+    <span class="doccomment">/// ```</span>
     <span class="kw">pub</span> <span class="ident">async</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="kw-2">mut</span> <span class="ident">homeserver_url</span>: <span class="ident">Uri</span>, <span class="ident">session</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Session</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">ClientResult</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> {
         <span class="comment">// Add the default port if not specified</span>
         <span class="ident">homeserver_url</span> <span class="op">=</span> <span class="kw">if</span> <span class="kw">let</span> (<span class="prelude-val">None</span>, <span class="prelude-val">Some</span>(<span class="ident">authority</span>)) <span class="op">=</span>
