@@ -463,125 +463,6 @@
 <span id="460">460</span>
 <span id="461">461</span>
 <span id="462">462</span>
-<span id="463">463</span>
-<span id="464">464</span>
-<span id="465">465</span>
-<span id="466">466</span>
-<span id="467">467</span>
-<span id="468">468</span>
-<span id="469">469</span>
-<span id="470">470</span>
-<span id="471">471</span>
-<span id="472">472</span>
-<span id="473">473</span>
-<span id="474">474</span>
-<span id="475">475</span>
-<span id="476">476</span>
-<span id="477">477</span>
-<span id="478">478</span>
-<span id="479">479</span>
-<span id="480">480</span>
-<span id="481">481</span>
-<span id="482">482</span>
-<span id="483">483</span>
-<span id="484">484</span>
-<span id="485">485</span>
-<span id="486">486</span>
-<span id="487">487</span>
-<span id="488">488</span>
-<span id="489">489</span>
-<span id="490">490</span>
-<span id="491">491</span>
-<span id="492">492</span>
-<span id="493">493</span>
-<span id="494">494</span>
-<span id="495">495</span>
-<span id="496">496</span>
-<span id="497">497</span>
-<span id="498">498</span>
-<span id="499">499</span>
-<span id="500">500</span>
-<span id="501">501</span>
-<span id="502">502</span>
-<span id="503">503</span>
-<span id="504">504</span>
-<span id="505">505</span>
-<span id="506">506</span>
-<span id="507">507</span>
-<span id="508">508</span>
-<span id="509">509</span>
-<span id="510">510</span>
-<span id="511">511</span>
-<span id="512">512</span>
-<span id="513">513</span>
-<span id="514">514</span>
-<span id="515">515</span>
-<span id="516">516</span>
-<span id="517">517</span>
-<span id="518">518</span>
-<span id="519">519</span>
-<span id="520">520</span>
-<span id="521">521</span>
-<span id="522">522</span>
-<span id="523">523</span>
-<span id="524">524</span>
-<span id="525">525</span>
-<span id="526">526</span>
-<span id="527">527</span>
-<span id="528">528</span>
-<span id="529">529</span>
-<span id="530">530</span>
-<span id="531">531</span>
-<span id="532">532</span>
-<span id="533">533</span>
-<span id="534">534</span>
-<span id="535">535</span>
-<span id="536">536</span>
-<span id="537">537</span>
-<span id="538">538</span>
-<span id="539">539</span>
-<span id="540">540</span>
-<span id="541">541</span>
-<span id="542">542</span>
-<span id="543">543</span>
-<span id="544">544</span>
-<span id="545">545</span>
-<span id="546">546</span>
-<span id="547">547</span>
-<span id="548">548</span>
-<span id="549">549</span>
-<span id="550">550</span>
-<span id="551">551</span>
-<span id="552">552</span>
-<span id="553">553</span>
-<span id="554">554</span>
-<span id="555">555</span>
-<span id="556">556</span>
-<span id="557">557</span>
-<span id="558">558</span>
-<span id="559">559</span>
-<span id="560">560</span>
-<span id="561">561</span>
-<span id="562">562</span>
-<span id="563">563</span>
-<span id="564">564</span>
-<span id="565">565</span>
-<span id="566">566</span>
-<span id="567">567</span>
-<span id="568">568</span>
-<span id="569">569</span>
-<span id="570">570</span>
-<span id="571">571</span>
-<span id="572">572</span>
-<span id="573">573</span>
-<span id="574">574</span>
-<span id="575">575</span>
-<span id="576">576</span>
-<span id="577">577</span>
-<span id="578">578</span>
-<span id="579">579</span>
-<span id="580">580</span>
-<span id="581">581</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! Rust client implementation for Harmony, powered by [`tonic`].</span>
 <span class="doccomment">//!</span>
@@ -594,19 +475,19 @@
 
 <span class="kw">pub</span> <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">api</span>::<span class="ident">auth</span>::<span class="ident">Session</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">error</span>::<span class="kw-2">*</span>;
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">prost</span>::<span class="ident">Message</span>;
+
+<span class="doccomment">/// Some crates exported for user convenience.</span>
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">exports</span> {
+    <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">prost</span>;
+}
 
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">api</span>::{
     <span class="ident">auth</span>::<span class="ident">auth_service_client</span>::<span class="ident">AuthServiceClient</span>, <span class="ident">chat</span>::<span class="ident">chat_service_client</span>::<span class="ident">ChatServiceClient</span>,
     <span class="ident">mediaproxy</span>::<span class="ident">media_proxy_service_client</span>::<span class="ident">MediaProxyServiceClient</span>,
 };
-<span class="kw">use</span> <span class="ident">api</span>::<span class="ident">auth</span>::{<span class="ident">next_step_request</span>::<span class="ident">form_fields</span>::<span class="ident">Field</span>, <span class="kw-2">*</span>};
+<span class="kw">use</span> <span class="ident">api</span>::{<span class="ident">auth</span>::<span class="kw-2">*</span>, <span class="ident">chat</span>::<span class="ident">EventSource</span>};
 
-<span class="kw">use</span> <span class="ident">futures_util</span>::{
-    <span class="ident">future</span>,
-    <span class="ident">stream</span>::{<span class="self">self</span>, <span class="ident">Stream</span>},
-    <span class="ident">StreamExt</span>, <span class="ident">TryStreamExt</span>,
-};
+<span class="kw">use</span> <span class="ident">futures_util</span>::{<span class="ident">future</span>, <span class="ident">stream</span>::<span class="ident">Stream</span>, <span class="ident">StreamExt</span>, <span class="ident">TryStreamExt</span>};
 <span class="kw">use</span> <span class="ident">http</span>::<span class="ident">Uri</span>;
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;use_parking_lot&quot;</span>)]</span>
 <span class="kw">use</span> <span class="ident">parking_lot</span>::{<span class="ident">Mutex</span>, <span class="ident">MutexGuard</span>};
@@ -641,84 +522,6 @@
 
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_authenticated</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
         <span class="macro">matches</span><span class="macro">!</span>(<span class="self">self</span>, <span class="ident">AuthStatus</span>::<span class="ident">Complete</span>(<span class="kw">_</span>))
-    }
-}
-
-<span class="doccomment">/// A response to an [`AuthStep`].</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
-<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">AuthStepResponse</span> {
-    <span class="doccomment">/// A choice selection.</span>
-    <span class="ident">Choice</span>(<span class="ident">String</span>),
-    <span class="doccomment">/// A form.</span>
-    <span class="ident">Form</span>(<span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Field</span><span class="op">&gt;</span>),
-    <span class="ident">Initial</span>,
-}
-
-<span class="kw">impl</span> <span class="ident">AuthStepResponse</span> {
-    <span class="doccomment">/// Create a new [`AuthStepResponse`] with the specified choice.</span>
-    <span class="attribute">#[<span class="ident">inline</span>(<span class="ident">always</span>)]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">choice</span>(<span class="ident">choice</span>: <span class="kw">impl</span> <span class="ident">ToString</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
-        <span class="self">Self</span>::<span class="ident">Choice</span>(<span class="ident">choice</span>.<span class="ident">to_string</span>())
-    }
-
-    <span class="doccomment">/// Create a new [`AuthStepResponse`] with the specified form fields.</span>
-    <span class="attribute">#[<span class="ident">inline</span>(<span class="ident">always</span>)]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">form</span>(<span class="ident">fields</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Field</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
-        <span class="self">Self</span>::<span class="ident">Form</span>(<span class="ident">fields</span>)
-    }
-
-    <span class="doccomment">/// A login choice response.</span>
-    <span class="attribute">#[<span class="ident">inline</span>(<span class="ident">always</span>)]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">login_choice</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
-        <span class="self">Self</span>::<span class="ident">choice</span>(<span class="string">&quot;login&quot;</span>)
-    }
-
-    <span class="doccomment">/// A register choice response.</span>
-    <span class="attribute">#[<span class="ident">inline</span>(<span class="ident">always</span>)]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">register_choice</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
-        <span class="self">Self</span>::<span class="ident">choice</span>(<span class="string">&quot;register&quot;</span>)
-    }
-
-    <span class="doccomment">/// Create a login form response from specified email and password.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">login_form</span>(<span class="ident">email</span>: <span class="kw">impl</span> <span class="ident">ToString</span>, <span class="ident">password</span>: <span class="kw">impl</span> <span class="ident">ToString</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
-        <span class="self">Self</span>::<span class="ident">form</span>(<span class="macro">vec</span><span class="macro">!</span>[
-            <span class="ident">Field</span>::<span class="ident">String</span>(<span class="ident">email</span>.<span class="ident">to_string</span>()),
-            <span class="ident">Field</span>::<span class="ident">Bytes</span>(<span class="ident">password</span>.<span class="ident">to_string</span>().<span class="ident">into_bytes</span>()),
-        ])
-    }
-
-    <span class="doccomment">/// Create a register form response from specified email, username and password.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">register_form</span>(
-        <span class="ident">email</span>: <span class="kw">impl</span> <span class="ident">ToString</span>,
-        <span class="ident">username</span>: <span class="kw">impl</span> <span class="ident">ToString</span>,
-        <span class="ident">password</span>: <span class="kw">impl</span> <span class="ident">ToString</span>,
-    ) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
-        <span class="self">Self</span>::<span class="ident">form</span>(<span class="macro">vec</span><span class="macro">!</span>[
-            <span class="ident">Field</span>::<span class="ident">String</span>(<span class="ident">email</span>.<span class="ident">to_string</span>()),
-            <span class="ident">Field</span>::<span class="ident">String</span>(<span class="ident">username</span>.<span class="ident">to_string</span>()),
-            <span class="ident">Field</span>::<span class="ident">Bytes</span>(<span class="ident">password</span>.<span class="ident">to_string</span>().<span class="ident">into_bytes</span>()),
-        ])
-    }
-}
-
-<span class="kw">impl</span> <span class="ident">Into</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">next_step_request</span>::<span class="ident">Step</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">AuthStepResponse</span> {
-    <span class="kw">fn</span> <span class="ident">into</span>(<span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">next_step_request</span>::<span class="ident">Step</span><span class="op">&gt;</span> {
-        <span class="kw">match</span> <span class="self">self</span> {
-            <span class="ident">AuthStepResponse</span>::<span class="ident">Choice</span>(<span class="ident">choice</span>) <span class="op">=</span><span class="op">&gt;</span> {
-                <span class="prelude-val">Some</span>(<span class="ident">next_step_request</span>::<span class="ident">Step</span>::<span class="ident">Choice</span>(<span class="ident">next_step_request</span>::<span class="ident">Choice</span> {
-                    <span class="ident">choice</span>,
-                }))
-            }
-            <span class="ident">AuthStepResponse</span>::<span class="ident">Form</span>(<span class="ident">fields</span>) <span class="op">=</span><span class="op">&gt;</span> {
-                <span class="prelude-val">Some</span>(<span class="ident">next_step_request</span>::<span class="ident">Step</span>::<span class="ident">Form</span>(<span class="ident">next_step_request</span>::<span class="ident">Form</span> {
-                    <span class="ident">fields</span>: <span class="ident">fields</span>
-                        .<span class="ident">into_iter</span>()
-                        .<span class="ident">map</span>(<span class="op">|</span><span class="ident">f</span><span class="op">|</span> <span class="ident">next_step_request</span>::<span class="ident">FormFields</span> { <span class="ident">field</span>: <span class="prelude-val">Some</span>(<span class="ident">f</span>) })
-                        .<span class="ident">collect</span>(),
-                }))
-            }
-            <span class="ident">AuthStepResponse</span>::<span class="ident">Initial</span> <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">None</span>,
-        }
     }
 }
 
@@ -773,17 +576,16 @@
 
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">endpoint</span> <span class="op">=</span> <span class="ident">Channel</span>::<span class="ident">builder</span>(<span class="ident">homeserver_url</span>.<span class="ident">clone</span>());
 
+        <span class="comment">// Use tls if scheme is https</span>
         <span class="kw">if</span> <span class="ident">homeserver_url</span>.<span class="ident">scheme_str</span>().<span class="ident">unwrap</span>() <span class="op">=</span><span class="op">=</span> <span class="string">&quot;https&quot;</span> {
             <span class="ident">endpoint</span> <span class="op">=</span> <span class="ident">endpoint</span>.<span class="ident">tls_config</span>(<span class="ident">tonic</span>::<span class="ident">transport</span>::<span class="ident">ClientTlsConfig</span>::<span class="ident">new</span>())<span class="question-mark">?</span>;
         }
 
-        <span class="kw">let</span> <span class="ident">auth_channel</span> <span class="op">=</span> <span class="ident">endpoint</span>.<span class="ident">connect</span>().<span class="ident">await</span><span class="question-mark">?</span>;
-        <span class="kw">let</span> <span class="ident">chat_channel</span> <span class="op">=</span> <span class="ident">endpoint</span>.<span class="ident">connect</span>().<span class="ident">await</span><span class="question-mark">?</span>;
-        <span class="kw">let</span> <span class="ident">mediaproxy_channel</span> <span class="op">=</span> <span class="ident">endpoint</span>.<span class="ident">connect</span>().<span class="ident">await</span><span class="question-mark">?</span>;
+        <span class="kw">let</span> <span class="ident">channel</span> <span class="op">=</span> <span class="ident">endpoint</span>.<span class="ident">connect</span>().<span class="ident">await</span><span class="question-mark">?</span>;
 
-        <span class="kw">let</span> <span class="ident">auth</span> <span class="op">=</span> <span class="ident">AuthService</span>::<span class="ident">new</span>(<span class="ident">auth_channel</span>);
-        <span class="kw">let</span> <span class="ident">chat</span> <span class="op">=</span> <span class="ident">ChatService</span>::<span class="ident">new</span>(<span class="ident">chat_channel</span>);
-        <span class="kw">let</span> <span class="ident">mediaproxy</span> <span class="op">=</span> <span class="ident">MediaProxyService</span>::<span class="ident">new</span>(<span class="ident">mediaproxy_channel</span>);
+        <span class="kw">let</span> <span class="ident">auth</span> <span class="op">=</span> <span class="ident">AuthService</span>::<span class="ident">new</span>(<span class="ident">channel</span>.<span class="ident">clone</span>());
+        <span class="kw">let</span> <span class="ident">chat</span> <span class="op">=</span> <span class="ident">ChatService</span>::<span class="ident">new</span>(<span class="ident">channel</span>.<span class="ident">clone</span>());
+        <span class="kw">let</span> <span class="ident">mediaproxy</span> <span class="op">=</span> <span class="ident">MediaProxyService</span>::<span class="ident">new</span>(<span class="ident">channel</span>);
 
         <span class="kw">let</span> <span class="ident">data</span> <span class="op">=</span> <span class="ident">ClientData</span> {
             <span class="ident">homeserver_url</span>,
@@ -883,54 +685,35 @@
     }
 
     <span class="doccomment">/// Begin an authentication steps stream for the current authentication session.</span>
-    <span class="kw">pub</span> <span class="ident">async</span> <span class="kw">fn</span> <span class="ident">auth_stream</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">ClientResult</span><span class="op">&lt;</span><span class="ident">tonic</span>::<span class="ident">Streaming</span><span class="op">&lt;</span><span class="ident">AuthStep</span><span class="op">&gt;</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="ident">async</span> <span class="kw">fn</span> <span class="ident">auth_stream</span>(
+        <span class="kw-2">&amp;</span><span class="self">self</span>,
+    ) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">ClientResult</span><span class="op">&lt;</span><span class="kw">impl</span> <span class="ident">Stream</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="ident">ClientResult</span><span class="op">&lt;</span><span class="ident">AuthStep</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">Send</span> <span class="op">+</span> <span class="ident">Sync</span><span class="op">&gt;</span> {
         <span class="kw">if</span> <span class="kw">let</span> <span class="ident">AuthStatus</span>::<span class="ident">InProgress</span>(<span class="ident">auth_id</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">auth_status</span>() {
-            <span class="ident">api</span>::<span class="ident">auth</span>::<span class="ident">stream_steps</span>(<span class="self">self</span>, <span class="ident">auth_id</span>).<span class="ident">await</span>
+            <span class="ident">api</span>::<span class="ident">auth</span>::<span class="ident">stream_steps</span>(<span class="self">self</span>, <span class="ident">auth_id</span>)
+                .<span class="ident">await</span>
+                .<span class="ident">map</span>(<span class="op">|</span><span class="ident">stream</span><span class="op">|</span> <span class="ident">stream</span>.<span class="ident">map_err</span>(<span class="ident">Into</span>::<span class="ident">into</span>))
         } <span class="kw">else</span> {
             <span class="prelude-val">Err</span>(<span class="ident">ClientError</span>::<span class="ident">NoAuthId</span>)
         }
     }
 
-    <span class="doccomment">/// Subscribe to events relating to specified guilds, homeserver or actions.</span>
+    <span class="doccomment">/// Subscribe to events coming from specified event sources.</span>
     <span class="kw">pub</span> <span class="ident">async</span> <span class="kw">fn</span> <span class="ident">subscribe_events</span>(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
-        <span class="ident">guilds</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u64</span><span class="op">&gt;</span>,
-        <span class="ident">actions</span>: <span class="ident">bool</span>,
-        <span class="ident">homeserver</span>: <span class="ident">bool</span>,
-    ) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">ClientResult</span><span class="op">&lt;</span>
-        <span class="kw">impl</span> <span class="ident">Stream</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="ident">ClientResult</span><span class="op">&lt;</span><span class="ident">api</span>::<span class="ident">chat</span>::<span class="ident">event</span>::<span class="ident">Event</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">Send</span> <span class="op">+</span> <span class="ident">Sync</span> <span class="op">+</span> <span class="lifetime">&#39;static</span>,
-    <span class="op">&gt;</span> {
-        <span class="kw">use</span> <span class="ident">api</span>::<span class="ident">chat</span>::{<span class="ident">stream_events</span>, <span class="ident">stream_events_request</span>::<span class="kw-2">*</span>};
+        <span class="ident">subscriptions</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">EventSource</span><span class="op">&gt;</span>,
+    ) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">ClientResult</span><span class="op">&lt;</span><span class="kw">impl</span> <span class="ident">Stream</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="ident">ClientResult</span><span class="op">&lt;</span><span class="ident">api</span>::<span class="ident">chat</span>::<span class="ident">event</span>::<span class="ident">Event</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">Send</span> <span class="op">+</span> <span class="ident">Sync</span><span class="op">&gt;</span> {
+        <span class="kw">let</span> <span class="ident">sub</span> <span class="op">=</span> <span class="ident">api</span>::<span class="ident">chat</span>::<span class="ident">stream_events</span>(<span class="self">self</span>, <span class="ident">futures_util</span>::<span class="ident">stream</span>::<span class="ident">iter</span>(<span class="ident">subscriptions</span>)).<span class="ident">await</span><span class="question-mark">?</span>;
 
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">requests</span> <span class="op">=</span> <span class="ident">guilds</span>
-            .<span class="ident">into_iter</span>()
-            .<span class="ident">map</span>(<span class="op">|</span><span class="ident">guild_id</span><span class="op">|</span> <span class="ident">Request</span>::<span class="ident">SubscribeToGuild</span>(<span class="ident">SubscribeToGuild</span> { <span class="ident">guild_id</span> }))
-            .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>();
-
-        <span class="kw">if</span> <span class="ident">actions</span> {
-            <span class="ident">requests</span>.<span class="ident">push</span>(<span class="ident">Request</span>::<span class="ident">SubscribeToActions</span>(<span class="ident">SubscribeToActions</span> {}));
-        };
-
-        <span class="kw">if</span> <span class="ident">homeserver</span> {
-            <span class="ident">requests</span>.<span class="ident">push</span>(<span class="ident">Request</span>::<span class="ident">SubscribeToHomeserverEvents</span>(
-                <span class="ident">SubscribeToHomeserverEvents</span> {},
-            ));
-        };
-
-        <span class="ident">stream_events</span>(<span class="self">self</span>, <span class="ident">stream</span>::<span class="ident">iter</span>(<span class="ident">requests</span>))
-            .<span class="ident">await</span>
-            .<span class="ident">map</span>(<span class="op">|</span><span class="ident">stream</span><span class="op">|</span> {
-                <span class="ident">stream</span>
-                    .<span class="ident">map_err</span>(<span class="ident">Into</span>::<span class="ident">into</span>)
-                    .<span class="ident">map_ok</span>(<span class="op">|</span><span class="ident">outer_event</span><span class="op">|</span> <span class="ident">outer_event</span>.<span class="ident">event</span>)
-                    .<span class="ident">filter_map</span>(<span class="op">|</span><span class="ident">result</span><span class="op">|</span> {
-                        <span class="comment">// Remove items which dont have an event</span>
-                        <span class="ident">future</span>::<span class="ident">ready</span>(<span class="kw">match</span> <span class="ident">result</span> {
-                            <span class="prelude-val">Ok</span>(<span class="ident">maybe_event</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">maybe_event</span>.<span class="ident">map_or</span>(<span class="prelude-val">None</span>, <span class="op">|</span><span class="ident">event</span><span class="op">|</span> <span class="prelude-val">Some</span>(<span class="prelude-val">Ok</span>(<span class="ident">event</span>))),
-                            <span class="prelude-val">Err</span>(<span class="ident">err</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">Some</span>(<span class="prelude-val">Err</span>(<span class="ident">err</span>)),
-                        })
-                    })
-            })
+        <span class="prelude-val">Ok</span>(<span class="ident">sub</span>
+            .<span class="ident">map_err</span>(<span class="ident">Into</span>::<span class="ident">into</span>)
+            .<span class="ident">map_ok</span>(<span class="op">|</span><span class="ident">outer_event</span><span class="op">|</span> <span class="ident">outer_event</span>.<span class="ident">event</span>)
+            .<span class="ident">filter_map</span>(<span class="op">|</span><span class="ident">result</span><span class="op">|</span> {
+                <span class="comment">// Remove items which dont have an event</span>
+                <span class="ident">future</span>::<span class="ident">ready</span>(<span class="kw">match</span> <span class="ident">result</span> {
+                    <span class="prelude-val">Ok</span>(<span class="ident">maybe_event</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">maybe_event</span>.<span class="ident">map_or</span>(<span class="prelude-val">None</span>, <span class="op">|</span><span class="ident">event</span><span class="op">|</span> <span class="prelude-val">Some</span>(<span class="prelude-val">Ok</span>(<span class="ident">event</span>))),
+                    <span class="prelude-val">Err</span>(<span class="ident">err</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">Some</span>(<span class="prelude-val">Err</span>(<span class="ident">err</span>)),
+                })
+            }))
     }
 }
 
@@ -950,7 +733,7 @@
     }
 
     <span class="ident">async</span> <span class="kw">fn</span> <span class="ident">make_client</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">ClientResult</span><span class="op">&lt;</span><span class="ident">Client</span><span class="op">&gt;</span> {
-        <span class="ident">Client</span>::<span class="ident">new</span>(<span class="ident">TEST_SERVER</span>.<span class="ident">parse</span>().<span class="ident">unwrap</span>(), <span class="prelude-val">None</span>).<span class="ident">await</span>
+        <span class="ident">Client</span>::<span class="ident">new</span>(<span class="ident">Uri</span>::<span class="ident">from_static</span>(<span class="ident">TEST_SERVER</span>), <span class="prelude-val">None</span>).<span class="ident">await</span>
     }
 
     <span class="ident">async</span> <span class="kw">fn</span> <span class="ident">login_client</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">ClientResult</span><span class="op">&lt;</span><span class="ident">Client</span><span class="op">&gt;</span> {
@@ -1034,7 +817,14 @@
         <span class="ident">init</span>();
 
         <span class="kw">let</span> <span class="ident">client</span> <span class="op">=</span> <span class="ident">login_client</span>().<span class="ident">await</span><span class="question-mark">?</span>;
-        <span class="ident">api</span>::<span class="ident">chat</span>::<span class="ident">profile</span>::<span class="ident">profile_update</span>(<span class="kw-2">&amp;</span><span class="ident">client</span>, <span class="prelude-val">None</span>, <span class="prelude-val">Some</span>(<span class="ident">api</span>::<span class="ident">UserStatus</span>::<span class="ident">OnlineUnspecified</span>), <span class="prelude-val">None</span>, <span class="prelude-val">Some</span>(<span class="bool-val">true</span>)).<span class="ident">await</span><span class="question-mark">?</span>;
+        <span class="ident">api</span>::<span class="ident">chat</span>::<span class="ident">profile</span>::<span class="ident">profile_update</span>(
+            <span class="kw-2">&amp;</span><span class="ident">client</span>,
+            <span class="prelude-val">None</span>,
+            <span class="prelude-val">Some</span>(<span class="ident">api</span>::<span class="ident">UserStatus</span>::<span class="ident">OnlineUnspecified</span>),
+            <span class="prelude-val">None</span>,
+            <span class="prelude-val">Some</span>(<span class="bool-val">true</span>),
+        )
+        .<span class="ident">await</span><span class="question-mark">?</span>;
 
         <span class="prelude-val">Ok</span>(())
     }
@@ -1105,7 +895,7 @@
 
         <span class="kw">let</span> <span class="ident">client</span> <span class="op">=</span> <span class="ident">login_client</span>().<span class="ident">await</span><span class="question-mark">?</span>;
         <span class="kw">let</span> <span class="ident">instant_view</span> <span class="op">=</span>
-            <span class="ident">api</span>::<span class="ident">mediaproxy</span>::<span class="ident">instant_view</span>(<span class="kw-2">&amp;</span><span class="ident">client</span>, <span class="string">&quot;https://duckduckgo.com&quot;</span>.<span class="ident">parse</span>().<span class="ident">unwrap</span>())
+            <span class="ident">api</span>::<span class="ident">mediaproxy</span>::<span class="ident">instant_view</span>(<span class="kw-2">&amp;</span><span class="ident">client</span>, <span class="ident">Uri</span>::<span class="ident">from_static</span>(<span class="string">&quot;https://duckduckgo.com&quot;</span>))
                 .<span class="ident">await</span><span class="question-mark">?</span>;
         <span class="ident">log</span>::<span class="macro">info</span><span class="macro">!</span>(<span class="string">&quot;Instant view response: {:?}&quot;</span>, <span class="ident">instant_view</span>);
 
@@ -1118,48 +908,20 @@
 
         <span class="kw">let</span> <span class="ident">client</span> <span class="op">=</span> <span class="ident">login_client</span>().<span class="ident">await</span><span class="question-mark">?</span>;
         <span class="kw">let</span> <span class="ident">can_instant_view</span> <span class="op">=</span>
-            <span class="ident">api</span>::<span class="ident">mediaproxy</span>::<span class="ident">can_instant_view</span>(<span class="kw-2">&amp;</span><span class="ident">client</span>, <span class="string">&quot;https://duckduckgo.com&quot;</span>.<span class="ident">parse</span>().<span class="ident">unwrap</span>())
+            <span class="ident">api</span>::<span class="ident">mediaproxy</span>::<span class="ident">can_instant_view</span>(<span class="kw-2">&amp;</span><span class="ident">client</span>, <span class="ident">Uri</span>::<span class="ident">from_static</span>(<span class="string">&quot;https://duckduckgo.com&quot;</span>))
                 .<span class="ident">await</span><span class="question-mark">?</span>;
         <span class="ident">log</span>::<span class="macro">info</span><span class="macro">!</span>(<span class="string">&quot;Can instant view response: {:?}&quot;</span>, <span class="ident">can_instant_view</span>);
 
         <span class="prelude-val">Ok</span>(())
     }
 
-    <span class="ident">async</span> <span class="kw">fn</span> <span class="ident">client_sub</span>(<span class="ident">guilds</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u64</span><span class="op">&gt;</span>, <span class="ident">actions</span>: <span class="ident">bool</span>, <span class="ident">homeserver</span>: <span class="ident">bool</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">ClientResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
+    <span class="attribute">#[<span class="ident">tokio</span>::<span class="ident">test</span>]</span>
+    <span class="ident">async</span> <span class="kw">fn</span> <span class="ident">subscription</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">ClientResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="ident">client</span> <span class="op">=</span> <span class="ident">login_client</span>().<span class="ident">await</span><span class="question-mark">?</span>;
-        <span class="kw">let</span> <span class="kw">_</span> <span class="op">=</span> <span class="ident">client</span>.<span class="ident">subscribe_events</span>(<span class="ident">guilds</span>, <span class="ident">actions</span>, <span class="ident">homeserver</span>).<span class="ident">await</span><span class="question-mark">?</span>;
 
-        <span class="prelude-val">Ok</span>(())
-    }
-
-    <span class="attribute">#[<span class="ident">tokio</span>::<span class="ident">test</span>]</span>
-    <span class="ident">async</span> <span class="kw">fn</span> <span class="ident">subscribe_nothing</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">ClientResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-        <span class="ident">init</span>();
-        <span class="ident">client_sub</span>(<span class="ident">Vec</span>::<span class="ident">new</span>(), <span class="bool-val">false</span>, <span class="bool-val">false</span>).<span class="ident">await</span><span class="question-mark">?</span>;
-
-        <span class="prelude-val">Ok</span>(())
-    }
-
-    <span class="attribute">#[<span class="ident">tokio</span>::<span class="ident">test</span>]</span>
-    <span class="ident">async</span> <span class="kw">fn</span> <span class="ident">subscribe_homeserver</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">ClientResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-        <span class="ident">init</span>();
-        <span class="ident">client_sub</span>(<span class="ident">Vec</span>::<span class="ident">new</span>(), <span class="bool-val">false</span>, <span class="bool-val">true</span>).<span class="ident">await</span><span class="question-mark">?</span>;
-
-        <span class="prelude-val">Ok</span>(())
-    }
-
-    <span class="attribute">#[<span class="ident">tokio</span>::<span class="ident">test</span>]</span>
-    <span class="ident">async</span> <span class="kw">fn</span> <span class="ident">subscribe_actions</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">ClientResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-        <span class="ident">init</span>();
-        <span class="ident">client_sub</span>(<span class="ident">Vec</span>::<span class="ident">new</span>(), <span class="bool-val">true</span>, <span class="bool-val">false</span>).<span class="ident">await</span><span class="question-mark">?</span>;
-
-        <span class="prelude-val">Ok</span>(())
-    }
-
-    <span class="attribute">#[<span class="ident">tokio</span>::<span class="ident">test</span>]</span>
-    <span class="ident">async</span> <span class="kw">fn</span> <span class="ident">subscribe_actions_and_homeserver</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">ClientResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-        <span class="ident">init</span>();
-        <span class="ident">client_sub</span>(<span class="ident">Vec</span>::<span class="ident">new</span>(), <span class="bool-val">true</span>, <span class="bool-val">true</span>).<span class="ident">await</span><span class="question-mark">?</span>;
+        <span class="kw">let</span> <span class="ident">_event_stream</span> <span class="op">=</span> <span class="ident">client</span>
+            .<span class="ident">subscribe_events</span>(<span class="macro">vec</span><span class="macro">!</span>[<span class="ident">EventSource</span>::<span class="ident">Homeserver</span>])
+            .<span class="ident">await</span><span class="question-mark">?</span>;
 
         <span class="prelude-val">Ok</span>(())
     }

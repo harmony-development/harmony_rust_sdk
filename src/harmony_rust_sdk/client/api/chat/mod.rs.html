@@ -139,6 +139,24 @@
 <span id="136">136</span>
 <span id="137">137</span>
 <span id="138">138</span>
+<span id="139">139</span>
+<span id="140">140</span>
+<span id="141">141</span>
+<span id="142">142</span>
+<span id="143">143</span>
+<span id="144">144</span>
+<span id="145">145</span>
+<span id="146">146</span>
+<span id="147">147</span>
+<span id="148">148</span>
+<span id="149">149</span>
+<span id="150">150</span>
+<span id="151">151</span>
+<span id="152">152</span>
+<span id="153">153</span>
+<span id="154">154</span>
+<span id="155">155</span>
+<span id="156">156</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
 
@@ -228,6 +246,14 @@
     }
 }
 
+<span class="doccomment">/// Describes where to subscribe for events.</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">Copy</span>)]</span>
+<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">EventSource</span> {
+    <span class="ident">Guild</span>(<span class="ident">u64</span>),
+    <span class="ident">Homeserver</span>,
+    <span class="ident">Action</span>,
+}
+
 <span class="doccomment">/// Manage and query channels.</span>
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">channel</span>;
 <span class="doccomment">/// Manage and query emotes and emote packs.</span>
@@ -269,12 +295,22 @@
 }
 
 <span class="macro">client_api</span><span class="macro">!</span> {
-    <span class="doccomment">/// Streams specified events (guild, homeserver or action) from the server.</span>
+    <span class="doccomment">/// Streams events from specified event sources from the server.</span>
     <span class="ident">args</span>: {
-        <span class="ident">requests</span>: <span class="kw">impl</span> <span class="ident">futures_util</span>::<span class="ident">stream</span>::<span class="ident">Stream</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="ident">stream_events_request</span>::<span class="ident">Request</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">Send</span> <span class="op">+</span> <span class="ident">Sync</span> <span class="op">+</span> <span class="lifetime">&#39;static</span> <span class="op">+</span> <span class="ident">std</span>::<span class="ident">fmt</span>::<span class="ident">Debug</span>,
+        <span class="ident">requests</span>: <span class="kw">impl</span> <span class="ident">futures_util</span>::<span class="ident">stream</span>::<span class="ident">Stream</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="ident">EventSource</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">Send</span> <span class="op">+</span> <span class="ident">Sync</span> <span class="op">+</span> <span class="lifetime">&#39;static</span>,
     },
     <span class="ident">response</span>: <span class="ident">tonic</span>::<span class="ident">Streaming</span><span class="op">&lt;</span><span class="ident">Event</span><span class="op">&gt;</span>,
-    <span class="ident">request</span>: <span class="ident">requests</span>.<span class="ident">map</span>(<span class="op">|</span><span class="ident">r</span><span class="op">|</span> <span class="ident">StreamEventsRequest</span> { <span class="ident">request</span>: <span class="prelude-val">Some</span>(<span class="ident">r</span>) }),
+    <span class="ident">request</span>: <span class="ident">requests</span>.<span class="ident">map</span>(<span class="op">|</span><span class="ident">r</span><span class="op">|</span> {
+        <span class="kw">use</span> <span class="ident">stream_events_request</span>::<span class="kw-2">*</span>;
+
+        <span class="ident">StreamEventsRequest</span> {
+            <span class="ident">request</span>: <span class="prelude-val">Some</span>(<span class="kw">match</span> <span class="ident">r</span> {
+                <span class="ident">EventSource</span>::<span class="ident">Action</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Request</span>::<span class="ident">SubscribeToActions</span>(<span class="ident">SubscribeToActions</span> {}),
+                <span class="ident">EventSource</span>::<span class="ident">Homeserver</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Request</span>::<span class="ident">SubscribeToHomeserverEvents</span>(<span class="ident">SubscribeToHomeserverEvents</span> {}),
+                <span class="ident">EventSource</span>::<span class="ident">Guild</span>(<span class="ident">guild_id</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Request</span>::<span class="ident">SubscribeToGuild</span>(<span class="ident">SubscribeToGuild</span> { <span class="ident">guild_id</span> }),
+            })
+        }
+    }),
     <span class="ident">api_func</span>: <span class="ident">stream_events</span>,
     <span class="ident">service</span>: <span class="ident">chat</span>,
 }
