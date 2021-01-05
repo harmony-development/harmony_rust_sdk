@@ -1,4 +1,6 @@
 fn main() {
+    let out_dir = std::path::PathBuf::from(std::env::var_os("OUT_DIR").unwrap());
+
     #[allow(unused_mut)]
     let mut builder = tonic_build::configure();
     #[cfg(not(feature = "gen_server"))]
@@ -28,4 +30,15 @@ fn main() {
             &["protocol"],
         )
         .unwrap();
+    #[cfg(feature = "gen_client")]
+    {
+        // Patch voice generated code
+        let voice_gen_path = out_dir.join("protocol.voice.v1.rs");
+        let voice_gen = std::fs::read_to_string(&voice_gen_path).unwrap();
+        let patched_voice_gen = voice_gen.replace(
+            "pub async fn connect<D>(dst: D)",
+            "pub async fn _connect<D>(dst: D)",
+        );
+        std::fs::write(voice_gen_path, patched_voice_gen).unwrap();
+    }
 }
