@@ -12,6 +12,7 @@ pub mod auth {
     pub mod v1 {
         tonic::include_proto!("protocol.auth.v1");
     }
+    #[doc(inline)]
     pub use v1::*;
 }
 
@@ -20,6 +21,7 @@ pub mod harmonytypes {
     pub mod v1 {
         tonic::include_proto!("protocol.harmonytypes.v1");
     }
+    #[doc(inline)]
     pub use v1::*;
 }
 
@@ -28,6 +30,16 @@ pub mod mediaproxy {
     pub mod v1 {
         tonic::include_proto!("protocol.mediaproxy.v1");
     }
+    #[doc(inline)]
+    pub use v1::*;
+}
+
+/// Voice service API.
+pub mod voice {
+    pub mod v1 {
+        tonic::include_proto!("protocol.voice.v1");
+    }
+    #[doc(inline)]
     pub use v1::*;
 }
 
@@ -75,7 +87,7 @@ impl Hmc {
     /// so it may panic or requests made with this `Hmc` may fail.
     ///
     /// # Example
-    /// 
+    ///
     /// ```
     /// # use harmony_rust_sdk::api::Hmc;
     /// let hmc = Hmc::new("example.org".parse().unwrap(), "403cb46c-49cf-4ae1-b876-f38eb26accb0".to_string());

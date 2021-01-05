@@ -23,6 +23,7 @@ fn main() {
                 "chat/v1/permissions.proto",
                 "chat/v1/profile.proto",
                 "chat/v1/streaming.proto",
+                "voice/v1/voice.proto",
             ],
             &["protocol"],
         )
