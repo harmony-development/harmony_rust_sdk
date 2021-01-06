@@ -3564,6 +3564,45 @@
 <span id="3561">3561</span>
 <span id="3562">3562</span>
 <span id="3563">3563</span>
+<span id="3564">3564</span>
+<span id="3565">3565</span>
+<span id="3566">3566</span>
+<span id="3567">3567</span>
+<span id="3568">3568</span>
+<span id="3569">3569</span>
+<span id="3570">3570</span>
+<span id="3571">3571</span>
+<span id="3572">3572</span>
+<span id="3573">3573</span>
+<span id="3574">3574</span>
+<span id="3575">3575</span>
+<span id="3576">3576</span>
+<span id="3577">3577</span>
+<span id="3578">3578</span>
+<span id="3579">3579</span>
+<span id="3580">3580</span>
+<span id="3581">3581</span>
+<span id="3582">3582</span>
+<span id="3583">3583</span>
+<span id="3584">3584</span>
+<span id="3585">3585</span>
+<span id="3586">3586</span>
+<span id="3587">3587</span>
+<span id="3588">3588</span>
+<span id="3589">3589</span>
+<span id="3590">3590</span>
+<span id="3591">3591</span>
+<span id="3592">3592</span>
+<span id="3593">3593</span>
+<span id="3594">3594</span>
+<span id="3595">3595</span>
+<span id="3596">3596</span>
+<span id="3597">3597</span>
+<span id="3598">3598</span>
+<span id="3599">3599</span>
+<span id="3600">3600</span>
+<span id="3601">3601</span>
+<span id="3602">3602</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, ::<span class="ident">prost</span>::<span class="ident">Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">GetUserRequest</span> {
@@ -4484,6 +4523,38 @@
         <span class="ident">Typing</span>(<span class="ident">Typing</span>),
     }
 }
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, ::<span class="ident">prost</span>::<span class="ident">Message</span>)]</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">SyncRequest</span> {
+    <span class="attribute">#[<span class="ident">prost</span>(<span class="ident">string</span>, <span class="ident">tag</span> <span class="op">=</span> <span class="string">&quot;1&quot;</span>)]</span>
+    <span class="kw">pub</span> <span class="ident">token</span>: <span class="ident">std</span>::<span class="ident">string</span>::<span class="ident">String</span>,
+    <span class="attribute">#[<span class="ident">prost</span>(<span class="ident">string</span>, <span class="ident">tag</span> <span class="op">=</span> <span class="string">&quot;2&quot;</span>)]</span>
+    <span class="kw">pub</span> <span class="ident">host</span>: <span class="ident">std</span>::<span class="ident">string</span>::<span class="ident">String</span>,
+}
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, ::<span class="ident">prost</span>::<span class="ident">Message</span>)]</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">SyncEvent</span> {
+    <span class="attribute">#[<span class="ident">prost</span>(<span class="ident">oneof</span> <span class="op">=</span> <span class="string">&quot;sync_event::Event&quot;</span>, <span class="ident">tags</span> <span class="op">=</span> <span class="string">&quot;1&quot;</span>)]</span>
+    <span class="kw">pub</span> <span class="ident">event</span>: ::<span class="ident">std</span>::<span class="ident">option</span>::<span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">sync_event</span>::<span class="ident">Event</span><span class="op">&gt;</span>,
+}
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">sync_event</span> {
+    <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, ::<span class="ident">prost</span>::<span class="ident">Message</span>)]</span>
+    <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">DmInvite</span> {
+        <span class="attribute">#[<span class="ident">prost</span>(<span class="ident">string</span>, <span class="ident">tag</span> <span class="op">=</span> <span class="string">&quot;1&quot;</span>)]</span>
+        <span class="kw">pub</span> <span class="ident">user_name</span>: <span class="ident">std</span>::<span class="ident">string</span>::<span class="ident">String</span>,
+        <span class="attribute">#[<span class="ident">prost</span>(<span class="ident">string</span>, <span class="ident">tag</span> <span class="op">=</span> <span class="string">&quot;2&quot;</span>)]</span>
+        <span class="kw">pub</span> <span class="ident">user_avatar</span>: <span class="ident">std</span>::<span class="ident">string</span>::<span class="ident">String</span>,
+        <span class="attribute">#[<span class="ident">prost</span>(<span class="ident">string</span>, <span class="ident">tag</span> <span class="op">=</span> <span class="string">&quot;3&quot;</span>)]</span>
+        <span class="kw">pub</span> <span class="ident">dm_name</span>: <span class="ident">std</span>::<span class="ident">string</span>::<span class="ident">String</span>,
+        <span class="attribute">#[<span class="ident">prost</span>(<span class="ident">string</span>, <span class="ident">tag</span> <span class="op">=</span> <span class="string">&quot;4&quot;</span>)]</span>
+        <span class="kw">pub</span> <span class="ident">dm_avatar</span>: <span class="ident">std</span>::<span class="ident">string</span>::<span class="ident">String</span>,
+        <span class="attribute">#[<span class="ident">prost</span>(<span class="ident">string</span>, <span class="ident">tag</span> <span class="op">=</span> <span class="string">&quot;5&quot;</span>)]</span>
+        <span class="kw">pub</span> <span class="ident">invite_id</span>: <span class="ident">std</span>::<span class="ident">string</span>::<span class="ident">String</span>,
+    }
+    <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, ::<span class="ident">prost</span>::<span class="ident">Oneof</span>)]</span>
+    <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">Event</span> {
+        <span class="attribute">#[<span class="ident">prost</span>(<span class="ident">message</span>, <span class="ident">tag</span> <span class="op">=</span> <span class="string">&quot;1&quot;</span>)]</span>
+        <span class="ident">DmInvite</span>(<span class="ident">DmInvite</span>),
+    }
+}
 <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">r&quot; Generated client implementations.&quot;</span>]</span>
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">chat_service_client</span> {
     <span class="attribute">#![<span class="ident">allow</span>(<span class="ident">unused_variables</span>, <span class="ident">dead_code</span>, <span class="ident">missing_docs</span>)]</span>
@@ -4517,7 +4588,6 @@
             <span class="kw">let</span> <span class="ident">inner</span> <span class="op">=</span> <span class="ident">tonic</span>::<span class="ident">client</span>::<span class="ident">Grpc</span>::<span class="ident">with_interceptor</span>(<span class="ident">inner</span>, <span class="ident">interceptor</span>);
             <span class="self">Self</span> { <span class="ident">inner</span> }
         }
-        <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot; This doesn&#39;t require any permissions.&quot;</span>]</span>
         <span class="kw">pub</span> <span class="ident">async</span> <span class="kw">fn</span> <span class="ident">create_guild</span>(
             <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
             <span class="ident">request</span>: <span class="kw">impl</span> <span class="ident">tonic</span>::<span class="ident">IntoRequest</span><span class="op">&lt;</span><span class="kw">super</span>::<span class="ident">CreateGuildRequest</span><span class="op">&gt;</span>,
@@ -4533,7 +4603,6 @@
                 <span class="ident">http</span>::<span class="ident">uri</span>::<span class="ident">PathAndQuery</span>::<span class="ident">from_static</span>(<span class="string">&quot;/protocol.chat.v1.ChatService/CreateGuild&quot;</span>);
             <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">unary</span>(<span class="ident">request</span>.<span class="ident">into_request</span>(), <span class="ident">path</span>, <span class="ident">codec</span>).<span class="ident">await</span>
         }
-        <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot; This requires the \&quot;invites.manage.create\&quot; permission.&quot;</span>]</span>
         <span class="kw">pub</span> <span class="ident">async</span> <span class="kw">fn</span> <span class="ident">create_invite</span>(
             <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
             <span class="ident">request</span>: <span class="kw">impl</span> <span class="ident">tonic</span>::<span class="ident">IntoRequest</span><span class="op">&lt;</span><span class="kw">super</span>::<span class="ident">CreateInviteRequest</span><span class="op">&gt;</span>,
@@ -4549,7 +4618,6 @@
                 <span class="ident">http</span>::<span class="ident">uri</span>::<span class="ident">PathAndQuery</span>::<span class="ident">from_static</span>(<span class="string">&quot;/protocol.chat.v1.ChatService/CreateInvite&quot;</span>);
             <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">unary</span>(<span class="ident">request</span>.<span class="ident">into_request</span>(), <span class="ident">path</span>, <span class="ident">codec</span>).<span class="ident">await</span>
         }
-        <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot; This requires the \&quot;channels.manage.create\&quot; permission.&quot;</span>]</span>
         <span class="kw">pub</span> <span class="ident">async</span> <span class="kw">fn</span> <span class="ident">create_channel</span>(
             <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
             <span class="ident">request</span>: <span class="kw">impl</span> <span class="ident">tonic</span>::<span class="ident">IntoRequest</span><span class="op">&lt;</span><span class="kw">super</span>::<span class="ident">CreateChannelRequest</span><span class="op">&gt;</span>,
@@ -4677,8 +4745,7 @@
             );
             <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">unary</span>(<span class="ident">request</span>.<span class="ident">into_request</span>(), <span class="ident">path</span>, <span class="ident">codec</span>).<span class="ident">await</span>
         }
-        <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot; You will only be informed of channels you have the \&quot;messages.view\&quot;&quot;</span>]</span>
-        <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot; permission for.&quot;</span>]</span>
+        <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot; You will only be informed of channels you have the \&quot;messages.view\&quot; permission for.&quot;</span>]</span>
         <span class="kw">pub</span> <span class="ident">async</span> <span class="kw">fn</span> <span class="ident">get_guild_channels</span>(
             <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
             <span class="ident">request</span>: <span class="kw">impl</span> <span class="ident">tonic</span>::<span class="ident">IntoRequest</span><span class="op">&lt;</span><span class="kw">super</span>::<span class="ident">GetGuildChannelsRequest</span><span class="op">&gt;</span>,
@@ -4695,7 +4762,6 @@
             );
             <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">unary</span>(<span class="ident">request</span>.<span class="ident">into_request</span>(), <span class="ident">path</span>, <span class="ident">codec</span>).<span class="ident">await</span>
         }
-        <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot; This requires the \&quot;messages.view\&quot; permission.&quot;</span>]</span>
         <span class="kw">pub</span> <span class="ident">async</span> <span class="kw">fn</span> <span class="ident">get_channel_messages</span>(
             <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
             <span class="ident">request</span>: <span class="kw">impl</span> <span class="ident">tonic</span>::<span class="ident">IntoRequest</span><span class="op">&lt;</span><span class="kw">super</span>::<span class="ident">GetChannelMessagesRequest</span><span class="op">&gt;</span>,
@@ -4712,7 +4778,6 @@
             );
             <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">unary</span>(<span class="ident">request</span>.<span class="ident">into_request</span>(), <span class="ident">path</span>, <span class="ident">codec</span>).<span class="ident">await</span>
         }
-        <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot; This requires the \&quot;messages.view\&quot; permission.&quot;</span>]</span>
         <span class="kw">pub</span> <span class="ident">async</span> <span class="kw">fn</span> <span class="ident">get_message</span>(
             <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
             <span class="ident">request</span>: <span class="kw">impl</span> <span class="ident">tonic</span>::<span class="ident">IntoRequest</span><span class="op">&lt;</span><span class="kw">super</span>::<span class="ident">GetMessageRequest</span><span class="op">&gt;</span>,
@@ -4759,7 +4824,6 @@
             );
             <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">unary</span>(<span class="ident">request</span>.<span class="ident">into_request</span>(), <span class="ident">path</span>, <span class="ident">codec</span>).<span class="ident">await</span>
         }
-        <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot; This requires the \&quot;guild.manage.change-information\&quot; permission.&quot;</span>]</span>
         <span class="kw">pub</span> <span class="ident">async</span> <span class="kw">fn</span> <span class="ident">update_guild_information</span>(
             <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
             <span class="ident">request</span>: <span class="kw">impl</span> <span class="ident">tonic</span>::<span class="ident">IntoRequest</span><span class="op">&lt;</span><span class="kw">super</span>::<span class="ident">UpdateGuildInformationRequest</span><span class="op">&gt;</span>,
@@ -4776,7 +4840,6 @@
             );
             <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">unary</span>(<span class="ident">request</span>.<span class="ident">into_request</span>(), <span class="ident">path</span>, <span class="ident">codec</span>).<span class="ident">await</span>
         }
-        <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot; This requires the \&quot;channels.manage.change-information\&quot; permission.&quot;</span>]</span>
         <span class="kw">pub</span> <span class="ident">async</span> <span class="kw">fn</span> <span class="ident">update_channel_information</span>(
             <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
             <span class="ident">request</span>: <span class="kw">impl</span> <span class="ident">tonic</span>::<span class="ident">IntoRequest</span><span class="op">&lt;</span><span class="kw">super</span>::<span class="ident">UpdateChannelInformationRequest</span><span class="op">&gt;</span>,
@@ -4793,7 +4856,6 @@
             );
             <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">unary</span>(<span class="ident">request</span>.<span class="ident">into_request</span>(), <span class="ident">path</span>, <span class="ident">codec</span>).<span class="ident">await</span>
         }
-        <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot; This requires the \&quot;channels.manage.move\&quot; permission.&quot;</span>]</span>
         <span class="kw">pub</span> <span class="ident">async</span> <span class="kw">fn</span> <span class="ident">update_channel_order</span>(
             <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
             <span class="ident">request</span>: <span class="kw">impl</span> <span class="ident">tonic</span>::<span class="ident">IntoRequest</span><span class="op">&lt;</span><span class="kw">super</span>::<span class="ident">UpdateChannelOrderRequest</span><span class="op">&gt;</span>,
@@ -4810,7 +4872,6 @@
             );
             <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">unary</span>(<span class="ident">request</span>.<span class="ident">into_request</span>(), <span class="ident">path</span>, <span class="ident">codec</span>).<span class="ident">await</span>
         }
-        <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot; This requires the \&quot;messages.send\&quot; permission.&quot;</span>]</span>
         <span class="kw">pub</span> <span class="ident">async</span> <span class="kw">fn</span> <span class="ident">update_message</span>(
             <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
             <span class="ident">request</span>: <span class="kw">impl</span> <span class="ident">tonic</span>::<span class="ident">IntoRequest</span><span class="op">&lt;</span><span class="kw">super</span>::<span class="ident">UpdateMessageRequest</span><span class="op">&gt;</span>,
@@ -4842,7 +4903,6 @@
             );
             <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">unary</span>(<span class="ident">request</span>.<span class="ident">into_request</span>(), <span class="ident">path</span>, <span class="ident">codec</span>).<span class="ident">await</span>
         }
-        <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot; This requires the \&quot;guild.manage.delete\&quot; permission.&quot;</span>]</span>
         <span class="kw">pub</span> <span class="ident">async</span> <span class="kw">fn</span> <span class="ident">delete_guild</span>(
             <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
             <span class="ident">request</span>: <span class="kw">impl</span> <span class="ident">tonic</span>::<span class="ident">IntoRequest</span><span class="op">&lt;</span><span class="kw">super</span>::<span class="ident">DeleteGuildRequest</span><span class="op">&gt;</span>,
@@ -4858,7 +4918,6 @@
                 <span class="ident">http</span>::<span class="ident">uri</span>::<span class="ident">PathAndQuery</span>::<span class="ident">from_static</span>(<span class="string">&quot;/protocol.chat.v1.ChatService/DeleteGuild&quot;</span>);
             <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">unary</span>(<span class="ident">request</span>.<span class="ident">into_request</span>(), <span class="ident">path</span>, <span class="ident">codec</span>).<span class="ident">await</span>
         }
-        <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot; This requires the \&quot;invites.manage.delete\&quot; permission.&quot;</span>]</span>
         <span class="kw">pub</span> <span class="ident">async</span> <span class="kw">fn</span> <span class="ident">delete_invite</span>(
             <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
             <span class="ident">request</span>: <span class="kw">impl</span> <span class="ident">tonic</span>::<span class="ident">IntoRequest</span><span class="op">&lt;</span><span class="kw">super</span>::<span class="ident">DeleteInviteRequest</span><span class="op">&gt;</span>,
@@ -4874,7 +4933,6 @@
                 <span class="ident">http</span>::<span class="ident">uri</span>::<span class="ident">PathAndQuery</span>::<span class="ident">from_static</span>(<span class="string">&quot;/protocol.chat.v1.ChatService/DeleteInvite&quot;</span>);
             <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">unary</span>(<span class="ident">request</span>.<span class="ident">into_request</span>(), <span class="ident">path</span>, <span class="ident">codec</span>).<span class="ident">await</span>
         }
-        <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot; This requires the \&quot;channels.manage.delete\&quot; permission.&quot;</span>]</span>
         <span class="kw">pub</span> <span class="ident">async</span> <span class="kw">fn</span> <span class="ident">delete_channel</span>(
             <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
             <span class="ident">request</span>: <span class="kw">impl</span> <span class="ident">tonic</span>::<span class="ident">IntoRequest</span><span class="op">&lt;</span><span class="kw">super</span>::<span class="ident">DeleteChannelRequest</span><span class="op">&gt;</span>,
@@ -4985,7 +5043,6 @@
                 <span class="ident">http</span>::<span class="ident">uri</span>::<span class="ident">PathAndQuery</span>::<span class="ident">from_static</span>(<span class="string">&quot;/protocol.chat.v1.ChatService/LeaveGuild&quot;</span>);
             <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">unary</span>(<span class="ident">request</span>.<span class="ident">into_request</span>(), <span class="ident">path</span>, <span class="ident">codec</span>).<span class="ident">await</span>
         }
-        <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot; This requires the \&quot;actions.trigger\&quot; permission.&quot;</span>]</span>
         <span class="kw">pub</span> <span class="ident">async</span> <span class="kw">fn</span> <span class="ident">trigger_action</span>(
             <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
             <span class="ident">request</span>: <span class="kw">impl</span> <span class="ident">tonic</span>::<span class="ident">IntoRequest</span><span class="op">&lt;</span><span class="kw">super</span>::<span class="ident">TriggerActionRequest</span><span class="op">&gt;</span>,
@@ -5001,7 +5058,6 @@
                 <span class="ident">http</span>::<span class="ident">uri</span>::<span class="ident">PathAndQuery</span>::<span class="ident">from_static</span>(<span class="string">&quot;/protocol.chat.v1.ChatService/TriggerAction&quot;</span>);
             <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">unary</span>(<span class="ident">request</span>.<span class="ident">into_request</span>(), <span class="ident">path</span>, <span class="ident">codec</span>).<span class="ident">await</span>
         }
-        <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot; This requires the \&quot;messages.send\&quot; permission.&quot;</span>]</span>
         <span class="kw">pub</span> <span class="ident">async</span> <span class="kw">fn</span> <span class="ident">send_message</span>(
             <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
             <span class="ident">request</span>: <span class="kw">impl</span> <span class="ident">tonic</span>::<span class="ident">IntoRequest</span><span class="op">&lt;</span><span class="kw">super</span>::<span class="ident">SendMessageRequest</span><span class="op">&gt;</span>,
@@ -5017,8 +5073,6 @@
                 <span class="ident">http</span>::<span class="ident">uri</span>::<span class="ident">PathAndQuery</span>::<span class="ident">from_static</span>(<span class="string">&quot;/protocol.chat.v1.ChatService/SendMessage&quot;</span>);
             <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">unary</span>(<span class="ident">request</span>.<span class="ident">into_request</span>(), <span class="ident">path</span>, <span class="ident">codec</span>).<span class="ident">await</span>
         }
-        <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot; This requires the \&quot;permissions.query\&quot; permission if you specify the As&quot;</span>]</span>
-        <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot; field.&quot;</span>]</span>
         <span class="kw">pub</span> <span class="ident">async</span> <span class="kw">fn</span> <span class="ident">query_has_permission</span>(
             <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
             <span class="ident">request</span>: <span class="kw">impl</span> <span class="ident">tonic</span>::<span class="ident">IntoRequest</span><span class="op">&lt;</span><span class="kw">super</span>::<span class="ident">QueryPermissionsRequest</span><span class="op">&gt;</span>,
@@ -5035,7 +5089,6 @@
             );
             <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">unary</span>(<span class="ident">request</span>.<span class="ident">into_request</span>(), <span class="ident">path</span>, <span class="ident">codec</span>).<span class="ident">await</span>
         }
-        <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot; This requires the \&quot;permissions.manage.set\&quot; permission.&quot;</span>]</span>
         <span class="kw">pub</span> <span class="ident">async</span> <span class="kw">fn</span> <span class="ident">set_permissions</span>(
             <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
             <span class="ident">request</span>: <span class="kw">impl</span> <span class="ident">tonic</span>::<span class="ident">IntoRequest</span><span class="op">&lt;</span><span class="kw">super</span>::<span class="ident">SetPermissionsRequest</span><span class="op">&gt;</span>,
@@ -5052,7 +5105,6 @@
             );
             <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">unary</span>(<span class="ident">request</span>.<span class="ident">into_request</span>(), <span class="ident">path</span>, <span class="ident">codec</span>).<span class="ident">await</span>
         }
-        <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot; This requires the \&quot;permissions.manage.get\&quot; permission.&quot;</span>]</span>
         <span class="kw">pub</span> <span class="ident">async</span> <span class="kw">fn</span> <span class="ident">get_permissions</span>(
             <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
             <span class="ident">request</span>: <span class="kw">impl</span> <span class="ident">tonic</span>::<span class="ident">IntoRequest</span><span class="op">&lt;</span><span class="kw">super</span>::<span class="ident">GetPermissionsRequest</span><span class="op">&gt;</span>,
@@ -5069,7 +5121,6 @@
             );
             <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">unary</span>(<span class="ident">request</span>.<span class="ident">into_request</span>(), <span class="ident">path</span>, <span class="ident">codec</span>).<span class="ident">await</span>
         }
-        <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot; This requires the \&quot;roles.manage\&quot; permission.&quot;</span>]</span>
         <span class="kw">pub</span> <span class="ident">async</span> <span class="kw">fn</span> <span class="ident">move_role</span>(
             <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
             <span class="ident">request</span>: <span class="kw">impl</span> <span class="ident">tonic</span>::<span class="ident">IntoRequest</span><span class="op">&lt;</span><span class="kw">super</span>::<span class="ident">MoveRoleRequest</span><span class="op">&gt;</span>,
@@ -5085,7 +5136,6 @@
                 <span class="ident">http</span>::<span class="ident">uri</span>::<span class="ident">PathAndQuery</span>::<span class="ident">from_static</span>(<span class="string">&quot;/protocol.chat.v1.ChatService/MoveRole&quot;</span>);
             <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">unary</span>(<span class="ident">request</span>.<span class="ident">into_request</span>(), <span class="ident">path</span>, <span class="ident">codec</span>).<span class="ident">await</span>
         }
-        <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot; This requires the \&quot;roles.get\&quot; permission.&quot;</span>]</span>
         <span class="kw">pub</span> <span class="ident">async</span> <span class="kw">fn</span> <span class="ident">get_guild_roles</span>(
             <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
             <span class="ident">request</span>: <span class="kw">impl</span> <span class="ident">tonic</span>::<span class="ident">IntoRequest</span><span class="op">&lt;</span><span class="kw">super</span>::<span class="ident">GetGuildRolesRequest</span><span class="op">&gt;</span>,
@@ -5101,7 +5151,6 @@
                 <span class="ident">http</span>::<span class="ident">uri</span>::<span class="ident">PathAndQuery</span>::<span class="ident">from_static</span>(<span class="string">&quot;/protocol.chat.v1.ChatService/GetGuildRoles&quot;</span>);
             <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">unary</span>(<span class="ident">request</span>.<span class="ident">into_request</span>(), <span class="ident">path</span>, <span class="ident">codec</span>).<span class="ident">await</span>
         }
-        <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot; This requires the \&quot;roles.manage\&quot; permission.&quot;</span>]</span>
         <span class="kw">pub</span> <span class="ident">async</span> <span class="kw">fn</span> <span class="ident">add_guild_role</span>(
             <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
             <span class="ident">request</span>: <span class="kw">impl</span> <span class="ident">tonic</span>::<span class="ident">IntoRequest</span><span class="op">&lt;</span><span class="kw">super</span>::<span class="ident">AddGuildRoleRequest</span><span class="op">&gt;</span>,
@@ -5117,7 +5166,6 @@
                 <span class="ident">http</span>::<span class="ident">uri</span>::<span class="ident">PathAndQuery</span>::<span class="ident">from_static</span>(<span class="string">&quot;/protocol.chat.v1.ChatService/AddGuildRole&quot;</span>);
             <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">unary</span>(<span class="ident">request</span>.<span class="ident">into_request</span>(), <span class="ident">path</span>, <span class="ident">codec</span>).<span class="ident">await</span>
         }
-        <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot; This requires the \&quot;roles.manage\&quot; permission.&quot;</span>]</span>
         <span class="kw">pub</span> <span class="ident">async</span> <span class="kw">fn</span> <span class="ident">modify_guild_role</span>(
             <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
             <span class="ident">request</span>: <span class="kw">impl</span> <span class="ident">tonic</span>::<span class="ident">IntoRequest</span><span class="op">&lt;</span><span class="kw">super</span>::<span class="ident">ModifyGuildRoleRequest</span><span class="op">&gt;</span>,
@@ -5134,7 +5182,6 @@
             );
             <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">unary</span>(<span class="ident">request</span>.<span class="ident">into_request</span>(), <span class="ident">path</span>, <span class="ident">codec</span>).<span class="ident">await</span>
         }
-        <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot; This requires the \&quot;roles.manage\&quot; permission.&quot;</span>]</span>
         <span class="kw">pub</span> <span class="ident">async</span> <span class="kw">fn</span> <span class="ident">delete_guild_role</span>(
             <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
             <span class="ident">request</span>: <span class="kw">impl</span> <span class="ident">tonic</span>::<span class="ident">IntoRequest</span><span class="op">&lt;</span><span class="kw">super</span>::<span class="ident">DeleteGuildRoleRequest</span><span class="op">&gt;</span>,
@@ -5151,7 +5198,6 @@
             );
             <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">unary</span>(<span class="ident">request</span>.<span class="ident">into_request</span>(), <span class="ident">path</span>, <span class="ident">codec</span>).<span class="ident">await</span>
         }
-        <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot; This requires the \&quot;roles.users.manage\&quot; permission.&quot;</span>]</span>
         <span class="kw">pub</span> <span class="ident">async</span> <span class="kw">fn</span> <span class="ident">manage_user_roles</span>(
             <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
             <span class="ident">request</span>: <span class="kw">impl</span> <span class="ident">tonic</span>::<span class="ident">IntoRequest</span><span class="op">&lt;</span><span class="kw">super</span>::<span class="ident">ManageUserRolesRequest</span><span class="op">&gt;</span>,
@@ -5168,7 +5214,6 @@
             );
             <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">unary</span>(<span class="ident">request</span>.<span class="ident">into_request</span>(), <span class="ident">path</span>, <span class="ident">codec</span>).<span class="ident">await</span>
         }
-        <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot; This requires the \&quot;roles.users.get\&quot; permission.&quot;</span>]</span>
         <span class="kw">pub</span> <span class="ident">async</span> <span class="kw">fn</span> <span class="ident">get_user_roles</span>(
             <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
             <span class="ident">request</span>: <span class="kw">impl</span> <span class="ident">tonic</span>::<span class="ident">IntoRequest</span><span class="op">&lt;</span><span class="kw">super</span>::<span class="ident">GetUserRolesRequest</span><span class="op">&gt;</span>,
@@ -5199,6 +5244,23 @@
                 <span class="ident">http</span>::<span class="ident">uri</span>::<span class="ident">PathAndQuery</span>::<span class="ident">from_static</span>(<span class="string">&quot;/protocol.chat.v1.ChatService/StreamEvents&quot;</span>);
             <span class="self">self</span>.<span class="ident">inner</span>
                 .<span class="ident">streaming</span>(<span class="ident">request</span>.<span class="ident">into_streaming_request</span>(), <span class="ident">path</span>, <span class="ident">codec</span>)
+                .<span class="ident">await</span>
+        }
+        <span class="kw">pub</span> <span class="ident">async</span> <span class="kw">fn</span> <span class="ident">sync</span>(
+            <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
+            <span class="ident">request</span>: <span class="kw">impl</span> <span class="ident">tonic</span>::<span class="ident">IntoRequest</span><span class="op">&lt;</span><span class="kw">super</span>::<span class="ident">SyncRequest</span><span class="op">&gt;</span>,
+        ) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">tonic</span>::<span class="ident">Response</span><span class="op">&lt;</span><span class="ident">tonic</span>::<span class="ident">codec</span>::<span class="ident">Streaming</span><span class="op">&lt;</span><span class="kw">super</span>::<span class="ident">SyncEvent</span><span class="op">&gt;</span><span class="op">&gt;</span>, <span class="ident">tonic</span>::<span class="ident">Status</span><span class="op">&gt;</span>
+        {
+            <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">ready</span>().<span class="ident">await</span>.<span class="ident">map_err</span>(<span class="op">|</span><span class="ident">e</span><span class="op">|</span> {
+                <span class="ident">tonic</span>::<span class="ident">Status</span>::<span class="ident">new</span>(
+                    <span class="ident">tonic</span>::<span class="ident">Code</span>::<span class="ident">Unknown</span>,
+                    <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;Service was not ready: {}&quot;</span>, <span class="ident">e</span>.<span class="ident">into</span>()),
+                )
+            })<span class="question-mark">?</span>;
+            <span class="kw">let</span> <span class="ident">codec</span> <span class="op">=</span> <span class="ident">tonic</span>::<span class="ident">codec</span>::<span class="ident">ProstCodec</span>::<span class="ident">default</span>();
+            <span class="kw">let</span> <span class="ident">path</span> <span class="op">=</span> <span class="ident">http</span>::<span class="ident">uri</span>::<span class="ident">PathAndQuery</span>::<span class="ident">from_static</span>(<span class="string">&quot;/protocol.chat.v1.ChatService/Sync&quot;</span>);
+            <span class="self">self</span>.<span class="ident">inner</span>
+                .<span class="ident">server_streaming</span>(<span class="ident">request</span>.<span class="ident">into_request</span>(), <span class="ident">path</span>, <span class="ident">codec</span>)
                 .<span class="ident">await</span>
         }
         <span class="kw">pub</span> <span class="ident">async</span> <span class="kw">fn</span> <span class="ident">get_user</span>(
@@ -5297,17 +5359,14 @@
     <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot;Generated trait containing gRPC methods that should be implemented for use with ChatServiceServer.&quot;</span>]</span>
     <span class="attribute">#[<span class="ident">async_trait</span>]</span>
     <span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">ChatService</span>: <span class="ident">Send</span> <span class="op">+</span> <span class="ident">Sync</span> <span class="op">+</span> <span class="lifetime">&#39;static</span> {
-        <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot; This doesn&#39;t require any permissions.&quot;</span>]</span>
         <span class="ident">async</span> <span class="kw">fn</span> <span class="ident">create_guild</span>(
             <span class="kw-2">&amp;</span><span class="self">self</span>,
             <span class="ident">request</span>: <span class="ident">tonic</span>::<span class="ident">Request</span><span class="op">&lt;</span><span class="kw">super</span>::<span class="ident">CreateGuildRequest</span><span class="op">&gt;</span>,
         ) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">tonic</span>::<span class="ident">Response</span><span class="op">&lt;</span><span class="kw">super</span>::<span class="ident">CreateGuildResponse</span><span class="op">&gt;</span>, <span class="ident">tonic</span>::<span class="ident">Status</span><span class="op">&gt;</span>;
-        <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot; This requires the \&quot;invites.manage.create\&quot; permission.&quot;</span>]</span>
         <span class="ident">async</span> <span class="kw">fn</span> <span class="ident">create_invite</span>(
             <span class="kw-2">&amp;</span><span class="self">self</span>,
             <span class="ident">request</span>: <span class="ident">tonic</span>::<span class="ident">Request</span><span class="op">&lt;</span><span class="kw">super</span>::<span class="ident">CreateInviteRequest</span><span class="op">&gt;</span>,
         ) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">tonic</span>::<span class="ident">Response</span><span class="op">&lt;</span><span class="kw">super</span>::<span class="ident">CreateInviteResponse</span><span class="op">&gt;</span>, <span class="ident">tonic</span>::<span class="ident">Status</span><span class="op">&gt;</span>;
-        <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot; This requires the \&quot;channels.manage.create\&quot; permission.&quot;</span>]</span>
         <span class="ident">async</span> <span class="kw">fn</span> <span class="ident">create_channel</span>(
             <span class="kw-2">&amp;</span><span class="self">self</span>,
             <span class="ident">request</span>: <span class="ident">tonic</span>::<span class="ident">Request</span><span class="op">&lt;</span><span class="kw">super</span>::<span class="ident">CreateChannelRequest</span><span class="op">&gt;</span>,
@@ -5341,18 +5400,15 @@
             <span class="kw-2">&amp;</span><span class="self">self</span>,
             <span class="ident">request</span>: <span class="ident">tonic</span>::<span class="ident">Request</span><span class="op">&lt;</span><span class="kw">super</span>::<span class="ident">GetGuildMembersRequest</span><span class="op">&gt;</span>,
         ) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">tonic</span>::<span class="ident">Response</span><span class="op">&lt;</span><span class="kw">super</span>::<span class="ident">GetGuildMembersResponse</span><span class="op">&gt;</span>, <span class="ident">tonic</span>::<span class="ident">Status</span><span class="op">&gt;</span>;
-        <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot; You will only be informed of channels you have the \&quot;messages.view\&quot;&quot;</span>]</span>
-        <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot; permission for.&quot;</span>]</span>
+        <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot; You will only be informed of channels you have the \&quot;messages.view\&quot; permission for.&quot;</span>]</span>
         <span class="ident">async</span> <span class="kw">fn</span> <span class="ident">get_guild_channels</span>(
             <span class="kw-2">&amp;</span><span class="self">self</span>,
             <span class="ident">request</span>: <span class="ident">tonic</span>::<span class="ident">Request</span><span class="op">&lt;</span><span class="kw">super</span>::<span class="ident">GetGuildChannelsRequest</span><span class="op">&gt;</span>,
         ) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">tonic</span>::<span class="ident">Response</span><span class="op">&lt;</span><span class="kw">super</span>::<span class="ident">GetGuildChannelsResponse</span><span class="op">&gt;</span>, <span class="ident">tonic</span>::<span class="ident">Status</span><span class="op">&gt;</span>;
-        <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot; This requires the \&quot;messages.view\&quot; permission.&quot;</span>]</span>
         <span class="ident">async</span> <span class="kw">fn</span> <span class="ident">get_channel_messages</span>(
             <span class="kw-2">&amp;</span><span class="self">self</span>,
             <span class="ident">request</span>: <span class="ident">tonic</span>::<span class="ident">Request</span><span class="op">&lt;</span><span class="kw">super</span>::<span class="ident">GetChannelMessagesRequest</span><span class="op">&gt;</span>,
         ) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">tonic</span>::<span class="ident">Response</span><span class="op">&lt;</span><span class="kw">super</span>::<span class="ident">GetChannelMessagesResponse</span><span class="op">&gt;</span>, <span class="ident">tonic</span>::<span class="ident">Status</span><span class="op">&gt;</span>;
-        <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot; This requires the \&quot;messages.view\&quot; permission.&quot;</span>]</span>
         <span class="ident">async</span> <span class="kw">fn</span> <span class="ident">get_message</span>(
             <span class="kw-2">&amp;</span><span class="self">self</span>,
             <span class="ident">request</span>: <span class="ident">tonic</span>::<span class="ident">Request</span><span class="op">&lt;</span><span class="kw">super</span>::<span class="ident">GetMessageRequest</span><span class="op">&gt;</span>,
@@ -5365,22 +5421,18 @@
             <span class="kw-2">&amp;</span><span class="self">self</span>,
             <span class="ident">request</span>: <span class="ident">tonic</span>::<span class="ident">Request</span><span class="op">&lt;</span><span class="kw">super</span>::<span class="ident">GetEmotePackEmotesRequest</span><span class="op">&gt;</span>,
         ) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">tonic</span>::<span class="ident">Response</span><span class="op">&lt;</span><span class="kw">super</span>::<span class="ident">GetEmotePackEmotesResponse</span><span class="op">&gt;</span>, <span class="ident">tonic</span>::<span class="ident">Status</span><span class="op">&gt;</span>;
-        <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot; This requires the \&quot;guild.manage.change-information\&quot; permission.&quot;</span>]</span>
         <span class="ident">async</span> <span class="kw">fn</span> <span class="ident">update_guild_information</span>(
             <span class="kw-2">&amp;</span><span class="self">self</span>,
             <span class="ident">request</span>: <span class="ident">tonic</span>::<span class="ident">Request</span><span class="op">&lt;</span><span class="kw">super</span>::<span class="ident">UpdateGuildInformationRequest</span><span class="op">&gt;</span>,
         ) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">tonic</span>::<span class="ident">Response</span><span class="op">&lt;</span>()<span class="op">&gt;</span>, <span class="ident">tonic</span>::<span class="ident">Status</span><span class="op">&gt;</span>;
-        <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot; This requires the \&quot;channels.manage.change-information\&quot; permission.&quot;</span>]</span>
         <span class="ident">async</span> <span class="kw">fn</span> <span class="ident">update_channel_information</span>(
             <span class="kw-2">&amp;</span><span class="self">self</span>,
             <span class="ident">request</span>: <span class="ident">tonic</span>::<span class="ident">Request</span><span class="op">&lt;</span><span class="kw">super</span>::<span class="ident">UpdateChannelInformationRequest</span><span class="op">&gt;</span>,
         ) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">tonic</span>::<span class="ident">Response</span><span class="op">&lt;</span>()<span class="op">&gt;</span>, <span class="ident">tonic</span>::<span class="ident">Status</span><span class="op">&gt;</span>;
-        <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot; This requires the \&quot;channels.manage.move\&quot; permission.&quot;</span>]</span>
         <span class="ident">async</span> <span class="kw">fn</span> <span class="ident">update_channel_order</span>(
             <span class="kw-2">&amp;</span><span class="self">self</span>,
             <span class="ident">request</span>: <span class="ident">tonic</span>::<span class="ident">Request</span><span class="op">&lt;</span><span class="kw">super</span>::<span class="ident">UpdateChannelOrderRequest</span><span class="op">&gt;</span>,
         ) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">tonic</span>::<span class="ident">Response</span><span class="op">&lt;</span>()<span class="op">&gt;</span>, <span class="ident">tonic</span>::<span class="ident">Status</span><span class="op">&gt;</span>;
-        <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot; This requires the \&quot;messages.send\&quot; permission.&quot;</span>]</span>
         <span class="ident">async</span> <span class="kw">fn</span> <span class="ident">update_message</span>(
             <span class="kw-2">&amp;</span><span class="self">self</span>,
             <span class="ident">request</span>: <span class="ident">tonic</span>::<span class="ident">Request</span><span class="op">&lt;</span><span class="kw">super</span>::<span class="ident">UpdateMessageRequest</span><span class="op">&gt;</span>,
@@ -5389,17 +5441,14 @@
             <span class="kw-2">&amp;</span><span class="self">self</span>,
             <span class="ident">request</span>: <span class="ident">tonic</span>::<span class="ident">Request</span><span class="op">&lt;</span><span class="kw">super</span>::<span class="ident">AddEmoteToPackRequest</span><span class="op">&gt;</span>,
         ) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">tonic</span>::<span class="ident">Response</span><span class="op">&lt;</span>()<span class="op">&gt;</span>, <span class="ident">tonic</span>::<span class="ident">Status</span><span class="op">&gt;</span>;
-        <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot; This requires the \&quot;guild.manage.delete\&quot; permission.&quot;</span>]</span>
         <span class="ident">async</span> <span class="kw">fn</span> <span class="ident">delete_guild</span>(
             <span class="kw-2">&amp;</span><span class="self">self</span>,
             <span class="ident">request</span>: <span class="ident">tonic</span>::<span class="ident">Request</span><span class="op">&lt;</span><span class="kw">super</span>::<span class="ident">DeleteGuildRequest</span><span class="op">&gt;</span>,
         ) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">tonic</span>::<span class="ident">Response</span><span class="op">&lt;</span>()<span class="op">&gt;</span>, <span class="ident">tonic</span>::<span class="ident">Status</span><span class="op">&gt;</span>;
-        <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot; This requires the \&quot;invites.manage.delete\&quot; permission.&quot;</span>]</span>
         <span class="ident">async</span> <span class="kw">fn</span> <span class="ident">delete_invite</span>(
             <span class="kw-2">&amp;</span><span class="self">self</span>,
             <span class="ident">request</span>: <span class="ident">tonic</span>::<span class="ident">Request</span><span class="op">&lt;</span><span class="kw">super</span>::<span class="ident">DeleteInviteRequest</span><span class="op">&gt;</span>,
         ) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">tonic</span>::<span class="ident">Response</span><span class="op">&lt;</span>()<span class="op">&gt;</span>, <span class="ident">tonic</span>::<span class="ident">Status</span><span class="op">&gt;</span>;
-        <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot; This requires the \&quot;channels.manage.delete\&quot; permission.&quot;</span>]</span>
         <span class="ident">async</span> <span class="kw">fn</span> <span class="ident">delete_channel</span>(
             <span class="kw-2">&amp;</span><span class="self">self</span>,
             <span class="ident">request</span>: <span class="ident">tonic</span>::<span class="ident">Request</span><span class="op">&lt;</span><span class="kw">super</span>::<span class="ident">DeleteChannelRequest</span><span class="op">&gt;</span>,
@@ -5430,63 +5479,50 @@
             <span class="kw-2">&amp;</span><span class="self">self</span>,
             <span class="ident">request</span>: <span class="ident">tonic</span>::<span class="ident">Request</span><span class="op">&lt;</span><span class="kw">super</span>::<span class="ident">LeaveGuildRequest</span><span class="op">&gt;</span>,
         ) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">tonic</span>::<span class="ident">Response</span><span class="op">&lt;</span>()<span class="op">&gt;</span>, <span class="ident">tonic</span>::<span class="ident">Status</span><span class="op">&gt;</span>;
-        <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot; This requires the \&quot;actions.trigger\&quot; permission.&quot;</span>]</span>
         <span class="ident">async</span> <span class="kw">fn</span> <span class="ident">trigger_action</span>(
             <span class="kw-2">&amp;</span><span class="self">self</span>,
             <span class="ident">request</span>: <span class="ident">tonic</span>::<span class="ident">Request</span><span class="op">&lt;</span><span class="kw">super</span>::<span class="ident">TriggerActionRequest</span><span class="op">&gt;</span>,
         ) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">tonic</span>::<span class="ident">Response</span><span class="op">&lt;</span>()<span class="op">&gt;</span>, <span class="ident">tonic</span>::<span class="ident">Status</span><span class="op">&gt;</span>;
-        <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot; This requires the \&quot;messages.send\&quot; permission.&quot;</span>]</span>
         <span class="ident">async</span> <span class="kw">fn</span> <span class="ident">send_message</span>(
             <span class="kw-2">&amp;</span><span class="self">self</span>,
             <span class="ident">request</span>: <span class="ident">tonic</span>::<span class="ident">Request</span><span class="op">&lt;</span><span class="kw">super</span>::<span class="ident">SendMessageRequest</span><span class="op">&gt;</span>,
         ) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">tonic</span>::<span class="ident">Response</span><span class="op">&lt;</span><span class="kw">super</span>::<span class="ident">SendMessageResponse</span><span class="op">&gt;</span>, <span class="ident">tonic</span>::<span class="ident">Status</span><span class="op">&gt;</span>;
-        <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot; This requires the \&quot;permissions.query\&quot; permission if you specify the As&quot;</span>]</span>
-        <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot; field.&quot;</span>]</span>
         <span class="ident">async</span> <span class="kw">fn</span> <span class="ident">query_has_permission</span>(
             <span class="kw-2">&amp;</span><span class="self">self</span>,
             <span class="ident">request</span>: <span class="ident">tonic</span>::<span class="ident">Request</span><span class="op">&lt;</span><span class="kw">super</span>::<span class="ident">QueryPermissionsRequest</span><span class="op">&gt;</span>,
         ) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">tonic</span>::<span class="ident">Response</span><span class="op">&lt;</span><span class="kw">super</span>::<span class="ident">QueryPermissionsResponse</span><span class="op">&gt;</span>, <span class="ident">tonic</span>::<span class="ident">Status</span><span class="op">&gt;</span>;
-        <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot; This requires the \&quot;permissions.manage.set\&quot; permission.&quot;</span>]</span>
         <span class="ident">async</span> <span class="kw">fn</span> <span class="ident">set_permissions</span>(
             <span class="kw-2">&amp;</span><span class="self">self</span>,
             <span class="ident">request</span>: <span class="ident">tonic</span>::<span class="ident">Request</span><span class="op">&lt;</span><span class="kw">super</span>::<span class="ident">SetPermissionsRequest</span><span class="op">&gt;</span>,
         ) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">tonic</span>::<span class="ident">Response</span><span class="op">&lt;</span>()<span class="op">&gt;</span>, <span class="ident">tonic</span>::<span class="ident">Status</span><span class="op">&gt;</span>;
-        <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot; This requires the \&quot;permissions.manage.get\&quot; permission.&quot;</span>]</span>
         <span class="ident">async</span> <span class="kw">fn</span> <span class="ident">get_permissions</span>(
             <span class="kw-2">&amp;</span><span class="self">self</span>,
             <span class="ident">request</span>: <span class="ident">tonic</span>::<span class="ident">Request</span><span class="op">&lt;</span><span class="kw">super</span>::<span class="ident">GetPermissionsRequest</span><span class="op">&gt;</span>,
         ) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">tonic</span>::<span class="ident">Response</span><span class="op">&lt;</span><span class="kw">super</span>::<span class="ident">GetPermissionsResponse</span><span class="op">&gt;</span>, <span class="ident">tonic</span>::<span class="ident">Status</span><span class="op">&gt;</span>;
-        <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot; This requires the \&quot;roles.manage\&quot; permission.&quot;</span>]</span>
         <span class="ident">async</span> <span class="kw">fn</span> <span class="ident">move_role</span>(
             <span class="kw-2">&amp;</span><span class="self">self</span>,
             <span class="ident">request</span>: <span class="ident">tonic</span>::<span class="ident">Request</span><span class="op">&lt;</span><span class="kw">super</span>::<span class="ident">MoveRoleRequest</span><span class="op">&gt;</span>,
         ) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">tonic</span>::<span class="ident">Response</span><span class="op">&lt;</span><span class="kw">super</span>::<span class="ident">MoveRoleResponse</span><span class="op">&gt;</span>, <span class="ident">tonic</span>::<span class="ident">Status</span><span class="op">&gt;</span>;
-        <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot; This requires the \&quot;roles.get\&quot; permission.&quot;</span>]</span>
         <span class="ident">async</span> <span class="kw">fn</span> <span class="ident">get_guild_roles</span>(
             <span class="kw-2">&amp;</span><span class="self">self</span>,
             <span class="ident">request</span>: <span class="ident">tonic</span>::<span class="ident">Request</span><span class="op">&lt;</span><span class="kw">super</span>::<span class="ident">GetGuildRolesRequest</span><span class="op">&gt;</span>,
         ) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">tonic</span>::<span class="ident">Response</span><span class="op">&lt;</span><span class="kw">super</span>::<span class="ident">GetGuildRolesResponse</span><span class="op">&gt;</span>, <span class="ident">tonic</span>::<span class="ident">Status</span><span class="op">&gt;</span>;
-        <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot; This requires the \&quot;roles.manage\&quot; permission.&quot;</span>]</span>
         <span class="ident">async</span> <span class="kw">fn</span> <span class="ident">add_guild_role</span>(
             <span class="kw-2">&amp;</span><span class="self">self</span>,
             <span class="ident">request</span>: <span class="ident">tonic</span>::<span class="ident">Request</span><span class="op">&lt;</span><span class="kw">super</span>::<span class="ident">AddGuildRoleRequest</span><span class="op">&gt;</span>,
         ) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">tonic</span>::<span class="ident">Response</span><span class="op">&lt;</span><span class="kw">super</span>::<span class="ident">AddGuildRoleResponse</span><span class="op">&gt;</span>, <span class="ident">tonic</span>::<span class="ident">Status</span><span class="op">&gt;</span>;
-        <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot; This requires the \&quot;roles.manage\&quot; permission.&quot;</span>]</span>
         <span class="ident">async</span> <span class="kw">fn</span> <span class="ident">modify_guild_role</span>(
             <span class="kw-2">&amp;</span><span class="self">self</span>,
             <span class="ident">request</span>: <span class="ident">tonic</span>::<span class="ident">Request</span><span class="op">&lt;</span><span class="kw">super</span>::<span class="ident">ModifyGuildRoleRequest</span><span class="op">&gt;</span>,
         ) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">tonic</span>::<span class="ident">Response</span><span class="op">&lt;</span>()<span class="op">&gt;</span>, <span class="ident">tonic</span>::<span class="ident">Status</span><span class="op">&gt;</span>;
-        <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot; This requires the \&quot;roles.manage\&quot; permission.&quot;</span>]</span>
         <span class="ident">async</span> <span class="kw">fn</span> <span class="ident">delete_guild_role</span>(
             <span class="kw-2">&amp;</span><span class="self">self</span>,
             <span class="ident">request</span>: <span class="ident">tonic</span>::<span class="ident">Request</span><span class="op">&lt;</span><span class="kw">super</span>::<span class="ident">DeleteGuildRoleRequest</span><span class="op">&gt;</span>,
         ) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">tonic</span>::<span class="ident">Response</span><span class="op">&lt;</span>()<span class="op">&gt;</span>, <span class="ident">tonic</span>::<span class="ident">Status</span><span class="op">&gt;</span>;
-        <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot; This requires the \&quot;roles.users.manage\&quot; permission.&quot;</span>]</span>
         <span class="ident">async</span> <span class="kw">fn</span> <span class="ident">manage_user_roles</span>(
             <span class="kw-2">&amp;</span><span class="self">self</span>,
             <span class="ident">request</span>: <span class="ident">tonic</span>::<span class="ident">Request</span><span class="op">&lt;</span><span class="kw">super</span>::<span class="ident">ManageUserRolesRequest</span><span class="op">&gt;</span>,
         ) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">tonic</span>::<span class="ident">Response</span><span class="op">&lt;</span>()<span class="op">&gt;</span>, <span class="ident">tonic</span>::<span class="ident">Status</span><span class="op">&gt;</span>;
-        <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot; This requires the \&quot;roles.users.get\&quot; permission.&quot;</span>]</span>
         <span class="ident">async</span> <span class="kw">fn</span> <span class="ident">get_user_roles</span>(
             <span class="kw-2">&amp;</span><span class="self">self</span>,
             <span class="ident">request</span>: <span class="ident">tonic</span>::<span class="ident">Request</span><span class="op">&lt;</span><span class="kw">super</span>::<span class="ident">GetUserRolesRequest</span><span class="op">&gt;</span>,
@@ -5500,6 +5536,15 @@
             <span class="kw-2">&amp;</span><span class="self">self</span>,
             <span class="ident">request</span>: <span class="ident">tonic</span>::<span class="ident">Request</span><span class="op">&lt;</span><span class="ident">tonic</span>::<span class="ident">Streaming</span><span class="op">&lt;</span><span class="kw">super</span>::<span class="ident">StreamEventsRequest</span><span class="op">&gt;</span><span class="op">&gt;</span>,
         ) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">tonic</span>::<span class="ident">Response</span><span class="op">&lt;</span><span class="self">Self</span>::<span class="ident">StreamEventsStream</span><span class="op">&gt;</span>, <span class="ident">tonic</span>::<span class="ident">Status</span><span class="op">&gt;</span>;
+        <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot;Server streaming response type for the Sync method.&quot;</span>]</span>
+        <span class="kw">type</span> <span class="ident">SyncStream</span>: <span class="ident">Stream</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="kw">super</span>::<span class="ident">SyncEvent</span>, <span class="ident">tonic</span>::<span class="ident">Status</span><span class="op">&gt;</span><span class="op">&gt;</span>
+            <span class="op">+</span> <span class="ident">Send</span>
+            <span class="op">+</span> <span class="ident">Sync</span>
+            <span class="op">+</span> <span class="lifetime">&#39;static</span>;
+        <span class="ident">async</span> <span class="kw">fn</span> <span class="ident">sync</span>(
+            <span class="kw-2">&amp;</span><span class="self">self</span>,
+            <span class="ident">request</span>: <span class="ident">tonic</span>::<span class="ident">Request</span><span class="op">&lt;</span><span class="kw">super</span>::<span class="ident">SyncRequest</span><span class="op">&gt;</span>,
+        ) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">tonic</span>::<span class="ident">Response</span><span class="op">&lt;</span><span class="self">Self</span>::<span class="ident">SyncStream</span><span class="op">&gt;</span>, <span class="ident">tonic</span>::<span class="ident">Status</span><span class="op">&gt;</span>;
         <span class="ident">async</span> <span class="kw">fn</span> <span class="ident">get_user</span>(
             <span class="kw-2">&amp;</span><span class="self">self</span>,
             <span class="ident">request</span>: <span class="ident">tonic</span>::<span class="ident">Request</span><span class="op">&lt;</span><span class="kw">super</span>::<span class="ident">GetUserRequest</span><span class="op">&gt;</span>,
@@ -6933,6 +6978,39 @@
                             <span class="ident">tonic</span>::<span class="ident">server</span>::<span class="ident">Grpc</span>::<span class="ident">new</span>(<span class="ident">codec</span>)
                         };
                         <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="ident">grpc</span>.<span class="ident">streaming</span>(<span class="ident">method</span>, <span class="ident">req</span>).<span class="ident">await</span>;
+                        <span class="prelude-val">Ok</span>(<span class="ident">res</span>)
+                    };
+                    <span class="ident">Box</span>::<span class="ident">pin</span>(<span class="ident">fut</span>)
+                }
+                <span class="string">&quot;/protocol.chat.v1.ChatService/Sync&quot;</span> <span class="op">=</span><span class="op">&gt;</span> {
+                    <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">non_camel_case_types</span>)]</span>
+                    <span class="kw">struct</span> <span class="ident">SyncSvc</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">ChatService</span><span class="op">&gt;</span>(<span class="kw">pub</span> <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>);
+                    <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">ChatService</span><span class="op">&gt;</span> <span class="ident">tonic</span>::<span class="ident">server</span>::<span class="ident">ServerStreamingService</span><span class="op">&lt;</span><span class="kw">super</span>::<span class="ident">SyncRequest</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">SyncSvc</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
+                        <span class="kw">type</span> <span class="ident">Response</span> <span class="op">=</span> <span class="kw">super</span>::<span class="ident">SyncEvent</span>;
+                        <span class="kw">type</span> <span class="ident">ResponseStream</span> <span class="op">=</span> <span class="ident">T</span>::<span class="ident">SyncStream</span>;
+                        <span class="kw">type</span> <span class="ident">Future</span> <span class="op">=</span>
+                            <span class="ident">BoxFuture</span><span class="op">&lt;</span><span class="ident">tonic</span>::<span class="ident">Response</span><span class="op">&lt;</span><span class="self">Self</span>::<span class="ident">ResponseStream</span><span class="op">&gt;</span>, <span class="ident">tonic</span>::<span class="ident">Status</span><span class="op">&gt;</span>;
+                        <span class="kw">fn</span> <span class="ident">call</span>(
+                            <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
+                            <span class="ident">request</span>: <span class="ident">tonic</span>::<span class="ident">Request</span><span class="op">&lt;</span><span class="kw">super</span>::<span class="ident">SyncRequest</span><span class="op">&gt;</span>,
+                        ) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span>::<span class="ident">Future</span> {
+                            <span class="kw">let</span> <span class="ident">inner</span> <span class="op">=</span> <span class="self">self</span>.<span class="number">0</span>.<span class="ident">clone</span>();
+                            <span class="kw">let</span> <span class="ident">fut</span> <span class="op">=</span> <span class="ident">async</span> <span class="kw">move</span> { (<span class="kw-2">*</span><span class="ident">inner</span>).<span class="ident">sync</span>(<span class="ident">request</span>).<span class="ident">await</span> };
+                            <span class="ident">Box</span>::<span class="ident">pin</span>(<span class="ident">fut</span>)
+                        }
+                    }
+                    <span class="kw">let</span> <span class="ident">inner</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">clone</span>();
+                    <span class="kw">let</span> <span class="ident">fut</span> <span class="op">=</span> <span class="ident">async</span> <span class="kw">move</span> {
+                        <span class="kw">let</span> <span class="ident">interceptor</span> <span class="op">=</span> <span class="ident">inner</span>.<span class="number">1</span>;
+                        <span class="kw">let</span> <span class="ident">inner</span> <span class="op">=</span> <span class="ident">inner</span>.<span class="number">0</span>;
+                        <span class="kw">let</span> <span class="ident">method</span> <span class="op">=</span> <span class="ident">SyncSvc</span>(<span class="ident">inner</span>);
+                        <span class="kw">let</span> <span class="ident">codec</span> <span class="op">=</span> <span class="ident">tonic</span>::<span class="ident">codec</span>::<span class="ident">ProstCodec</span>::<span class="ident">default</span>();
+                        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">grpc</span> <span class="op">=</span> <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">interceptor</span>) <span class="op">=</span> <span class="ident">interceptor</span> {
+                            <span class="ident">tonic</span>::<span class="ident">server</span>::<span class="ident">Grpc</span>::<span class="ident">with_interceptor</span>(<span class="ident">codec</span>, <span class="ident">interceptor</span>)
+                        } <span class="kw">else</span> {
+                            <span class="ident">tonic</span>::<span class="ident">server</span>::<span class="ident">Grpc</span>::<span class="ident">new</span>(<span class="ident">codec</span>)
+                        };
+                        <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="ident">grpc</span>.<span class="ident">server_streaming</span>(<span class="ident">method</span>, <span class="ident">req</span>).<span class="ident">await</span>;
                         <span class="prelude-val">Ok</span>(<span class="ident">res</span>)
                     };
                     <span class="ident">Box</span>::<span class="ident">pin</span>(<span class="ident">fut</span>)
