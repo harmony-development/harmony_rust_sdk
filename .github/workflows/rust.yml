@@ -14,7 +14,7 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  check:
+  all:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout repo
@@ -36,7 +36,7 @@ jobs:
           ~/.cargo/registry
           ~/.cargo/git
           ./target
-        key: cargo-${{ runner.os }}-${{ github.sha }}-${{ github.job }}
+        key: cargo-${{ runner.os }}-${{ github.sha }}
         restore-keys: cargo-${{ runner.os }}-
         
     - name: Check
@@ -47,89 +47,11 @@ jobs:
         token: ${{ secrets.GITHUB_TOKEN }}
         args: --all-targets --all-features
 
-  compile:
-    needs: check
-    runs-on: ubuntu-latest
-    steps:
-    - name: Checkout repo
-      uses: actions/checkout@v2
-    - name: Checkout submodules
-      uses: textbook/git-checkout-submodule-action@master
-
-    - name: Install dependencies
-      run: |
-        sudo apt update -yy
-        sudo apt install -yy --no-install-recommends protobuf-compiler protobuf-compiler-grpc
-    - name: Install rust
-      run: rustup default stable && rustup update
-
-    - name: Cache Rust artifacts
-      uses: actions/cache@v2
-      with:
-        path: |
-          ~/.cargo/registry
-          ~/.cargo/git
-          ./target
-        key: cargo-${{ runner.os }}-${{ github.sha }}-${{ github.job }}
-        restore-keys: cargo-${{ runner.os }}-
-
     - name: Build
       run: cargo build --all-targets --all-features --verbose
 
-  tests:
-    needs: compile
-    runs-on: ubuntu-latest
-    steps:
-    - name: Checkout repo
-      uses: actions/checkout@v2
-    - name: Checkout submodules
-      uses: textbook/git-checkout-submodule-action@master
-
-    - name: Install dependencies
-      run: |
-        sudo apt update -yy
-        sudo apt install -yy --no-install-recommends protobuf-compiler protobuf-compiler-grpc
-    - name: Install rust
-      run: rustup default stable && rustup update
-
-    - name: Cache Rust artifacts
-      uses: actions/cache@v2
-      with:
-        path: |
-          ~/.cargo/registry
-          ~/.cargo/git
-          ./target
-        key: cargo-${{ runner.os }}-${{ github.sha }}-${{ github.job }}
-        restore-keys: cargo-${{ runner.os }}-
-
     - name: Test
       run: RUST_LOG=info cargo test --all-features --verbose
-
-  docs:
-    needs: compile
-    runs-on: ubuntu-latest
-    steps:
-    - name: Checkout repo
-      uses: actions/checkout@v2
-    - name: Checkout submodules
-      uses: textbook/git-checkout-submodule-action@master
-
-    - name: Install dependencies
-      run: |
-        sudo apt update -yy
-        sudo apt install -yy --no-install-recommends protobuf-compiler protobuf-compiler-grpc
-    - name: Install rust
-      run: rustup default stable && rustup update
-
-    - name: Cache Rust artifacts
-      uses: actions/cache@v2
-      with:
-        path: |
-          ~/.cargo/registry
-          ~/.cargo/git
-          ./target
-        key: cargo-${{ runner.os }}-${{ github.sha }}-${{ github.job }}
-        restore-keys: cargo-${{ runner.os }}-
     
     - name: Doc
       run: cargo doc --no-deps --all-features --verbose
