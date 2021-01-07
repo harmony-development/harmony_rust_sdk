@@ -28,16 +28,6 @@ jobs:
         sudo apt install -yy --no-install-recommends protobuf-compiler protobuf-compiler-grpc
     - name: Install rust
       run: rustup default stable && rustup update
-
-    - name: Cache Rust artifacts
-      uses: actions/cache@v2
-      with:
-        path: |
-          ~/.cargo/registry
-          ~/.cargo/git
-          ./target
-        key: cargo-${{ runner.os }}-${{ github.sha }}
-        restore-keys: cargo-${{ runner.os }}-
         
     - name: Check
       run: cargo check --all-targets --all-features --verbose
