@@ -8,6 +8,7 @@ pub mod api;
 pub mod error;
 
 pub use crate::api::auth::Session;
+use assign::assign;
 pub use error::*;
 
 /// Some crates exported for user convenience.
@@ -23,7 +24,7 @@ use crate::api::{
 use api::{auth::*, chat::EventSource};
 
 use futures_util::{future, stream::Stream, StreamExt, TryStreamExt};
-use http::Uri;
+use http::{uri::PathAndQuery, Uri};
 #[cfg(feature = "use_parking_lot")]
 use parking_lot::{Mutex, MutexGuard};
 use reqwest::Client as HttpClient;
@@ -95,27 +96,65 @@ impl Client {
     /// # }
     /// ```
     pub async fn new(mut homeserver_url: Uri, session: Option<Session>) -> ClientResult<Self> {
+        // Add the default scheme if not specified
+        if homeserver_url.scheme().is_none() {
+            let parts = homeserver_url.into_parts();
+
+            homeserver_url = Uri::builder()
+                .scheme("https")
+                .authority(parts.authority.unwrap())
+                .path_and_query(
+                    parts
+                        .path_and_query
+                        .unwrap_or_else(|| PathAndQuery::from_static("")),
+                )
+                .build()
+                .unwrap();
+        }
+
+        let http = HttpClient::builder().build()?;
+
+        // If no port specified, attempt to name res
+        if homeserver_url.port().is_none() {
+            use serde::Deserialize;
+
+            #[derive(Deserialize)]
+            struct Server {
+                #[serde(rename(deserialize = "h.server"))]
+                server: String,
+            }
+
+            let uri = Uri::from_parts(assign!(
+                homeserver_url.clone().into_parts(),
+                {
+                    path_and_query: Some(PathAndQuery::from_static("/_harmony/server"))
+                }
+            ))
+            .unwrap();
+
+            if let Ok(response) = http
+                .get(&uri.to_string())
+                .send()
+                .await?
+                .json::<Server>()
+                .await
+            {
+                let host: Uri = response.server.parse().unwrap();
+                homeserver_url = host;
+            }
+        };
+
         // Add the default port if not specified
-        homeserver_url = if let (None, Some(authority)) =
-            (homeserver_url.port(), homeserver_url.authority())
-        {
+        if let (None, Some(authority)) = (homeserver_url.port(), homeserver_url.authority()) {
             let new_authority = format!("{}:2289", authority);
 
             // These unwraps are safe since we use `Uri` everywhere and we are sure that our `new_authority` is
             // indeed a correct authority.
-            Uri::from_parts(
-                assign::assign!(homeserver_url.into_parts(), { authority: Some(new_authority.parse().unwrap()) }),
-            ).unwrap()
-        } else {
-            homeserver_url
-        };
-
-        // Add the default scheme if not specified
-        homeserver_url = if homeserver_url.scheme().is_none() {
-            Uri::from_parts(assign::assign!(homeserver_url.into_parts(), { scheme: Some("https".parse().unwrap()) })).unwrap()
-        } else {
-            homeserver_url
-        };
+            homeserver_url = Uri::from_parts(
+                assign!(homeserver_url.into_parts(), { authority: Some(new_authority.parse().unwrap()) }),
+            )
+            .unwrap();
+        }
 
         log::debug!(
             "Using homeserver URL {} with session {:?} to create a `Client`",
@@ -142,7 +181,7 @@ impl Client {
             chat: Mutex::new(chat),
             auth: Mutex::new(auth),
             mediaproxy: Mutex::new(mediaproxy),
-            http: HttpClient::builder().build()?,
+            http,
         };
 
         Ok(Self {
@@ -151,39 +190,47 @@ impl Client {
     }
 
     fn chat_lock(&self) -> MutexGuard<ChatService> {
-        let lock = self.data.chat.lock();
-
         #[cfg(not(feature = "use_parking_lot"))]
-        return lock.expect("chat service mutex was poisoned");
+        return self
+            .data
+            .chat
+            .lock()
+            .expect("chat service mutex was poisoned");
         #[cfg(feature = "use_parking_lot")]
-        lock
+        self.data.chat.lock()
     }
 
     fn auth_lock(&self) -> MutexGuard<AuthService> {
-        let lock = self.data.auth.lock();
-
         #[cfg(not(feature = "use_parking_lot"))]
-        return lock.expect("auth service mutex was poisoned");
+        return self
+            .data
+            .auth
+            .lock()
+            .expect("auth service mutex was poisoned");
         #[cfg(feature = "use_parking_lot")]
-        lock
+        self.data.auth.lock()
     }
 
     fn mediaproxy_lock(&self) -> MutexGuard<MediaProxyService> {
-        let lock = self.data.mediaproxy.lock();
-
         #[cfg(not(feature = "use_parking_lot"))]
-        return lock.expect("media proxy service mutex was poisoned");
+        return self
+            .data
+            .mediaproxy
+            .lock()
+            .expect("media proxy service mutex was poisoned");
         #[cfg(feature = "use_parking_lot")]
-        lock
+        self.data.mediaproxy.lock()
     }
 
     fn auth_status_lock(&self) -> MutexGuard<AuthStatus> {
-        let lock = self.data.auth_status.lock();
-
         #[cfg(not(feature = "use_parking_lot"))]
-        return lock.expect("auth status mutex was poisoned");
+        return self
+            .data
+            .auth_status
+            .lock()
+            .expect("auth status mutex was poisoned");
         #[cfg(feature = "use_parking_lot")]
-        lock
+        self.data.auth_status.lock()
     }
 
     /// Get the current auth status.
@@ -260,7 +307,7 @@ impl Client {
             .filter_map(|result| {
                 // Remove items which dont have an event
                 future::ready(match result {
-                    Ok(maybe_event) => maybe_event.map_or(None, |event| Some(Ok(event))),
+                    Ok(maybe_event) => maybe_event.map(Ok),
                     Err(err) => Some(Err(err)),
                 })
             }))

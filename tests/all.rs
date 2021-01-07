@@ -7,7 +7,8 @@ use http::Uri;
 const EMAIL: &str = "rust_sdk_test@example.org";
 const PASSWORD: &str = "123456789Ab";
 
-const TEST_SERVER: &str = "https://chat.harmonyapp.io:2289";
+const TEST_SERVER: &str = "chat.harmonyapp.io:2289";
+const TEST_SERVER_NAME_RES: &str = "chat.harmonyapp.io";
 const TEST_GUILD: u64 = 2699074975217745925;
 const TEST_CHANNEL: u64 = 2700365654061481989;
 
@@ -20,9 +21,16 @@ const FILE_ID: &str = "403cb46c-49cf-4ae1-b876-f38eb26accb0";
 async fn main() -> ClientResult<()> {
     env_logger::init();
 
+    {
+        log::info!("Testing name resolution...");
+        Client::new(Uri::from_static(TEST_SERVER_NAME_RES), None).await?;
+    }
+
+    log::info!("Testing client connection...");
     let client = Client::new(Uri::from_static(TEST_SERVER), None).await?;
     log::info!("Created client");
 
+    log::info!("Testing auth...");
     client.begin_auth().await?;
     client.next_auth_step(AuthStepResponse::Initial).await?;
     client
@@ -34,6 +42,7 @@ async fn main() -> ClientResult<()> {
     assert_eq!(client.auth_status().is_authenticated(), true);
     log::info!("Logged in");
 
+    log::info!("Testing profile update...");
     api::chat::profile::profile_update(
         &client,
         None,

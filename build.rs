@@ -1,6 +1,4 @@
 fn main() {
-    let out_dir = std::path::PathBuf::from(std::env::var_os("OUT_DIR").unwrap());
-
     #[allow(unused_mut)]
     let mut builder = tonic_build::configure();
     #[cfg(not(feature = "gen_server"))]
@@ -32,6 +30,7 @@ fn main() {
         .unwrap();
     #[cfg(feature = "gen_client")]
     {
+        let out_dir = std::path::PathBuf::from(std::env::var_os("OUT_DIR").unwrap());
         // Patch voice generated code
         let voice_gen_path = out_dir.join("protocol.voice.v1.rs");
         let voice_gen = std::fs::read_to_string(&voice_gen_path).unwrap();

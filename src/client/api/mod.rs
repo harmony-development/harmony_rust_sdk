@@ -31,6 +31,7 @@ macro_rules! client_api {
     } => {
         paste::paste! {
             $(#[$meta])*
+            #[allow(clippy::too_many_arguments)]
             pub async fn $fn_name (client: &Client, $( $arg_name: $arg_type, )*) -> ClientResult<$resp> {
                     let mut request = Request::new($req);
 

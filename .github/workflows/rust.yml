@@ -103,7 +103,7 @@ jobs:
         restore-keys: cargo-${{ runner.os }}-
 
     - name: Test
-      run: cargo test --all-features --verbose
+      run: RUST_LOG=info cargo test --all-features --verbose
 
   docs:
     needs: compile
