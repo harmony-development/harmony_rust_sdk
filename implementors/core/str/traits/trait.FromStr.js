@@ -1,9 +1,0 @@
-(function() {var implementors = {};
-implementors["http"] = [{"text":"impl FromStr for HeaderName","synthetic":false,"types":[]},{"text":"impl FromStr for HeaderValue","synthetic":false,"types":[]},{"text":"impl FromStr for Method","synthetic":false,"types":[]},{"text":"impl FromStr for StatusCode","synthetic":false,"types":[]},{"text":"impl FromStr for Authority","synthetic":false,"types":[]},{"text":"impl FromStr for PathAndQuery","synthetic":false,"types":[]},{"text":"impl FromStr for Scheme","synthetic":false,"types":[]},{"text":"impl FromStr for Uri","synthetic":false,"types":[]}];
-implementors["httpdate"] = [{"text":"impl FromStr for HttpDate","synthetic":false,"types":[]}];
-implementors["hyper"] = [{"text":"impl FromStr for Name","synthetic":false,"types":[]}];
-implementors["log"] = [{"text":"impl FromStr for Level","synthetic":false,"types":[]},{"text":"impl FromStr for LevelFilter","synthetic":false,"types":[]}];
-implementors["proc_macro2"] = [{"text":"impl FromStr for TokenStream","synthetic":false,"types":[]}];
-implementors["tonic"] = [{"text":"impl&lt;VE:&nbsp;ValueEncoding&gt; FromStr for MetadataKey&lt;VE&gt;","synthetic":false,"types":[]},{"text":"impl FromStr for MetadataValue&lt;Ascii&gt;","synthetic":false,"types":[]}];
-implementors["tracing_core"] = [{"text":"impl FromStr for Level","synthetic":false,"types":[]},{"text":"impl FromStr for LevelFilter","synthetic":false,"types":[]}];
-if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()
