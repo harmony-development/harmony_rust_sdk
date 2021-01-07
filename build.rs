@@ -28,10 +28,13 @@ fn main() {
             &["protocol"],
         )
         .unwrap();
+
+    let out_dir = std::path::PathBuf::from(std::env::var_os("OUT_DIR").unwrap());
     #[cfg(feature = "gen_client")]
     {
-        let out_dir = std::path::PathBuf::from(std::env::var_os("OUT_DIR").unwrap());
-        // Patch voice generated code
+        // Patch voice generated code (only for client)
+        // We patch this because two methods with the same name are generated and prost
+        // doesnt check this.
         let voice_gen_path = out_dir.join("protocol.voice.v1.rs");
         let voice_gen = std::fs::read_to_string(&voice_gen_path).unwrap();
         let patched_voice_gen = voice_gen.replace(
@@ -40,4 +43,12 @@ fn main() {
         );
         std::fs::write(voice_gen_path, patched_voice_gen).unwrap();
     }
+    // Patch chat message event
+    // We patch these because of enum variant size differences, since they will be sent more than any other
+    // event (its a realtime chat platform, so) this should help.
+    let chat_gen_path = out_dir.join("protocol.chat.v1.rs");
+    let chat_gen = std::fs::read_to_string(&chat_gen_path).unwrap();
+    let mut patched_chat_gen = chat_gen.replace("SentMessage(MessageSent),", "SentMessage(Box<MessageSent>),");
+    patched_chat_gen = patched_chat_gen.replace("EditedMessage(MessageUpdated),", "EditedMessage(Box<MessageUpdated>),");
+    std::fs::write(&chat_gen_path, patched_chat_gen).unwrap();
 }

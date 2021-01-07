@@ -167,27 +167,24 @@ mod test {
     #[test]
     #[should_panic(expected = "InvalidId")]
     fn parse_invalid_id_hmc() {
-        match Hmc::try_from(Uri::from_static(INVALID_ID_HMC)) {
-            Err(e) => panic!("{:?}", e),
-            _ => {}
+        if let Err(e) = Hmc::try_from(Uri::from_static(INVALID_ID_HMC)) {
+            panic!("{:?}", e)
         }
     }
 
     #[test]
     #[should_panic(expected = "NoServer")]
     fn parse_no_server_hmc() {
-        match Hmc::try_from(Uri::from_static(NO_SERVER_HMC)) {
-            Err(e) => panic!("{:?}", e),
-            _ => {}
+        if let Err(e) = Hmc::try_from(Uri::from_static(NO_SERVER_HMC)) {
+            panic!("{:?}", e)
         }
     }
 
     #[test]
     #[should_panic(expected = "NoId")]
     fn parse_no_id_hmc() {
-        match Hmc::try_from(Uri::from_static(NO_ID_HMC)) {
-            Err(e) => panic!("{:?}", e),
-            _ => {}
+        if let Err(e) = Hmc::try_from(Uri::from_static(NO_ID_HMC)) {
+            panic!("{:?}", e)
         }
     }
 }
