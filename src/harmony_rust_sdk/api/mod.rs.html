@@ -191,9 +191,6 @@
 <span id="188">188</span>
 <span id="189">189</span>
 <span id="190">190</span>
-<span id="191">191</span>
-<span id="192">192</span>
-<span id="193">193</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="kw">use</span> <span class="ident">http</span>::{<span class="ident">uri</span>::<span class="ident">Authority</span>, <span class="ident">Uri</span>};
 <span class="kw">use</span> <span class="ident">std</span>::{
@@ -364,27 +361,24 @@
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="attribute">#[<span class="ident">should_panic</span>(<span class="ident">expected</span> <span class="op">=</span> <span class="string">&quot;InvalidId&quot;</span>)]</span>
     <span class="kw">fn</span> <span class="ident">parse_invalid_id_hmc</span>() {
-        <span class="kw">match</span> <span class="ident">Hmc</span>::<span class="ident">try_from</span>(<span class="ident">Uri</span>::<span class="ident">from_static</span>(<span class="ident">INVALID_ID_HMC</span>)) {
-            <span class="prelude-val">Err</span>(<span class="ident">e</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="macro">panic</span><span class="macro">!</span>(<span class="string">&quot;{:?}&quot;</span>, <span class="ident">e</span>),
-            <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> {}
+        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Err</span>(<span class="ident">e</span>) <span class="op">=</span> <span class="ident">Hmc</span>::<span class="ident">try_from</span>(<span class="ident">Uri</span>::<span class="ident">from_static</span>(<span class="ident">INVALID_ID_HMC</span>)) {
+            <span class="macro">panic</span><span class="macro">!</span>(<span class="string">&quot;{:?}&quot;</span>, <span class="ident">e</span>)
         }
     }
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="attribute">#[<span class="ident">should_panic</span>(<span class="ident">expected</span> <span class="op">=</span> <span class="string">&quot;NoServer&quot;</span>)]</span>
     <span class="kw">fn</span> <span class="ident">parse_no_server_hmc</span>() {
-        <span class="kw">match</span> <span class="ident">Hmc</span>::<span class="ident">try_from</span>(<span class="ident">Uri</span>::<span class="ident">from_static</span>(<span class="ident">NO_SERVER_HMC</span>)) {
-            <span class="prelude-val">Err</span>(<span class="ident">e</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="macro">panic</span><span class="macro">!</span>(<span class="string">&quot;{:?}&quot;</span>, <span class="ident">e</span>),
-            <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> {}
+        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Err</span>(<span class="ident">e</span>) <span class="op">=</span> <span class="ident">Hmc</span>::<span class="ident">try_from</span>(<span class="ident">Uri</span>::<span class="ident">from_static</span>(<span class="ident">NO_SERVER_HMC</span>)) {
+            <span class="macro">panic</span><span class="macro">!</span>(<span class="string">&quot;{:?}&quot;</span>, <span class="ident">e</span>)
         }
     }
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="attribute">#[<span class="ident">should_panic</span>(<span class="ident">expected</span> <span class="op">=</span> <span class="string">&quot;NoId&quot;</span>)]</span>
     <span class="kw">fn</span> <span class="ident">parse_no_id_hmc</span>() {
-        <span class="kw">match</span> <span class="ident">Hmc</span>::<span class="ident">try_from</span>(<span class="ident">Uri</span>::<span class="ident">from_static</span>(<span class="ident">NO_ID_HMC</span>)) {
-            <span class="prelude-val">Err</span>(<span class="ident">e</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="macro">panic</span><span class="macro">!</span>(<span class="string">&quot;{:?}&quot;</span>, <span class="ident">e</span>),
-            <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> {}
+        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Err</span>(<span class="ident">e</span>) <span class="op">=</span> <span class="ident">Hmc</span>::<span class="ident">try_from</span>(<span class="ident">Uri</span>::<span class="ident">from_static</span>(<span class="ident">NO_ID_HMC</span>)) {
+            <span class="macro">panic</span><span class="macro">!</span>(<span class="string">&quot;{:?}&quot;</span>, <span class="ident">e</span>)
         }
     }
 }

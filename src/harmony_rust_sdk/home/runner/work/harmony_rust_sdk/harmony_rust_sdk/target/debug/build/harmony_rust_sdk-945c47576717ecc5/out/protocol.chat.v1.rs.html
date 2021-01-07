@@ -4496,9 +4496,9 @@
         <span class="attribute">#[<span class="ident">prost</span>(<span class="ident">message</span>, <span class="ident">tag</span> <span class="op">=</span> <span class="string">&quot;3&quot;</span>)]</span>
         <span class="ident">ActionPerformed</span>(<span class="ident">ActionPerformed</span>),
         <span class="attribute">#[<span class="ident">prost</span>(<span class="ident">message</span>, <span class="ident">tag</span> <span class="op">=</span> <span class="string">&quot;4&quot;</span>)]</span>
-        <span class="ident">SentMessage</span>(<span class="ident">MessageSent</span>),
+        <span class="ident">SentMessage</span>(<span class="ident">Box</span><span class="op">&lt;</span><span class="ident">MessageSent</span><span class="op">&gt;</span>),
         <span class="attribute">#[<span class="ident">prost</span>(<span class="ident">message</span>, <span class="ident">tag</span> <span class="op">=</span> <span class="string">&quot;5&quot;</span>)]</span>
-        <span class="ident">EditedMessage</span>(<span class="ident">MessageUpdated</span>),
+        <span class="ident">EditedMessage</span>(<span class="ident">Box</span><span class="op">&lt;</span><span class="ident">MessageUpdated</span><span class="op">&gt;</span>),
         <span class="attribute">#[<span class="ident">prost</span>(<span class="ident">message</span>, <span class="ident">tag</span> <span class="op">=</span> <span class="string">&quot;6&quot;</span>)]</span>
         <span class="ident">DeletedMessage</span>(<span class="ident">MessageDeleted</span>),
         <span class="attribute">#[<span class="ident">prost</span>(<span class="ident">message</span>, <span class="ident">tag</span> <span class="op">=</span> <span class="string">&quot;7&quot;</span>)]</span>
