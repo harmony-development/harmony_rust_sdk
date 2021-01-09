@@ -64,9 +64,9 @@ impl AuthStepResponse {
     }
 }
 
-impl Into<Option<next_step_request::Step>> for AuthStepResponse {
-    fn into(self) -> Option<next_step_request::Step> {
-        match self {
+impl From<AuthStepResponse> for Option<next_step_request::Step> {
+    fn from(other: AuthStepResponse) -> Option<next_step_request::Step> {
+        match other {
             AuthStepResponse::Choice(choice) => {
                 Some(next_step_request::Step::Choice(next_step_request::Choice {
                     choice,

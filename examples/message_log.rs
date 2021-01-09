@@ -82,19 +82,17 @@ async fn main() -> ClientResult<()> {
 
     // Poll events
     loop {
-        if let Some(Ok(received_event)) = event_stream.next().await {
-            if let event::Event::SentMessage(sent_message) = received_event {
-                if let Some(message) = sent_message.message {
-                    log::info!("Received new message: {:?}", message);
-                    println!(
-                        "Received new message with ID {}, from guild {} in channel {} sent by {}:\n {}",
-                        message.message_id,
-                        message.guild_id,
-                        message.channel_id,
-                        message.author_id,
-                        message.content
-                    );
-                }
+        if let Some(Ok(event::Event::SentMessage(sent_message))) = event_stream.next().await {
+            if let Some(message) = sent_message.message {
+                log::info!("Received new message: {:?}", message);
+                println!(
+                    "Received new message with ID {}, from guild {} in channel {} sent by {}:\n {}",
+                    message.message_id,
+                    message.guild_id,
+                    message.channel_id,
+                    message.author_id,
+                    message.content
+                );
             }
         }
     }

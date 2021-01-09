@@ -85,27 +85,25 @@ async fn main() -> ClientResult<()> {
 
     // Poll events
     loop {
-        if let Some(Ok(received_event)) = event_stream.next().await {
-            if let event::Event::SentMessage(sent_message) = received_event {
-                if let Some(message) = sent_message.message {
-                    // Dont sent message if we sent it
-                    if message.author_id != self_id {
-                        log::info!("Echoing message: {}", message.message_id);
-                        message::send_message(
-                            &client,
-                            guild_id,
-                            message.channel_id,
-                            None,
-                            Some(message.in_reply_to),
-                            Some(message.content),
-                            Some(message.embeds),
-                            Some(message.actions),
-                            None, // can't copy attachments because we don't get the url back?
-                            Some(message.overrides),
-                            Some(message.metadata),
-                        )
-                        .await?;
-                    }
+        if let Some(Ok(event::Event::SentMessage(sent_message))) = event_stream.next().await {
+            if let Some(message) = sent_message.message {
+                // Dont sent message if we sent it
+                if message.author_id != self_id {
+                    log::info!("Echoing message: {}", message.message_id);
+                    message::send_message(
+                        &client,
+                        guild_id,
+                        message.channel_id,
+                        None,
+                        Some(message.in_reply_to),
+                        Some(message.content),
+                        Some(message.embeds),
+                        Some(message.actions),
+                        None, // can't copy attachments because we don't get the url back?
+                        Some(message.overrides),
+                        Some(message.metadata),
+                    )
+                    .await?;
                 }
             }
         }

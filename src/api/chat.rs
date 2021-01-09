@@ -71,9 +71,9 @@ impl InviteId {
     }
 }
 
-impl Into<String> for InviteId {
-    fn into(self) -> String {
-        self.0
+impl From<InviteId> for String {
+    fn from(other: InviteId) -> String {
+        other.0
     }
 }
 
