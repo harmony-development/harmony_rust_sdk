@@ -28,7 +28,10 @@ jobs:
         sudo apt install -yy --no-install-recommends protobuf-compiler protobuf-compiler-grpc
     - name: Install rust
       run: rustup default stable && rustup update
-        
+
+    - name: Cache rust
+      uses: Swatinem/rust-cache@v1
+
     - name: Check
       run: cargo check --all-targets --all-features --verbose
     - name: Clippy
