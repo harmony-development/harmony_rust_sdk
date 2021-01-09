@@ -3,12 +3,20 @@ let
   pkgz = import sources.nixpkgs { inherit system; };
   mozPkgs = import "${sources.nixpkgsMoz}/package-set.nix" { pkgs = pkgz; };
 
+  rustNightlyChannel = mozPkgs.rustChannelOf {
+    date = "2021-01-08";
+    channel = "nightly";
+    # Replace this with the expected hash that Nix will output when trying to build the package.
+    sha256 = "sha256-utyBii+c0ohEjvxvr0Cf8MB97du2Gsxozm+0Q+FhVNw=";
+  };
+
   rustChannel =
     let
       channel = mozPkgs.rustChannelOf {
-        channel = "nightly";
+        date = "2020-12-31";
+        channel = "stable";
         # Replace this with the expected hash that Nix will output when trying to build the package.
-        sha256 = "sha256-utyBii+c0ohEjvxvr0Cf8MB97du2Gsxozm+0Q+FhVNw=";
+        sha256 = "sha256-KCh2UBGtdlBJ/4UOqZlxUtcyefv7MH1neoVNV4z0nWs=";
       };
     in
     channel // {
@@ -20,7 +28,7 @@ let
     overlays = [
       (final: prev: {
         rustc = rustChannel.rust;
-        inherit (rustChannel) cargo;
+        inherit (rustNightlyChannel) cargo;
         clippy = rustChannel.clippy-preview;
         rustfmt = rustChannel.rustfmt-preview;
       })
