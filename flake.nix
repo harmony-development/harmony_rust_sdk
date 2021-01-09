@@ -22,22 +22,24 @@
           sources = { inherit naersk nixpkgs nixpkgsMoz; };
           inherit system;
         };
-      in
-      rec {
+
         packages = {
           # Compiles slower but has tests and faster executable
-          "harmony_rust_sdk" = import ./nix/build.nix {
+          harmony_rust_sdk = import ./nix/build.nix {
             inherit common;
             doCheck = true;
             release = true;
           };
           # Compiles faster but no tests and slower executable
-          "harmony_rust_sdk-debug" = import ./nix/build.nix { inherit common; };
+          harmony_rust_sdk-debug = import ./nix/build.nix { inherit common; };
           # Compiles faster but has tests and slower executable
-          "harmony_rust_sdk-tests" = import ./nix/build.nix { inherit common; doCheck = true; };
+          harmony_rust_sdk-tests = import ./nix/build.nix { inherit common; doCheck = true; };
         };
+      in
+      {
+        inherit packages;
         # Release build is the default package
-        defaultPackage = packages."harmony_rust_sdk";
+        defaultPackage = packages.harmony_rust_sdk;
 
         devShell = import ./nix/devShell.nix { inherit common; };
       }
