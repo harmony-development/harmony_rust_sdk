@@ -1,0 +1,43 @@
+syntax = "proto3";
+
+package protocol.mediaproxy.v1;
+import "harmonytypes/v1/types.proto";
+
+option go_package = "github.com/harmony-development/legato/gen/mediaproxy/v1";
+
+message SiteMetadata {
+    string site_title = 1;
+    string page_title = 2;
+    string kind = 3;
+    string description = 4;
+    string url = 5;
+    string image = 6;
+}
+
+message FetchLinkMetadataRequest {
+    string url = 1;
+}
+
+message InstantViewRequest {
+    string url = 1;
+}
+message InstantViewResponse {
+    SiteMetadata metadata = 1;
+    string content = 2;
+    bool is_valid = 3;
+}
+message CanInstantViewResponse {
+    bool can_instant_view = 1;
+}
+
+service MediaProxyService {
+    rpc FetchLinkMetadata(FetchLinkMetadataRequest) returns (SiteMetadata) {
+        option (harmonytypes.v1.metadata).requires_authentication = true;
+    }
+    rpc InstantView(InstantViewRequest) returns (InstantViewResponse) {
+        option (harmonytypes.v1.metadata).requires_authentication = true;
+    }
+    rpc CanInstantView(InstantViewRequest) returns (CanInstantViewResponse) {
+        option (harmonytypes.v1.metadata).requires_authentication = true;
+    }
+}
