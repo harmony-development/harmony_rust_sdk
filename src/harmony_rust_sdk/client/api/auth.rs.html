@@ -192,9 +192,9 @@
     }
 }
 
-<span class="kw">impl</span> <span class="ident">Into</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">next_step_request</span>::<span class="ident">Step</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">AuthStepResponse</span> {
-    <span class="kw">fn</span> <span class="ident">into</span>(<span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">next_step_request</span>::<span class="ident">Step</span><span class="op">&gt;</span> {
-        <span class="kw">match</span> <span class="self">self</span> {
+<span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">AuthStepResponse</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">next_step_request</span>::<span class="ident">Step</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">other</span>: <span class="ident">AuthStepResponse</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">next_step_request</span>::<span class="ident">Step</span><span class="op">&gt;</span> {
+        <span class="kw">match</span> <span class="ident">other</span> {
             <span class="ident">AuthStepResponse</span>::<span class="ident">Choice</span>(<span class="ident">choice</span>) <span class="op">=</span><span class="op">&gt;</span> {
                 <span class="prelude-val">Some</span>(<span class="ident">next_step_request</span>::<span class="ident">Step</span>::<span class="ident">Choice</span>(<span class="ident">next_step_request</span>::<span class="ident">Choice</span> {
                     <span class="ident">choice</span>,
