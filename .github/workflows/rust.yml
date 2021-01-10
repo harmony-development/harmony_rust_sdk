@@ -33,7 +33,7 @@ jobs:
         sudo apt update -yy
         sudo apt install -yy --no-install-recommends protobuf-compiler protobuf-compiler-grpc
     - name: Install rust
-      run: rustup default 1.48.0
+      run: rustup default 1.48.0 && rustup component add rustfmt clippy
 
     - name: Cache rust
       uses: Swatinem/rust-cache@v1
@@ -65,7 +65,7 @@ jobs:
         sudo apt update -yy
         sudo apt install -yy --no-install-recommends protobuf-compiler protobuf-compiler-grpc
     - name: Install rust
-      run: rustup default 1.49.0
+      run: rustup default 1.49.0 && rustup component add rustfmt clippy
 
     - name: Cache rust
       uses: Swatinem/rust-cache@v1
