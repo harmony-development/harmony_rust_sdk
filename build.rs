@@ -27,27 +27,30 @@ fn main() {
             ],
             &["protocol"],
         )
-        .unwrap();
+        .expect("Protobuf code generation failed! Are you sure you have `protoc` installed? If so, please also set the PROTOC and PROTOC_INCLUDE as mentioned in the README.");
 
-    let out_dir = std::path::PathBuf::from(std::env::var_os("OUT_DIR").unwrap());
+    let out_dir = std::path::PathBuf::from(
+        std::env::var_os("OUT_DIR")
+            .expect("Failed to get OUT_DIR! Something must be horribly wrong."),
+    );
     #[cfg(feature = "gen_client")]
     {
         // Patch voice generated code (only for client)
         // We patch this because two methods with the same name are generated and prost
         // doesnt check this.
         let voice_gen_path = out_dir.join("protocol.voice.v1.rs");
-        let voice_gen = std::fs::read_to_string(&voice_gen_path).unwrap();
+        let voice_gen = std::fs::read_to_string(&voice_gen_path).expect("Failed to read from voice service generated code, are you sure you have correct permissions?");
         let patched_voice_gen = voice_gen.replace(
             "pub async fn connect<D>(dst: D)",
             "pub async fn _connect<D>(dst: D)",
         );
-        std::fs::write(voice_gen_path, patched_voice_gen).unwrap();
+        std::fs::write(voice_gen_path, patched_voice_gen).expect("Failed to write to voice service generated code, are you sure you have correct permissions?");
     }
     // Patch chat message event
     // We patch these because of enum variant size differences, since they will be sent more than any other
     // event (its a realtime chat platform, so) this should help.
     let chat_gen_path = out_dir.join("protocol.chat.v1.rs");
-    let chat_gen = std::fs::read_to_string(&chat_gen_path).unwrap();
+    let chat_gen = std::fs::read_to_string(&chat_gen_path).expect("Failed to read from chat service generated code, are you sure you have correct permissions?");
     let mut patched_chat_gen = chat_gen.replace(
         "SentMessage(MessageSent),",
         "SentMessage(Box<MessageSent>),",
@@ -56,5 +59,5 @@ fn main() {
         "EditedMessage(MessageUpdated),",
         "EditedMessage(Box<MessageUpdated>),",
     );
-    std::fs::write(&chat_gen_path, patched_chat_gen).unwrap();
+    std::fs::write(&chat_gen_path, patched_chat_gen).expect("Failed to read from chat service generated code, are you sure you have correct permissions?");
 }
