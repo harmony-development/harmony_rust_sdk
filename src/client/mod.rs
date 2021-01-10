@@ -50,6 +50,13 @@ pub enum AuthStatus {
 
 impl AuthStatus {
     /// Gets the session, if authentication is completed.
+    ///
+    /// # Example
+    /// ```
+    /// # use harmony_rust_sdk::client::*;
+    /// let auth_status = AuthStatus::None;
+    /// assert!(auth_status.session().is_none());
+    /// ```
     pub fn session(&self) -> Option<&Session> {
         match self {
             AuthStatus::None => None,
@@ -59,6 +66,13 @@ impl AuthStatus {
     }
 
     /// Checks whetever authentication is complete or not.
+    ///
+    /// # Example
+    /// ```
+    /// # use harmony_rust_sdk::client::*;
+    /// let auth_status = AuthStatus::None;
+    /// assert!(!auth_status.is_authenticated());
+    /// ```
     pub fn is_authenticated(&self) -> bool {
         matches!(self, AuthStatus::Complete(_))
     }
@@ -87,11 +101,11 @@ impl Client {
     /// If scheme is not specified, this will assume the scheme is `https`.
     ///
     /// # Example
-    /// ```no_run
+    /// ```
     /// # use harmony_rust_sdk::client::*;
     /// # #[tokio::main]
     /// # async fn main() -> ClientResult<()> {
-    /// let client = Client::new("https://example.org".parse().unwrap(), None).await?;
+    /// let client = Client::new("chat.harmonyapp.io:2289".parse().unwrap(), None).await?;
     /// # Ok(())
     /// # }
     /// ```
@@ -234,16 +248,50 @@ impl Client {
     }
 
     /// Get the current auth status.
+    ///
+    /// # Example
+    /// ```
+    /// # use harmony_rust_sdk::client::*;
+    /// # #[tokio::main]
+    /// # async fn main() -> ClientResult<()> {
+    /// let client = Client::new("chat.harmonyapp.io:2289".parse().unwrap(), None).await?;
+    /// assert!(!client.auth_status().is_authenticated());
+    /// # Ok(())
+    /// # }
+    /// ```
     pub fn auth_status(&self) -> AuthStatus {
         self.auth_status_lock().clone()
     }
 
     /// Get the stored homeserver URL.
+    ///
+    /// # Example
+    /// ```
+    /// # use harmony_rust_sdk::client::*;
+    /// # #[tokio::main]
+    /// # async fn main() -> ClientResult<()> {
+    /// let client = Client::new("chat.harmonyapp.io:2289".parse().unwrap(), None).await?;
+    /// assert_eq!(&client.homeserver_url().to_string(), "https://chat.harmonyapp.io:2289/");
+    /// # Ok(())
+    /// # }
+    /// ```
     pub fn homeserver_url(&self) -> &Uri {
         &self.data.homeserver_url
     }
 
     /// Start an authentication session.
+    ///
+    /// # Example
+    /// ```no_run
+    /// # use harmony_rust_sdk::client::*;
+    /// # #[tokio::main]
+    /// # async fn main() -> ClientResult<()> {
+    /// let client = Client::new("chat.harmonyapp.io:2289".parse().unwrap(), None).await?;
+    /// client.begin_auth().await?;
+    /// // Do auth stuff here
+    /// # Ok(())
+    /// # }
+    /// ```
     pub async fn begin_auth(&self) -> ClientResult<()> {
         let auth_id = api::auth::begin_auth(self).await?.auth_id;
         *self.auth_status_lock() = AuthStatus::InProgress(auth_id);
@@ -254,6 +302,19 @@ impl Client {
     ///
     /// Returns `Ok(None)` if authentication was completed.
     /// Returns `Ok(Some(AuthStep))` if extra step is requested from the server.
+    ///
+    /// # Example
+    /// ```no_run
+    /// # use harmony_rust_sdk::client::{*, api::auth::*};
+    /// # #[tokio::main]
+    /// # async fn main() -> ClientResult<()> {
+    /// let client = Client::new("chat.harmonyapp.io:2289".parse().unwrap(), None).await?;
+    /// client.begin_auth().await?;
+    /// let next_step = client.next_auth_step(AuthStepResponse::Initial).await?;
+    /// // Do more auth stuff here
+    /// # Ok(())
+    /// # }
+    /// ```
     pub async fn next_auth_step(
         &self,
         response: AuthStepResponse,
@@ -273,6 +334,20 @@ impl Client {
     }
 
     /// Go back to the previous authentication step.
+    ///
+    /// # Example
+    /// ```no_run
+    /// # use harmony_rust_sdk::client::{*, api::auth::*};
+    /// # #[tokio::main]
+    /// # async fn main() -> ClientResult<()> {
+    /// let client = Client::new("chat.harmonyapp.io:2289".parse().unwrap(), None).await?;
+    /// client.begin_auth().await?;
+    /// let next_step = client.next_auth_step(AuthStepResponse::Initial).await?;
+    /// let prev_step = client.prev_auth_step().await?;
+    /// // Do more auth stuff here
+    /// # Ok(())
+    /// # }
+    /// ```
     pub async fn prev_auth_step(&self) -> ClientResult<AuthStep> {
         if let AuthStatus::InProgress(auth_id) = self.auth_status() {
             api::auth::step_back(self, auth_id).await
@@ -282,6 +357,19 @@ impl Client {
     }
 
     /// Begin an authentication steps stream for the current authentication session.
+    ///
+    /// # Example
+    /// ```no_run
+    /// # use harmony_rust_sdk::client::*;
+    /// # #[tokio::main]
+    /// # async fn main() -> ClientResult<()> {
+    /// let client = Client::new("chat.harmonyapp.io:2289".parse().unwrap(), None).await?;
+    /// client.begin_auth().await?;
+    /// let auth_steps_stream = client.auth_stream().await?;
+    /// // Do auth stuff here
+    /// # Ok(())
+    /// # }
+    /// ```
     pub async fn auth_stream(
         &self,
     ) -> ClientResult<impl Stream<Item = ClientResult<AuthStep>> + Send + Sync> {
@@ -295,6 +383,19 @@ impl Client {
     }
 
     /// Subscribe to events coming from specified event sources.
+    ///
+    /// # Example
+    /// ```no_run
+    /// # use harmony_rust_sdk::client::{*, api::chat::EventSource};
+    /// # #[tokio::main]
+    /// # async fn main() -> ClientResult<()> {
+    /// let client = Client::new("chat.harmonyapp.io:2289".parse().unwrap(), None).await?;
+    /// // Auth here
+    /// let event_stream = client.subscribe_events(vec![EventSource::Homeserver, EventSource::Action]).await?;
+    /// // Do more auth stuff here
+    /// # Ok(())
+    /// # }
+    /// ```
     pub async fn subscribe_events(
         &self,
         subscriptions: Vec<EventSource>,

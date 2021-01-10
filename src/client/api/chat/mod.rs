@@ -15,8 +15,11 @@ pub use crate::api::chat::{
 /// Describes where to subscribe for events.
 #[derive(Debug, Clone, Copy)]
 pub enum EventSource {
+    /// Subscription for a guild's events.
     Guild(u64),
+    /// Subscription to homeserver events.
     Homeserver,
+    /// Subscription to action events.
     Action,
 }
 

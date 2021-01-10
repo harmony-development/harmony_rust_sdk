@@ -17,6 +17,8 @@ const FILENAME: &str = "test_chamber.txt";
 const CONTENT_TYPE: &str = "text/plain";
 const FILE_ID: &str = "403cb46c-49cf-4ae1-b876-f38eb26accb0";
 
+const INSTANT_VIEW_URL: &str = "https://duckduckgo.com/";
+
 #[tokio::test]
 async fn main() -> ClientResult<()> {
     env_logger::init();
@@ -24,6 +26,7 @@ async fn main() -> ClientResult<()> {
     {
         log::info!("Testing name resolution...");
         Client::new(Uri::from_static(TEST_SERVER_NAME_RES), None).await?;
+        log::info!("Name resolution works!");
     }
 
     log::info!("Testing client connection...");
@@ -55,6 +58,7 @@ async fn main() -> ClientResult<()> {
 
     let response = guild::preview_guild(&client, InviteId::new("harmony").unwrap()).await?;
     log::info!("Preview guild response: {:?}", response);
+    assert_eq!(response.name.as_str(), "Harmony Development");
 
     let response = api::chat::guild::get_guild_list(&client).await?;
     log::info!("Get guild list response: {:?}", response);
@@ -71,20 +75,18 @@ async fn main() -> ClientResult<()> {
     let response = api::chat::channel::get_guild_channels(&client, TEST_GUILD).await?;
     log::info!("Get guild channels response: {:?}", response);
 
-    let response =
-        api::chat::channel::get_channel_messages(&client, TEST_GUILD, TEST_CHANNEL, None).await?;
-    log::info!("Get channel messages response: {:?}", response);
-
     typing(&client, TEST_GUILD, TEST_CHANNEL).await?;
     log::info!("Notified the server that we are typing");
 
+    let current_time = std::time::UNIX_EPOCH.elapsed().unwrap().as_secs();
+    let msg = format!("test at {}", current_time);
     message::send_message(
         &client,
         TEST_GUILD,
         TEST_CHANNEL,
         None,
         None,
-        Some("test".to_string()),
+        Some(msg.clone()),
         None,
         None,
         None,
@@ -94,12 +96,19 @@ async fn main() -> ClientResult<()> {
     .await?;
     log::info!("Sent a test message");
 
+    let response =
+        api::chat::channel::get_channel_messages(&client, TEST_GUILD, TEST_CHANNEL, None).await?;
+    log::info!("Get channel messages response: {:?}", response);
+    let our_msg = response.messages.first().unwrap();
+    assert_eq!(our_msg.content, msg.as_str());
+
     let instant_view =
-        api::mediaproxy::instant_view(&client, Uri::from_static("https://duckduckgo.com")).await?;
+        api::mediaproxy::instant_view(&client, Uri::from_static(INSTANT_VIEW_URL)).await?;
     log::info!("Instant view response: {:?}", instant_view);
+    assert_eq!(&instant_view.metadata.unwrap().url, INSTANT_VIEW_URL);
 
     let can_instant_view =
-        api::mediaproxy::can_instant_view(&client, Uri::from_static("https://duckduckgo.com"))
+        api::mediaproxy::can_instant_view(&client, Uri::from_static(INSTANT_VIEW_URL))
             .await?;
     log::info!("Can instant view response: {:?}", can_instant_view);
 
