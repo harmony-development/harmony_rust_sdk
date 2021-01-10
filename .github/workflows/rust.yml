@@ -5,10 +5,16 @@ on:
     branches: [ master ]
     paths-ignore:
       - 'README.md'
-      - '*.nix'
+      - '**/*.nix'
+      - 'nix/envrc'
       - 'flake.lock'
   pull_request:
     branches: [ master ]
+    paths-ignore:
+      - 'README.md'
+      - '**/*.nix'
+      - 'nix/envrc'
+      - 'flake.lock'
 
 env:
   CARGO_TERM_COLOR: always
@@ -56,6 +62,7 @@ jobs:
         touch target/doc/.nojekyll
 
     - name: Publish docs
+      if: ${{ github.event_name == 'push' }}
       uses: peaceiris/actions-gh-pages@v3
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
