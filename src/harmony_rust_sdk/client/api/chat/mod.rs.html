@@ -83,6 +83,9 @@
 <span id="80">80</span>
 <span id="81">81</span>
 <span id="82">82</span>
+<span id="83">83</span>
+<span id="84">84</span>
+<span id="85">85</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
 
@@ -101,8 +104,11 @@
 <span class="doccomment">/// Describes where to subscribe for events.</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">Copy</span>)]</span>
 <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">EventSource</span> {
+    <span class="doccomment">/// Subscription for a guild&#39;s events.</span>
     <span class="ident">Guild</span>(<span class="ident">u64</span>),
+    <span class="doccomment">/// Subscription to homeserver events.</span>
     <span class="ident">Homeserver</span>,
+    <span class="doccomment">/// Subscription to action events.</span>
     <span class="ident">Action</span>,
 }
 
