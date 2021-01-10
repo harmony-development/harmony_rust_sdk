@@ -4,7 +4,7 @@
 [![docs.rs](https://img.shields.io/badge/docs-master-blue)](https://harmonyapp.io/harmony_rust_sdk)
 
 Rust implementation of [the Harmony chat protocol](https://github.com/harmony-development).
-Currently implements a lightweight client and a client API (powered by `tonic`), along with auto generated API via `tonic-build`.
+Currently implements a lightweight client and a client API (powered by [tonic](https://crates.io/crates/tonic)), along with auto generated API via [tonic-build](https://crates.io/crates/tonic-build).
 
 ## Requirements
 - Latest stable Rust and Cargo.
@@ -33,3 +33,8 @@ Currently implements a lightweight client and a client API (powered by `tonic`),
     - Enable the `client` feature for a lightweight client implementation and the client API (implies `gen_client` feature).
     - Enable the `gen_client` feature to generate client service code.
     - Enable the `gen_server` feature to generate server service code.
+
+## MSRV
+Minimum Supported Rust Version: previous stable.
+
+Changing MSRV is not considered a semver-breaking change.
