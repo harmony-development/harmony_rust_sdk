@@ -108,8 +108,7 @@ async fn main() -> ClientResult<()> {
     assert_eq!(&instant_view.metadata.unwrap().url, INSTANT_VIEW_URL);
 
     let can_instant_view =
-        api::mediaproxy::can_instant_view(&client, Uri::from_static(INSTANT_VIEW_URL))
-            .await?;
+        api::mediaproxy::can_instant_view(&client, Uri::from_static(INSTANT_VIEW_URL)).await?;
     log::info!("Can instant view response: {:?}", can_instant_view);
 
     let _event_stream = client

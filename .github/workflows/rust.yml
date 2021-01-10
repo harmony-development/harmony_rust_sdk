@@ -20,6 +20,38 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
+  all-previous:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v2
+    - name: Checkout submodules
+      uses: textbook/git-checkout-submodule-action@master
+
+    - name: Install dependencies
+      run: |
+        sudo apt update -yy
+        sudo apt install -yy --no-install-recommends protobuf-compiler protobuf-compiler-grpc
+    - name: Install rust
+      run: rustup default 1.48.0
+
+    - name: Cache rust
+      uses: Swatinem/rust-cache@v1
+
+    - name: Check
+      run: cargo check --all-targets --all-features --verbose
+    - name: Clippy
+      uses: actions-rs/clippy-check@v1
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        args: --all-targets --all-features
+
+    - name: Build
+      run: cargo build --all-targets --all-features --verbose
+
+    - name: Test
+      run: RUST_LOG=info cargo test --all-features --verbose
+
   all:
     runs-on: ubuntu-latest
     steps:
@@ -33,7 +65,7 @@ jobs:
         sudo apt update -yy
         sudo apt install -yy --no-install-recommends protobuf-compiler protobuf-compiler-grpc
     - name: Install rust
-      run: rustup default stable && rustup update
+      run: rustup default 1.49.0
 
     - name: Cache rust
       uses: Swatinem/rust-cache@v1

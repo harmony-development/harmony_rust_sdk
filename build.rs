@@ -48,7 +48,13 @@ fn main() {
     // event (its a realtime chat platform, so) this should help.
     let chat_gen_path = out_dir.join("protocol.chat.v1.rs");
     let chat_gen = std::fs::read_to_string(&chat_gen_path).unwrap();
-    let mut patched_chat_gen = chat_gen.replace("SentMessage(MessageSent),", "SentMessage(Box<MessageSent>),");
-    patched_chat_gen = patched_chat_gen.replace("EditedMessage(MessageUpdated),", "EditedMessage(Box<MessageUpdated>),");
+    let mut patched_chat_gen = chat_gen.replace(
+        "SentMessage(MessageSent),",
+        "SentMessage(Box<MessageSent>),",
+    );
+    patched_chat_gen = patched_chat_gen.replace(
+        "EditedMessage(MessageUpdated),",
+        "EditedMessage(Box<MessageUpdated>),",
+    );
     std::fs::write(&chat_gen_path, patched_chat_gen).unwrap();
 }
