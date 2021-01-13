@@ -4,15 +4,10 @@ let
   mozPkgs = import "${sources.nixpkgsMoz}/package-set.nix" { pkgs = pkgz; };
 
   rustNightlyChannel =
-    let
-      channel = mozPkgs.rustChannelOf {
-        date = "2021-01-08";
-        channel = "nightly";
-        sha256 = "sha256-utyBii+c0ohEjvxvr0Cf8MB97du2Gsxozm+0Q+FhVNw=";
-      };
-    in
-    channel // {
-      rust = channel.rust.override { extensions = [ "rust-src" "rustfmt-preview" "clippy-preview" ]; };
+    mozPkgs.rustChannelOf {
+      date = "2021-01-08";
+      channel = "nightly";
+      sha256 = "sha256-utyBii+c0ohEjvxvr0Cf8MB97du2Gsxozm+0Q+FhVNw=";
     };
 
   rustChannel =
