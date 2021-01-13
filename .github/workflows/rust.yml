@@ -38,17 +38,51 @@ jobs:
     - name: Cache rust
       uses: Swatinem/rust-cache@v1
 
-    - name: Clippy
+    - name: Clippy default features
+      uses: actions-rs/clippy-check@v1
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        args: --all-targets
+        name: "clippy(previous): default"
+    
+    - name: Clippy default + client features
+      uses: actions-rs/clippy-check@v1
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        args: --all-targets --features client
+        name: "clippy(previous): default + client"
+
+    - name: Clippy default + client + request_method features
+      uses: actions-rs/clippy-check@v1
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        args: --all-targets --features client,request_method
+        name: "clippy(previous): default + client + request_method"
+
+    - name: Clippy all features
       uses: actions-rs/clippy-check@v1
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         args: --all-targets --all-features
+        name: "clippy(previous): all"
 
-    - name: Build
+    - name: Build default features
+      run: cargo build --all-targets --verbose
+    - name: Build client feature
+      run: cargo build --all-targets --features client --verbose
+    - name: Build client request_method features
+      run: cargo build --all-targets --features client,request_method --verbose
+    - name: Build all features
       run: cargo build --all-targets --all-features --verbose
 
-    - name: Test
-      run: RUST_LOG=info cargo test --all-features --verbose
+    - name: Build default features
+      run: RUST_LOG=debug cargo test --verbose
+    - name: Build client feature
+      run: RUST_LOG=debug cargo test --features client --verbose
+    - name: Build client request_method features
+      run: RUST_LOG=debug cargo test --features client,request_method --verbose
+    - name: Build all features
+      run: RUST_LOG=debug cargo test --all-features --verbose
 
   all:
     runs-on: ubuntu-latest
@@ -68,17 +102,51 @@ jobs:
     - name: Cache rust
       uses: Swatinem/rust-cache@v1
 
-    - name: Clippy
+    - name: Clippy default features
+      uses: actions-rs/clippy-check@v1
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        args: --all-targets
+        name: "clippy: default"
+    
+    - name: Clippy default + client features
+      uses: actions-rs/clippy-check@v1
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        args: --all-targets --features client
+        name: "clippy: default + client"
+
+    - name: Clippy default + client + request_method features
+      uses: actions-rs/clippy-check@v1
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        args: --all-targets --features client,request_method
+        name: "clippy: default + client + request_method"
+
+    - name: Clippy all features
       uses: actions-rs/clippy-check@v1
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         args: --all-targets --all-features
+        name: "clippy: all"
 
-    - name: Build
+    - name: Build default features
+      run: cargo build --all-targets --verbose
+    - name: Build client feature
+      run: cargo build --all-targets --features client --verbose
+    - name: Build client request_method features
+      run: cargo build --all-targets --features client,request_method --verbose
+    - name: Build all features
       run: cargo build --all-targets --all-features --verbose
 
-    - name: Test
-      run: RUST_LOG=info cargo test --all-features --verbose
+    - name: Build default features
+      run: RUST_LOG=debug cargo test --verbose
+    - name: Build client feature
+      run: RUST_LOG=debug cargo test --features client --verbose
+    - name: Build client request_method features
+      run: RUST_LOG=debug cargo test --features client,request_method --verbose
+    - name: Build all features
+      run: RUST_LOG=debug cargo test --all-features --verbose
     
     - name: Doc
       run: cargo doc --no-deps --all-features --verbose
