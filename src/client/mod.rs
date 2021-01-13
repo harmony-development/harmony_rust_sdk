@@ -401,7 +401,7 @@ impl Client {
         subscriptions: Vec<EventSource>,
     ) -> ClientResult<(
         impl Stream<Item = ClientResult<api::chat::event::Event>> + Send + Sync,
-        impl Sink<EventSource> + Send + Sync,
+        impl Sink<EventSource, Error = impl std::fmt::Debug> + Send + Sync,
     )> {
         let (tx, rx) = flume::unbounded();
         for sub in subscriptions {
