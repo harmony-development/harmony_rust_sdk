@@ -1,7 +1,7 @@
 //! Example showcasing a very simple echo bot.
 use std::convert::TryInto;
 
-use futures_util::StreamExt;
+use futures::StreamExt;
 use harmony_rust_sdk::client::{
     api::{
         auth::*,
@@ -13,10 +13,10 @@ use harmony_rust_sdk::client::{
 use http::Uri;
 use message::SendMessage;
 
-const EMAIL: &str = "echo_bot@example.org";
-const USERNAME: &str = "echo_bot";
-const PASSWORD: &str = "very secret password!";
-const HOMESERVER: &str = "https://127.0.0.1:2289";
+const EMAIL: &str = "rust_sdk_test@example.org";
+const USERNAME: &str = "rust_sdk_test";
+const PASSWORD: &str = "123456789Ab";
+const HOMESERVER: &str = "chat.harmonyapp.io:2289";
 
 const GUILD_ID_FILE: &str = "guild_id";
 
@@ -86,7 +86,7 @@ async fn main() -> ClientResult<()> {
     let self_id = client.auth_status().session().unwrap().user_id;
 
     // Subscribe to guild events
-    let mut event_stream = client
+    let (mut event_stream, _source_sink) = client
         .subscribe_events(vec![EventSource::Guild(guild_id)])
         .await?;
 

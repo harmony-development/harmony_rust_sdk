@@ -1,5 +1,5 @@
 //! Example showcasing a very simple message logging bot.
-use futures_util::StreamExt;
+use futures::StreamExt;
 use harmony_rust_sdk::client::{
     api::{
         auth::*,
@@ -9,10 +9,10 @@ use harmony_rust_sdk::client::{
     Client, ClientResult,
 };
 
-const EMAIL: &str = "message_log_bot@example.org";
-const USERNAME: &str = "message_log_bot";
-const PASSWORD: &str = "very secret password!";
-const HOMESERVER: &str = "https://127.0.0.1:2289";
+const EMAIL: &str = "rust_sdk_test@example.org";
+const USERNAME: &str = "rust_sdk_test";
+const PASSWORD: &str = "123456789Ab";
+const HOMESERVER: &str = "chat.harmonyapp.io:2289";
 
 const GUILD_ID_FILE: &str = "guild_id";
 
@@ -79,7 +79,7 @@ async fn main() -> ClientResult<()> {
     log::info!("In guild: {}", guild_id);
 
     // Subscribe to guild events
-    let mut event_stream = client
+    let (mut event_stream, _source_sink) = client
         .subscribe_events(vec![EventSource::Guild(guild_id)])
         .await?;
 

@@ -30,10 +30,11 @@ derive-new = "0.5"
 derive_more = "0.99"
 harmony_derive = { version = "0.1.0", path = "harmony_derive" }
 
+flume = { version = "0.10.1", optional = true }
 log = { version = "0.4", optional = true }
 assign = { version = "1.1", optional = true }
 paste = { version = "1.0", optional = true }
-futures-util = { version = "0.3", optional = true }
+futures = { version = "0.3", optional = true }
 reqwest = { version = "0.10", default-features = false, features = [ "rustls-tls-native-roots", "json" ], optional = true }
 serde = { version = "1.0", features = ["derive"] }
 
@@ -44,7 +45,7 @@ tonic-build = "0.3"
 
 [features]
 default = [ ]
-client = [ "gen_client", "futures-util", "paste", "assign", "log", "reqwest" ]
+client = [ "gen_client", "futures", "paste", "assign", "log", "reqwest", "flume" ]
 gen_client = [ ]
 gen_server = [ ]
 

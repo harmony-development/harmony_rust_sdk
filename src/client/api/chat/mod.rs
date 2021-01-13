@@ -1,7 +1,7 @@
 use super::*;
 
 use crate::{api::chat::*, client_api};
-use futures_util::StreamExt;
+use futures::StreamExt;
 use http::Uri;
 
 // Export everything a client may need for this service
@@ -107,7 +107,7 @@ client_api! {
 /// This endpoint requires authentication.
 pub async fn stream_events(
     client: &Client,
-    request: impl futures_util::stream::Stream<Item = EventSource> + Send + Sync + 'static,
+    request: impl futures::stream::Stream<Item = EventSource> + Send + Sync + 'static,
 ) -> ClientResult<tonic::Streaming<Event>> {
     use stream_events_request::{Request as SReq, *};
 

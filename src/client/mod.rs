@@ -13,7 +13,7 @@ pub use error::*;
 
 /// Some crates exported for user convenience.
 pub mod exports {
-    pub use futures_util;
+    pub use futures;
     pub use reqwest;
 }
 
@@ -23,7 +23,7 @@ use crate::api::{
 };
 use api::{auth::*, chat::EventSource};
 
-use futures_util::{future, stream::Stream, StreamExt, TryStreamExt};
+use futures::prelude::*;
 use http::{uri::PathAndQuery, Uri};
 #[cfg(feature = "parking_lot")]
 use parking_lot::{Mutex, MutexGuard};
@@ -399,18 +399,28 @@ impl Client {
     pub async fn subscribe_events(
         &self,
         subscriptions: Vec<EventSource>,
-    ) -> ClientResult<impl Stream<Item = ClientResult<api::chat::event::Event>> + Send + Sync> {
-        let sub = api::chat::stream_events(self, futures_util::stream::iter(subscriptions)).await?;
+    ) -> ClientResult<(
+        impl Stream<Item = ClientResult<api::chat::event::Event>> + Send + Sync,
+        impl Sink<EventSource> + Send + Sync,
+    )> {
+        let (tx, rx) = flume::unbounded();
+        for sub in subscriptions {
+            tx.send(sub).unwrap();
+        }
 
-        Ok(sub
-            .map_err(Into::into)
-            .map_ok(|outer_event| outer_event.event)
-            .filter_map(|result| {
-                // Remove items which dont have an event
-                future::ready(match result {
-                    Ok(maybe_event) => maybe_event.map(Ok),
-                    Err(err) => Some(Err(err)),
-                })
-            }))
+        let sub = api::chat::stream_events(self, rx.into_stream()).await?;
+
+        Ok((
+            sub.map_err(Into::into)
+                .map_ok(|outer_event| outer_event.event)
+                .filter_map(|result| {
+                    // Remove items which dont have an event
+                    future::ready(match result {
+                        Ok(maybe_event) => maybe_event.map(Ok),
+                        Err(err) => Some(Err(err)),
+                    })
+                }),
+            tx.into_sink(),
+        ))
     }
 }
