@@ -1,1 +1,1 @@
-initSidebarItems({"mod":[["auth","Auth service client API."],["chat","Chat service client API."],["mediaproxy","Media proxy service client API."],["rest","REST client API."]]});
+initSidebarItems({"mod":[["auth","Auth service client API."],["chat","Chat service client API."],["mediaproxy","Media proxy service client API."],["rest","REST client API."]],"trait":[["ClientRequest",""]]});
