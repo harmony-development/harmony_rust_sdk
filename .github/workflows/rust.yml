@@ -38,8 +38,6 @@ jobs:
     - name: Cache rust
       uses: Swatinem/rust-cache@v1
 
-    - name: Check
-      run: cargo check --all-targets --all-features --verbose
     - name: Clippy
       uses: actions-rs/clippy-check@v1
       with:
@@ -70,8 +68,6 @@ jobs:
     - name: Cache rust
       uses: Swatinem/rust-cache@v1
 
-    - name: Check
-      run: cargo check --all-targets --all-features --verbose
     - name: Clippy
       uses: actions-rs/clippy-check@v1
       with:
