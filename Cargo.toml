@@ -30,6 +30,8 @@ derive-new = "0.5"
 derive_more = "0.99"
 
 harmony_derive = { version = "0.1.0", path = "harmony_derive", optional = true }
+
+async-mutex = { version = "1.4.0", optional = true }
 flume = { version = "0.10.1", optional = true }
 log = { version = "0.4", optional = true }
 assign = { version = "1.1", optional = true }
@@ -58,6 +60,7 @@ client = [
 	"gen_voice", 
 	"gen_harmonytypes", 
 	"gen_client",
+	"async-mutex",
 	"futures", 
 	"paste", 
 	"assign", 

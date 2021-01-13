@@ -44,6 +44,7 @@ macro_rules! client_api {
             paste::paste! {
                 let response = client
                     .[<$service _lock>]()
+                    .await
                     .$api_fn (request)
                     .await;
             }
@@ -73,6 +74,7 @@ macro_rules! client_api {
             paste::paste! {
                 let response = client
                     .[<$service _lock>]()
+                    .await
                     .$api_fn (request)
                     .await;
             }

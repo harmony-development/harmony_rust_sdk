@@ -6,7 +6,7 @@ Currently implements a lightweight client and a client API (powered by [tonic](h
 - Latest stable Rust and Cargo.
 - If you are using Nix, `nix-shell` (or `nix develop` if you use flakes) should get you covered.
 - Otherwise, you'll need to get protobuf and make sure `protoc` is in your `PATH` env variable.
-  - If for some reason `build.rs` fails, make sure to set: 
+  - If for some reason `build.rs` fails, make sure to set:
     - `PROTOC` env variable to your `protoc` executable
     - and `PROTOC_INCLUDE` env variable to wherever protobuf include files are located, most likely in `/usr/share/include`.
 

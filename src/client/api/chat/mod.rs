@@ -135,7 +135,7 @@ pub async fn stream_events(
             .insert("auth", session.session_token.parse().unwrap());
     }
 
-    let response = client.chat_lock().stream_events(request).await;
+    let response = client.chat_lock().await.stream_events(request).await;
 
     log::debug!("Received response: {:?}", response);
 

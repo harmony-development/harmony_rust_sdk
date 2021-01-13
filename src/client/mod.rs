@@ -23,6 +23,7 @@ use crate::api::{
 };
 use api::{auth::*, chat::EventSource};
 
+use async_mutex::Mutex as AsyncMutex;
 use futures::prelude::*;
 use http::{uri::PathAndQuery, Uri};
 #[cfg(feature = "parking_lot")]
@@ -82,9 +83,9 @@ impl AuthStatus {
 struct ClientData {
     homeserver_url: Uri,
     auth_status: Mutex<AuthStatus>,
-    chat: Mutex<ChatService>,
-    auth: Mutex<AuthService>,
-    mediaproxy: Mutex<MediaProxyService>,
+    chat: AsyncMutex<ChatService>,
+    auth: AsyncMutex<AuthService>,
+    mediaproxy: AsyncMutex<MediaProxyService>,
     http: HttpClient,
 }
 
@@ -192,9 +193,9 @@ impl Client {
         let data = ClientData {
             homeserver_url,
             auth_status: Mutex::new(AuthStatus::None),
-            chat: Mutex::new(chat),
-            auth: Mutex::new(auth),
-            mediaproxy: Mutex::new(mediaproxy),
+            chat: AsyncMutex::new(chat),
+            auth: AsyncMutex::new(auth),
+            mediaproxy: AsyncMutex::new(mediaproxy),
             http,
         };
 
@@ -203,37 +204,16 @@ impl Client {
         })
     }
 
-    fn chat_lock(&self) -> MutexGuard<ChatService> {
-        #[cfg(not(feature = "parking_lot"))]
-        return self
-            .data
-            .chat
-            .lock()
-            .expect("chat service mutex was poisoned");
-        #[cfg(feature = "parking_lot")]
-        self.data.chat.lock()
+    async fn chat_lock(&self) -> async_mutex::MutexGuard<'_, ChatService> {
+        self.data.chat.lock().await
     }
 
-    fn auth_lock(&self) -> MutexGuard<AuthService> {
-        #[cfg(not(feature = "parking_lot"))]
-        return self
-            .data
-            .auth
-            .lock()
-            .expect("auth service mutex was poisoned");
-        #[cfg(feature = "parking_lot")]
-        self.data.auth.lock()
+    async fn auth_lock(&self) -> async_mutex::MutexGuard<'_, AuthService> {
+        self.data.auth.lock().await
     }
 
-    fn mediaproxy_lock(&self) -> MutexGuard<MediaProxyService> {
-        #[cfg(not(feature = "parking_lot"))]
-        return self
-            .data
-            .mediaproxy
-            .lock()
-            .expect("media proxy service mutex was poisoned");
-        #[cfg(feature = "parking_lot")]
-        self.data.mediaproxy.lock()
+    async fn mediaproxy_lock(&self) -> async_mutex::MutexGuard<'_, MediaProxyService> {
+        self.data.mediaproxy.lock().await
     }
 
     fn auth_status_lock(&self) -> MutexGuard<AuthStatus> {

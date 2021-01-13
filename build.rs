@@ -39,15 +39,15 @@ fn main() {
     #[cfg(feature = "gen_voice")]
     protos.push("voice/v1/voice.proto");
 
-    builder
-        .compile(
-            &protos,
-            &["protocol"],
-        )
-        .expect("Protobuf code generation failed! Are you sure you have `protoc` installed?\n
-        If so, please also set the PROTOC and PROTOC_INCLUDE as mentioned in the README.");
+    builder.compile(&protos, &["protocol"]).expect(
+        "Protobuf code generation failed! Are you sure you have `protoc` installed?\n
+        If so, please also set the PROTOC and PROTOC_INCLUDE as mentioned in the README.",
+    );
 
-    #[cfg(any(all(feature = "gen_client", feature = "gen_voice"), feature = "gen_chat"))]
+    #[cfg(any(
+        all(feature = "gen_client", feature = "gen_voice"),
+        feature = "gen_chat"
+    ))]
     let out_dir = std::path::PathBuf::from(
         std::env::var_os("OUT_DIR")
             .expect("Failed to get OUT_DIR! Something must be horribly wrong."),
