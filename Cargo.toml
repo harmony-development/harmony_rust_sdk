@@ -80,6 +80,7 @@ gen_harmonytypes = [ ]
 [dev-dependencies]
 tokio = { version = "0.2", features = [ "rt-threaded", "macros", "fs" ] }
 env_logger = "0.8"
+ctrlc = "3.1.7"
 
 [[test]]
 name = "all"

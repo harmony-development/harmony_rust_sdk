@@ -7,14 +7,14 @@ pub mod mediaproxy;
 /// REST client API.
 pub mod rest;
 
+// Re export common types
+pub use crate::api::harmonytypes::{r#override::Reason, *};
+pub use crate::api::{Hmc, HmcParseError};
+
 use crate::client::{Client, ClientResult};
 
 use derive_more::{Display, From, Into};
 use tonic::{IntoRequest, Request, Response};
-
-// Re export common types
-pub use crate::api::harmonytypes::{r#override::Reason, *};
-pub use crate::api::{Hmc, HmcParseError};
 
 /// This is NOT a part of the public API and should NOT be used.
 #[macro_export]

@@ -1,6 +1,5 @@
-use crate::api::Hmcs;
-
 use super::*;
+use crate::api::Hmcs;
 
 /// Convenience type to create a valid [`SendMessageRequest`].
 #[into_request("SendMessageRequest")]

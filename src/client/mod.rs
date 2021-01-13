@@ -7,8 +7,9 @@ pub mod api;
 /// Error related code used by [`Client`].
 pub mod error;
 
+#[doc(inline)]
 pub use crate::api::auth::Session;
-use assign::assign;
+#[doc(inline)]
 pub use error::*;
 
 /// Some crates exported for user convenience.
@@ -17,11 +18,11 @@ pub mod exports {
     pub use reqwest;
 }
 
-use crate::api::{
-    auth::auth_service_client::AuthServiceClient, chat::chat_service_client::ChatServiceClient,
-    mediaproxy::media_proxy_service_client::MediaProxyServiceClient,
-};
 use api::{auth::*, chat::EventSource};
+
+use std::sync::Arc;
+#[cfg(not(feature = "parking_lot"))]
+use std::sync::{Mutex, MutexGuard};
 
 use async_mutex::Mutex as AsyncMutex;
 use futures::prelude::*;
@@ -29,14 +30,12 @@ use http::{uri::PathAndQuery, Uri};
 #[cfg(feature = "parking_lot")]
 use parking_lot::{Mutex, MutexGuard};
 use reqwest::Client as HttpClient;
-use std::sync::Arc;
-#[cfg(not(feature = "parking_lot"))]
-use std::sync::{Mutex, MutexGuard};
 use tonic::transport::Channel;
 
-type AuthService = AuthServiceClient<Channel>;
-type ChatService = ChatServiceClient<Channel>;
-type MediaProxyService = MediaProxyServiceClient<Channel>;
+type AuthService = crate::api::auth::auth_service_client::AuthServiceClient<Channel>;
+type ChatService = crate::api::chat::chat_service_client::ChatServiceClient<Channel>;
+type MediaProxyService =
+    crate::api::mediaproxy::media_proxy_service_client::MediaProxyServiceClient<Channel>;
 
 /// Represents an authentication state in which a [`Client`] can be.
 #[derive(Debug, Clone)]
@@ -111,6 +110,8 @@ impl Client {
     /// # }
     /// ```
     pub async fn new(mut homeserver_url: Uri, session: Option<Session>) -> ClientResult<Self> {
+        use assign::assign;
+
         // Add the default scheme if not specified
         if homeserver_url.scheme().is_none() {
             let parts = homeserver_url.into_parts();

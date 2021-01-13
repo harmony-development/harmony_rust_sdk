@@ -1,17 +1,24 @@
 //! Example showcasing a very simple echo bot.
-use std::convert::TryInto;
+use std::{
+    convert::TryInto,
+    sync::atomic::{AtomicBool, Ordering},
+};
 
 use futures::StreamExt;
 use harmony_rust_sdk::client::{
     api::{
-        auth::*,
-        chat::{message::SendMessageSelfBuilder, profile::ProfileUpdate, *},
-        *,
+        auth::AuthStepResponse,
+        chat::{
+            event, guild,
+            message::{self, SendMessage, SendMessageSelfBuilder},
+            profile::{self, ProfileUpdate},
+            EventSource, InviteId,
+        },
+        Hmc, UserStatus,
     },
     Client, ClientResult,
 };
 use http::Uri;
-use message::SendMessage;
 
 const EMAIL: &str = "rust_sdk_test@example.org";
 const USERNAME: &str = "rust_sdk_test";
@@ -20,11 +27,18 @@ const HOMESERVER: &str = "chat.harmonyapp.io:2289";
 
 const GUILD_ID_FILE: &str = "guild_id";
 
+static DID_CTRLC: AtomicBool = AtomicBool::new(false);
+
 // Be sure to add the bot to your server once it and give it the necessary permissions.
 #[tokio::main]
 async fn main() -> ClientResult<()> {
     // Init logging
     env_logger::init();
+
+    ctrlc::set_handler(|| {
+        DID_CTRLC.store(true, Ordering::Relaxed);
+    })
+    .expect("Can't set Ctrl-C handler");
 
     let guild_invite = std::env::var("GUILD_INVITE");
 
@@ -55,6 +69,7 @@ async fn main() -> ClientResult<()> {
     } else {
         log::info!("Successfully logon.");
     }
+
     // Change our bots status to online and make sure its marked as a bot
     profile::profile_update(
         &client,
@@ -92,6 +107,9 @@ async fn main() -> ClientResult<()> {
 
     // Poll events
     loop {
+        if DID_CTRLC.load(Ordering::Relaxed) {
+            break;
+        }
         if let Some(Ok(event::Event::SentMessage(sent_message))) = event_stream.next().await {
             if let Some(message) = sent_message.message {
                 // Dont sent message if we sent it
@@ -119,4 +137,13 @@ async fn main() -> ClientResult<()> {
             }
         }
     }
+
+    // Change our bots status back to offline
+    profile::profile_update(
+        &client,
+        ProfileUpdate::default().new_status(UserStatus::Offline),
+    )
+    .await?;
+
+    Ok(())
 }

@@ -1,9 +1,3 @@
-use super::*;
-
-use crate::{api::chat::*, client_api};
-use futures::StreamExt;
-use http::Uri;
-
 // Export everything a client may need for this service
 pub use crate::api::chat::{
     event, get_emote_pack_emotes_response::Emote, get_emote_packs_response::EmotePack,
@@ -11,6 +5,12 @@ pub use crate::api::chat::{
     get_guild_list_response::GuildListEntry, permission::Mode, stream_events_request, Event,
     InviteId, PermissionList, Place, Role,
 };
+
+use super::*;
+use crate::{api::chat::*, client_api};
+
+use futures::StreamExt;
+use http::Uri;
 
 /// Describes where to subscribe for events.
 #[derive(Debug, Clone, Copy)]

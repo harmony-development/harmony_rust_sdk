@@ -1,11 +1,10 @@
-use super::*;
+pub use crate::api::auth::{auth_step, next_step_request, AuthStep, Session};
 
+use super::*;
 use crate::{
     api::auth::{next_step_request::form_fields::Field, *},
     client_api,
 };
-
-pub use crate::api::auth::{auth_step, next_step_request, AuthStep, Session};
 
 /// A response to an [`AuthStep`].
 #[derive(Debug, Clone)]

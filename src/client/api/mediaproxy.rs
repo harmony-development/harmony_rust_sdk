@@ -1,9 +1,9 @@
-use super::*;
-
-use crate::{api::mediaproxy::*, client_api};
-use http::Uri;
-
 pub use crate::api::mediaproxy::SiteMetadata;
+
+use super::*;
+use crate::{api::mediaproxy::*, client_api};
+
+use http::Uri;
 
 impl IntoRequest<FetchLinkMetadataRequest> for Uri {
     fn into_request(self) -> Request<FetchLinkMetadataRequest> {
