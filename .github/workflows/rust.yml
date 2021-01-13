@@ -22,18 +22,12 @@ env:
 jobs:
   all-previous:
     runs-on: ubuntu-latest
+    container: yusdacra/harmony-rs:1.48.0
     steps:
     - name: Checkout repo
       uses: actions/checkout@v2
     - name: Checkout submodules
       uses: textbook/git-checkout-submodule-action@master
-
-    - name: Install dependencies
-      run: |
-        sudo apt update -yy
-        sudo apt install -yy --no-install-recommends protobuf-compiler protobuf-compiler-grpc
-    - name: Install rust
-      run: rustup default 1.48.0 && rustup component add rustfmt clippy
 
     - name: Cache rust
       uses: Swatinem/rust-cache@v1
@@ -54,18 +48,12 @@ jobs:
 
   all:
     runs-on: ubuntu-latest
+    container: yusdacra/harmony-rs:1.49.0
     steps:
     - name: Checkout repo
       uses: actions/checkout@v2
     - name: Checkout submodules
       uses: textbook/git-checkout-submodule-action@master
-
-    - name: Install dependencies
-      run: |
-        sudo apt update -yy
-        sudo apt install -yy --no-install-recommends protobuf-compiler protobuf-compiler-grpc
-    - name: Install rust
-      run: rustup default 1.49.0 && rustup component add rustfmt clippy
 
     - name: Cache rust
       uses: Swatinem/rust-cache@v1
