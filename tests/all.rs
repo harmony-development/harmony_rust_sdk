@@ -55,9 +55,7 @@ async fn main() -> ClientResult<()> {
     log::info!("Testing profile update...");
     api::chat::profile::profile_update(
         &client,
-        ProfileUpdate::default()
-            .new_status(UserStatus::OnlineUnspecified)
-            .new_is_bot(true),
+        ProfileUpdate::default().new_status(UserStatus::OnlineUnspecified),
     )
     .await?;
     log::info!("Updated profile");
@@ -110,10 +108,6 @@ async fn main() -> ClientResult<()> {
         api::mediaproxy::can_instant_view(&client, Uri::from_static(INSTANT_VIEW_URL)).await?;
     log::info!("Can instant view response: {:?}", can_instant_view);
 
-    let _event_stream = client
-        .subscribe_events(vec![EventSource::Homeserver])
-        .await?;
-
     let response = api::rest::upload(
         &client,
         FILENAME.to_string(),
@@ -163,6 +157,12 @@ async fn main() -> ClientResult<()> {
 
     assert_eq!(response.text().await?.as_str(), FILE_DATA);
     assert_eq!(content_type.as_str(), CONTENT_TYPE);
+
+    api::chat::profile::profile_update(
+        &client,
+        ProfileUpdate::default().new_status(UserStatus::Offline),
+    )
+    .await?;
 
     Ok(())
 }
