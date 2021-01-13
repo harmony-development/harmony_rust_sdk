@@ -7,9 +7,11 @@ use derive_more::{From, Into, IntoIterator};
 use http::{uri::Authority, Uri};
 
 /// Chat service API.
+#[cfg(feature = "gen_chat")]
 pub mod chat;
 
 /// Auth service API.
+#[cfg(feature = "gen_auth")]
 pub mod auth {
     pub mod v1 {
         tonic::include_proto!("protocol.auth.v1");
@@ -18,6 +20,7 @@ pub mod auth {
 }
 
 /// Common types used in other services.
+#[cfg(feature = "gen_harmonytypes")]
 pub mod harmonytypes {
     pub mod v1 {
         tonic::include_proto!("protocol.harmonytypes.v1");
@@ -26,6 +29,7 @@ pub mod harmonytypes {
 }
 
 /// Media proxy service API.
+#[cfg(feature = "gen_mediaproxy")]
 pub mod mediaproxy {
     pub mod v1 {
         tonic::include_proto!("protocol.mediaproxy.v1");
@@ -34,6 +38,7 @@ pub mod mediaproxy {
 }
 
 /// Voice service API.
+#[cfg(feature = "gen_voice")]
 pub mod voice {
     pub mod v1 {
         tonic::include_proto!("protocol.voice.v1");

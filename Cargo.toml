@@ -28,8 +28,8 @@ tonic = { version = "0.3", features = [ "tls", "tls-roots", "prost" ] }
 http = "0.2"
 derive-new = "0.5"
 derive_more = "0.99"
-harmony_derive = { version = "0.1.0", path = "harmony_derive" }
 
+harmony_derive = { version = "0.1.0", path = "harmony_derive", optional = true }
 flume = { version = "0.10.1", optional = true }
 log = { version = "0.4", optional = true }
 assign = { version = "1.1", optional = true }
@@ -44,10 +44,35 @@ parking_lot = { version = "0.11", optional = true }
 tonic-build = "0.3"
 
 [features]
-default = [ ]
-client = [ "gen_client", "futures", "paste", "assign", "log", "reqwest", "flume" ]
+default = [
+	"gen_chat", 
+	"gen_auth", 
+	"gen_mediaproxy", 
+	"gen_voice", 
+	"gen_harmonytypes", 
+]
+client = [
+	"gen_chat", 
+	"gen_auth", 
+	"gen_mediaproxy", 
+	"gen_voice", 
+	"gen_harmonytypes", 
+	"gen_client",
+	"futures", 
+	"paste", 
+	"assign", 
+	"log", 
+	"reqwest", 
+	"flume",
+]
 gen_client = [ ]
 gen_server = [ ]
+
+gen_chat = [ "gen_harmonytypes", "harmony_derive" ]
+gen_auth = [ ]
+gen_mediaproxy = [ "gen_harmonytypes" ]
+gen_voice = [ ]
+gen_harmonytypes = [ ]
 
 [dev-dependencies]
 tokio = { version = "0.2", features = [ "rt-threaded", "macros", "fs" ] }
