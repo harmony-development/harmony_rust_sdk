@@ -1,8 +1,12 @@
 [package]
 name = "harmony_derive"
+description = "Proc macros for harmony_rust_sdk. Not meant to be publicly used."
 version = "0.1.0"
 authors = ["Yusuf Bera Ertan <y.bera003.06@protonmail.com>"]
 edition = "2018"
+homepage = "https://github.com/harmony-development/harmony_rust_sdk"
+repository = "https://github.com/harmony-development/harmony_rust_sdk"
+license = "MIT"
 
 [lib]
 proc-macro = true
