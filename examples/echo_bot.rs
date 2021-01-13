@@ -1,9 +1,17 @@
 //! Example showcasing a very simple echo bot.
+use std::convert::TryInto;
+
 use futures_util::StreamExt;
 use harmony_rust_sdk::client::{
-    api::{auth::*, chat::*, *},
+    api::{
+        auth::*,
+        chat::{message::SendMessageSelfBuilder, profile::ProfileUpdate, *},
+        *,
+    },
     Client, ClientResult,
 };
+use http::Uri;
+use message::SendMessage;
 
 const EMAIL: &str = "echo_bot@example.org";
 const USERNAME: &str = "echo_bot";
@@ -50,10 +58,9 @@ async fn main() -> ClientResult<()> {
     // Change our bots status to online and make sure its marked as a bot
     profile::profile_update(
         &client,
-        None,
-        Some(UserStatus::OnlineUnspecified),
-        None,
-        Some(true),
+        ProfileUpdate::default()
+            .new_status(UserStatus::OnlineUnspecified)
+            .new_is_bot(true),
     )
     .await?;
 
@@ -90,20 +97,24 @@ async fn main() -> ClientResult<()> {
                 // Dont sent message if we sent it
                 if message.author_id != self_id {
                     log::info!("Echoing message: {}", message.message_id);
-                    message::send_message(
-                        &client,
-                        guild_id,
-                        message.channel_id,
-                        None,
-                        Some(message.in_reply_to),
-                        Some(message.content),
-                        Some(message.embeds),
-                        Some(message.actions),
-                        None, // can't copy attachments because we don't get the url back?
-                        Some(message.overrides),
-                        Some(message.metadata),
-                    )
-                    .await?;
+
+                    let send_message =
+                        SendMessage::new(guild_id, message.channel_id, message.content)
+                            .in_reply_to(message.in_reply_to)
+                            .embeds(message.embeds)
+                            .attachments(
+                                message
+                                    .attachments
+                                    .into_iter()
+                                    // These must be a valid HMC, so no harm in unwrapping
+                                    .map(|a| a.id.parse::<Uri>().unwrap().try_into().unwrap())
+                                    .collect::<Vec<Hmc>>(),
+                            )
+                            .actions(message.actions)
+                            .overrides(message.overrides)
+                            .metadata(message.metadata);
+
+                    message::send_message(&client, send_message).await?;
                 }
             }
         }

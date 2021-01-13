@@ -13,6 +13,7 @@ pub enum FileId {
 
 /// Uploads a file to the homeserver.
 ///
+/// This endpoint requires authentication.
 /// See [API documentation](https://github.com/harmony-development/protocol/blob/master/rest/rest.md#post-_harmonymediaupload).
 pub async fn upload(
     client: &Client,
@@ -50,6 +51,7 @@ pub async fn upload(
 
 /// Downloads a file using a file ID.
 ///
+/// This endpoint does not require authentication.
 /// See [API documentation](https://github.com/harmony-development/protocol/blob/master/rest/rest.md#get-_harmonymediadownloadfile_id).
 pub async fn download(client: &Client, file_id: FileId) -> ClientResult<Response> {
     let (scheme, server, id) = match file_id {

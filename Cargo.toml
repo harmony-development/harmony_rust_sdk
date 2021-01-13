@@ -15,6 +15,9 @@ exclude = [
 	".github/*",
 ]
 
+[workspace]
+members = [ "harmony_derive" ]
+
 [package.metadata.docs.rs]
 all-features = true
 
@@ -23,6 +26,9 @@ prost = "0.6"
 prost-types = "0.6"
 tonic = { version = "0.3", features = [ "tls", "tls-roots", "prost" ] }
 http = "0.2"
+derive-new = "0.5"
+derive_more = "0.99"
+harmony_derive = { version = "0.1.0", path = "harmony_derive" }
 
 log = { version = "0.4", optional = true }
 assign = { version = "1.1", optional = true }

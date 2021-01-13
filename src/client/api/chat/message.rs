@@ -1,87 +1,133 @@
+use crate::api::Hmcs;
+
 use super::*;
+
+/// Convenience type to create a valid [`SendMessageRequest`].
+#[into_request("SendMessageRequest")]
+#[derive(new, Debug, SelfBuilder)]
+pub struct SendMessage {
+    guild_id: u64,
+    channel_id: u64,
+    content: String,
+    #[new(default)]
+    echo_id: u64,
+    #[new(default)]
+    in_reply_to: u64,
+    #[new(default)]
+    embeds: Vec<Embed>,
+    #[new(default)]
+    actions: Vec<Action>,
+    #[new(default)]
+    attachments: Hmcs,
+    #[new(default)]
+    #[builder(setter(strip_option))]
+    overrides: Option<Override>,
+    #[new(default)]
+    #[builder(setter(strip_option))]
+    metadata: Option<Metadata>,
+}
+
+/// Convenience type to create a valid [`UpdateMessageRequest`].
+#[into_request("UpdateMessageRequest")]
+#[derive(new, Debug)]
+pub struct UpdateMessage {
+    guild_id: u64,
+    channel_id: u64,
+    message_id: u64,
+    #[new(default)]
+    content: String,
+    #[new(default)]
+    embeds: Vec<Embed>,
+    #[new(default)]
+    actions: Vec<Action>,
+    #[new(default)]
+    attachments: Hmcs,
+    #[new(default)]
+    overrides: Option<Override>,
+    #[new(default)]
+    metadata: Option<Metadata>,
+    #[new(default)]
+    update_content: bool,
+    #[new(default)]
+    update_embeds: bool,
+    #[new(default)]
+    update_actions: bool,
+    #[new(default)]
+    update_attachments: bool,
+    #[new(default)]
+    update_overrides: bool,
+    #[new(default)]
+    update_metadata: bool,
+}
+
+impl UpdateMessage {
+    /// Set the new content of this message.
+    pub fn new_content(mut self, content: String) -> Self {
+        self.content = content;
+        self.update_content = true;
+        self
+    }
+
+    /// Set the new embeds of this message.
+    pub fn new_embeds(mut self, embeds: Vec<Embed>) -> Self {
+        self.embeds = embeds;
+        self.update_embeds = true;
+        self
+    }
+
+    /// Set the new actions of this message.
+    pub fn new_actions(mut self, actions: Vec<Action>) -> Self {
+        self.actions = actions;
+        self.update_actions = true;
+        self
+    }
+
+    /// Set the new attachments of this message.
+    pub fn new_attachments(mut self, attachments: Hmcs) -> Self {
+        self.attachments = attachments;
+        self.update_attachments = true;
+        self
+    }
+
+    /// Set the new overrides of this message.
+    pub fn new_overrides(mut self, overrides: Option<Override>) -> Self {
+        self.overrides = overrides;
+        self.update_overrides = true;
+        self
+    }
+
+    /// Set the new metadata of this message.
+    pub fn new_metadata(mut self, metadata: Option<Metadata>) -> Self {
+        self.metadata = metadata;
+        self.update_metadata = true;
+        self
+    }
+}
 
 client_api! {
     /// Get a message.
-    args: {
-        guild_id: u64,
-        channel_id: u64,
-        message_id: u64,
-    },
     action: GetMessage,
-    api_func: get_message,
+    api_fn: get_message,
     service: chat,
 }
 
 client_api! {
     /// Delete a message.
-    args: {
-        guild_id: u64,
-        channel_id: u64,
-        message_id: u64,
-    },
-    request_type: DeleteMessageRequest,
-    api_func: delete_message,
+    request: DeleteMessageRequest,
+    api_fn: delete_message,
     service: chat,
 }
 
 client_api! {
     /// Send a message.
-    args: {
-        guild_id: u64,
-        channel_id: u64,
-        echo_id: Option<u64>,
-        in_reply_to: Option<u64>,
-        content: Option<String>,
-        embeds: Option<Vec<Embed>>,
-        actions: Option<Vec<Action>>,
-        attachments: Option<Vec<Uri>>,
-        overrides: Option<Option<Override>>,
-        metadata: Option<Option<Metadata>>,
-    },
     action: SendMessage,
-    request_fields: {
-        echo_id: echo_id.unwrap_or_default(),
-        in_reply_to: in_reply_to.unwrap_or_default(),
-        content: content.unwrap_or_default(),
-        embeds: embeds.unwrap_or_default(),
-        actions: actions.unwrap_or_default(),
-        attachments: attachments.unwrap_or_default().into_iter().map(|u| u.to_string()).collect(),
-        overrides: overrides.unwrap_or_default(),
-        metadata: metadata.unwrap_or_default(),
-        = guild_id, channel_id,
-    },
-    api_func: send_message,
+    api_fn: send_message,
     service: chat,
 }
 
 client_api! {
     /// Update a message.
-    args: {
-        guild_id: u64,
-        channel_id: u64,
-        message_id: u64,
-        new_content: Option<String>,
-        new_embeds: Option<Vec<Embed>>,
-        new_actions: Option<Vec<Action>>,
-        new_attachments: Option<Vec<Uri>>,
-        new_overrides: Option<Option<Override>>,
-        new_metadata: Option<Option<Metadata>>,
-    },
-    request: UpdateMessageRequest {
-        update_content: new_content.is_some(),
-        update_embeds: new_embeds.is_some(),
-        update_actions: new_actions.is_some(),
-        update_attachments: new_attachments.is_some(),
-        update_overrides: new_overrides.is_some(),
-        update_metadata: new_metadata.is_some(),
-        content: new_content.unwrap_or_default(),
-        embeds: new_embeds.unwrap_or_default(),
-        actions: new_actions.unwrap_or_default(),
-        attachments: new_attachments.unwrap_or_default().into_iter().map(|u| u.to_string()).collect(),
-        overrides: new_overrides.unwrap_or_default(),
-        metadata: new_metadata.unwrap_or_default(),
-        guild_id, channel_id, message_id,
-    },
-    api_func: update_message,
+    request: UpdateMessageRequest,
+    api_fn: update_message,
     service: chat,
 }

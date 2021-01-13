@@ -2,94 +2,144 @@ use super::*;
 
 client_api! {
     /// Get channels all channels (that you have permission to view) in a guild.
-    args: { guild_id: u64, },
     action: GetGuildChannels,
-    api_func: get_guild_channels,
+    api_fn: get_guild_channels,
     service: chat,
+}
+
+/// Convenience type to create a valid [`GetChannelMessagesRequest`].
+///
+/// If `before_message_id` is not specified, it will default to `0`, which
+/// means the server should return the latest messages.
+///
+/// Note that the number of messages returned may be limited by servers.
+#[into_request("GetChannelMessagesRequest")]
+#[derive(Debug, new, SelfBuilder)]
+pub struct GetChannelMessages {
+    guild_id: u64,
+    channel_id: u64,
+    #[new(default)]
+    before_message: u64,
 }
 
 client_api! {
     /// Get messages before a message in a channel of a guild.
-    ///
-    /// If `before_message_id` is not specified, it will default to `0`, which
-    /// means the server should return the latest messages.
-    ///
-    /// Note that the number of messages returned may be limited by servers.
-    args: {
-        guild_id: u64,
-        channel_id: u64,
-        before_message_id: Option<u64>,
-    },
     action: GetChannelMessages,
-    request_fields: {
-        before_message: before_message_id.unwrap_or_default(),
-        = guild_id, channel_id,
-    },
-    api_func: get_channel_messages,
+    api_fn: get_channel_messages,
     service: chat,
+}
+
+/// Convenience type to create a valid [`CreateChannelRequest`].
+#[derive(Debug, new, SelfBuilder)]
+pub struct CreateChannel {
+    guild_id: u64,
+    channel_name: String,
+    channel_place: Place,
+    #[new(default)]
+    #[builder(setter(strip_option))]
+    metadata: Option<Metadata>,
+    #[new(default)]
+    is_category: bool,
+}
+
+impl IntoRequest<CreateChannelRequest> for CreateChannel {
+    fn into_request(self) -> Request<CreateChannelRequest> {
+        CreateChannelRequest {
+            guild_id: self.guild_id,
+            channel_name: self.channel_name,
+            previous_id: self.channel_place.previous(),
+            next_id: self.channel_place.next(),
+            metadata: self.metadata,
+            is_category: self.is_category,
+        }
+        .into_request()
+    }
 }
 
 client_api! {
     /// Create a channel.
-    args: {
-        guild_id: u64,
-        channel_name: String,
-        is_category: bool,
-        channel_place: Place,
-        metadata: Option<Metadata>,
-    },
     action: CreateChannel,
-    request_fields: {
-        previous_id: channel_place.previous(),
-        next_id: channel_place.next(),
-        = guild_id, is_category, channel_name, metadata,
-    },
-    api_func: create_channel,
+    api_fn: create_channel,
     service: chat,
+}
+
+/// Convenience type to create a valid [`DeleteChannelRequest`].
+#[into_request("DeleteChannelRequest")]
+#[derive(Debug, new)]
+pub struct DeleteChannel {
+    guild_id: u64,
+    channel_id: u64,
 }
 
 client_api! {
     /// Delete a channel.
-    args: {
-        guild_id: u64,
-        channel_id: u64,
-    },
-    request_type: DeleteChannelRequest,
-    api_func: delete_channel,
+    request: DeleteChannelRequest,
+    api_fn: delete_channel,
     service: chat,
+}
+
+/// Convenience type to create a valid [`UpdateChannelInformationRequest`].
+#[into_request("UpdateChannelInformationRequest")]
+#[derive(Debug, new)]
+pub struct UpdateChannelInformation {
+    guild_id: u64,
+    channel_id: u64,
+    #[new(default)]
+    name: String,
+    #[new(default)]
+    metadata: Option<Metadata>,
+    #[new(default)]
+    update_name: bool,
+    #[new(default)]
+    update_metadata: bool,
+}
+
+impl UpdateChannelInformation {
+    /// Set new name for this channel.
+    pub fn new_channel_name(mut self, channel_name: impl Into<String>) -> Self {
+        self.name = channel_name.into();
+        self.update_name = true;
+        self
+    }
+
+    /// Set new metadata for this channel.
+    pub fn new_metadata(mut self, metadata: impl Into<Option<Metadata>>) -> Self {
+        self.metadata = metadata.into();
+        self.update_metadata = true;
+        self
+    }
 }
 
 client_api! {
     /// Update a channel's information.
-    args: {
-        new_channel_name: Option<String>,
-        new_metadata: Option<Option<Metadata>>,
-        guild_id: u64,
-        channel_id: u64,
-    },
-    request: UpdateChannelInformationRequest {
-        update_name: new_channel_name.is_some(),
-        update_metadata: new_metadata.is_some(),
-        name: new_channel_name.unwrap_or_default(),
-        metadata: new_metadata.unwrap_or_default(),
-        guild_id, channel_id,
-    },
-    api_func: update_channel_information,
+    request: UpdateChannelInformationRequest,
+    api_fn: update_channel_information,
     service: chat,
+}
+
+/// Convenience type to create a valid [`UpdateChannelOrderRequest`].
+#[derive(Debug, new)]
+pub struct UpdateChannelOrder {
+    guild_id: u64,
+    channel_id: u64,
+    new_channel_place: Place,
+}
+
+impl IntoRequest<UpdateChannelOrderRequest> for UpdateChannelOrder {
+    fn into_request(self) -> Request<UpdateChannelOrderRequest> {
+        UpdateChannelOrderRequest {
+            guild_id: self.guild_id,
+            channel_id: self.channel_id,
+            previous_id: self.new_channel_place.previous(),
+            next_id: self.new_channel_place.next(),
+        }
+        .into_request()
+    }
 }
 
 client_api! {
     /// Update a channel's place in the channel list.
-    args: {
-        guild_id: u64,
-        channel_id: u64,
-        new_channel_place: Place,
-    },
-    request: UpdateChannelOrderRequest {
-        previous_id: new_channel_place.previous(),
-        next_id: new_channel_place.next(),
-        channel_id, guild_id,
-    },
-    api_func: update_channel_order,
+    request: UpdateChannelOrderRequest,
+    api_fn: update_channel_order,
     service: chat,
 }

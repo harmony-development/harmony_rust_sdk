@@ -90,8 +90,11 @@ impl Place {
 }
 
 /// An invite ID.
+#[into_request("JoinGuildRequest", "PreviewGuildRequest")]
 #[derive(Debug, Clone, Eq, PartialEq)]
-pub struct InviteId(String);
+pub struct InviteId {
+    invite_id: String,
+}
 
 impl InviteId {
     /// Creates an invite ID.
@@ -110,20 +113,20 @@ impl InviteId {
         if name.is_empty() {
             None
         } else {
-            Some(Self(name))
+            Some(Self { invite_id: name })
         }
     }
 }
 
 impl From<InviteId> for String {
     fn from(other: InviteId) -> String {
-        other.0
+        other.invite_id
     }
 }
 
 impl Display for InviteId {
     fn fmt(&self, fmt: &mut Formatter) -> fmt::Result {
-        write!(fmt, "{}", self.0)
+        write!(fmt, "{}", self.invite_id)
     }
 }
 
@@ -140,6 +143,11 @@ mod test {
     #[test]
     fn invite_id() {
         const ID: &str = "harmony";
-        assert_eq!(InviteId::new(ID).unwrap(), InviteId(ID.to_string()));
+        assert_eq!(
+            InviteId::new(ID).unwrap(),
+            InviteId {
+                invite_id: ID.to_string()
+            }
+        );
     }
 }

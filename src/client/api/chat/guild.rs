@@ -3,114 +3,163 @@ use super::*;
 client_api! {
     /// Get guild list for local user.
     action: GetGuildList,
-    api_func: get_guild_list,
+    api_fn: get_guild_list,
     service: chat,
 }
 
 client_api! {
     /// Get guild data of a guild.
-    args: { guild_id: u64, },
     action: GetGuild,
-    api_func: get_guild,
+    api_fn: get_guild,
     service: chat,
+}
+
+/// Convenience type to create a valid [`CreateGuildRequest`].
+#[into_request("CreateGuildRequest")]
+#[derive(Debug, new)]
+pub struct CreateGuild {
+    guild_name: String,
+    #[new(default)]
+    picture_url: Hmc,
+    #[new(default)]
+    metadata: Option<Metadata>,
+}
+
+impl CreateGuild {
+    /// Set the picture HMC for this new guild.
+    pub fn picture(mut self, picture: impl Into<Hmc>) -> Self {
+        self.picture_url = picture.into();
+        self
+    }
+
+    /// Set the metadata for this new guild.
+    pub fn metadata(mut self, metadata: impl Into<Option<Metadata>>) -> Self {
+        self.metadata = metadata.into();
+        self
+    }
 }
 
 client_api! {
     /// Create a new guild.
-    args: {
-        name: String,
-        picture_url: Option<Uri>,
-        metadata: Option<Metadata>,
-    },
     action: CreateGuild,
-    request_fields: {
-        guild_name: name,
-        picture_url: picture_url.map_or_else(String::default, |u| u.to_string()),
-        = metadata,
-    },
-    api_func: create_guild,
+    api_fn: create_guild,
     service: chat,
+}
+
+/// Convenience type to create a valid [`AddGuildToGuildListRequest`] and [`RemoveGuildFromGuildListRequest`].
+#[derive(Debug, new)]
+pub struct GuildList {
+    guild_id: u64,
+    homeserver: Uri,
+}
+
+impl IntoRequest<AddGuildToGuildListRequest> for GuildList {
+    fn into_request(self) -> Request<AddGuildToGuildListRequest> {
+        AddGuildToGuildListRequest {
+            guild_id: self.guild_id,
+            homeserver: self.homeserver.to_string(),
+        }
+        .into_request()
+    }
 }
 
 client_api! {
     /// Add a guild to the guild list.
-    args: { guild_id: u64, homeserver: Uri, },
     action: AddGuildToGuildList,
-    request_fields: {
-        homeserver: homeserver.to_string(),
-        = guild_id,
-    },
-    api_func: add_guild_to_guild_list,
+    api_fn: add_guild_to_guild_list,
     service: chat,
+}
+
+impl IntoRequest<RemoveGuildFromGuildListRequest> for GuildList {
+    fn into_request(self) -> Request<RemoveGuildFromGuildListRequest> {
+        RemoveGuildFromGuildListRequest {
+            guild_id: self.guild_id,
+            homeserver: self.homeserver.to_string(),
+        }
+        .into_request()
+    }
 }
 
 client_api! {
     /// Remove a guild from the guild list.
-    args: { guild_id: u64, homeserver: Uri, },
     action: RemoveGuildFromGuildList,
-    request_fields: {
-        homeserver: homeserver.to_string(),
-        = guild_id,
-    },
-    api_func: remove_guild_from_guild_list,
+    api_fn: remove_guild_from_guild_list,
     service: chat,
+}
+
+/// Convenience type to create a valid [`UpdateGuildInformationRequest`].
+#[into_request("UpdateGuildInformationRequest")]
+#[derive(Debug, new)]
+pub struct UpdateGuildInformation {
+    guild_id: u64,
+    #[new(default)]
+    new_guild_name: String,
+    #[new(default)]
+    new_guild_picture: Hmc,
+    #[new(default)]
+    metadata: Option<Metadata>,
+    #[new(default)]
+    update_guild_name: bool,
+    #[new(default)]
+    update_guild_picture: bool,
+    #[new(default)]
+    update_metadata: bool,
+}
+
+impl UpdateGuildInformation {
+    /// Set the new name of this guild.
+    pub fn new_guild_name(mut self, guild_name: impl Into<String>) -> Self {
+        self.new_guild_name = guild_name.into();
+        self.update_guild_name = true;
+        self
+    }
+
+    /// Set the new picture of this guild.
+    pub fn new_guild_picture(mut self, guild_picture: impl Into<Hmc>) -> Self {
+        self.new_guild_picture = guild_picture.into();
+        self.update_guild_picture = true;
+        self
+    }
+
+    /// Set the new metadata of this guild.
+    pub fn new_metadata(mut self, metadata: impl Into<Option<Metadata>>) -> Self {
+        self.metadata = metadata.into();
+        self.update_metadata = true;
+        self
+    }
 }
 
 client_api! {
     /// Update a guild's information.
-    args: {
-        guild_id: u64,
-        new_guild_name: Option<String>,
-        new_guild_picture: Option<Uri>,
-        new_metadata: Option<Option<Metadata>>,
-    },
-    request: UpdateGuildInformationRequest {
-        guild_id,
-        update_guild_name: new_guild_name.is_some(),
-        update_guild_picture: new_guild_picture.is_some(),
-        update_metadata: new_metadata.is_some(),
-        new_guild_name: new_guild_name.unwrap_or_default(),
-        new_guild_picture: new_guild_picture.map(|u| u.to_string()).unwrap_or_default(),
-        metadata: new_metadata.unwrap_or_default(),
-    },
-    api_func: update_guild_information,
+    request: UpdateGuildInformationRequest,
+    api_fn: update_guild_information,
     service: chat,
 }
 
 client_api! {
     /// Delete a guild.
-    args: { guild_id: u64, },
-    request_type: DeleteGuildRequest,
-    api_func: delete_guild,
+    request: DeleteGuildRequest,
+    api_fn: delete_guild,
     service: chat,
 }
 
 client_api! {
     /// Join a guild, using the specified invite id.
-    args: { invite_id: InviteId, },
     action: JoinGuild,
-    request_fields: {
-        invite_id: invite_id.into(),
-    },
-    api_func: join_guild,
+    api_fn: join_guild,
     service: chat,
 }
 
 client_api! {
     /// Leave a guild.
-    args: { guild_id: u64, },
-    request_type: LeaveGuildRequest,
-    api_func: leave_guild,
+    request: LeaveGuildRequest,
+    api_fn: leave_guild,
     service: chat,
 }
 
 client_api! {
     /// Preview a guild.
-    args: { invite_id: InviteId, },
     action: PreviewGuild,
-    request_fields: {
-        invite_id: invite_id.into(),
-    },
-    api_func: preview_guild,
+    api_fn: preview_guild,
     service: chat,
 }

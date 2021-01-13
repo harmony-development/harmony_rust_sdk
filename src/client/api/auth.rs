@@ -89,36 +89,45 @@ client_api! {
     /// Starts an authentication session.
     response: BeginAuthResponse,
     request: (),
-    api_func: begin_auth,
+    api_fn: begin_auth,
     service: auth,
+}
+
+/// Convenience type to create a valid [`NextStepRequest`].
+#[into_request("NextStepRequest")]
+#[derive(Debug, new)]
+pub struct AuthResponse {
+    auth_id: String,
+    step: AuthStepResponse,
 }
 
 client_api! {
     /// Requests the next step of an authentication session from the homeserver.
-    args: {
-        auth_id: String,
-        step: Option<next_step_request::Step>,
-    },
     response: AuthStep,
-    request_type: NextStepRequest,
-    api_func: next_step,
+    request: NextStepRequest,
+    api_fn: next_step,
     service: auth,
+}
+
+/// Wrapper around an auth ID which can be used as multiple requests.
+#[into_request("StepBackRequest", "StreamStepsRequest")]
+#[derive(Debug, From, Into, Display, new)]
+pub struct AuthId {
+    auth_id: String,
 }
 
 client_api! {
     /// Steps back in an authentication session.
-    args: { auth_id: String, },
     response: AuthStep,
-    request_type: StepBackRequest,
-    api_func: step_back,
+    request: StepBackRequest,
+    api_fn: step_back,
     service: auth,
 }
 
 client_api! {
     /// Stream steps sent from the server.
-    args: { auth_id: String, },
     response: tonic::Streaming<AuthStep>,
-    request_type: StreamStepsRequest,
-    api_func: stream_steps,
+    request: StreamStepsRequest,
+    api_fn: stream_steps,
     service: auth,
 }

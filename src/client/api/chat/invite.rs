@@ -2,38 +2,40 @@ use super::*;
 
 client_api! {
     /// Get invites for the specified guild.
-    args: { guild_id: u64, },
     action: GetGuildInvites,
-    api_func: get_guild_invites,
+    api_fn: get_guild_invites,
     service: chat,
+}
+
+/// Convenience type to create a valid [`CreateInviteRequest`].
+#[into_request("CreateInviteRequest")]
+#[derive(Debug, new)]
+pub struct CreateInvite {
+    name: InviteId,
+    possible_uses: i32,
+    guild_id: u64,
 }
 
 client_api! {
     /// Create an invite with a name and a number of uses for the specified guild.
     ///
     /// If the number of possible uses are `0`, invite usage won't be limited.
-    args: {
-        name: InviteId,
-        possible_uses: u32,
-        guild_id: u64,
-    },
     action: CreateInvite,
-    request_fields: {
-        possible_uses: if possible_uses == 0 { -1 } else { possible_uses as i32 },
-        name: name.into(),
-        = guild_id,
-    },
-    api_func: create_invite,
+    api_fn: create_invite,
     service: chat,
+}
+
+/// Convenience type to create a valid [`DeleteInviteRequest`].
+#[into_request("DeleteInviteRequest")]
+#[derive(Debug, new)]
+pub struct DeleteInvite {
+    invite_id: InviteId,
+    guild_id: u64,
 }
 
 client_api! {
     /// Delete an invite with the specified name in the specified guild.
-    args: { guild_id: u64, invite_id: InviteId, },
-    request: DeleteInviteRequest {
-        invite_id: invite_id.into(),
-        guild_id,
-    },
-    api_func: delete_invite,
+    request: DeleteInviteRequest,
+    api_fn: delete_invite,
     service: chat,
 }

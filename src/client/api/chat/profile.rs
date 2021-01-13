@@ -2,46 +2,79 @@ use super::*;
 
 client_api! {
     /// Get a list of all users in a guild.
-    args: { guild_id: u64, },
     action: GetGuildMembers,
-    api_func: get_guild_members,
+    api_fn: get_guild_members,
     service: chat,
 }
 
 client_api! {
     /// Get a user's profile.
-    args: { user_id: u64, },
     action: GetUser,
-    api_func: get_user,
+    api_fn: get_user,
     service: chat,
+}
+
+/// Convenience type to create a valid [`GetUserMetadataRequest`].
+#[into_request("GetUserMetadataRequest")]
+#[derive(Debug, new)]
+pub struct AppId {
+    app_id: String,
 }
 
 client_api! {
     /// Get a user's metadata.
-    args: { app_id: String, },
     action: GetUserMetadata,
-    api_func: get_user_metadata,
+    api_fn: get_user_metadata,
     service: chat,
+}
+
+/// Convenience type to create a valid [`ProfileUpdateRequest`].
+#[into_request("ProfileUpdateRequest")]
+#[derive(Debug, Default)]
+pub struct ProfileUpdate {
+    new_username: String,
+    new_status: UserStatus,
+    new_avatar: Hmc,
+    is_bot: bool,
+    update_username: bool,
+    update_status: bool,
+    update_avatar: bool,
+    update_is_bot: bool,
+}
+
+impl ProfileUpdate {
+    /// Set the new username of this user.
+    pub fn new_username(mut self, username: impl Into<String>) -> Self {
+        self.new_username = username.into();
+        self.update_username = true;
+        self
+    }
+
+    /// Set the new status of this user.
+    pub fn new_status(mut self, status: impl Into<UserStatus>) -> Self {
+        self.new_status = status.into();
+        self.update_status = true;
+        self
+    }
+
+    /// Set the new avatar of this user.
+    pub fn new_avatar(mut self, avatar: impl Into<Hmc>) -> Self {
+        self.new_avatar = avatar.into();
+        self.update_avatar = true;
+        self
+    }
+
+    /// Set the new bot marker of this user.
+    pub fn new_is_bot(mut self, is_bot: impl Into<bool>) -> Self {
+        self.is_bot = is_bot.into();
+        self.update_is_bot = true;
+        self
+    }
 }
 
 client_api! {
     /// Update local user's profile.
-    args: {
-        new_username: Option<String>,
-        new_status: Option<UserStatus>,
-        new_avatar: Option<Uri>,
-        new_is_bot: Option<bool>,
-    },
-    request: ProfileUpdateRequest {
-        update_username: new_username.is_some(),
-        update_status: new_status.is_some(),
-        update_avatar: new_avatar.is_some(),
-        update_is_bot: new_is_bot.is_some(),
-        new_username: new_username.unwrap_or_default(),
-        new_status: new_status.unwrap_or_default().into(),
-        new_avatar: new_avatar.map(|u| u.to_string()).unwrap_or_default(),
-        is_bot: new_is_bot.unwrap_or_default(),
-    },
-    api_func: profile_update,
+    request: ProfileUpdateRequest,
+    api_fn: profile_update,
     service: chat,
 }

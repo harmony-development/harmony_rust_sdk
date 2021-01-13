@@ -1,137 +1,198 @@
 use super::*;
 
+/// Convenience type to create a valid [`GetPermissionsRequest`].
+#[into_request("GetPermissionsRequest")]
+#[derive(Debug, new)]
+pub struct GetPermissions {
+    guild_id: u64,
+    channel_id: u64,
+    role_id: u64,
+}
+
 client_api! {
     /// Get permissions of a role.
-    args: {
-        guild_id: u64,
-        channel_id: u64,
-        role_id: u64,
-    },
     action: GetPermissions,
-    api_func: get_permissions,
+    api_fn: get_permissions,
     service: chat,
+}
+
+/// Convenience type to create a valid [`QueryPermissionsRequest`].
+#[into_request("QueryPermissionsRequest")]
+#[derive(Debug, new, SelfBuilder)]
+pub struct QueryPermissions {
+    guild_id: u64,
+    channel_id: u64,
+    check_for: String,
+    #[new(default)]
+    r#as: u64,
 }
 
 client_api! {
     /// Query if a local user (or specified user) has a permission.
-    args: {
-        guild_id: u64,
-        channel_id: u64,
-        check_for: String,
-        as_user_id: Option<u64>,
-    },
     action: QueryPermissions,
-    request_fields: {
-        r#as: as_user_id.unwrap_or_default(),
-        = guild_id, channel_id, check_for,
-    },
-    api_func: query_has_permission,
+    api_fn: query_has_permission,
     service: chat,
+}
+
+/// Convenience type to create a valid [`SetPermissionsRequest`].
+#[into_request("SetPermissionsRequest")]
+#[derive(Debug, SelfBuilder, new)]
+pub struct SetPermissions {
+    guild_id: u64,
+    channel_id: u64,
+    role_id: u64,
+    #[new(default)]
+    #[builder(setter(strip_option))]
+    perms: Option<PermissionList>,
 }
 
 client_api! {
     /// Set permissions of a role.
-    args: {
-        guild_id: u64,
-        channel_id: u64,
-        role_id: u64,
-        permissions: PermissionList,
-    },
-    request: SetPermissionsRequest {
-        guild_id, channel_id, role_id,
-        perms: Some(permissions),
-    },
-    api_func: set_permissions,
+    request: SetPermissionsRequest,
+    api_fn: set_permissions,
     service: chat,
 }
 
 client_api! {
     /// Get a list of all roles in a guild.
-    args: { guild_id: u64, },
     action: GetGuildRoles,
-    api_func: get_guild_roles,
+    api_fn: get_guild_roles,
     service: chat,
+}
+
+/// Convenience type to create a valid [`AddGuildRoleRequest`].
+#[derive(Debug, new)]
+pub struct AddGuildRole {
+    guild_id: u64,
+    role: Role,
+}
+
+impl IntoRequest<AddGuildRoleRequest> for AddGuildRole {
+    fn into_request(self) -> Request<AddGuildRoleRequest> {
+        AddGuildRoleRequest {
+            guild_id: self.guild_id,
+            role: Some(self.role),
+        }
+        .into_request()
+    }
 }
 
 client_api! {
     /// Add a role to a guild.
-    args: { guild_id: u64, role: Role, },
     action: AddGuildRole,
-    request_fields: {
-        role: Some(role),
-        = guild_id,
-    },
-    api_func: add_guild_role,
+    api_fn: add_guild_role,
     service: chat,
+}
+
+/// Convenience type to create a valid [`DeleteGuildRoleRequest`].
+#[into_request("DeleteGuildRoleRequest")]
+#[derive(Debug, new)]
+pub struct DeleteGuildRole {
+    guild_id: u64,
+    role_id: u64,
 }
 
 client_api! {
     /// Delete a role in a guild.
-    args: { guild_id: u64, role_id: u64, },
-    request_type: DeleteGuildRoleRequest,
-    api_func: delete_guild_role,
+    request: DeleteGuildRoleRequest,
+    api_fn: delete_guild_role,
     service: chat,
+}
+
+// TODO: Make a `RoleUpdate` struct for this
+/// Convenience type to create a valid [`ModifyGuildRoleRequest`].
+#[derive(Debug, new, SelfBuilder)]
+pub struct ModifyGuildRole {
+    guild_id: u64,
+    role: Role,
+    #[new(default)]
+    modify_name: bool,
+    #[new(default)]
+    modify_color: bool,
+    #[new(default)]
+    modify_hoist: bool,
+    #[new(default)]
+    modify_pingable: bool,
+}
+
+impl IntoRequest<ModifyGuildRoleRequest> for ModifyGuildRole {
+    fn into_request(self) -> Request<ModifyGuildRoleRequest> {
+        ModifyGuildRoleRequest {
+            guild_id: self.guild_id,
+            modify_name: self.modify_name,
+            modify_color: self.modify_color,
+            modify_hoist: self.modify_hoist,
+            modify_pingable: self.modify_pingable,
+            role: Some(self.role),
+        }
+        .into_request()
+    }
 }
 
 client_api! {
     /// Modify a role in a guild.
-    args: {
-        guild_id: u64,
-        role: Role,
-        modify_name: bool,
-        modify_color: bool,
-        modify_hoist: bool,
-        modify_pingable: bool,
-    },
-    request: ModifyGuildRoleRequest {
-        role: Some(role),
-        guild_id,
-        modify_name,
-        modify_color,
-        modify_hoist,
-        modify_pingable,
-    },
-    api_func: modify_guild_role,
+    request: ModifyGuildRoleRequest,
+    api_fn: modify_guild_role,
     service: chat,
+}
+
+/// Convenience type to create a valid [`MoveRoleRequest`].
+#[derive(Debug, new)]
+pub struct MoveRole {
+    guild_id: u64,
+    role_id: u64,
+    new_role_place: Place,
+}
+
+impl IntoRequest<MoveRoleRequest> for MoveRole {
+    fn into_request(self) -> Request<MoveRoleRequest> {
+        MoveRoleRequest {
+            guild_id: self.guild_id,
+            role_id: self.role_id,
+            before_id: self.new_role_place.next(),
+            after_id: self.new_role_place.previous(),
+        }
+        .into_request()
+    }
 }
 
 client_api! {
     /// Move a role to somewhere else on the role list.
-    args: {
-        guild_id: u64,
-        role_id: u64,
-        new_role_place: Place,
-    },
     action: MoveRole,
-    request_fields: {
-        before_id: new_role_place.next(),
-        after_id: new_role_place.previous(),
-        = guild_id, role_id,
-    },
-    api_func: move_role,
+    api_fn: move_role,
     service: chat,
+}
+
+/// Convenience type to create a valid [`ManageUserRolesRequest`].
+#[into_request("ManageUserRolesRequest")]
+#[derive(Debug, new, SelfBuilder)]
+pub struct ManageUserRoles {
+    guild_id: u64,
+    user_id: u64,
+    #[new(default)]
+    give_role_ids: Vec<u64>,
+    #[new(default)]
+    take_role_ids: Vec<u64>,
 }
 
 client_api! {
     /// Manage a user's roles.
-    args: {
-        guild_id: u64,
-        user_id: u64,
-        give_role_ids: Vec<u64>,
-        take_role_ids: Vec<u64>,
-    },
-    request_type: ManageUserRolesRequest,
-    api_func: manage_user_roles,
+    request: ManageUserRolesRequest,
+    api_fn: manage_user_roles,
     service: chat,
+}
+
+/// Convenience type to create a valid [`GetUserRolesRequest`].
+#[into_request("GetUserRolesRequest")]
+#[derive(Debug, new)]
+pub struct GetUserRoles {
+    guild_id: u64,
+    user_id: u64,
 }
 
 client_api! {
     /// Get a list of all roles a user has.
-    args: {
-        guild_id: u64,
-        user_id: u64,
-    },
     action: GetUserRoles,
-    api_func: get_user_roles,
+    api_fn: get_user_roles,
     service: chat,
 }

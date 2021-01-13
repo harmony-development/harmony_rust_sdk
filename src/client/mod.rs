@@ -293,7 +293,7 @@ impl Client {
     /// # }
     /// ```
     pub async fn begin_auth(&self) -> ClientResult<()> {
-        let auth_id = api::auth::begin_auth(self).await?.auth_id;
+        let auth_id = api::auth::begin_auth(self, ()).await?.auth_id;
         *self.auth_status_lock() = AuthStatus::InProgress(auth_id);
         Ok(())
     }
@@ -320,7 +320,7 @@ impl Client {
         response: AuthStepResponse,
     ) -> ClientResult<Option<AuthStep>> {
         if let AuthStatus::InProgress(auth_id) = self.auth_status() {
-            let step = api::auth::next_step(self, auth_id, response.into()).await?;
+            let step = api::auth::next_step(self, AuthResponse::new(auth_id, response)).await?;
 
             Ok(if let Some(auth_step::Step::Session(session)) = step.step {
                 *self.auth_status_lock() = AuthStatus::Complete(session);
@@ -350,7 +350,7 @@ impl Client {
     /// ```
     pub async fn prev_auth_step(&self) -> ClientResult<AuthStep> {
         if let AuthStatus::InProgress(auth_id) = self.auth_status() {
-            api::auth::step_back(self, auth_id).await
+            api::auth::step_back(self, AuthId::new(auth_id)).await
         } else {
             Err(ClientError::NoAuthId)
         }
@@ -374,7 +374,7 @@ impl Client {
         &self,
     ) -> ClientResult<impl Stream<Item = ClientResult<AuthStep>> + Send + Sync> {
         if let AuthStatus::InProgress(auth_id) = self.auth_status() {
-            api::auth::stream_steps(self, auth_id)
+            api::auth::stream_steps(self, AuthId::new(auth_id))
                 .await
                 .map(|stream| stream.map_err(Into::into))
         } else {

@@ -1,6 +1,13 @@
-use harmony_rust_sdk::client::{
-    api::{auth::*, chat::*},
-    *,
+use harmony_rust_sdk::{
+    api::chat::{GetEmotePacksRequest, GetGuildListRequest},
+    client::{
+        api::{
+            auth::*,
+            chat::{channel::*, message::*, profile::*, *},
+            *,
+        },
+        *,
+    },
 };
 use http::Uri;
 
@@ -48,10 +55,9 @@ async fn main() -> ClientResult<()> {
     log::info!("Testing profile update...");
     api::chat::profile::profile_update(
         &client,
-        None,
-        Some(api::UserStatus::OnlineUnspecified),
-        None,
-        Some(true),
+        ProfileUpdate::default()
+            .new_status(UserStatus::OnlineUnspecified)
+            .new_is_bot(true),
     )
     .await?;
     log::info!("Updated profile");
@@ -60,44 +66,37 @@ async fn main() -> ClientResult<()> {
     log::info!("Preview guild response: {:?}", response);
     assert_eq!(response.name.as_str(), "Harmony Development");
 
-    let response = api::chat::guild::get_guild_list(&client).await?;
+    let response = api::chat::guild::get_guild_list(&client, GetGuildListRequest {}).await?;
     log::info!("Get guild list response: {:?}", response);
 
     // let response = api::chat::permissions::get_guild_roles(&client, TEST_GUILD).await?;
     // log::info!("Get guild roles response: {:?}", response);
 
-    let response = api::chat::profile::get_guild_members(&client, TEST_GUILD).await?;
+    let response = api::chat::profile::get_guild_members(&client, GuildId::new(TEST_GUILD)).await?;
     log::info!("Get guild members response: {:?}", response);
 
-    let response = api::chat::emote::get_emote_packs(&client).await?;
+    let response = api::chat::emote::get_emote_packs(&client, GetEmotePacksRequest {}).await?;
     log::info!("Get emote packs response: {:?}", response);
 
-    let response = api::chat::channel::get_guild_channels(&client, TEST_GUILD).await?;
+    let response =
+        api::chat::channel::get_guild_channels(&client, GuildId::new(TEST_GUILD)).await?;
     log::info!("Get guild channels response: {:?}", response);
 
-    typing(&client, TEST_GUILD, TEST_CHANNEL).await?;
+    typing(&client, Typing::new(TEST_GUILD, TEST_CHANNEL)).await?;
     log::info!("Notified the server that we are typing");
 
     let current_time = std::time::UNIX_EPOCH.elapsed().unwrap().as_secs();
     let msg = format!("test at {}", current_time);
     message::send_message(
         &client,
-        TEST_GUILD,
-        TEST_CHANNEL,
-        None,
-        None,
-        Some(msg.clone()),
-        None,
-        None,
-        None,
-        None,
-        None,
+        SendMessage::new(TEST_GUILD, TEST_CHANNEL, msg.clone()),
     )
     .await?;
     log::info!("Sent a test message");
 
     let response =
-        api::chat::channel::get_channel_messages(&client, TEST_GUILD, TEST_CHANNEL, None).await?;
+        channel::get_channel_messages(&client, GetChannelMessages::new(TEST_GUILD, TEST_CHANNEL))
+            .await?;
     log::info!("Get channel messages response: {:?}", response);
     let our_msg = response.messages.first().unwrap();
     assert_eq!(our_msg.content, msg.as_str());

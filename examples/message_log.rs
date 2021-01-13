@@ -1,7 +1,11 @@
 //! Example showcasing a very simple message logging bot.
 use futures_util::StreamExt;
 use harmony_rust_sdk::client::{
-    api::{auth::*, chat::*, *},
+    api::{
+        auth::*,
+        chat::{profile::ProfileUpdate, *},
+        *,
+    },
     Client, ClientResult,
 };
 
@@ -50,10 +54,9 @@ async fn main() -> ClientResult<()> {
     // Change our bots status to online and make sure its marked as a bot
     profile::profile_update(
         &client,
-        None,
-        Some(UserStatus::OnlineUnspecified),
-        None,
-        Some(true),
+        ProfileUpdate::default()
+            .new_status(UserStatus::OnlineUnspecified)
+            .new_is_bot(true),
     )
     .await?;
 

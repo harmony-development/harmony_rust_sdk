@@ -20,6 +20,10 @@
 //!     - Enable the `client` feature for a lightweight client implementation and the client API (implies `gen_client` feature).
 //!     - Enable the `gen_client` feature to generate client service code.
 //!    - Enable the `gen_server` feature to generate server service code.
+#[macro_use]
+extern crate derive_new;
+#[macro_use]
+extern crate harmony_derive;
 
 /// Harmony protocol API.
 pub mod api;

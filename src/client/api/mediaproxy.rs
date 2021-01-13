@@ -5,35 +5,43 @@ use http::Uri;
 
 pub use crate::api::mediaproxy::SiteMetadata;
 
+impl IntoRequest<FetchLinkMetadataRequest> for Uri {
+    fn into_request(self) -> Request<FetchLinkMetadataRequest> {
+        FetchLinkMetadataRequest {
+            url: self.to_string(),
+        }
+        .into_request()
+    }
+}
+
+impl IntoRequest<InstantViewRequest> for Uri {
+    fn into_request(self) -> Request<InstantViewRequest> {
+        InstantViewRequest {
+            url: self.to_string(),
+        }
+        .into_request()
+    }
+}
+
 client_api! {
     /// Request an Instant View from the server.
-    args: { url: Uri, },
     action: InstantView,
-    request_fields: {
-        url: url.to_string(),
-    },
-    api_func: instant_view,
+    api_fn: instant_view,
     service: mediaproxy,
 }
 
 client_api! {
     /// Request a link's (site) metadata from the server.
-    args: { url: Uri, },
     response: SiteMetadata,
-    request: FetchLinkMetadataRequest {
-        url: url.to_string(),
-    },
-    api_func: fetch_link_metadata,
+    request: FetchLinkMetadataRequest,
+    api_fn: fetch_link_metadata,
     service: mediaproxy,
 }
 
 client_api! {
     /// Ask the server if it can provide an Instant View for a specified URL.
-    args: { url: Uri, },
     response: CanInstantViewResponse,
-    request: InstantViewRequest {
-        url: url.to_string(),
-    },
-    api_func: can_instant_view,
+    request: InstantViewRequest,
+    api_fn: can_instant_view,
     service: mediaproxy,
 }
