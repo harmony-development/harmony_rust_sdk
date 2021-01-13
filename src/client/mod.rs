@@ -25,11 +25,11 @@ use api::{auth::*, chat::EventSource};
 
 use futures_util::{future, stream::Stream, StreamExt, TryStreamExt};
 use http::{uri::PathAndQuery, Uri};
-#[cfg(feature = "use_parking_lot")]
+#[cfg(feature = "parking_lot")]
 use parking_lot::{Mutex, MutexGuard};
 use reqwest::Client as HttpClient;
 use std::sync::Arc;
-#[cfg(not(feature = "use_parking_lot"))]
+#[cfg(not(feature = "parking_lot"))]
 use std::sync::{Mutex, MutexGuard};
 use tonic::transport::Channel;
 
@@ -204,46 +204,46 @@ impl Client {
     }
 
     fn chat_lock(&self) -> MutexGuard<ChatService> {
-        #[cfg(not(feature = "use_parking_lot"))]
+        #[cfg(not(feature = "parking_lot"))]
         return self
             .data
             .chat
             .lock()
             .expect("chat service mutex was poisoned");
-        #[cfg(feature = "use_parking_lot")]
+        #[cfg(feature = "parking_lot")]
         self.data.chat.lock()
     }
 
     fn auth_lock(&self) -> MutexGuard<AuthService> {
-        #[cfg(not(feature = "use_parking_lot"))]
+        #[cfg(not(feature = "parking_lot"))]
         return self
             .data
             .auth
             .lock()
             .expect("auth service mutex was poisoned");
-        #[cfg(feature = "use_parking_lot")]
+        #[cfg(feature = "parking_lot")]
         self.data.auth.lock()
     }
 
     fn mediaproxy_lock(&self) -> MutexGuard<MediaProxyService> {
-        #[cfg(not(feature = "use_parking_lot"))]
+        #[cfg(not(feature = "parking_lot"))]
         return self
             .data
             .mediaproxy
             .lock()
             .expect("media proxy service mutex was poisoned");
-        #[cfg(feature = "use_parking_lot")]
+        #[cfg(feature = "parking_lot")]
         self.data.mediaproxy.lock()
     }
 
     fn auth_status_lock(&self) -> MutexGuard<AuthStatus> {
-        #[cfg(not(feature = "use_parking_lot"))]
+        #[cfg(not(feature = "parking_lot"))]
         return self
             .data
             .auth_status
             .lock()
             .expect("auth status mutex was poisoned");
-        #[cfg(feature = "use_parking_lot")]
+        #[cfg(feature = "parking_lot")]
         self.data.auth_status.lock()
     }
 

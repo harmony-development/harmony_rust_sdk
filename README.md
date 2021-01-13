@@ -29,7 +29,7 @@ Currently implements a lightweight client and a client API (powered by [tonic](h
 
 ## Crate features
 - By default, no features are enabled and only a bare-bones common API is generated. You can customize the crate to your needs by enabling feature(s) listed below:
-    - Enable the `use_parking_lot` feature if you want to use [parking_lot](https://github.com/Amanieu/parking_lot) `sync` types instead of `std::sync`.
+    - Enable the `parking_lot` feature if you want to use [parking_lot](https://github.com/Amanieu/parking_lot) `sync` types instead of `std::sync`.
     - Enable the `client` feature for a lightweight client implementation and the client API (implies `gen_client` feature).
     - Enable the `gen_client` feature to generate client service code.
     - Enable the `gen_server` feature to generate server service code.

@@ -48,8 +48,6 @@ client = [ "gen_client", "futures-util", "paste", "assign", "log", "reqwest" ]
 gen_client = [ ]
 gen_server = [ ]
 
-use_parking_lot = [ "parking_lot" ]
-
 [dev-dependencies]
 tokio = { version = "0.2", features = [ "rt-threaded", "macros", "fs" ] }
 env_logger = "0.8"
