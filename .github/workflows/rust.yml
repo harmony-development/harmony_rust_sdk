@@ -23,6 +23,7 @@ jobs:
   all-previous:
     runs-on: ubuntu-latest
     container: yusdacra/harmony-rs:1.48.0
+
     steps:
     - name: Checkout repo
       uses: actions/checkout@v2
@@ -32,8 +33,6 @@ jobs:
     - name: Cache rust
       uses: Swatinem/rust-cache@v1
 
-    - name: Check
-      run: cargo check --all-targets --all-features --verbose
     - name: Clippy
       uses: actions-rs/clippy-check@v1
       with:
@@ -49,6 +48,7 @@ jobs:
   all:
     runs-on: ubuntu-latest
     container: yusdacra/harmony-rs:1.49.0
+    
     steps:
     - name: Checkout repo
       uses: actions/checkout@v2
@@ -58,8 +58,6 @@ jobs:
     - name: Cache rust
       uses: Swatinem/rust-cache@v1
 
-    - name: Check
-      run: cargo check --all-targets --all-features --verbose
     - name: Clippy
       uses: actions-rs/clippy-check@v1
       with:
