@@ -33,31 +33,63 @@
 <span id="30">30</span>
 <span id="31">31</span>
 <span id="32">32</span>
+<span id="33">33</span>
+<span id="34">34</span>
+<span id="35">35</span>
+<span id="36">36</span>
+<span id="37">37</span>
+<span id="38">38</span>
+<span id="39">39</span>
+<span id="40">40</span>
+<span id="41">41</span>
+<span id="42">42</span>
+<span id="43">43</span>
+<span id="44">44</span>
+<span id="45">45</span>
+<span id="46">46</span>
+<span id="47">47</span>
+<span id="48">48</span>
 </pre><div class="example-wrap"><pre class="rust ">
-<span class="doccomment">//! Rust library to work with the Harmony chat protocol.</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! This crate currently contains the generated API code and client API with a lightweight client implementation.</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! ## Examples</span>
-<span class="doccomment">//! - `echo_bot`: Showcases a simple message echo bot that operates in a guild. It will repost messages whenever someone else posts a message.</span>
-<span class="doccomment">//! - `message_log`: Showcases a simple message log bot that operates in a guild. It will log messages to the console whenever someone posts a message.</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! - Bot run instructions:</span>
-<span class="doccomment">//!     - Make sure legato is running on `http://127.0.0.1:2289` or whatever you set `HOMESERVER` constant to.</span>
-<span class="doccomment">//!     - Run bots with `cargo run --example example_name`. First run will register to the homeserver.</span>
-<span class="doccomment">//!     - Login as bot with a client, and join your guild (eg. by creating an invite and using it with bot&#39;s account).</span>
-<span class="doccomment">//!     - Make sure the bot has necessary permissions to view channels / send messages etc.</span>
-<span class="doccomment">//!     - Save your guild ID to `guild_id`.</span>
-<span class="doccomment">//!     - Run the bot again and it should now work! (hopefully™)</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! ## Crate features</span>
-<span class="doccomment">//! - By default, no features are enabled and only a bare-bones common API is generated. You can customize the crate to your needs by enabling feature(s) listed below:</span>
-<span class="doccomment">//!     - Enable the `parking_lot` feature if you want to use [parking_lot](https://github.com/Amanieu/parking_lot) `sync` types instead of `std::sync`.</span>
-<span class="doccomment">//!     - Enable the `client` feature for a lightweight client implementation and the client API (implies `gen_client` feature).</span>
-<span class="doccomment">//!     - Enable the `gen_client` feature to generate client service code.</span>
-<span class="doccomment">//!    - Enable the `gen_server` feature to generate server service code.</span>
+<span class="doccomment">/*!
+Rust implementation of [the Harmony chat protocol](https://github.com/harmony-development).
+Currently implements a lightweight client and a client API (powered by [tonic](https://crates.io/crates/tonic)), along with auto generated API via [tonic-build](https://crates.io/crates/tonic-build).
+
+## Requirements
+- Latest stable Rust and Cargo.
+- If you are using Nix, `nix-shell` (or `nix develop` if you use flakes) should get you covered.
+- Otherwise, you&#39;ll need to get protobuf and make sure `protoc` is in your `PATH` env variable.
+  - If for some reason `build.rs` fails, make sure to set:
+    - `PROTOC` env variable to your `protoc` executable
+    - and `PROTOC_INCLUDE` env variable to wherever protobuf include files are located, most likely in `/usr/share/include`.
+
+## Examples
+- `echo_bot`: Showcases a simple message echo bot that operates in a guild. It will repost messages whenever someone else posts a message.
+- `message_log`: Showcases a simple message log bot that operates in a guild. It will log messages to the console whenever someone posts a message.
+
+- Bot run instructions:
+    - Run bots with `GUILD_INVITE=invite cargo run --example example_name`.
+    - Make sure the bot has necessary permissions to view channels / send messages etc.
+
+## Crate features
+- By default, only a bare-bones common API of all services is generated. You can customize the crate to your needs by enabling feature(s) listed below:
+    - Enable the `parking_lot` feature if you want to use [parking_lot](https://github.com/Amanieu/parking_lot) `sync` types instead of `std::sync`.
+    - Enable the `client` feature for a lightweight client implementation and the client API.
+    - Enable the `gen_client` feature to generate client service code.
+    - Enable the `gen_server` feature to generate server service code.
+    - (Default) Enable the `gen_chat` feature to generate chat service code.
+    - (Default) Enable the `gen_auth` feature to generate auth service code.
+    - (Default) Enable the `gen_voice` feature to generate voice service code.
+    - (Default) Enable the `gen_mediaproxy` feature to generate media proxy service code.
+    - (Default) Enable the `gen_harmonytypes` feature to generate common Harmony types.
+
+## MSRV
+Minimum Supported Rust Version: previous stable.
+
+Changing MSRV is not considered a semver-breaking change.
+!*/</span>
 <span class="attribute">#[<span class="ident">macro_use</span>]</span>
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">derive_new</span>;
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;gen_chat&quot;</span>)]</span>
 <span class="attribute">#[<span class="ident">macro_use</span>]</span>
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">harmony_derive</span>;
 

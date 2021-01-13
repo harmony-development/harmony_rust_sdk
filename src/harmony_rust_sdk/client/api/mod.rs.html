@@ -129,6 +129,8 @@
 <span id="126">126</span>
 <span id="127">127</span>
 <span id="128">128</span>
+<span id="129">129</span>
+<span id="130">130</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">/// Auth service client API.</span>
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">auth</span>;
@@ -139,14 +141,14 @@
 <span class="doccomment">/// REST client API.</span>
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">rest</span>;
 
+<span class="comment">// Re export common types</span>
+<span class="kw">pub</span> <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">api</span>::<span class="ident">harmonytypes</span>::{<span class="ident">r#override</span>::<span class="ident">Reason</span>, <span class="kw-2">*</span>};
+<span class="kw">pub</span> <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">api</span>::{<span class="ident">Hmc</span>, <span class="ident">HmcParseError</span>};
+
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">client</span>::{<span class="ident">Client</span>, <span class="ident">ClientResult</span>};
 
 <span class="kw">use</span> <span class="ident">derive_more</span>::{<span class="ident">Display</span>, <span class="ident">From</span>, <span class="ident">Into</span>};
 <span class="kw">use</span> <span class="ident">tonic</span>::{<span class="ident">IntoRequest</span>, <span class="ident">Request</span>, <span class="ident">Response</span>};
-
-<span class="comment">// Re export common types</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">api</span>::<span class="ident">harmonytypes</span>::{<span class="ident">r#override</span>::<span class="ident">Reason</span>, <span class="kw-2">*</span>};
-<span class="kw">pub</span> <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">api</span>::{<span class="ident">Hmc</span>, <span class="ident">HmcParseError</span>};
 
 <span class="doccomment">/// This is NOT a part of the public API and should NOT be used.</span>
 <span class="attribute">#[<span class="ident">macro_export</span>]</span>
@@ -176,6 +178,7 @@
             <span class="ident">paste</span>::<span class="macro">paste</span><span class="macro">!</span> {
                 <span class="kw">let</span> <span class="ident">response</span> <span class="op">=</span> <span class="ident">client</span>
                     .[<span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">service</span> <span class="ident">_lock</span><span class="op">&gt;</span>]()
+                    .<span class="ident">await</span>
                     .<span class="macro-nonterminal">$</span><span class="macro-nonterminal">api_fn</span> (<span class="ident">request</span>)
                     .<span class="ident">await</span>;
             }
@@ -205,6 +208,7 @@
             <span class="ident">paste</span>::<span class="macro">paste</span><span class="macro">!</span> {
                 <span class="kw">let</span> <span class="ident">response</span> <span class="op">=</span> <span class="ident">client</span>
                     .[<span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">service</span> <span class="ident">_lock</span><span class="op">&gt;</span>]()
+                    .<span class="ident">await</span>
                     .<span class="macro-nonterminal">$</span><span class="macro-nonterminal">api_fn</span> (<span class="ident">request</span>)
                     .<span class="ident">await</span>;
             }

@@ -133,16 +133,14 @@
 <span id="130">130</span>
 <span id="131">131</span>
 <span id="132">132</span>
-<span id="133">133</span>
 </pre><div class="example-wrap"><pre class="rust ">
-<span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
+<span class="kw">pub</span> <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">api</span>::<span class="ident">auth</span>::{<span class="ident">auth_step</span>, <span class="ident">next_step_request</span>, <span class="ident">AuthStep</span>, <span class="ident">Session</span>};
 
+<span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
 <span class="kw">use</span> <span class="kw">crate</span>::{
     <span class="ident">api</span>::<span class="ident">auth</span>::{<span class="ident">next_step_request</span>::<span class="ident">form_fields</span>::<span class="ident">Field</span>, <span class="kw-2">*</span>},
     <span class="ident">client_api</span>,
 };
-
-<span class="kw">pub</span> <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">api</span>::<span class="ident">auth</span>::{<span class="ident">auth_step</span>, <span class="ident">next_step_request</span>, <span class="ident">AuthStep</span>, <span class="ident">Session</span>};
 
 <span class="doccomment">/// A response to an [`AuthStep`].</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>

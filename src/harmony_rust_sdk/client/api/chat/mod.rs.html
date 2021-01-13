@@ -145,12 +145,6 @@
 <span id="142">142</span>
 <span id="143">143</span>
 </pre><div class="example-wrap"><pre class="rust ">
-<span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
-
-<span class="kw">use</span> <span class="kw">crate</span>::{<span class="ident">api</span>::<span class="ident">chat</span>::<span class="kw-2">*</span>, <span class="ident">client_api</span>};
-<span class="kw">use</span> <span class="ident">futures</span>::<span class="ident">StreamExt</span>;
-<span class="kw">use</span> <span class="ident">http</span>::<span class="ident">Uri</span>;
-
 <span class="comment">// Export everything a client may need for this service</span>
 <span class="kw">pub</span> <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">api</span>::<span class="ident">chat</span>::{
     <span class="ident">event</span>, <span class="ident">get_emote_pack_emotes_response</span>::<span class="ident">Emote</span>, <span class="ident">get_emote_packs_response</span>::<span class="ident">EmotePack</span>,
@@ -158,6 +152,12 @@
     <span class="ident">get_guild_list_response</span>::<span class="ident">GuildListEntry</span>, <span class="ident">permission</span>::<span class="ident">Mode</span>, <span class="ident">stream_events_request</span>, <span class="ident">Event</span>,
     <span class="ident">InviteId</span>, <span class="ident">PermissionList</span>, <span class="ident">Place</span>, <span class="ident">Role</span>,
 };
+
+<span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
+<span class="kw">use</span> <span class="kw">crate</span>::{<span class="ident">api</span>::<span class="ident">chat</span>::<span class="kw-2">*</span>, <span class="ident">client_api</span>};
+
+<span class="kw">use</span> <span class="ident">futures</span>::<span class="ident">StreamExt</span>;
+<span class="kw">use</span> <span class="ident">http</span>::<span class="ident">Uri</span>;
 
 <span class="doccomment">/// Describes where to subscribe for events.</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">Copy</span>)]</span>
@@ -282,7 +282,7 @@
             .<span class="ident">insert</span>(<span class="string">&quot;auth&quot;</span>, <span class="ident">session</span>.<span class="ident">session_token</span>.<span class="ident">parse</span>().<span class="ident">unwrap</span>());
     }
 
-    <span class="kw">let</span> <span class="ident">response</span> <span class="op">=</span> <span class="ident">client</span>.<span class="ident">chat_lock</span>().<span class="ident">stream_events</span>(<span class="ident">request</span>).<span class="ident">await</span>;
+    <span class="kw">let</span> <span class="ident">response</span> <span class="op">=</span> <span class="ident">client</span>.<span class="ident">chat_lock</span>().<span class="ident">await</span>.<span class="ident">stream_events</span>(<span class="ident">request</span>).<span class="ident">await</span>;
 
     <span class="ident">log</span>::<span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;Received response: {:?}&quot;</span>, <span class="ident">response</span>);
 
