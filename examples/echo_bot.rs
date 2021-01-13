@@ -116,18 +116,24 @@ async fn main() -> ClientResult<()> {
                 if message.author_id != self_id {
                     log::info!("Echoing message: {}", message.message_id);
 
+                    let attachments = message
+                        .attachments
+                        .into_iter()
+                        .map(|a| {
+                            // See if its an HMC, otherwise it must be a local homeserver
+                            if let Ok(hmc) = a.id.parse::<Uri>().unwrap().try_into() {
+                                hmc
+                            } else {
+                                Hmc::new(client.homeserver_url().authority().unwrap().clone(), a.id)
+                            }
+                        })
+                        .collect::<Vec<Hmc>>();
+
                     let send_message =
                         SendMessage::new(guild_id, message.channel_id, message.content)
                             .in_reply_to(message.in_reply_to)
                             .embeds(message.embeds)
-                            .attachments(
-                                message
-                                    .attachments
-                                    .into_iter()
-                                    // These must be a valid HMC, so no harm in unwrapping
-                                    .map(|a| a.id.parse::<Uri>().unwrap().try_into().unwrap())
-                                    .collect::<Vec<Hmc>>(),
-                            )
+                            .attachments(attachments)
                             .actions(message.actions)
                             .overrides(message.overrides)
                             .metadata(message.metadata);
