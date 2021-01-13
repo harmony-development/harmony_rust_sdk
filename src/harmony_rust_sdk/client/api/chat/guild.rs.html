@@ -117,121 +117,219 @@
 <span id="114">114</span>
 <span id="115">115</span>
 <span id="116">116</span>
+<span id="117">117</span>
+<span id="118">118</span>
+<span id="119">119</span>
+<span id="120">120</span>
+<span id="121">121</span>
+<span id="122">122</span>
+<span id="123">123</span>
+<span id="124">124</span>
+<span id="125">125</span>
+<span id="126">126</span>
+<span id="127">127</span>
+<span id="128">128</span>
+<span id="129">129</span>
+<span id="130">130</span>
+<span id="131">131</span>
+<span id="132">132</span>
+<span id="133">133</span>
+<span id="134">134</span>
+<span id="135">135</span>
+<span id="136">136</span>
+<span id="137">137</span>
+<span id="138">138</span>
+<span id="139">139</span>
+<span id="140">140</span>
+<span id="141">141</span>
+<span id="142">142</span>
+<span id="143">143</span>
+<span id="144">144</span>
+<span id="145">145</span>
+<span id="146">146</span>
+<span id="147">147</span>
+<span id="148">148</span>
+<span id="149">149</span>
+<span id="150">150</span>
+<span id="151">151</span>
+<span id="152">152</span>
+<span id="153">153</span>
+<span id="154">154</span>
+<span id="155">155</span>
+<span id="156">156</span>
+<span id="157">157</span>
+<span id="158">158</span>
+<span id="159">159</span>
+<span id="160">160</span>
+<span id="161">161</span>
+<span id="162">162</span>
+<span id="163">163</span>
+<span id="164">164</span>
+<span id="165">165</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
 
 <span class="macro">client_api</span><span class="macro">!</span> {
     <span class="doccomment">/// Get guild list for local user.</span>
     <span class="ident">action</span>: <span class="ident">GetGuildList</span>,
-    <span class="ident">api_func</span>: <span class="ident">get_guild_list</span>,
+    <span class="ident">api_fn</span>: <span class="ident">get_guild_list</span>,
     <span class="ident">service</span>: <span class="ident">chat</span>,
 }
 
 <span class="macro">client_api</span><span class="macro">!</span> {
     <span class="doccomment">/// Get guild data of a guild.</span>
-    <span class="ident">args</span>: { <span class="ident">guild_id</span>: <span class="ident">u64</span>, },
     <span class="ident">action</span>: <span class="ident">GetGuild</span>,
-    <span class="ident">api_func</span>: <span class="ident">get_guild</span>,
+    <span class="ident">api_fn</span>: <span class="ident">get_guild</span>,
     <span class="ident">service</span>: <span class="ident">chat</span>,
+}
+
+<span class="doccomment">/// Convenience type to create a valid [`CreateGuildRequest`].</span>
+<span class="attribute">#[<span class="ident">into_request</span>(<span class="string">&quot;CreateGuildRequest&quot;</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">new</span>)]</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">CreateGuild</span> {
+    <span class="ident">guild_name</span>: <span class="ident">String</span>,
+    <span class="attribute">#[<span class="ident">new</span>(<span class="ident">default</span>)]</span>
+    <span class="ident">picture_url</span>: <span class="ident">Hmc</span>,
+    <span class="attribute">#[<span class="ident">new</span>(<span class="ident">default</span>)]</span>
+    <span class="ident">metadata</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Metadata</span><span class="op">&gt;</span>,
+}
+
+<span class="kw">impl</span> <span class="ident">CreateGuild</span> {
+    <span class="doccomment">/// Set the picture HMC for this new guild.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">picture</span>(<span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">picture</span>: <span class="kw">impl</span> <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">Hmc</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+        <span class="self">self</span>.<span class="ident">picture_url</span> <span class="op">=</span> <span class="ident">picture</span>.<span class="ident">into</span>();
+        <span class="self">self</span>
+    }
+
+    <span class="doccomment">/// Set the metadata for this new guild.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">metadata</span>(<span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">metadata</span>: <span class="kw">impl</span> <span class="ident">Into</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Metadata</span><span class="op">&gt;</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+        <span class="self">self</span>.<span class="ident">metadata</span> <span class="op">=</span> <span class="ident">metadata</span>.<span class="ident">into</span>();
+        <span class="self">self</span>
+    }
 }
 
 <span class="macro">client_api</span><span class="macro">!</span> {
     <span class="doccomment">/// Create a new guild.</span>
-    <span class="ident">args</span>: {
-        <span class="ident">name</span>: <span class="ident">String</span>,
-        <span class="ident">picture_url</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Uri</span><span class="op">&gt;</span>,
-        <span class="ident">metadata</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Metadata</span><span class="op">&gt;</span>,
-    },
     <span class="ident">action</span>: <span class="ident">CreateGuild</span>,
-    <span class="ident">request_fields</span>: {
-        <span class="ident">guild_name</span>: <span class="ident">name</span>,
-        <span class="ident">picture_url</span>: <span class="ident">picture_url</span>.<span class="ident">map_or_else</span>(<span class="ident">String</span>::<span class="ident">default</span>, <span class="op">|</span><span class="ident">u</span><span class="op">|</span> <span class="ident">u</span>.<span class="ident">to_string</span>()),
-        <span class="op">=</span> <span class="ident">metadata</span>,
-    },
-    <span class="ident">api_func</span>: <span class="ident">create_guild</span>,
+    <span class="ident">api_fn</span>: <span class="ident">create_guild</span>,
     <span class="ident">service</span>: <span class="ident">chat</span>,
+}
+
+<span class="doccomment">/// Convenience type to create a valid [`AddGuildToGuildListRequest`] and [`RemoveGuildFromGuildListRequest`].</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">new</span>)]</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">GuildList</span> {
+    <span class="ident">guild_id</span>: <span class="ident">u64</span>,
+    <span class="ident">homeserver</span>: <span class="ident">Uri</span>,
+}
+
+<span class="kw">impl</span> <span class="ident">IntoRequest</span><span class="op">&lt;</span><span class="ident">AddGuildToGuildListRequest</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">GuildList</span> {
+    <span class="kw">fn</span> <span class="ident">into_request</span>(<span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Request</span><span class="op">&lt;</span><span class="ident">AddGuildToGuildListRequest</span><span class="op">&gt;</span> {
+        <span class="ident">AddGuildToGuildListRequest</span> {
+            <span class="ident">guild_id</span>: <span class="self">self</span>.<span class="ident">guild_id</span>,
+            <span class="ident">homeserver</span>: <span class="self">self</span>.<span class="ident">homeserver</span>.<span class="ident">to_string</span>(),
+        }
+        .<span class="ident">into_request</span>()
+    }
 }
 
 <span class="macro">client_api</span><span class="macro">!</span> {
     <span class="doccomment">/// Add a guild to the guild list.</span>
-    <span class="ident">args</span>: { <span class="ident">guild_id</span>: <span class="ident">u64</span>, <span class="ident">homeserver</span>: <span class="ident">Uri</span>, },
     <span class="ident">action</span>: <span class="ident">AddGuildToGuildList</span>,
-    <span class="ident">request_fields</span>: {
-        <span class="ident">homeserver</span>: <span class="ident">homeserver</span>.<span class="ident">to_string</span>(),
-        <span class="op">=</span> <span class="ident">guild_id</span>,
-    },
-    <span class="ident">api_func</span>: <span class="ident">add_guild_to_guild_list</span>,
+    <span class="ident">api_fn</span>: <span class="ident">add_guild_to_guild_list</span>,
     <span class="ident">service</span>: <span class="ident">chat</span>,
+}
+
+<span class="kw">impl</span> <span class="ident">IntoRequest</span><span class="op">&lt;</span><span class="ident">RemoveGuildFromGuildListRequest</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">GuildList</span> {
+    <span class="kw">fn</span> <span class="ident">into_request</span>(<span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Request</span><span class="op">&lt;</span><span class="ident">RemoveGuildFromGuildListRequest</span><span class="op">&gt;</span> {
+        <span class="ident">RemoveGuildFromGuildListRequest</span> {
+            <span class="ident">guild_id</span>: <span class="self">self</span>.<span class="ident">guild_id</span>,
+            <span class="ident">homeserver</span>: <span class="self">self</span>.<span class="ident">homeserver</span>.<span class="ident">to_string</span>(),
+        }
+        .<span class="ident">into_request</span>()
+    }
 }
 
 <span class="macro">client_api</span><span class="macro">!</span> {
     <span class="doccomment">/// Remove a guild from the guild list.</span>
-    <span class="ident">args</span>: { <span class="ident">guild_id</span>: <span class="ident">u64</span>, <span class="ident">homeserver</span>: <span class="ident">Uri</span>, },
     <span class="ident">action</span>: <span class="ident">RemoveGuildFromGuildList</span>,
-    <span class="ident">request_fields</span>: {
-        <span class="ident">homeserver</span>: <span class="ident">homeserver</span>.<span class="ident">to_string</span>(),
-        <span class="op">=</span> <span class="ident">guild_id</span>,
-    },
-    <span class="ident">api_func</span>: <span class="ident">remove_guild_from_guild_list</span>,
+    <span class="ident">api_fn</span>: <span class="ident">remove_guild_from_guild_list</span>,
     <span class="ident">service</span>: <span class="ident">chat</span>,
+}
+
+<span class="doccomment">/// Convenience type to create a valid [`UpdateGuildInformationRequest`].</span>
+<span class="attribute">#[<span class="ident">into_request</span>(<span class="string">&quot;UpdateGuildInformationRequest&quot;</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">new</span>)]</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">UpdateGuildInformation</span> {
+    <span class="ident">guild_id</span>: <span class="ident">u64</span>,
+    <span class="attribute">#[<span class="ident">new</span>(<span class="ident">default</span>)]</span>
+    <span class="ident">new_guild_name</span>: <span class="ident">String</span>,
+    <span class="attribute">#[<span class="ident">new</span>(<span class="ident">default</span>)]</span>
+    <span class="ident">new_guild_picture</span>: <span class="ident">Hmc</span>,
+    <span class="attribute">#[<span class="ident">new</span>(<span class="ident">default</span>)]</span>
+    <span class="ident">metadata</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Metadata</span><span class="op">&gt;</span>,
+    <span class="attribute">#[<span class="ident">new</span>(<span class="ident">default</span>)]</span>
+    <span class="ident">update_guild_name</span>: <span class="ident">bool</span>,
+    <span class="attribute">#[<span class="ident">new</span>(<span class="ident">default</span>)]</span>
+    <span class="ident">update_guild_picture</span>: <span class="ident">bool</span>,
+    <span class="attribute">#[<span class="ident">new</span>(<span class="ident">default</span>)]</span>
+    <span class="ident">update_metadata</span>: <span class="ident">bool</span>,
+}
+
+<span class="kw">impl</span> <span class="ident">UpdateGuildInformation</span> {
+    <span class="doccomment">/// Set the new name of this guild.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new_guild_name</span>(<span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">guild_name</span>: <span class="kw">impl</span> <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+        <span class="self">self</span>.<span class="ident">new_guild_name</span> <span class="op">=</span> <span class="ident">guild_name</span>.<span class="ident">into</span>();
+        <span class="self">self</span>.<span class="ident">update_guild_name</span> <span class="op">=</span> <span class="bool-val">true</span>;
+        <span class="self">self</span>
+    }
+
+    <span class="doccomment">/// Set the new picture of this guild.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new_guild_picture</span>(<span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">guild_picture</span>: <span class="kw">impl</span> <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">Hmc</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+        <span class="self">self</span>.<span class="ident">new_guild_picture</span> <span class="op">=</span> <span class="ident">guild_picture</span>.<span class="ident">into</span>();
+        <span class="self">self</span>.<span class="ident">update_guild_picture</span> <span class="op">=</span> <span class="bool-val">true</span>;
+        <span class="self">self</span>
+    }
+
+    <span class="doccomment">/// Set the new metadata of this guild.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new_metadata</span>(<span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">metadata</span>: <span class="kw">impl</span> <span class="ident">Into</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Metadata</span><span class="op">&gt;</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+        <span class="self">self</span>.<span class="ident">metadata</span> <span class="op">=</span> <span class="ident">metadata</span>.<span class="ident">into</span>();
+        <span class="self">self</span>.<span class="ident">update_metadata</span> <span class="op">=</span> <span class="bool-val">true</span>;
+        <span class="self">self</span>
+    }
 }
 
 <span class="macro">client_api</span><span class="macro">!</span> {
     <span class="doccomment">/// Update a guild&#39;s information.</span>
-    <span class="ident">args</span>: {
-        <span class="ident">guild_id</span>: <span class="ident">u64</span>,
-        <span class="ident">new_guild_name</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
-        <span class="ident">new_guild_picture</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Uri</span><span class="op">&gt;</span>,
-        <span class="ident">new_metadata</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Metadata</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-    },
-    <span class="ident">request</span>: <span class="ident">UpdateGuildInformationRequest</span> {
-        <span class="ident">guild_id</span>,
-        <span class="ident">update_guild_name</span>: <span class="ident">new_guild_name</span>.<span class="ident">is_some</span>(),
-        <span class="ident">update_guild_picture</span>: <span class="ident">new_guild_picture</span>.<span class="ident">is_some</span>(),
-        <span class="ident">update_metadata</span>: <span class="ident">new_metadata</span>.<span class="ident">is_some</span>(),
-        <span class="ident">new_guild_name</span>: <span class="ident">new_guild_name</span>.<span class="ident">unwrap_or_default</span>(),
-        <span class="ident">new_guild_picture</span>: <span class="ident">new_guild_picture</span>.<span class="ident">map</span>(<span class="op">|</span><span class="ident">u</span><span class="op">|</span> <span class="ident">u</span>.<span class="ident">to_string</span>()).<span class="ident">unwrap_or_default</span>(),
-        <span class="ident">metadata</span>: <span class="ident">new_metadata</span>.<span class="ident">unwrap_or_default</span>(),
-    },
-    <span class="ident">api_func</span>: <span class="ident">update_guild_information</span>,
+    <span class="ident">request</span>: <span class="ident">UpdateGuildInformationRequest</span>,
+    <span class="ident">api_fn</span>: <span class="ident">update_guild_information</span>,
     <span class="ident">service</span>: <span class="ident">chat</span>,
 }
 
 <span class="macro">client_api</span><span class="macro">!</span> {
     <span class="doccomment">/// Delete a guild.</span>
-    <span class="ident">args</span>: { <span class="ident">guild_id</span>: <span class="ident">u64</span>, },
-    <span class="ident">request_type</span>: <span class="ident">DeleteGuildRequest</span>,
-    <span class="ident">api_func</span>: <span class="ident">delete_guild</span>,
+    <span class="ident">request</span>: <span class="ident">DeleteGuildRequest</span>,
+    <span class="ident">api_fn</span>: <span class="ident">delete_guild</span>,
     <span class="ident">service</span>: <span class="ident">chat</span>,
 }
 
 <span class="macro">client_api</span><span class="macro">!</span> {
     <span class="doccomment">/// Join a guild, using the specified invite id.</span>
-    <span class="ident">args</span>: { <span class="ident">invite_id</span>: <span class="ident">InviteId</span>, },
     <span class="ident">action</span>: <span class="ident">JoinGuild</span>,
-    <span class="ident">request_fields</span>: {
-        <span class="ident">invite_id</span>: <span class="ident">invite_id</span>.<span class="ident">into</span>(),
-    },
-    <span class="ident">api_func</span>: <span class="ident">join_guild</span>,
+    <span class="ident">api_fn</span>: <span class="ident">join_guild</span>,
     <span class="ident">service</span>: <span class="ident">chat</span>,
 }
 
 <span class="macro">client_api</span><span class="macro">!</span> {
     <span class="doccomment">/// Leave a guild.</span>
-    <span class="ident">args</span>: { <span class="ident">guild_id</span>: <span class="ident">u64</span>, },
-    <span class="ident">request_type</span>: <span class="ident">LeaveGuildRequest</span>,
-    <span class="ident">api_func</span>: <span class="ident">leave_guild</span>,
+    <span class="ident">request</span>: <span class="ident">LeaveGuildRequest</span>,
+    <span class="ident">api_fn</span>: <span class="ident">leave_guild</span>,
     <span class="ident">service</span>: <span class="ident">chat</span>,
 }
 
 <span class="macro">client_api</span><span class="macro">!</span> {
     <span class="doccomment">/// Preview a guild.</span>
-    <span class="ident">args</span>: { <span class="ident">invite_id</span>: <span class="ident">InviteId</span>, },
     <span class="ident">action</span>: <span class="ident">PreviewGuild</span>,
-    <span class="ident">request_fields</span>: {
-        <span class="ident">invite_id</span>: <span class="ident">invite_id</span>.<span class="ident">into</span>(),
-    },
-    <span class="ident">api_func</span>: <span class="ident">preview_guild</span>,
+    <span class="ident">api_fn</span>: <span class="ident">preview_guild</span>,
     <span class="ident">service</span>: <span class="ident">chat</span>,
 }
 </pre></div>

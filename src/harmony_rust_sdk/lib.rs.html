@@ -29,6 +29,10 @@
 <span id="26">26</span>
 <span id="27">27</span>
 <span id="28">28</span>
+<span id="29">29</span>
+<span id="30">30</span>
+<span id="31">31</span>
+<span id="32">32</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! Rust library to work with the Harmony chat protocol.</span>
 <span class="doccomment">//!</span>
@@ -48,10 +52,14 @@
 <span class="doccomment">//!</span>
 <span class="doccomment">//! ## Crate features</span>
 <span class="doccomment">//! - By default, no features are enabled and only a bare-bones common API is generated. You can customize the crate to your needs by enabling feature(s) listed below:</span>
-<span class="doccomment">//!     - Enable the `use_parking_lot` feature if you want to use [parking_lot](https://github.com/Amanieu/parking_lot) `sync` types instead of `std::sync`.</span>
+<span class="doccomment">//!     - Enable the `parking_lot` feature if you want to use [parking_lot](https://github.com/Amanieu/parking_lot) `sync` types instead of `std::sync`.</span>
 <span class="doccomment">//!     - Enable the `client` feature for a lightweight client implementation and the client API (implies `gen_client` feature).</span>
 <span class="doccomment">//!     - Enable the `gen_client` feature to generate client service code.</span>
 <span class="doccomment">//!    - Enable the `gen_server` feature to generate server service code.</span>
+<span class="attribute">#[<span class="ident">macro_use</span>]</span>
+<span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">derive_new</span>;
+<span class="attribute">#[<span class="ident">macro_use</span>]</span>
+<span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">harmony_derive</span>;
 
 <span class="doccomment">/// Harmony protocol API.</span>
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">api</span>;

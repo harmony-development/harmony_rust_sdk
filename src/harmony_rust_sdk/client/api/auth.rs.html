@@ -125,6 +125,15 @@
 <span id="122">122</span>
 <span id="123">123</span>
 <span id="124">124</span>
+<span id="125">125</span>
+<span id="126">126</span>
+<span id="127">127</span>
+<span id="128">128</span>
+<span id="129">129</span>
+<span id="130">130</span>
+<span id="131">131</span>
+<span id="132">132</span>
+<span id="133">133</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
 
@@ -217,37 +226,46 @@
     <span class="doccomment">/// Starts an authentication session.</span>
     <span class="ident">response</span>: <span class="ident">BeginAuthResponse</span>,
     <span class="ident">request</span>: (),
-    <span class="ident">api_func</span>: <span class="ident">begin_auth</span>,
+    <span class="ident">api_fn</span>: <span class="ident">begin_auth</span>,
     <span class="ident">service</span>: <span class="ident">auth</span>,
+}
+
+<span class="doccomment">/// Convenience type to create a valid [`NextStepRequest`].</span>
+<span class="attribute">#[<span class="ident">into_request</span>(<span class="string">&quot;NextStepRequest&quot;</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">new</span>)]</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">AuthResponse</span> {
+    <span class="ident">auth_id</span>: <span class="ident">String</span>,
+    <span class="ident">step</span>: <span class="ident">AuthStepResponse</span>,
 }
 
 <span class="macro">client_api</span><span class="macro">!</span> {
     <span class="doccomment">/// Requests the next step of an authentication session from the homeserver.</span>
-    <span class="ident">args</span>: {
-        <span class="ident">auth_id</span>: <span class="ident">String</span>,
-        <span class="ident">step</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">next_step_request</span>::<span class="ident">Step</span><span class="op">&gt;</span>,
-    },
     <span class="ident">response</span>: <span class="ident">AuthStep</span>,
-    <span class="ident">request_type</span>: <span class="ident">NextStepRequest</span>,
-    <span class="ident">api_func</span>: <span class="ident">next_step</span>,
+    <span class="ident">request</span>: <span class="ident">NextStepRequest</span>,
+    <span class="ident">api_fn</span>: <span class="ident">next_step</span>,
     <span class="ident">service</span>: <span class="ident">auth</span>,
+}
+
+<span class="doccomment">/// Wrapper around an auth ID which can be used as multiple requests.</span>
+<span class="attribute">#[<span class="ident">into_request</span>(<span class="string">&quot;StepBackRequest&quot;</span>, <span class="string">&quot;StreamStepsRequest&quot;</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">From</span>, <span class="ident">Into</span>, <span class="ident">Display</span>, <span class="ident">new</span>)]</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">AuthId</span> {
+    <span class="ident">auth_id</span>: <span class="ident">String</span>,
 }
 
 <span class="macro">client_api</span><span class="macro">!</span> {
     <span class="doccomment">/// Steps back in an authentication session.</span>
-    <span class="ident">args</span>: { <span class="ident">auth_id</span>: <span class="ident">String</span>, },
     <span class="ident">response</span>: <span class="ident">AuthStep</span>,
-    <span class="ident">request_type</span>: <span class="ident">StepBackRequest</span>,
-    <span class="ident">api_func</span>: <span class="ident">step_back</span>,
+    <span class="ident">request</span>: <span class="ident">StepBackRequest</span>,
+    <span class="ident">api_fn</span>: <span class="ident">step_back</span>,
     <span class="ident">service</span>: <span class="ident">auth</span>,
 }
 
 <span class="macro">client_api</span><span class="macro">!</span> {
     <span class="doccomment">/// Stream steps sent from the server.</span>
-    <span class="ident">args</span>: { <span class="ident">auth_id</span>: <span class="ident">String</span>, },
     <span class="ident">response</span>: <span class="ident">tonic</span>::<span class="ident">Streaming</span><span class="op">&lt;</span><span class="ident">AuthStep</span><span class="op">&gt;</span>,
-    <span class="ident">request_type</span>: <span class="ident">StreamStepsRequest</span>,
-    <span class="ident">api_func</span>: <span class="ident">stream_steps</span>,
+    <span class="ident">request</span>: <span class="ident">StreamStepsRequest</span>,
+    <span class="ident">api_fn</span>: <span class="ident">stream_steps</span>,
     <span class="ident">service</span>: <span class="ident">auth</span>,
 }
 </pre></div>

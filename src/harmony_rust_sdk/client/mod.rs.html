@@ -445,11 +445,11 @@
 
 <span class="kw">use</span> <span class="ident">futures_util</span>::{<span class="ident">future</span>, <span class="ident">stream</span>::<span class="ident">Stream</span>, <span class="ident">StreamExt</span>, <span class="ident">TryStreamExt</span>};
 <span class="kw">use</span> <span class="ident">http</span>::{<span class="ident">uri</span>::<span class="ident">PathAndQuery</span>, <span class="ident">Uri</span>};
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;use_parking_lot&quot;</span>)]</span>
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;parking_lot&quot;</span>)]</span>
 <span class="kw">use</span> <span class="ident">parking_lot</span>::{<span class="ident">Mutex</span>, <span class="ident">MutexGuard</span>};
 <span class="kw">use</span> <span class="ident">reqwest</span>::<span class="ident">Client</span> <span class="kw">as</span> <span class="ident">HttpClient</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">sync</span>::<span class="ident">Arc</span>;
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;use_parking_lot&quot;</span>))]</span>
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;parking_lot&quot;</span>))]</span>
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">sync</span>::{<span class="ident">Mutex</span>, <span class="ident">MutexGuard</span>};
 <span class="kw">use</span> <span class="ident">tonic</span>::<span class="ident">transport</span>::<span class="ident">Channel</span>;
 
@@ -624,46 +624,46 @@
     }
 
     <span class="kw">fn</span> <span class="ident">chat_lock</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">MutexGuard</span><span class="op">&lt;</span><span class="ident">ChatService</span><span class="op">&gt;</span> {
-        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;use_parking_lot&quot;</span>))]</span>
+        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;parking_lot&quot;</span>))]</span>
         <span class="kw">return</span> <span class="self">self</span>
             .<span class="ident">data</span>
             .<span class="ident">chat</span>
             .<span class="ident">lock</span>()
             .<span class="ident">expect</span>(<span class="string">&quot;chat service mutex was poisoned&quot;</span>);
-        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;use_parking_lot&quot;</span>)]</span>
+        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;parking_lot&quot;</span>)]</span>
         <span class="self">self</span>.<span class="ident">data</span>.<span class="ident">chat</span>.<span class="ident">lock</span>()
     }
 
     <span class="kw">fn</span> <span class="ident">auth_lock</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">MutexGuard</span><span class="op">&lt;</span><span class="ident">AuthService</span><span class="op">&gt;</span> {
-        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;use_parking_lot&quot;</span>))]</span>
+        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;parking_lot&quot;</span>))]</span>
         <span class="kw">return</span> <span class="self">self</span>
             .<span class="ident">data</span>
             .<span class="ident">auth</span>
             .<span class="ident">lock</span>()
             .<span class="ident">expect</span>(<span class="string">&quot;auth service mutex was poisoned&quot;</span>);
-        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;use_parking_lot&quot;</span>)]</span>
+        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;parking_lot&quot;</span>)]</span>
         <span class="self">self</span>.<span class="ident">data</span>.<span class="ident">auth</span>.<span class="ident">lock</span>()
     }
 
     <span class="kw">fn</span> <span class="ident">mediaproxy_lock</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">MutexGuard</span><span class="op">&lt;</span><span class="ident">MediaProxyService</span><span class="op">&gt;</span> {
-        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;use_parking_lot&quot;</span>))]</span>
+        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;parking_lot&quot;</span>))]</span>
         <span class="kw">return</span> <span class="self">self</span>
             .<span class="ident">data</span>
             .<span class="ident">mediaproxy</span>
             .<span class="ident">lock</span>()
             .<span class="ident">expect</span>(<span class="string">&quot;media proxy service mutex was poisoned&quot;</span>);
-        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;use_parking_lot&quot;</span>)]</span>
+        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;parking_lot&quot;</span>)]</span>
         <span class="self">self</span>.<span class="ident">data</span>.<span class="ident">mediaproxy</span>.<span class="ident">lock</span>()
     }
 
     <span class="kw">fn</span> <span class="ident">auth_status_lock</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">MutexGuard</span><span class="op">&lt;</span><span class="ident">AuthStatus</span><span class="op">&gt;</span> {
-        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;use_parking_lot&quot;</span>))]</span>
+        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;parking_lot&quot;</span>))]</span>
         <span class="kw">return</span> <span class="self">self</span>
             .<span class="ident">data</span>
             .<span class="ident">auth_status</span>
             .<span class="ident">lock</span>()
             .<span class="ident">expect</span>(<span class="string">&quot;auth status mutex was poisoned&quot;</span>);
-        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;use_parking_lot&quot;</span>)]</span>
+        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;parking_lot&quot;</span>)]</span>
         <span class="self">self</span>.<span class="ident">data</span>.<span class="ident">auth_status</span>.<span class="ident">lock</span>()
     }
 
@@ -713,7 +713,7 @@
     <span class="doccomment">/// # }</span>
     <span class="doccomment">/// ```</span>
     <span class="kw">pub</span> <span class="ident">async</span> <span class="kw">fn</span> <span class="ident">begin_auth</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">ClientResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">auth_id</span> <span class="op">=</span> <span class="ident">api</span>::<span class="ident">auth</span>::<span class="ident">begin_auth</span>(<span class="self">self</span>).<span class="ident">await</span><span class="question-mark">?</span>.<span class="ident">auth_id</span>;
+        <span class="kw">let</span> <span class="ident">auth_id</span> <span class="op">=</span> <span class="ident">api</span>::<span class="ident">auth</span>::<span class="ident">begin_auth</span>(<span class="self">self</span>, ()).<span class="ident">await</span><span class="question-mark">?</span>.<span class="ident">auth_id</span>;
         <span class="kw-2">*</span><span class="self">self</span>.<span class="ident">auth_status_lock</span>() <span class="op">=</span> <span class="ident">AuthStatus</span>::<span class="ident">InProgress</span>(<span class="ident">auth_id</span>);
         <span class="prelude-val">Ok</span>(())
     }
@@ -740,7 +740,7 @@
         <span class="ident">response</span>: <span class="ident">AuthStepResponse</span>,
     ) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">ClientResult</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">AuthStep</span><span class="op">&gt;</span><span class="op">&gt;</span> {
         <span class="kw">if</span> <span class="kw">let</span> <span class="ident">AuthStatus</span>::<span class="ident">InProgress</span>(<span class="ident">auth_id</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">auth_status</span>() {
-            <span class="kw">let</span> <span class="ident">step</span> <span class="op">=</span> <span class="ident">api</span>::<span class="ident">auth</span>::<span class="ident">next_step</span>(<span class="self">self</span>, <span class="ident">auth_id</span>, <span class="ident">response</span>.<span class="ident">into</span>()).<span class="ident">await</span><span class="question-mark">?</span>;
+            <span class="kw">let</span> <span class="ident">step</span> <span class="op">=</span> <span class="ident">api</span>::<span class="ident">auth</span>::<span class="ident">next_step</span>(<span class="self">self</span>, <span class="ident">AuthResponse</span>::<span class="ident">new</span>(<span class="ident">auth_id</span>, <span class="ident">response</span>)).<span class="ident">await</span><span class="question-mark">?</span>;
 
             <span class="prelude-val">Ok</span>(<span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">auth_step</span>::<span class="ident">Step</span>::<span class="ident">Session</span>(<span class="ident">session</span>)) <span class="op">=</span> <span class="ident">step</span>.<span class="ident">step</span> {
                 <span class="kw-2">*</span><span class="self">self</span>.<span class="ident">auth_status_lock</span>() <span class="op">=</span> <span class="ident">AuthStatus</span>::<span class="ident">Complete</span>(<span class="ident">session</span>);
@@ -770,7 +770,7 @@
     <span class="doccomment">/// ```</span>
     <span class="kw">pub</span> <span class="ident">async</span> <span class="kw">fn</span> <span class="ident">prev_auth_step</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">ClientResult</span><span class="op">&lt;</span><span class="ident">AuthStep</span><span class="op">&gt;</span> {
         <span class="kw">if</span> <span class="kw">let</span> <span class="ident">AuthStatus</span>::<span class="ident">InProgress</span>(<span class="ident">auth_id</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">auth_status</span>() {
-            <span class="ident">api</span>::<span class="ident">auth</span>::<span class="ident">step_back</span>(<span class="self">self</span>, <span class="ident">auth_id</span>).<span class="ident">await</span>
+            <span class="ident">api</span>::<span class="ident">auth</span>::<span class="ident">step_back</span>(<span class="self">self</span>, <span class="ident">AuthId</span>::<span class="ident">new</span>(<span class="ident">auth_id</span>)).<span class="ident">await</span>
         } <span class="kw">else</span> {
             <span class="prelude-val">Err</span>(<span class="ident">ClientError</span>::<span class="ident">NoAuthId</span>)
         }
@@ -794,7 +794,7 @@
         <span class="kw-2">&amp;</span><span class="self">self</span>,
     ) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">ClientResult</span><span class="op">&lt;</span><span class="kw">impl</span> <span class="ident">Stream</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="ident">ClientResult</span><span class="op">&lt;</span><span class="ident">AuthStep</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">Send</span> <span class="op">+</span> <span class="ident">Sync</span><span class="op">&gt;</span> {
         <span class="kw">if</span> <span class="kw">let</span> <span class="ident">AuthStatus</span>::<span class="ident">InProgress</span>(<span class="ident">auth_id</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">auth_status</span>() {
-            <span class="ident">api</span>::<span class="ident">auth</span>::<span class="ident">stream_steps</span>(<span class="self">self</span>, <span class="ident">auth_id</span>)
+            <span class="ident">api</span>::<span class="ident">auth</span>::<span class="ident">stream_steps</span>(<span class="self">self</span>, <span class="ident">AuthId</span>::<span class="ident">new</span>(<span class="ident">auth_id</span>))
                 .<span class="ident">await</span>
                 .<span class="ident">map</span>(<span class="op">|</span><span class="ident">stream</span><span class="op">|</span> <span class="ident">stream</span>.<span class="ident">map_err</span>(<span class="ident">Into</span>::<span class="ident">into</span>))
         } <span class="kw">else</span> {

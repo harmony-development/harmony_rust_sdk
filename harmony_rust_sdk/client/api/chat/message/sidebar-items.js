@@ -1,1 +1,1 @@
-initSidebarItems({"fn":[["delete_message","Delete a message."],["get_message","Get a message."],["send_message","Send a message."],["update_message","Update a message."]]});
+initSidebarItems({"fn":[["delete_message","Delete a message."],["get_message","Get a message."],["send_message","Send a message."],["update_message","Update a message."]],"struct":[["SendMessage","Convenience type to create a valid [`SendMessageRequest`]."],["UpdateMessage","Convenience type to create a valid [`UpdateMessageRequest`]."]],"trait":[["SendMessageSelfBuilder","Builder trait for #name."]]});

@@ -40,6 +40,14 @@
 <span id="37">37</span>
 <span id="38">38</span>
 <span id="39">39</span>
+<span id="40">40</span>
+<span id="41">41</span>
+<span id="42">42</span>
+<span id="43">43</span>
+<span id="44">44</span>
+<span id="45">45</span>
+<span id="46">46</span>
+<span id="47">47</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
 
@@ -48,36 +56,44 @@
 
 <span class="kw">pub</span> <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">api</span>::<span class="ident">mediaproxy</span>::<span class="ident">SiteMetadata</span>;
 
+<span class="kw">impl</span> <span class="ident">IntoRequest</span><span class="op">&lt;</span><span class="ident">FetchLinkMetadataRequest</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Uri</span> {
+    <span class="kw">fn</span> <span class="ident">into_request</span>(<span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Request</span><span class="op">&lt;</span><span class="ident">FetchLinkMetadataRequest</span><span class="op">&gt;</span> {
+        <span class="ident">FetchLinkMetadataRequest</span> {
+            <span class="ident">url</span>: <span class="self">self</span>.<span class="ident">to_string</span>(),
+        }
+        .<span class="ident">into_request</span>()
+    }
+}
+
+<span class="kw">impl</span> <span class="ident">IntoRequest</span><span class="op">&lt;</span><span class="ident">InstantViewRequest</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Uri</span> {
+    <span class="kw">fn</span> <span class="ident">into_request</span>(<span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Request</span><span class="op">&lt;</span><span class="ident">InstantViewRequest</span><span class="op">&gt;</span> {
+        <span class="ident">InstantViewRequest</span> {
+            <span class="ident">url</span>: <span class="self">self</span>.<span class="ident">to_string</span>(),
+        }
+        .<span class="ident">into_request</span>()
+    }
+}
+
 <span class="macro">client_api</span><span class="macro">!</span> {
     <span class="doccomment">/// Request an Instant View from the server.</span>
-    <span class="ident">args</span>: { <span class="ident">url</span>: <span class="ident">Uri</span>, },
     <span class="ident">action</span>: <span class="ident">InstantView</span>,
-    <span class="ident">request_fields</span>: {
-        <span class="ident">url</span>: <span class="ident">url</span>.<span class="ident">to_string</span>(),
-    },
-    <span class="ident">api_func</span>: <span class="ident">instant_view</span>,
+    <span class="ident">api_fn</span>: <span class="ident">instant_view</span>,
     <span class="ident">service</span>: <span class="ident">mediaproxy</span>,
 }
 
 <span class="macro">client_api</span><span class="macro">!</span> {
     <span class="doccomment">/// Request a link&#39;s (site) metadata from the server.</span>
-    <span class="ident">args</span>: { <span class="ident">url</span>: <span class="ident">Uri</span>, },
     <span class="ident">response</span>: <span class="ident">SiteMetadata</span>,
-    <span class="ident">request</span>: <span class="ident">FetchLinkMetadataRequest</span> {
-        <span class="ident">url</span>: <span class="ident">url</span>.<span class="ident">to_string</span>(),
-    },
-    <span class="ident">api_func</span>: <span class="ident">fetch_link_metadata</span>,
+    <span class="ident">request</span>: <span class="ident">FetchLinkMetadataRequest</span>,
+    <span class="ident">api_fn</span>: <span class="ident">fetch_link_metadata</span>,
     <span class="ident">service</span>: <span class="ident">mediaproxy</span>,
 }
 
 <span class="macro">client_api</span><span class="macro">!</span> {
     <span class="doccomment">/// Ask the server if it can provide an Instant View for a specified URL.</span>
-    <span class="ident">args</span>: { <span class="ident">url</span>: <span class="ident">Uri</span>, },
     <span class="ident">response</span>: <span class="ident">CanInstantViewResponse</span>,
-    <span class="ident">request</span>: <span class="ident">InstantViewRequest</span> {
-        <span class="ident">url</span>: <span class="ident">url</span>.<span class="ident">to_string</span>(),
-    },
-    <span class="ident">api_func</span>: <span class="ident">can_instant_view</span>,
+    <span class="ident">request</span>: <span class="ident">InstantViewRequest</span>,
+    <span class="ident">api_fn</span>: <span class="ident">can_instant_view</span>,
     <span class="ident">service</span>: <span class="ident">mediaproxy</span>,
 }
 </pre></div>

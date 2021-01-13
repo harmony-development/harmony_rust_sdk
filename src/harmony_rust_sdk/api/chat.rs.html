@@ -146,6 +146,14 @@
 <span id="143">143</span>
 <span id="144">144</span>
 <span id="145">145</span>
+<span id="146">146</span>
+<span id="147">147</span>
+<span id="148">148</span>
+<span id="149">149</span>
+<span id="150">150</span>
+<span id="151">151</span>
+<span id="152">152</span>
+<span id="153">153</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">fmt</span>::{<span class="self">self</span>, <span class="ident">Display</span>, <span class="ident">Formatter</span>};
 
@@ -239,8 +247,11 @@
 }
 
 <span class="doccomment">/// An invite ID.</span>
+<span class="attribute">#[<span class="ident">into_request</span>(<span class="string">&quot;JoinGuildRequest&quot;</span>, <span class="string">&quot;PreviewGuildRequest&quot;</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">Eq</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">InviteId</span>(<span class="ident">String</span>);
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">InviteId</span> {
+    <span class="ident">invite_id</span>: <span class="ident">String</span>,
+}
 
 <span class="kw">impl</span> <span class="ident">InviteId</span> {
     <span class="doccomment">/// Creates an invite ID.</span>
@@ -259,20 +270,20 @@
         <span class="kw">if</span> <span class="ident">name</span>.<span class="ident">is_empty</span>() {
             <span class="prelude-val">None</span>
         } <span class="kw">else</span> {
-            <span class="prelude-val">Some</span>(<span class="self">Self</span>(<span class="ident">name</span>))
+            <span class="prelude-val">Some</span>(<span class="self">Self</span> { <span class="ident">invite_id</span>: <span class="ident">name</span> })
         }
     }
 }
 
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">InviteId</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">String</span> {
     <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">other</span>: <span class="ident">InviteId</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">String</span> {
-        <span class="ident">other</span>.<span class="number">0</span>
+        <span class="ident">other</span>.<span class="ident">invite_id</span>
     }
 }
 
 <span class="kw">impl</span> <span class="ident">Display</span> <span class="kw">for</span> <span class="ident">InviteId</span> {
     <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">fmt</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Formatter</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">fmt</span>::<span class="prelude-ty">Result</span> {
-        <span class="macro">write</span><span class="macro">!</span>(<span class="ident">fmt</span>, <span class="string">&quot;{}&quot;</span>, <span class="self">self</span>.<span class="number">0</span>)
+        <span class="macro">write</span><span class="macro">!</span>(<span class="ident">fmt</span>, <span class="string">&quot;{}&quot;</span>, <span class="self">self</span>.<span class="ident">invite_id</span>)
     }
 }
 
@@ -289,7 +300,12 @@
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">invite_id</span>() {
         <span class="kw">const</span> <span class="ident">ID</span>: <span class="kw-2">&amp;</span><span class="ident">str</span> <span class="op">=</span> <span class="string">&quot;harmony&quot;</span>;
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">InviteId</span>::<span class="ident">new</span>(<span class="ident">ID</span>).<span class="ident">unwrap</span>(), <span class="ident">InviteId</span>(<span class="ident">ID</span>.<span class="ident">to_string</span>()));
+        <span class="macro">assert_eq</span><span class="macro">!</span>(
+            <span class="ident">InviteId</span>::<span class="ident">new</span>(<span class="ident">ID</span>).<span class="ident">unwrap</span>(),
+            <span class="ident">InviteId</span> {
+                <span class="ident">invite_id</span>: <span class="ident">ID</span>.<span class="ident">to_string</span>()
+            }
+        );
     }
 }
 </pre></div>

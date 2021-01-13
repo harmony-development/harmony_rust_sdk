@@ -70,74 +70,106 @@
 <span id="67">67</span>
 <span id="68">68</span>
 <span id="69">69</span>
+<span id="70">70</span>
+<span id="71">71</span>
+<span id="72">72</span>
+<span id="73">73</span>
+<span id="74">74</span>
+<span id="75">75</span>
+<span id="76">76</span>
+<span id="77">77</span>
+<span id="78">78</span>
+<span id="79">79</span>
+<span id="80">80</span>
+<span id="81">81</span>
+<span id="82">82</span>
+<span id="83">83</span>
+<span id="84">84</span>
+<span id="85">85</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
 
+<span class="doccomment">/// Wrapper around an emote pack ID which can be used as multiple requests.</span>
+<span class="attribute">#[<span class="ident">into_request</span>(
+    <span class="string">&quot;GetEmotePackEmotesRequest&quot;</span>,
+    <span class="string">&quot;DeleteEmotePackRequest&quot;</span>,
+    <span class="string">&quot;DequipEmotePackRequest&quot;</span>
+)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">new</span>)]</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">PackId</span> {
+    <span class="ident">pack_id</span>: <span class="ident">u64</span>,
+}
+
+<span class="doccomment">/// Convenience type to create a valid [`CreateEmotePackRequest`].</span>
+<span class="attribute">#[<span class="ident">into_request</span>(<span class="string">&quot;CreateEmotePackRequest&quot;</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">new</span>)]</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">CreateEmotePack</span> {
+    <span class="ident">pack_name</span>: <span class="ident">String</span>,
+}
+
 <span class="macro">client_api</span><span class="macro">!</span> {
     <span class="doccomment">/// Create a new emote pack.</span>
-    <span class="ident">args</span>: { <span class="ident">pack_name</span>: <span class="ident">String</span>, },
     <span class="ident">action</span>: <span class="ident">CreateEmotePack</span>,
-    <span class="ident">api_func</span>: <span class="ident">create_emote_pack</span>,
+    <span class="ident">api_fn</span>: <span class="ident">create_emote_pack</span>,
     <span class="ident">service</span>: <span class="ident">chat</span>,
 }
 
 <span class="macro">client_api</span><span class="macro">!</span> {
     <span class="doccomment">/// Get a list of all emote packs.</span>
     <span class="ident">action</span>: <span class="ident">GetEmotePacks</span>,
-    <span class="ident">api_func</span>: <span class="ident">get_emote_packs</span>,
+    <span class="ident">api_fn</span>: <span class="ident">get_emote_packs</span>,
     <span class="ident">service</span>: <span class="ident">chat</span>,
 }
 
 <span class="macro">client_api</span><span class="macro">!</span> {
     <span class="doccomment">/// Get a list of all emotes in an emote pack.</span>
-    <span class="ident">args</span>: { <span class="ident">pack_id</span>: <span class="ident">u64</span>, },
     <span class="ident">action</span>: <span class="ident">GetEmotePackEmotes</span>,
-    <span class="ident">api_func</span>: <span class="ident">get_emote_pack_emotes</span>,
+    <span class="ident">api_fn</span>: <span class="ident">get_emote_pack_emotes</span>,
     <span class="ident">service</span>: <span class="ident">chat</span>,
+}
+
+<span class="doccomment">/// Convenience type to create a valid [`AddEmoteToPackRequest`].</span>
+<span class="attribute">#[<span class="ident">into_request</span>(<span class="string">&quot;AddEmoteToPackRequest&quot;</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">new</span>)]</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">AddEmoteToPack</span> {
+    <span class="ident">pack_id</span>: <span class="ident">u64</span>,
+    <span class="ident">image_id</span>: <span class="ident">Hmc</span>,
+    <span class="ident">name</span>: <span class="ident">String</span>,
 }
 
 <span class="macro">client_api</span><span class="macro">!</span> {
     <span class="doccomment">/// Add an emote to an emote pack.</span>
-    <span class="ident">args</span>: {
-        <span class="ident">pack_id</span>: <span class="ident">u64</span>,
-        <span class="ident">image_id</span>: <span class="ident">Uri</span>,
-        <span class="ident">name</span>: <span class="ident">String</span>,
-    },
-    <span class="ident">request</span>: <span class="ident">AddEmoteToPackRequest</span> {
-        <span class="ident">image_id</span>: <span class="ident">image_id</span>.<span class="ident">to_string</span>(),
-        <span class="ident">pack_id</span>, <span class="ident">name</span>,
-    },
-    <span class="ident">api_func</span>: <span class="ident">add_emote_to_pack</span>,
+    <span class="ident">request</span>: <span class="ident">AddEmoteToPackRequest</span>,
+    <span class="ident">api_fn</span>: <span class="ident">add_emote_to_pack</span>,
     <span class="ident">service</span>: <span class="ident">chat</span>,
+}
+
+<span class="doccomment">/// Convenience type to create a valid [`DeleteEmoteFromPackRequest`].</span>
+<span class="attribute">#[<span class="ident">into_request</span>(<span class="string">&quot;DeleteEmoteFromPackRequest&quot;</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">new</span>)]</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">DeleteEmoteFromPack</span> {
+    <span class="ident">pack_id</span>: <span class="ident">u64</span>,
+    <span class="ident">image_id</span>: <span class="ident">Hmc</span>,
 }
 
 <span class="macro">client_api</span><span class="macro">!</span> {
     <span class="doccomment">/// Delete an emote from an emote pack.</span>
-    <span class="ident">args</span>: {
-        <span class="ident">pack_id</span>: <span class="ident">u64</span>,
-        <span class="ident">image_id</span>: <span class="ident">Uri</span>,
-    },
-    <span class="ident">request</span>: <span class="ident">DeleteEmoteFromPackRequest</span> {
-        <span class="ident">image_id</span>: <span class="ident">image_id</span>.<span class="ident">to_string</span>(),
-        <span class="ident">pack_id</span>,
-    },
-    <span class="ident">api_func</span>: <span class="ident">delete_emote_from_pack</span>,
+    <span class="ident">request</span>: <span class="ident">DeleteEmoteFromPackRequest</span>,
+    <span class="ident">api_fn</span>: <span class="ident">delete_emote_from_pack</span>,
     <span class="ident">service</span>: <span class="ident">chat</span>,
 }
 
 <span class="macro">client_api</span><span class="macro">!</span> {
     <span class="doccomment">/// Delete an emote pack.</span>
-    <span class="ident">args</span>: { <span class="ident">pack_id</span>: <span class="ident">u64</span>, },
-    <span class="ident">request_type</span>: <span class="ident">DeleteEmotePackRequest</span>,
-    <span class="ident">api_func</span>: <span class="ident">delete_emote_pack</span>,
+    <span class="ident">request</span>: <span class="ident">DeleteEmotePackRequest</span>,
+    <span class="ident">api_fn</span>: <span class="ident">delete_emote_pack</span>,
     <span class="ident">service</span>: <span class="ident">chat</span>,
 }
 
 <span class="macro">client_api</span><span class="macro">!</span> {
     <span class="doccomment">/// Dequip an emote pack.</span>
-    <span class="ident">args</span>: { <span class="ident">pack_id</span>: <span class="ident">u64</span>, },
-    <span class="ident">request_type</span>: <span class="ident">DequipEmotePackRequest</span>,
-    <span class="ident">api_func</span>: <span class="ident">dequip_emote_pack</span>,
+    <span class="ident">request</span>: <span class="ident">DequipEmotePackRequest</span>,
+    <span class="ident">api_fn</span>: <span class="ident">dequip_emote_pack</span>,
     <span class="ident">service</span>: <span class="ident">chat</span>,
 }
 </pre></div>

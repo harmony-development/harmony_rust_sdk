@@ -1,3 +1,3 @@
 (function() {var implementors = {};
-implementors["harmony_rust_sdk"] = [{"text":"impl Display for InviteId","synthetic":false,"types":[]},{"text":"impl Display for HmcParseError","synthetic":false,"types":[]},{"text":"impl Display for Hmc","synthetic":false,"types":[]},{"text":"impl Display for ClientError","synthetic":false,"types":[]}];
+implementors["harmony_rust_sdk"] = [{"text":"impl Display for InviteId","synthetic":false,"types":[]},{"text":"impl Display for HmcParseError","synthetic":false,"types":[]},{"text":"impl Display for Hmc","synthetic":false,"types":[]},{"text":"impl Display for AuthId","synthetic":false,"types":[]},{"text":"impl Display for ClientError","synthetic":false,"types":[]}];
 if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()
