@@ -416,7 +416,7 @@ dependencies = [
 
 [[package]]
 name = "harmony_rust_sdk"
-version = "0.2.1"
+version = "0.3.0"
 dependencies = [
  "assign",
  "async-mutex",
