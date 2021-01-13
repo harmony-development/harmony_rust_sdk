@@ -13,8 +13,16 @@ pub use crate::api::{Hmc, HmcParseError};
 
 use crate::client::{Client, ClientResult};
 
+#[cfg(feature = "request_method")]
+use async_trait::async_trait;
 use derive_more::{Display, From, Into};
 use tonic::{IntoRequest, Request, Response};
+
+#[cfg(feature = "request_method")]
+#[async_trait]
+pub trait ClientRequest<Resp> {
+    async fn request(self, client: &Client) -> ClientResult<Resp>;
+}
 
 /// This is NOT a part of the public API and should NOT be used.
 #[macro_export]
@@ -54,6 +62,14 @@ macro_rules! client_api {
                 .map(::tonic::Response::into_inner)
                 .map_err(::std::convert::Into::into)
         }
+
+        #[cfg(feature = "request_method")]
+        #[async_trait]
+        impl $crate::client::api::ClientRequest<$resp> for $req {
+            async fn request(self, client: &$crate::client::Client) -> $crate::client::ClientResult<$resp> {
+                $api_fn(client, self).await
+            }
+        }
     };
     {
         $(#[$meta:meta])*
@@ -83,6 +99,14 @@ macro_rules! client_api {
             response
                 .map(Resp::from)
                 .map_err(::std::convert::Into::into)
+        }
+
+        #[cfg(feature = "request_method")]
+        #[async_trait]
+        impl $crate::client::api::ClientRequest<$resp> for $req {
+            async fn request(self, client: &$crate::client::Client) -> $crate::client::ClientResult<$resp> {
+                $api_fn(client, self).await
+            }
         }
     };
     {

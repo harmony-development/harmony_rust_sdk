@@ -420,6 +420,7 @@ version = "0.2.1"
 dependencies = [
  "assign",
  "async-mutex",
+ "async-trait",
  "ctrlc",
  "derive-new",
  "derive_more",

@@ -18,6 +18,8 @@ pub mod exports {
     pub use reqwest;
 }
 
+#[cfg(feature = "request_method")]
+use api::ClientRequest;
 use api::{auth::*, chat::EventSource};
 
 use std::sync::Arc;
@@ -226,6 +228,15 @@ impl Client {
             .expect("auth status mutex was poisoned");
         #[cfg(feature = "parking_lot")]
         self.data.auth_status.lock()
+    }
+
+    /// Sends a request.
+    #[cfg(feature = "request_method")]
+    pub async fn request<Req: ClientRequest<Resp>, Resp, IntoReq: Into<Req>>(
+        &self,
+        request: IntoReq,
+    ) -> ClientResult<Resp> {
+        request.into().request(self).await
     }
 
     /// Get the current auth status.
