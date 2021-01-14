@@ -78,7 +78,7 @@ impl Display for HmcParseError {
 /// A HMC.
 ///
 /// An example HMC looks like `hmc://chat.harmonyapp.io/403cb46c-49cf-4ae1-b876-f38eb26accb0`.
-#[derive(Debug, Default, Clone)]
+#[derive(Debug, Default, Clone, PartialEq, Eq, Hash)]
 pub struct Hmc {
     inner: Uri,
 }
