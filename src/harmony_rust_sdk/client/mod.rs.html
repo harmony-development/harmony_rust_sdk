@@ -527,7 +527,7 @@
     <span class="doccomment">/// # Example</span>
     <span class="doccomment">/// ```</span>
     <span class="doccomment">/// # use harmony_rust_sdk::client::*;</span>
-    <span class="doccomment">/// # #[tokio::main]</span>
+    <span class="doccomment">/// # #[tokio::main(flavor = &quot;current_thread&quot;)]</span>
     <span class="doccomment">/// # async fn main() -&gt; ClientResult&lt;()&gt; {</span>
     <span class="doccomment">/// let client = Client::new(&quot;chat.harmonyapp.io:2289&quot;.parse().unwrap(), None).await?;</span>
     <span class="doccomment">/// # Ok(())</span>
@@ -666,7 +666,7 @@
     <span class="doccomment">/// # Example</span>
     <span class="doccomment">/// ```</span>
     <span class="doccomment">/// # use harmony_rust_sdk::client::*;</span>
-    <span class="doccomment">/// # #[tokio::main]</span>
+    <span class="doccomment">/// # #[tokio::main(flavor = &quot;current_thread&quot;)]</span>
     <span class="doccomment">/// # async fn main() -&gt; ClientResult&lt;()&gt; {</span>
     <span class="doccomment">/// let client = Client::new(&quot;chat.harmonyapp.io:2289&quot;.parse().unwrap(), None).await?;</span>
     <span class="doccomment">/// assert!(!client.auth_status().is_authenticated());</span>
@@ -682,7 +682,7 @@
     <span class="doccomment">/// # Example</span>
     <span class="doccomment">/// ```</span>
     <span class="doccomment">/// # use harmony_rust_sdk::client::*;</span>
-    <span class="doccomment">/// # #[tokio::main]</span>
+    <span class="doccomment">/// # #[tokio::main(flavor = &quot;current_thread&quot;)]</span>
     <span class="doccomment">/// # async fn main() -&gt; ClientResult&lt;()&gt; {</span>
     <span class="doccomment">/// let client = Client::new(&quot;chat.harmonyapp.io:2289&quot;.parse().unwrap(), None).await?;</span>
     <span class="doccomment">/// assert_eq!(&amp;client.homeserver_url().to_string(), &quot;https://chat.harmonyapp.io:2289/&quot;);</span>
@@ -698,7 +698,7 @@
     <span class="doccomment">/// # Example</span>
     <span class="doccomment">/// ```no_run</span>
     <span class="doccomment">/// # use harmony_rust_sdk::client::*;</span>
-    <span class="doccomment">/// # #[tokio::main]</span>
+    <span class="doccomment">/// # #[tokio::main(flavor = &quot;current_thread&quot;)]</span>
     <span class="doccomment">/// # async fn main() -&gt; ClientResult&lt;()&gt; {</span>
     <span class="doccomment">/// let client = Client::new(&quot;chat.harmonyapp.io:2289&quot;.parse().unwrap(), None).await?;</span>
     <span class="doccomment">/// client.begin_auth().await?;</span>
@@ -720,7 +720,7 @@
     <span class="doccomment">/// # Example</span>
     <span class="doccomment">/// ```no_run</span>
     <span class="doccomment">/// # use harmony_rust_sdk::client::{*, api::auth::*};</span>
-    <span class="doccomment">/// # #[tokio::main]</span>
+    <span class="doccomment">/// # #[tokio::main(flavor = &quot;current_thread&quot;)]</span>
     <span class="doccomment">/// # async fn main() -&gt; ClientResult&lt;()&gt; {</span>
     <span class="doccomment">/// let client = Client::new(&quot;chat.harmonyapp.io:2289&quot;.parse().unwrap(), None).await?;</span>
     <span class="doccomment">/// client.begin_auth().await?;</span>
@@ -752,7 +752,7 @@
     <span class="doccomment">/// # Example</span>
     <span class="doccomment">/// ```no_run</span>
     <span class="doccomment">/// # use harmony_rust_sdk::client::{*, api::auth::*};</span>
-    <span class="doccomment">/// # #[tokio::main]</span>
+    <span class="doccomment">/// # #[tokio::main(flavor = &quot;current_thread&quot;)]</span>
     <span class="doccomment">/// # async fn main() -&gt; ClientResult&lt;()&gt; {</span>
     <span class="doccomment">/// let client = Client::new(&quot;chat.harmonyapp.io:2289&quot;.parse().unwrap(), None).await?;</span>
     <span class="doccomment">/// client.begin_auth().await?;</span>
@@ -775,7 +775,7 @@
     <span class="doccomment">/// # Example</span>
     <span class="doccomment">/// ```no_run</span>
     <span class="doccomment">/// # use harmony_rust_sdk::client::*;</span>
-    <span class="doccomment">/// # #[tokio::main]</span>
+    <span class="doccomment">/// # #[tokio::main(flavor = &quot;current_thread&quot;)]</span>
     <span class="doccomment">/// # async fn main() -&gt; ClientResult&lt;()&gt; {</span>
     <span class="doccomment">/// let client = Client::new(&quot;chat.harmonyapp.io:2289&quot;.parse().unwrap(), None).await?;</span>
     <span class="doccomment">/// client.begin_auth().await?;</span>
@@ -801,7 +801,7 @@
     <span class="doccomment">/// # Example</span>
     <span class="doccomment">/// ```no_run</span>
     <span class="doccomment">/// # use harmony_rust_sdk::client::{*, api::chat::EventSource};</span>
-    <span class="doccomment">/// # #[tokio::main]</span>
+    <span class="doccomment">/// # #[tokio::main(flavor = &quot;current_thread&quot;)]</span>
     <span class="doccomment">/// # async fn main() -&gt; ClientResult&lt;()&gt; {</span>
     <span class="doccomment">/// let client = Client::new(&quot;chat.harmonyapp.io:2289&quot;.parse().unwrap(), None).await?;</span>
     <span class="doccomment">/// // Auth here</span>
