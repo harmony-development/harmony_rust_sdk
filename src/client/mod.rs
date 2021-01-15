@@ -7,11 +7,6 @@ pub mod api;
 /// Error related code used by [`Client`].
 pub mod error;
 
-#[doc(inline)]
-pub use crate::api::auth::Session;
-#[doc(inline)]
-pub use error::*;
-
 /// Some crates exported for user convenience.
 pub mod exports {
     pub use futures;
@@ -21,11 +16,13 @@ pub mod exports {
 #[cfg(feature = "request_method")]
 use api::ClientRequest;
 use api::{auth::*, chat::EventSource};
+use error::*;
 
 use std::sync::Arc;
 #[cfg(not(feature = "parking_lot"))]
 use std::sync::{Mutex, MutexGuard};
 
+use assign::assign;
 use async_mutex::Mutex as AsyncMutex;
 use futures::prelude::*;
 use http::{uri::PathAndQuery, Uri};
@@ -106,14 +103,12 @@ impl Client {
     /// ```
     /// # use harmony_rust_sdk::client::*;
     /// # #[tokio::main(flavor = "current_thread")]
-    /// # async fn main() -> ClientResult<()> {
+    /// # async fn main() -> error::ClientResult<()> {
     /// let client = Client::new("chat.harmonyapp.io:2289".parse().unwrap(), None).await?;
     /// # Ok(())
     /// # }
     /// ```
     pub async fn new(mut homeserver_url: Uri, session: Option<Session>) -> ClientResult<Self> {
-        use assign::assign;
-
         // Add the default scheme if not specified
         if homeserver_url.scheme().is_none() {
             let parts = homeserver_url.into_parts();
@@ -230,7 +225,24 @@ impl Client {
         self.data.auth_status.lock()
     }
 
-    /// Sends a request.
+    /// Send a request.
+    ///
+    /// # Example
+    /// ```no_run
+    /// # use harmony_rust_sdk::client::{*, api::{harmonytypes::UserStatus, chat::profile::{ProfileUpdateRequest, ProfileUpdate}}};
+    /// # #[tokio::main(flavor = "current_thread")]
+    /// # async fn main() -> error::ClientResult<()> {
+    /// # let client = Client::new("chat.harmonyapp.io:2289".parse().unwrap(), None).await?;
+    /// client
+    ///  .request::<ProfileUpdateRequest, _, _>(
+    ///    ProfileUpdate::default()
+    ///        .new_status(UserStatus::OnlineUnspecified)
+    ///        .new_is_bot(true),
+    ///   )
+    ///   .await?;
+    /// # Ok(())
+    /// # }
+    /// ```
     #[cfg(feature = "request_method")]
     pub async fn request<Req: ClientRequest<Resp>, Resp, IntoReq: Into<Req>>(
         &self,
@@ -245,8 +257,8 @@ impl Client {
     /// ```
     /// # use harmony_rust_sdk::client::*;
     /// # #[tokio::main(flavor = "current_thread")]
-    /// # async fn main() -> ClientResult<()> {
-    /// let client = Client::new("chat.harmonyapp.io:2289".parse().unwrap(), None).await?;
+    /// # async fn main() -> error::ClientResult<()> {
+    /// # let client = Client::new("chat.harmonyapp.io:2289".parse().unwrap(), None).await?;
     /// assert!(!client.auth_status().is_authenticated());
     /// # Ok(())
     /// # }
@@ -261,8 +273,8 @@ impl Client {
     /// ```
     /// # use harmony_rust_sdk::client::*;
     /// # #[tokio::main(flavor = "current_thread")]
-    /// # async fn main() -> ClientResult<()> {
-    /// let client = Client::new("chat.harmonyapp.io:2289".parse().unwrap(), None).await?;
+    /// # async fn main() -> error::ClientResult<()> {
+    /// # let client = Client::new("chat.harmonyapp.io:2289".parse().unwrap(), None).await?;
     /// assert_eq!(&client.homeserver_url().to_string(), "https://chat.harmonyapp.io:2289/");
     /// # Ok(())
     /// # }
@@ -277,8 +289,8 @@ impl Client {
     /// ```no_run
     /// # use harmony_rust_sdk::client::*;
     /// # #[tokio::main(flavor = "current_thread")]
-    /// # async fn main() -> ClientResult<()> {
-    /// let client = Client::new("chat.harmonyapp.io:2289".parse().unwrap(), None).await?;
+    /// # async fn main() -> error::ClientResult<()> {
+    /// # let client = Client::new("chat.harmonyapp.io:2289".parse().unwrap(), None).await?;
     /// client.begin_auth().await?;
     /// // Do auth stuff here
     /// # Ok(())
@@ -299,8 +311,8 @@ impl Client {
     /// ```no_run
     /// # use harmony_rust_sdk::client::{*, api::auth::*};
     /// # #[tokio::main(flavor = "current_thread")]
-    /// # async fn main() -> ClientResult<()> {
-    /// let client = Client::new("chat.harmonyapp.io:2289".parse().unwrap(), None).await?;
+    /// # async fn main() -> error::ClientResult<()> {
+    /// # let client = Client::new("chat.harmonyapp.io:2289".parse().unwrap(), None).await?;
     /// client.begin_auth().await?;
     /// let next_step = client.next_auth_step(AuthStepResponse::Initial).await?;
     /// // Do more auth stuff here
@@ -331,10 +343,11 @@ impl Client {
     /// ```no_run
     /// # use harmony_rust_sdk::client::{*, api::auth::*};
     /// # #[tokio::main(flavor = "current_thread")]
-    /// # async fn main() -> ClientResult<()> {
-    /// let client = Client::new("chat.harmonyapp.io:2289".parse().unwrap(), None).await?;
+    /// # async fn main() -> error::ClientResult<()> {
+    /// # let client = Client::new("chat.harmonyapp.io:2289".parse().unwrap(), None).await?;
     /// client.begin_auth().await?;
-    /// let next_step = client.next_auth_step(AuthStepResponse::Initial).await?;
+    /// // Call next step and whatnot here
+    /// // Oops, user wants to do something else, lets go back
     /// let prev_step = client.prev_auth_step().await?;
     /// // Do more auth stuff here
     /// # Ok(())
@@ -354,8 +367,8 @@ impl Client {
     /// ```no_run
     /// # use harmony_rust_sdk::client::*;
     /// # #[tokio::main(flavor = "current_thread")]
-    /// # async fn main() -> ClientResult<()> {
-    /// let client = Client::new("chat.harmonyapp.io:2289".parse().unwrap(), None).await?;
+    /// # async fn main() -> error::ClientResult<()> {
+    /// # let client = Client::new("chat.harmonyapp.io:2289".parse().unwrap(), None).await?;
     /// client.begin_auth().await?;
     /// let auth_steps_stream = client.auth_stream().await?;
     /// // Do auth stuff here
@@ -380,8 +393,8 @@ impl Client {
     /// ```no_run
     /// # use harmony_rust_sdk::client::{*, api::chat::EventSource};
     /// # #[tokio::main(flavor = "current_thread")]
-    /// # async fn main() -> ClientResult<()> {
-    /// let client = Client::new("chat.harmonyapp.io:2289".parse().unwrap(), None).await?;
+    /// # async fn main() -> error::ClientResult<()> {
+    /// # let client = Client::new("chat.harmonyapp.io:2289".parse().unwrap(), None).await?;
     /// // Auth here
     /// let event_stream = client.subscribe_events(vec![EventSource::Homeserver, EventSource::Action]).await?;
     /// // Do more auth stuff here
@@ -392,7 +405,7 @@ impl Client {
         &self,
         subscriptions: Vec<EventSource>,
     ) -> ClientResult<(
-        impl Stream<Item = ClientResult<api::chat::event::Event>> + Send + Sync,
+        impl Stream<Item = ClientResult<crate::api::chat::event::Event>> + Send + Sync,
         impl Sink<EventSource, Error = impl std::fmt::Debug> + Send + Sync,
     )> {
         let (tx, rx) = flume::unbounded();

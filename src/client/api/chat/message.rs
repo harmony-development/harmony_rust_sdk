@@ -1,5 +1,26 @@
-use super::*;
+pub use crate::api::chat::{
+    DeleteMessageRequest, GetMessageRequest, SendMessageRequest, UpdateMessageRequest,
+};
+
+use super::{
+    harmonytypes::{Action, Embed, Metadata, Override},
+    *,
+};
 use crate::api::Hmcs;
+
+client_api! {
+    /// Get a message.
+    action: GetMessage,
+    api_fn: get_message,
+    service: chat,
+}
+
+client_api! {
+    /// Delete a message.
+    request: DeleteMessageRequest,
+    api_fn: delete_message,
+    service: chat,
+}
 
 /// Convenience type to create a valid [`SendMessageRequest`].
 #[into_request("SendMessageRequest")]
@@ -24,6 +45,13 @@ pub struct SendMessage {
     #[new(default)]
     #[builder(setter(strip_option))]
     metadata: Option<Metadata>,
+}
+
+client_api! {
+    /// Send a message.
+    action: SendMessage,
+    api_fn: send_message,
+    service: chat,
 }
 
 /// Convenience type to create a valid [`UpdateMessageRequest`].
@@ -101,27 +129,6 @@ impl UpdateMessage {
         self.update_metadata = true;
         self
     }
-}
-
-client_api! {
-    /// Get a message.
-    action: GetMessage,
-    api_fn: get_message,
-    service: chat,
-}
-
-client_api! {
-    /// Delete a message.
-    request: DeleteMessageRequest,
-    api_fn: delete_message,
-    service: chat,
-}
-
-client_api! {
-    /// Send a message.
-    action: SendMessage,
-    api_fn: send_message,
-    service: chat,
 }
 
 client_api! {

@@ -1,4 +1,10 @@
-use super::*;
+pub use crate::api::chat::{
+    get_guild_channels_response, CreateChannelRequest, DeleteChannelRequest,
+    GetChannelMessagesRequest, GetGuildChannelsRequest, UpdateChannelInformationRequest,
+    UpdateChannelOrderRequest,
+};
+
+use super::{harmonytypes::Metadata, *};
 
 client_api! {
     /// Get channels all channels (that you have permission to view) in a guild.

@@ -1,4 +1,11 @@
-use super::*;
+pub use crate::api::chat::{
+    get_guild_list_response, AddGuildToGuildListRequest, CreateGuildRequest, DeleteGuildRequest,
+    GetGuildListRequest, GetGuildMembersRequest, GetGuildRequest, JoinGuildRequest,
+    LeaveGuildRequest, PreviewGuildRequest, RemoveGuildFromGuildListRequest,
+    UpdateGuildInformationRequest,
+};
+
+use super::{harmonytypes::Metadata, *};
 
 client_api! {
     /// Get guild list for local user.
@@ -11,6 +18,13 @@ client_api! {
     /// Get guild data of a guild.
     action: GetGuild,
     api_fn: get_guild,
+    service: chat,
+}
+
+client_api! {
+    /// Get a list of all users in a guild.
+    action: GetGuildMembers,
+    api_fn: get_guild_members,
     service: chat,
 }
 

@@ -6,6 +6,7 @@ use harmony_rust_sdk::{
             chat::{channel::*, message::*, profile::*, *},
             *,
         },
+        error::*,
         *,
     },
 };
@@ -53,31 +54,30 @@ async fn main() -> ClientResult<()> {
     log::info!("Logged in");
 
     log::info!("Testing profile update...");
-    api::chat::profile::profile_update(
+    profile::profile_update(
         &client,
-        ProfileUpdate::default().new_status(UserStatus::OnlineUnspecified),
+        ProfileUpdate::default().new_status(harmonytypes::UserStatus::OnlineUnspecified),
     )
     .await?;
     log::info!("Updated profile");
 
-    let response = guild::preview_guild(&client, InviteId::new("harmony").unwrap()).await?;
+    let response = guild::preview_guild(&client, invite::InviteId::new("harmony").unwrap()).await?;
     log::info!("Preview guild response: {:?}", response);
     assert_eq!(response.name.as_str(), "Harmony Development");
 
-    let response = api::chat::guild::get_guild_list(&client, GetGuildListRequest {}).await?;
+    let response = guild::get_guild_list(&client, GetGuildListRequest {}).await?;
     log::info!("Get guild list response: {:?}", response);
 
-    // let response = api::chat::permissions::get_guild_roles(&client, TEST_GUILD).await?;
+    // let response = permissions::get_guild_roles(&client, TEST_GUILD).await?;
     // log::info!("Get guild roles response: {:?}", response);
 
-    let response = api::chat::profile::get_guild_members(&client, GuildId::new(TEST_GUILD)).await?;
+    let response = guild::get_guild_members(&client, GuildId::new(TEST_GUILD)).await?;
     log::info!("Get guild members response: {:?}", response);
 
-    let response = api::chat::emote::get_emote_packs(&client, GetEmotePacksRequest {}).await?;
+    let response = emote::get_emote_packs(&client, GetEmotePacksRequest {}).await?;
     log::info!("Get emote packs response: {:?}", response);
 
-    let response =
-        api::chat::channel::get_guild_channels(&client, GuildId::new(TEST_GUILD)).await?;
+    let response = channel::get_guild_channels(&client, GuildId::new(TEST_GUILD)).await?;
     log::info!("Get guild channels response: {:?}", response);
 
     typing(&client, Typing::new(TEST_GUILD, TEST_CHANNEL)).await?;
@@ -100,15 +100,15 @@ async fn main() -> ClientResult<()> {
     assert_eq!(our_msg.content, msg.as_str());
 
     let instant_view =
-        api::mediaproxy::instant_view(&client, Uri::from_static(INSTANT_VIEW_URL)).await?;
+        mediaproxy::instant_view(&client, Uri::from_static(INSTANT_VIEW_URL)).await?;
     log::info!("Instant view response: {:?}", instant_view);
     assert_eq!(&instant_view.metadata.unwrap().url, INSTANT_VIEW_URL);
 
     let can_instant_view =
-        api::mediaproxy::can_instant_view(&client, Uri::from_static(INSTANT_VIEW_URL)).await?;
+        mediaproxy::can_instant_view(&client, Uri::from_static(INSTANT_VIEW_URL)).await?;
     log::info!("Can instant view response: {:?}", can_instant_view);
 
-    let response = api::rest::upload(
+    let response = rest::upload(
         &client,
         FILENAME.to_string(),
         CONTENT_TYPE.to_string(),
@@ -120,7 +120,7 @@ async fn main() -> ClientResult<()> {
     let file_id = response.text().await?;
     log::info!("Uploaded file, returned ID: {}", file_id);
 
-    let response = api::rest::download(&client, api::rest::FileId::Id(FILE_ID.to_string())).await?;
+    let response = rest::download(&client, rest::FileId::Id(FILE_ID.to_string())).await?;
     log::info!("Download file response: {:?}", response);
 
     let content_type = response
@@ -134,9 +134,9 @@ async fn main() -> ClientResult<()> {
     assert_eq!(response.text().await?.as_str(), FILE_DATA);
     assert_eq!(content_type.as_str(), CONTENT_TYPE);
 
-    let response = api::rest::download(
+    let response = rest::download(
         &client,
-        api::rest::FileId::Hmc(api::Hmc::new(
+        rest::FileId::Hmc(Hmc::new(
             Uri::from_static(TEST_SERVER)
                 .authority()
                 .unwrap() // must have authority
@@ -158,9 +158,9 @@ async fn main() -> ClientResult<()> {
     assert_eq!(response.text().await?.as_str(), FILE_DATA);
     assert_eq!(content_type.as_str(), CONTENT_TYPE);
 
-    api::chat::profile::profile_update(
+    profile::profile_update(
         &client,
-        ProfileUpdate::default().new_status(UserStatus::Offline),
+        ProfileUpdate::default().new_status(harmonytypes::UserStatus::Offline),
     )
     .await?;
 

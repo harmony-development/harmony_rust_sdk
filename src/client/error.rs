@@ -1,6 +1,6 @@
 use std::fmt::{self, Display, Formatter};
 
-pub use super::api::HmcParseError;
+pub use crate::api::HmcParseError;
 pub use http::Error as HttpError;
 pub use reqwest::Error as ReqwestError;
 pub use tonic::{transport::Error as TransportError, Code, Status};

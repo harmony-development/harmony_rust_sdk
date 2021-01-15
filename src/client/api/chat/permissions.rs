@@ -1,3 +1,9 @@
+pub use crate::api::chat::{
+    permission, AddGuildRoleRequest, DeleteGuildRoleRequest, GetGuildRolesRequest,
+    GetPermissionsRequest, GetUserRolesRequest, ManageUserRolesRequest, ModifyGuildRoleRequest,
+    MoveRoleRequest, Permission, PermissionList, QueryPermissionsRequest, SetPermissionsRequest,
+};
+
 use super::*;
 
 /// Convenience type to create a valid [`GetPermissionsRequest`].

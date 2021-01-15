@@ -26,17 +26,7 @@ Currently implements a lightweight client and a client API (powered by [tonic](h
 - By default, only a bare-bones common API of all services is generated. You can customize the crate to your needs by enabling feature(s) listed below:
   - Enable the `parking_lot` feature if you want to use [parking_lot](https://github.com/Amanieu/parking_lot) `sync` types instead of `std::sync`.
   - Enable the `client` feature for a lightweight client implementation and the client API.
-    - Enable the `request_method` feature to enable a request method in `Client` which allows you to make requests like this:
-      ```rust
-        // Change our bots status to online and make sure its marked as a bot
-        client
-            .request::<ProfileUpdateRequest, _, _>(
-                ProfileUpdate::default()
-                    .new_status(UserStatus::OnlineUnspecified)
-                    .new_is_bot(true),
-            )
-            .await?;
-      ```
+    - Enable the `request_method` feature to enable a request method in `Client` which allows you to make requests using [Client::request()](https://harmonyapp.io/harmony_rust_sdk/harmony_rust_sdk/client/struct.Client.html#method.request).
   - Enable the `gen_client` feature to generate client service code.
   - Enable the `gen_server` feature to generate server service code.
   - (Default) Enable the `gen_chat` feature to generate chat service code.

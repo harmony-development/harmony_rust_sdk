@@ -1,11 +1,6 @@
-use super::*;
+pub use crate::api::chat::{GetUserMetadataRequest, GetUserRequest, ProfileUpdateRequest};
 
-client_api! {
-    /// Get a list of all users in a guild.
-    action: GetGuildMembers,
-    api_fn: get_guild_members,
-    service: chat,
-}
+use super::{harmonytypes::UserStatus, *};
 
 client_api! {
     /// Get a user's profile.

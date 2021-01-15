@@ -5,18 +5,24 @@ use std::{
 };
 
 use futures::StreamExt;
-use harmony_rust_sdk::client::{
-    api::{
-        auth::AuthStepResponse,
-        chat::{
-            event, guild,
-            message::{self, SendMessage, SendMessageSelfBuilder},
-            profile::{self, ProfileUpdate},
-            EventSource, InviteId,
+use harmony_rust_sdk::{
+    api::chat::event,
+    client::{
+        api::{
+            auth::AuthStepResponse,
+            chat::{
+                guild,
+                invite::InviteId,
+                message::{self, SendMessage, SendMessageSelfBuilder},
+                profile::{self, ProfileUpdate},
+                EventSource,
+            },
+            harmonytypes::UserStatus,
+            Hmc,
         },
-        Hmc, UserStatus,
+        error::ClientResult,
+        Client,
     },
-    Client, ClientResult,
 };
 use http::Uri;
 

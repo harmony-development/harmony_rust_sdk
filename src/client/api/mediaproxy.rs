@@ -1,4 +1,4 @@
-pub use crate::api::mediaproxy::SiteMetadata;
+pub use crate::api::mediaproxy::{FetchLinkMetadataRequest, InstantViewRequest, SiteMetadata};
 
 use super::*;
 use crate::{api::mediaproxy::*, client_api};

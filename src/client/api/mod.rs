@@ -7,9 +7,8 @@ pub mod mediaproxy;
 /// REST client API.
 pub mod rest;
 
-// Re export common types
-pub use crate::api::harmonytypes::{r#override::Reason, *};
-pub use crate::api::{Hmc, HmcParseError};
+#[doc(inline)]
+pub use crate::api::{harmonytypes, Hmc};
 
 use crate::client::{Client, ClientResult};
 

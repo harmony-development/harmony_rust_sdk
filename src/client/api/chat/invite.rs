@@ -1,3 +1,8 @@
+pub use crate::api::chat::{
+    get_guild_invites_response, CreateInviteRequest, DeleteInviteRequest, GetGuildInvitesRequest,
+    InviteId,
+};
+
 use super::*;
 
 client_api! {

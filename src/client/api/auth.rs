@@ -1,4 +1,7 @@
-pub use crate::api::auth::{auth_step, next_step_request, AuthStep, Session};
+pub use crate::api::auth::{
+    auth_step, next_step_request, AuthStep, NextStepRequest, Session, StepBackRequest,
+    StreamStepsRequest,
+};
 
 use super::*;
 use crate::{

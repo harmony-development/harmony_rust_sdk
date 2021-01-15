@@ -1,11 +1,3 @@
-// Export everything a client may need for this service
-pub use crate::api::chat::{
-    event, get_emote_pack_emotes_response::Emote, get_emote_packs_response::EmotePack,
-    get_guild_channels_response::Channel, get_guild_invites_response::Invite,
-    get_guild_list_response::GuildListEntry, permission::Mode, stream_events_request, Event,
-    InviteId, PermissionList, Place, Role,
-};
-
 use super::*;
 use crate::{api::chat::*, client_api};
 

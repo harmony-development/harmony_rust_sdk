@@ -2,17 +2,22 @@
 use std::sync::atomic::{AtomicBool, Ordering};
 
 use futures::StreamExt;
-use harmony_rust_sdk::client::{
-    api::{
-        auth::AuthStepResponse,
-        chat::{
-            event, guild,
-            profile::{self, ProfileUpdate},
-            EventSource, InviteId,
+use harmony_rust_sdk::{
+    api::chat::event,
+    client::{
+        api::{
+            auth::AuthStepResponse,
+            chat::{
+                guild,
+                invite::InviteId,
+                profile::{self, ProfileUpdate},
+                EventSource,
+            },
+            harmonytypes::UserStatus,
         },
-        UserStatus,
+        error::ClientResult,
+        Client,
     },
-    Client, ClientResult,
 };
 
 const EMAIL: &str = "rust_sdk_test@example.org";
