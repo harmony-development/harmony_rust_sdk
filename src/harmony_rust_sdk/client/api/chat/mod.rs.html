@@ -136,23 +136,7 @@
 <span id="133">133</span>
 <span id="134">134</span>
 <span id="135">135</span>
-<span id="136">136</span>
-<span id="137">137</span>
-<span id="138">138</span>
-<span id="139">139</span>
-<span id="140">140</span>
-<span id="141">141</span>
-<span id="142">142</span>
-<span id="143">143</span>
 </pre><div class="example-wrap"><pre class="rust ">
-<span class="comment">// Export everything a client may need for this service</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">api</span>::<span class="ident">chat</span>::{
-    <span class="ident">event</span>, <span class="ident">get_emote_pack_emotes_response</span>::<span class="ident">Emote</span>, <span class="ident">get_emote_packs_response</span>::<span class="ident">EmotePack</span>,
-    <span class="ident">get_guild_channels_response</span>::<span class="ident">Channel</span>, <span class="ident">get_guild_invites_response</span>::<span class="ident">Invite</span>,
-    <span class="ident">get_guild_list_response</span>::<span class="ident">GuildListEntry</span>, <span class="ident">permission</span>::<span class="ident">Mode</span>, <span class="ident">stream_events_request</span>, <span class="ident">Event</span>,
-    <span class="ident">InviteId</span>, <span class="ident">PermissionList</span>, <span class="ident">Place</span>, <span class="ident">Role</span>,
-};
-
 <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
 <span class="kw">use</span> <span class="kw">crate</span>::{<span class="ident">api</span>::<span class="ident">chat</span>::<span class="kw-2">*</span>, <span class="ident">client_api</span>};
 

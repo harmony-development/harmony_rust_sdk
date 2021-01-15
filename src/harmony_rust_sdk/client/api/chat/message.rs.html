@@ -133,9 +133,37 @@
 <span id="130">130</span>
 <span id="131">131</span>
 <span id="132">132</span>
+<span id="133">133</span>
+<span id="134">134</span>
+<span id="135">135</span>
+<span id="136">136</span>
+<span id="137">137</span>
+<span id="138">138</span>
+<span id="139">139</span>
 </pre><div class="example-wrap"><pre class="rust ">
-<span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
+<span class="kw">pub</span> <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">api</span>::<span class="ident">chat</span>::{
+    <span class="ident">DeleteMessageRequest</span>, <span class="ident">GetMessageRequest</span>, <span class="ident">SendMessageRequest</span>, <span class="ident">UpdateMessageRequest</span>,
+};
+
+<span class="kw">use</span> <span class="kw">super</span>::{
+    <span class="ident">harmonytypes</span>::{<span class="ident">Action</span>, <span class="ident">Embed</span>, <span class="ident">Metadata</span>, <span class="ident">Override</span>},
+    <span class="kw-2">*</span>,
+};
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">api</span>::<span class="ident">Hmcs</span>;
+
+<span class="macro">client_api</span><span class="macro">!</span> {
+    <span class="doccomment">/// Get a message.</span>
+    <span class="ident">action</span>: <span class="ident">GetMessage</span>,
+    <span class="ident">api_fn</span>: <span class="ident">get_message</span>,
+    <span class="ident">service</span>: <span class="ident">chat</span>,
+}
+
+<span class="macro">client_api</span><span class="macro">!</span> {
+    <span class="doccomment">/// Delete a message.</span>
+    <span class="ident">request</span>: <span class="ident">DeleteMessageRequest</span>,
+    <span class="ident">api_fn</span>: <span class="ident">delete_message</span>,
+    <span class="ident">service</span>: <span class="ident">chat</span>,
+}
 
 <span class="doccomment">/// Convenience type to create a valid [`SendMessageRequest`].</span>
 <span class="attribute">#[<span class="ident">into_request</span>(<span class="string">&quot;SendMessageRequest&quot;</span>)]</span>
@@ -160,6 +188,13 @@
     <span class="attribute">#[<span class="ident">new</span>(<span class="ident">default</span>)]</span>
     <span class="attribute">#[<span class="ident">builder</span>(<span class="ident">setter</span>(<span class="ident">strip_option</span>))]</span>
     <span class="ident">metadata</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Metadata</span><span class="op">&gt;</span>,
+}
+
+<span class="macro">client_api</span><span class="macro">!</span> {
+    <span class="doccomment">/// Send a message.</span>
+    <span class="ident">action</span>: <span class="ident">SendMessage</span>,
+    <span class="ident">api_fn</span>: <span class="ident">send_message</span>,
+    <span class="ident">service</span>: <span class="ident">chat</span>,
 }
 
 <span class="doccomment">/// Convenience type to create a valid [`UpdateMessageRequest`].</span>
@@ -237,27 +272,6 @@
         <span class="self">self</span>.<span class="ident">update_metadata</span> <span class="op">=</span> <span class="bool-val">true</span>;
         <span class="self">self</span>
     }
-}
-
-<span class="macro">client_api</span><span class="macro">!</span> {
-    <span class="doccomment">/// Get a message.</span>
-    <span class="ident">action</span>: <span class="ident">GetMessage</span>,
-    <span class="ident">api_fn</span>: <span class="ident">get_message</span>,
-    <span class="ident">service</span>: <span class="ident">chat</span>,
-}
-
-<span class="macro">client_api</span><span class="macro">!</span> {
-    <span class="doccomment">/// Delete a message.</span>
-    <span class="ident">request</span>: <span class="ident">DeleteMessageRequest</span>,
-    <span class="ident">api_fn</span>: <span class="ident">delete_message</span>,
-    <span class="ident">service</span>: <span class="ident">chat</span>,
-}
-
-<span class="macro">client_api</span><span class="macro">!</span> {
-    <span class="doccomment">/// Send a message.</span>
-    <span class="ident">action</span>: <span class="ident">SendMessage</span>,
-    <span class="ident">api_fn</span>: <span class="ident">send_message</span>,
-    <span class="ident">service</span>: <span class="ident">chat</span>,
 }
 
 <span class="macro">client_api</span><span class="macro">!</span> {

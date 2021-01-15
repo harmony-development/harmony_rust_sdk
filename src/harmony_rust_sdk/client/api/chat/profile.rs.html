@@ -76,20 +76,10 @@
 <span id="73">73</span>
 <span id="74">74</span>
 <span id="75">75</span>
-<span id="76">76</span>
-<span id="77">77</span>
-<span id="78">78</span>
-<span id="79">79</span>
-<span id="80">80</span>
 </pre><div class="example-wrap"><pre class="rust ">
-<span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
+<span class="kw">pub</span> <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">api</span>::<span class="ident">chat</span>::{<span class="ident">GetUserMetadataRequest</span>, <span class="ident">GetUserRequest</span>, <span class="ident">ProfileUpdateRequest</span>};
 
-<span class="macro">client_api</span><span class="macro">!</span> {
-    <span class="doccomment">/// Get a list of all users in a guild.</span>
-    <span class="ident">action</span>: <span class="ident">GetGuildMembers</span>,
-    <span class="ident">api_fn</span>: <span class="ident">get_guild_members</span>,
-    <span class="ident">service</span>: <span class="ident">chat</span>,
-}
+<span class="kw">use</span> <span class="kw">super</span>::{<span class="ident">harmonytypes</span>::<span class="ident">UserStatus</span>, <span class="kw-2">*</span>};
 
 <span class="macro">client_api</span><span class="macro">!</span> {
     <span class="doccomment">/// Get a user&#39;s profile.</span>

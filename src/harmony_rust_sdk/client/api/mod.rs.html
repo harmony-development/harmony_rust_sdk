@@ -154,7 +154,6 @@
 <span id="151">151</span>
 <span id="152">152</span>
 <span id="153">153</span>
-<span id="154">154</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">/// Auth service client API.</span>
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">auth</span>;
@@ -165,9 +164,8 @@
 <span class="doccomment">/// REST client API.</span>
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">rest</span>;
 
-<span class="comment">// Re export common types</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">api</span>::<span class="ident">harmonytypes</span>::{<span class="ident">r#override</span>::<span class="ident">Reason</span>, <span class="kw-2">*</span>};
-<span class="kw">pub</span> <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">api</span>::{<span class="ident">Hmc</span>, <span class="ident">HmcParseError</span>};
+<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
+<span class="kw">pub</span> <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">api</span>::{<span class="ident">harmonytypes</span>, <span class="ident">Hmc</span>};
 
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">client</span>::{<span class="ident">Client</span>, <span class="ident">ClientResult</span>};
 

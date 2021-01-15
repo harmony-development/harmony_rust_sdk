@@ -146,8 +146,20 @@
 <span id="143">143</span>
 <span id="144">144</span>
 <span id="145">145</span>
+<span id="146">146</span>
+<span id="147">147</span>
+<span id="148">148</span>
+<span id="149">149</span>
+<span id="150">150</span>
+<span id="151">151</span>
 </pre><div class="example-wrap"><pre class="rust ">
-<span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
+<span class="kw">pub</span> <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">api</span>::<span class="ident">chat</span>::{
+    <span class="ident">get_guild_channels_response</span>, <span class="ident">CreateChannelRequest</span>, <span class="ident">DeleteChannelRequest</span>,
+    <span class="ident">GetChannelMessagesRequest</span>, <span class="ident">GetGuildChannelsRequest</span>, <span class="ident">UpdateChannelInformationRequest</span>,
+    <span class="ident">UpdateChannelOrderRequest</span>,
+};
+
+<span class="kw">use</span> <span class="kw">super</span>::{<span class="ident">harmonytypes</span>::<span class="ident">Metadata</span>, <span class="kw-2">*</span>};
 
 <span class="macro">client_api</span><span class="macro">!</span> {
     <span class="doccomment">/// Get channels all channels (that you have permission to view) in a guild.</span>

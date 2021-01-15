@@ -1,1 +1,1 @@
-initSidebarItems({"mod":[["auth","Auth service client API."],["chat","Chat service client API."],["mediaproxy","Media proxy service client API."],["rest","REST client API."]],"trait":[["ClientRequest",""]]});
+initSidebarItems({"mod":[["auth","Auth service client API."],["chat","Chat service client API."],["harmonytypes","Common types used in other services."],["mediaproxy","Media proxy service client API."],["rest","REST client API."]],"struct":[["Hmc","A HMC."]],"trait":[["ClientRequest",""]]});
