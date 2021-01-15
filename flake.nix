@@ -1,11 +1,12 @@
 {
   description = "Flake for harmony_rust_sdk";
 
-  inputs = rec {
+  inputs = {
+    devshell.url = "github:numtide/devshell";
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     naersk = {
       url = "github:nmattia/naersk";
-      inputs.nixpkgs = nixpkgs;
+      inputs.nixpkgs.follows = "nixpkgs";
     };
     flakeUtils.url = "github:numtide/flake-utils";
     nixpkgsMoz = {
@@ -19,7 +20,7 @@
     eachSystem defaultSystems (system:
       let
         common = import ./nix/common.nix {
-          sources = { inherit naersk nixpkgs nixpkgsMoz; };
+          sources = { inherit devshell naersk nixpkgs nixpkgsMoz; };
           inherit system;
         };
 

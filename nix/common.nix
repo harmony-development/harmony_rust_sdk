@@ -3,13 +3,6 @@ let
   pkgz = import sources.nixpkgs { inherit system; };
   mozPkgs = import "${sources.nixpkgsMoz}/package-set.nix" { pkgs = pkgz; };
 
-  rustNightlyChannel =
-    mozPkgs.rustChannelOf {
-      date = "2021-01-08";
-      channel = "nightly";
-      sha256 = "sha256-utyBii+c0ohEjvxvr0Cf8MB97du2Gsxozm+0Q+FhVNw=";
-    };
-
   rustChannel =
     let
       channel = mozPkgs.rustChannelOf {
@@ -25,9 +18,9 @@ let
   pkgs = import sources.nixpkgs {
     inherit system;
     overlays = [
+      sources.devshell.overlay
       (final: prev: {
         rustc = rustChannel.rust;
-        inherit (rustNightlyChannel) cargo;
       })
       (final: prev: {
         naersk = prev.callPackage sources.naersk { };
