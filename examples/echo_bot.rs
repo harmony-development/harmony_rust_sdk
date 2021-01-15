@@ -29,8 +29,7 @@ const GUILD_ID_FILE: &str = "guild_id";
 
 static DID_CTRLC: AtomicBool = AtomicBool::new(false);
 
-// Be sure to add the bot to your server once it and give it the necessary permissions.
-#[tokio::main]
+#[tokio::main(flavor = "current_thread")]
 async fn main() -> ClientResult<()> {
     // Init logging
     env_logger::init();

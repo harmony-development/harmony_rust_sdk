@@ -26,7 +26,7 @@ const FILE_ID: &str = "403cb46c-49cf-4ae1-b876-f38eb26accb0";
 
 const INSTANT_VIEW_URL: &str = "https://duckduckgo.com/";
 
-#[tokio::test]
+#[tokio::test(flavor = "current_thread")]
 async fn main() -> ClientResult<()> {
     env_logger::init();
 
