@@ -2,6 +2,7 @@
 [![crates.io](https://img.shields.io/crates/v/harmony_rust_sdk)](https://crates.io/crates/harmony_rust_sdk)
 [![docs.rs](https://docs.rs/harmony_rust_sdk/badge.svg)](https://docs.rs/harmony_rust_sdk)
 [![docs.rs](https://img.shields.io/badge/docs-master-blue)](https://harmonyapp.io/harmony_rust_sdk)
+![MSRV](https://img.shields.io/badge/MSRV-previous%20stable-red)
 
 Rust implementation of [the Harmony chat protocol](https://github.com/harmony-development).
 Currently implements a lightweight client and a client API (powered by [tonic](https://crates.io/crates/tonic)), along with auto generated API via [tonic-build](https://crates.io/crates/tonic-build).
