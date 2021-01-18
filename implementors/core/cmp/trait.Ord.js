@@ -1,3 +1,3 @@
 (function() {var implementors = {};
-implementors["harmony_rust_sdk"] = [{"text":"impl Ord for Mode","synthetic":false,"types":[]},{"text":"impl Ord for UserStatus","synthetic":false,"types":[]},{"text":"impl Ord for ActionType","synthetic":false,"types":[]},{"text":"impl Ord for ActionPresentation","synthetic":false,"types":[]},{"text":"impl Ord for FieldPresentation","synthetic":false,"types":[]}];
+implementors["harmony_rust_sdk"] = [{"text":"impl Ord for Mode","synthetic":false,"types":[]},{"text":"impl Ord for UserStatus","synthetic":false,"types":[]},{"text":"impl Ord for ActionType","synthetic":false,"types":[]},{"text":"impl Ord for ActionPresentation","synthetic":false,"types":[]},{"text":"impl Ord for FieldPresentation","synthetic":false,"types":[]},{"text":"impl Ord for FileKind","synthetic":false,"types":[]}];
 if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()
