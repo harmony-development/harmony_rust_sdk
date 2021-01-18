@@ -158,6 +158,20 @@ async fn main() -> ClientResult<()> {
     assert_eq!(response.text().await?.as_str(), FILE_DATA);
     assert_eq!(content_type.as_str(), CONTENT_TYPE);
 
+    let downloaded_file = rest::download_extract_file(&client, client.make_hmc(FILE_ID)).await?;
+    assert_eq!(
+        downloaded_file
+            .data()
+            .clone()
+            .into_iter()
+            .map(char::from)
+            .collect::<String>()
+            .as_str(),
+        FILE_DATA
+    );
+    assert_eq!(downloaded_file.mimetype(), CONTENT_TYPE);
+    assert_eq!(downloaded_file.name(), FILENAME);
+
     profile::profile_update(
         &client,
         ProfileUpdate::default().new_status(harmonytypes::UserStatus::Offline),

@@ -23,6 +23,14 @@ pub enum ClientError {
     NoAuthId,
     /// Returned if the client is unauthenticated, but an API endpoint requires authentication.
     Unauthenticated,
+    /// Returned if a response from the server has invalid / empty value(s) according to the protocol.
+    UnexpectedResponse(String),
+}
+
+impl ClientError {
+    pub(crate) fn unexpected(msg: impl ToString) -> Self {
+        ClientError::UnexpectedResponse(msg.to_string())
+    }
 }
 
 impl Display for ClientError {
@@ -34,6 +42,7 @@ impl Display for ClientError {
             ClientError::Http(http_err) => write!(f, "An error occured while parsing an URL / creating an HTTP request: {}", http_err),
             ClientError::NoAuthId => write!(f, "No authentication session is in progress, but client tries to call auth API methods that need it"),
             ClientError::Unauthenticated => write!(f, "Client is not authenticated, but the API it tries to call requires authentication"),
+            ClientError::UnexpectedResponse(msg) => write!(f, "Server responded with unexpected value: {}", msg),
         }
     }
 }
