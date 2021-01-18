@@ -30,7 +30,7 @@ client_api! {
 
 /// Convenience type to create a valid [`CreateGuildRequest`].
 #[into_request("CreateGuildRequest")]
-#[derive(Debug, new)]
+#[derive(Debug, Clone, new)]
 pub struct CreateGuild {
     guild_name: String,
     #[new(default)]
@@ -61,7 +61,7 @@ client_api! {
 }
 
 /// Convenience type to create a valid [`AddGuildToGuildListRequest`] and [`RemoveGuildFromGuildListRequest`].
-#[derive(Debug, new)]
+#[derive(Debug, Clone, new)]
 pub struct GuildList {
     guild_id: u64,
     homeserver: Uri,
@@ -103,7 +103,7 @@ client_api! {
 
 /// Convenience type to create a valid [`UpdateGuildInformationRequest`].
 #[into_request("UpdateGuildInformationRequest")]
-#[derive(Debug, new)]
+#[derive(Debug, Clone, new)]
 pub struct UpdateGuildInformation {
     guild_id: u64,
     #[new(default)]

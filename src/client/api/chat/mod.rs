@@ -63,7 +63,7 @@ pub mod profile;
 
 /// Convenience type to create a valid [`TriggerActionRequest`].
 #[into_request("TriggerActionRequest")]
-#[derive(Debug, new)]
+#[derive(Debug, Clone, new)]
 pub struct TriggerAction {
     guild_id: u64,
     channel_id: u64,

@@ -97,7 +97,7 @@ client_api! {
 
 /// Convenience type to create a valid [`NextStepRequest`].
 #[into_request("NextStepRequest")]
-#[derive(Debug, new)]
+#[derive(Debug, Clone, new)]
 pub struct AuthResponse {
     auth_id: String,
     step: AuthStepResponse,
@@ -113,7 +113,7 @@ client_api! {
 
 /// Wrapper around an auth ID which can be used as multiple requests.
 #[into_request("StepBackRequest", "StreamStepsRequest")]
-#[derive(Debug, From, Into, Display, new)]
+#[derive(Debug, Clone, From, Into, Display, new)]
 pub struct AuthId {
     auth_id: String,
 }

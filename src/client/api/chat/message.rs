@@ -24,7 +24,7 @@ client_api! {
 
 /// Convenience type to create a valid [`SendMessageRequest`].
 #[into_request("SendMessageRequest")]
-#[derive(new, Debug, SelfBuilder)]
+#[derive(new, Debug, Clone, SelfBuilder)]
 pub struct SendMessage {
     guild_id: u64,
     channel_id: u64,
@@ -56,7 +56,7 @@ client_api! {
 
 /// Convenience type to create a valid [`UpdateMessageRequest`].
 #[into_request("UpdateMessageRequest")]
-#[derive(new, Debug)]
+#[derive(new, Debug, Clone)]
 pub struct UpdateMessage {
     guild_id: u64,
     channel_id: u64,

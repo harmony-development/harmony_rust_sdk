@@ -12,14 +12,14 @@ use super::*;
     "DeleteEmotePackRequest",
     "DequipEmotePackRequest"
 )]
-#[derive(Debug, new)]
+#[derive(Debug, Clone, new)]
 pub struct PackId {
     pack_id: u64,
 }
 
 /// Convenience type to create a valid [`CreateEmotePackRequest`].
 #[into_request("CreateEmotePackRequest")]
-#[derive(Debug, new)]
+#[derive(Debug, Clone, new)]
 pub struct CreateEmotePack {
     pack_name: String,
 }
@@ -47,7 +47,7 @@ client_api! {
 
 /// Convenience type to create a valid [`AddEmoteToPackRequest`].
 #[into_request("AddEmoteToPackRequest")]
-#[derive(Debug, new)]
+#[derive(Debug, Clone, new)]
 pub struct AddEmoteToPack {
     pack_id: u64,
     image_id: Hmc,
@@ -63,7 +63,7 @@ client_api! {
 
 /// Convenience type to create a valid [`DeleteEmoteFromPackRequest`].
 #[into_request("DeleteEmoteFromPackRequest")]
-#[derive(Debug, new)]
+#[derive(Debug, Clone, new)]
 pub struct DeleteEmoteFromPack {
     pack_id: u64,
     image_id: Hmc,

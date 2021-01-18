@@ -14,7 +14,7 @@ client_api! {
 
 /// Convenience type to create a valid [`CreateInviteRequest`].
 #[into_request("CreateInviteRequest")]
-#[derive(Debug, new)]
+#[derive(Debug, Clone, new)]
 pub struct CreateInvite {
     name: InviteId,
     possible_uses: i32,
@@ -32,7 +32,7 @@ client_api! {
 
 /// Convenience type to create a valid [`DeleteInviteRequest`].
 #[into_request("DeleteInviteRequest")]
-#[derive(Debug, new)]
+#[derive(Debug, Clone, new)]
 pub struct DeleteInvite {
     invite_id: InviteId,
     guild_id: u64,

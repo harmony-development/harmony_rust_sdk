@@ -11,7 +11,7 @@ client_api! {
 
 /// Convenience type to create a valid [`GetUserMetadataRequest`].
 #[into_request("GetUserMetadataRequest")]
-#[derive(Debug, new)]
+#[derive(Debug, Clone, new)]
 pub struct AppId {
     app_id: String,
 }
@@ -25,7 +25,7 @@ client_api! {
 
 /// Convenience type to create a valid [`ProfileUpdateRequest`].
 #[into_request("ProfileUpdateRequest")]
-#[derive(Debug, Default)]
+#[derive(Debug, Clone, Default)]
 pub struct ProfileUpdate {
     new_username: String,
     new_status: UserStatus,

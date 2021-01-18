@@ -20,7 +20,7 @@ client_api! {
 ///
 /// Note that the number of messages returned may be limited by servers.
 #[into_request("GetChannelMessagesRequest")]
-#[derive(Debug, new, SelfBuilder)]
+#[derive(Debug, new, Clone, SelfBuilder)]
 pub struct GetChannelMessages {
     guild_id: u64,
     channel_id: u64,
@@ -36,7 +36,7 @@ client_api! {
 }
 
 /// Convenience type to create a valid [`CreateChannelRequest`].
-#[derive(Debug, new, SelfBuilder)]
+#[derive(Debug, new, Clone, SelfBuilder)]
 pub struct CreateChannel {
     guild_id: u64,
     channel_name: String,
@@ -71,7 +71,7 @@ client_api! {
 
 /// Convenience type to create a valid [`DeleteChannelRequest`].
 #[into_request("DeleteChannelRequest")]
-#[derive(Debug, new)]
+#[derive(Debug, Clone, new)]
 pub struct DeleteChannel {
     guild_id: u64,
     channel_id: u64,
@@ -86,7 +86,7 @@ client_api! {
 
 /// Convenience type to create a valid [`UpdateChannelInformationRequest`].
 #[into_request("UpdateChannelInformationRequest")]
-#[derive(Debug, new)]
+#[derive(Debug, Clone, new)]
 pub struct UpdateChannelInformation {
     guild_id: u64,
     channel_id: u64,
@@ -124,7 +124,7 @@ client_api! {
 }
 
 /// Convenience type to create a valid [`UpdateChannelOrderRequest`].
-#[derive(Debug, new)]
+#[derive(Debug, Clone, new)]
 pub struct UpdateChannelOrder {
     guild_id: u64,
     channel_id: u64,
