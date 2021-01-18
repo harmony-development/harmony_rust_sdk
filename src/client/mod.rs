@@ -190,7 +190,7 @@ impl Client {
 
         let data = ClientData {
             homeserver_url,
-            auth_status: Mutex::new(AuthStatus::None),
+            auth_status: Mutex::new(session.map_or(AuthStatus::None, AuthStatus::Complete)),
             chat: AsyncMutex::new(chat),
             auth: AsyncMutex::new(auth),
             mediaproxy: AsyncMutex::new(mediaproxy),
