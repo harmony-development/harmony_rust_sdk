@@ -15,7 +15,7 @@ pub mod exports {
 
 #[cfg(feature = "request_method")]
 use api::ClientRequest;
-use api::{auth::*, chat::EventSource};
+use api::{auth::*, chat::EventSource, Hmc};
 use error::*;
 
 use std::sync::Arc;
@@ -281,6 +281,25 @@ impl Client {
     /// ```
     pub fn homeserver_url(&self) -> &Uri {
         &self.data.homeserver_url
+    }
+
+    /// Makes an HMC with homeserver's authority and the given ID.
+    ///
+    /// # Example
+    /// ```
+    /// # use harmony_rust_sdk::{api::Hmc, client::*};
+    /// # #[tokio::main(flavor = "current_thread")]
+    /// # async fn main() -> error::ClientResult<()> {
+    /// # let client = Client::new("chat.harmonyapp.io:2289".parse().unwrap(), None).await?;
+    /// assert_eq!(client.make_hmc("404"), Hmc::new("chat.harmonyapp.io:2289".parse().unwrap(), "404"));
+    /// # Ok(())
+    /// # }
+    /// ```
+    pub fn make_hmc(&self, id: impl ToString) -> Hmc {
+        Hmc::new(
+            self.data.homeserver_url.authority().unwrap().clone(),
+            id.to_string(),
+        )
     }
 
     /// Start an authentication session.
