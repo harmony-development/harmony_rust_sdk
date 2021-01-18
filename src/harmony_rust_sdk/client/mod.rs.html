@@ -644,7 +644,7 @@
 
         <span class="kw">let</span> <span class="ident">data</span> <span class="op">=</span> <span class="ident">ClientData</span> {
             <span class="ident">homeserver_url</span>,
-            <span class="ident">auth_status</span>: <span class="ident">Mutex</span>::<span class="ident">new</span>(<span class="ident">AuthStatus</span>::<span class="prelude-val">None</span>),
+            <span class="ident">auth_status</span>: <span class="ident">Mutex</span>::<span class="ident">new</span>(<span class="ident">session</span>.<span class="ident">map_or</span>(<span class="ident">AuthStatus</span>::<span class="prelude-val">None</span>, <span class="ident">AuthStatus</span>::<span class="ident">Complete</span>)),
             <span class="ident">chat</span>: <span class="ident">AsyncMutex</span>::<span class="ident">new</span>(<span class="ident">chat</span>),
             <span class="ident">auth</span>: <span class="ident">AsyncMutex</span>::<span class="ident">new</span>(<span class="ident">auth</span>),
             <span class="ident">mediaproxy</span>: <span class="ident">AsyncMutex</span>::<span class="ident">new</span>(<span class="ident">mediaproxy</span>),
