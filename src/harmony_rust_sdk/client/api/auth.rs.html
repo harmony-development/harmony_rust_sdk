@@ -236,7 +236,7 @@
 
 <span class="doccomment">/// Convenience type to create a valid [`NextStepRequest`].</span>
 <span class="attribute">#[<span class="ident">into_request</span>(<span class="string">&quot;NextStepRequest&quot;</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">new</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">new</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">AuthResponse</span> {
     <span class="ident">auth_id</span>: <span class="ident">String</span>,
     <span class="ident">step</span>: <span class="ident">AuthStepResponse</span>,
@@ -252,7 +252,7 @@
 
 <span class="doccomment">/// Wrapper around an auth ID which can be used as multiple requests.</span>
 <span class="attribute">#[<span class="ident">into_request</span>(<span class="string">&quot;StepBackRequest&quot;</span>, <span class="string">&quot;StreamStepsRequest&quot;</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">From</span>, <span class="ident">Into</span>, <span class="ident">Display</span>, <span class="ident">new</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">From</span>, <span class="ident">Into</span>, <span class="ident">Display</span>, <span class="ident">new</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">AuthId</span> {
     <span class="ident">auth_id</span>: <span class="ident">String</span>,
 }

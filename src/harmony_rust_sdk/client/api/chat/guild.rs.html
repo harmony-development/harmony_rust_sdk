@@ -213,7 +213,7 @@
 
 <span class="doccomment">/// Convenience type to create a valid [`CreateGuildRequest`].</span>
 <span class="attribute">#[<span class="ident">into_request</span>(<span class="string">&quot;CreateGuildRequest&quot;</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">new</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">new</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">CreateGuild</span> {
     <span class="ident">guild_name</span>: <span class="ident">String</span>,
     <span class="attribute">#[<span class="ident">new</span>(<span class="ident">default</span>)]</span>
@@ -244,7 +244,7 @@
 }
 
 <span class="doccomment">/// Convenience type to create a valid [`AddGuildToGuildListRequest`] and [`RemoveGuildFromGuildListRequest`].</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">new</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">new</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">GuildList</span> {
     <span class="ident">guild_id</span>: <span class="ident">u64</span>,
     <span class="ident">homeserver</span>: <span class="ident">Uri</span>,
@@ -286,7 +286,7 @@
 
 <span class="doccomment">/// Convenience type to create a valid [`UpdateGuildInformationRequest`].</span>
 <span class="attribute">#[<span class="ident">into_request</span>(<span class="string">&quot;UpdateGuildInformationRequest&quot;</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">new</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">new</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">UpdateGuildInformation</span> {
     <span class="ident">guild_id</span>: <span class="ident">u64</span>,
     <span class="attribute">#[<span class="ident">new</span>(<span class="ident">default</span>)]</span>

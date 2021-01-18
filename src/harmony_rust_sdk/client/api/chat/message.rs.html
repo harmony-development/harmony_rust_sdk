@@ -167,7 +167,7 @@
 
 <span class="doccomment">/// Convenience type to create a valid [`SendMessageRequest`].</span>
 <span class="attribute">#[<span class="ident">into_request</span>(<span class="string">&quot;SendMessageRequest&quot;</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">new</span>, <span class="ident">Debug</span>, <span class="ident">SelfBuilder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">new</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">SelfBuilder</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">SendMessage</span> {
     <span class="ident">guild_id</span>: <span class="ident">u64</span>,
     <span class="ident">channel_id</span>: <span class="ident">u64</span>,
@@ -199,7 +199,7 @@
 
 <span class="doccomment">/// Convenience type to create a valid [`UpdateMessageRequest`].</span>
 <span class="attribute">#[<span class="ident">into_request</span>(<span class="string">&quot;UpdateMessageRequest&quot;</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">new</span>, <span class="ident">Debug</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">new</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">UpdateMessage</span> {
     <span class="ident">guild_id</span>: <span class="ident">u64</span>,
     <span class="ident">channel_id</span>: <span class="ident">u64</span>,

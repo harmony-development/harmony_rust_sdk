@@ -90,7 +90,7 @@
 
 <span class="doccomment">/// Convenience type to create a valid [`GetUserMetadataRequest`].</span>
 <span class="attribute">#[<span class="ident">into_request</span>(<span class="string">&quot;GetUserMetadataRequest&quot;</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">new</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">new</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">AppId</span> {
     <span class="ident">app_id</span>: <span class="ident">String</span>,
 }
@@ -104,7 +104,7 @@
 
 <span class="doccomment">/// Convenience type to create a valid [`ProfileUpdateRequest`].</span>
 <span class="attribute">#[<span class="ident">into_request</span>(<span class="string">&quot;ProfileUpdateRequest&quot;</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Default</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">Default</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ProfileUpdate</span> {
     <span class="ident">new_username</span>: <span class="ident">String</span>,
     <span class="ident">new_status</span>: <span class="ident">UserStatus</span>,

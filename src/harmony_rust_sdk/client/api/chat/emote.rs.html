@@ -107,14 +107,14 @@
     <span class="string">&quot;DeleteEmotePackRequest&quot;</span>,
     <span class="string">&quot;DequipEmotePackRequest&quot;</span>
 )]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">new</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">new</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">PackId</span> {
     <span class="ident">pack_id</span>: <span class="ident">u64</span>,
 }
 
 <span class="doccomment">/// Convenience type to create a valid [`CreateEmotePackRequest`].</span>
 <span class="attribute">#[<span class="ident">into_request</span>(<span class="string">&quot;CreateEmotePackRequest&quot;</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">new</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">new</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">CreateEmotePack</span> {
     <span class="ident">pack_name</span>: <span class="ident">String</span>,
 }
@@ -142,7 +142,7 @@
 
 <span class="doccomment">/// Convenience type to create a valid [`AddEmoteToPackRequest`].</span>
 <span class="attribute">#[<span class="ident">into_request</span>(<span class="string">&quot;AddEmoteToPackRequest&quot;</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">new</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">new</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">AddEmoteToPack</span> {
     <span class="ident">pack_id</span>: <span class="ident">u64</span>,
     <span class="ident">image_id</span>: <span class="ident">Hmc</span>,
@@ -158,7 +158,7 @@
 
 <span class="doccomment">/// Convenience type to create a valid [`DeleteEmoteFromPackRequest`].</span>
 <span class="attribute">#[<span class="ident">into_request</span>(<span class="string">&quot;DeleteEmoteFromPackRequest&quot;</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">new</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">new</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">DeleteEmoteFromPack</span> {
     <span class="ident">pack_id</span>: <span class="ident">u64</span>,
     <span class="ident">image_id</span>: <span class="ident">Hmc</span>,

@@ -216,7 +216,7 @@
 
 <span class="doccomment">/// Convenience type to create a valid [`GetPermissionsRequest`].</span>
 <span class="attribute">#[<span class="ident">into_request</span>(<span class="string">&quot;GetPermissionsRequest&quot;</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">new</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">new</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">GetPermissions</span> {
     <span class="ident">guild_id</span>: <span class="ident">u64</span>,
     <span class="ident">channel_id</span>: <span class="ident">u64</span>,
@@ -232,7 +232,7 @@
 
 <span class="doccomment">/// Convenience type to create a valid [`QueryPermissionsRequest`].</span>
 <span class="attribute">#[<span class="ident">into_request</span>(<span class="string">&quot;QueryPermissionsRequest&quot;</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">new</span>, <span class="ident">SelfBuilder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">new</span>, <span class="ident">SelfBuilder</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">QueryPermissions</span> {
     <span class="ident">guild_id</span>: <span class="ident">u64</span>,
     <span class="ident">channel_id</span>: <span class="ident">u64</span>,
@@ -250,7 +250,7 @@
 
 <span class="doccomment">/// Convenience type to create a valid [`SetPermissionsRequest`].</span>
 <span class="attribute">#[<span class="ident">into_request</span>(<span class="string">&quot;SetPermissionsRequest&quot;</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">SelfBuilder</span>, <span class="ident">new</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">SelfBuilder</span>, <span class="ident">new</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">SetPermissions</span> {
     <span class="ident">guild_id</span>: <span class="ident">u64</span>,
     <span class="ident">channel_id</span>: <span class="ident">u64</span>,
@@ -275,7 +275,7 @@
 }
 
 <span class="doccomment">/// Convenience type to create a valid [`AddGuildRoleRequest`].</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">new</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">new</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">AddGuildRole</span> {
     <span class="ident">guild_id</span>: <span class="ident">u64</span>,
     <span class="ident">role</span>: <span class="ident">Role</span>,
@@ -300,7 +300,7 @@
 
 <span class="doccomment">/// Convenience type to create a valid [`DeleteGuildRoleRequest`].</span>
 <span class="attribute">#[<span class="ident">into_request</span>(<span class="string">&quot;DeleteGuildRoleRequest&quot;</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">new</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">new</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">DeleteGuildRole</span> {
     <span class="ident">guild_id</span>: <span class="ident">u64</span>,
     <span class="ident">role_id</span>: <span class="ident">u64</span>,
@@ -315,7 +315,7 @@
 
 <span class="comment">// TODO: Make a `RoleUpdate` struct for this</span>
 <span class="doccomment">/// Convenience type to create a valid [`ModifyGuildRoleRequest`].</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">new</span>, <span class="ident">SelfBuilder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">new</span>, <span class="ident">SelfBuilder</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ModifyGuildRole</span> {
     <span class="ident">guild_id</span>: <span class="ident">u64</span>,
     <span class="ident">role</span>: <span class="ident">Role</span>,
@@ -351,7 +351,7 @@
 }
 
 <span class="doccomment">/// Convenience type to create a valid [`MoveRoleRequest`].</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">new</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">new</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">MoveRole</span> {
     <span class="ident">guild_id</span>: <span class="ident">u64</span>,
     <span class="ident">role_id</span>: <span class="ident">u64</span>,
@@ -379,7 +379,7 @@
 
 <span class="doccomment">/// Convenience type to create a valid [`ManageUserRolesRequest`].</span>
 <span class="attribute">#[<span class="ident">into_request</span>(<span class="string">&quot;ManageUserRolesRequest&quot;</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">new</span>, <span class="ident">SelfBuilder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">new</span>, <span class="ident">SelfBuilder</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ManageUserRoles</span> {
     <span class="ident">guild_id</span>: <span class="ident">u64</span>,
     <span class="ident">user_id</span>: <span class="ident">u64</span>,
@@ -398,7 +398,7 @@
 
 <span class="doccomment">/// Convenience type to create a valid [`GetUserRolesRequest`].</span>
 <span class="attribute">#[<span class="ident">into_request</span>(<span class="string">&quot;GetUserRolesRequest&quot;</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">new</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">new</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">GetUserRoles</span> {
     <span class="ident">guild_id</span>: <span class="ident">u64</span>,
     <span class="ident">user_id</span>: <span class="ident">u64</span>,

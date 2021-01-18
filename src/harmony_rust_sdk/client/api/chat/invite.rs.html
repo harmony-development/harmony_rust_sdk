@@ -64,7 +64,7 @@
 
 <span class="doccomment">/// Convenience type to create a valid [`CreateInviteRequest`].</span>
 <span class="attribute">#[<span class="ident">into_request</span>(<span class="string">&quot;CreateInviteRequest&quot;</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">new</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">new</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">CreateInvite</span> {
     <span class="ident">name</span>: <span class="ident">InviteId</span>,
     <span class="ident">possible_uses</span>: <span class="ident">i32</span>,
@@ -82,7 +82,7 @@
 
 <span class="doccomment">/// Convenience type to create a valid [`DeleteInviteRequest`].</span>
 <span class="attribute">#[<span class="ident">into_request</span>(<span class="string">&quot;DeleteInviteRequest&quot;</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">new</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">new</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">DeleteInvite</span> {
     <span class="ident">invite_id</span>: <span class="ident">InviteId</span>,
     <span class="ident">guild_id</span>: <span class="ident">u64</span>,

@@ -175,7 +175,7 @@
 <span class="doccomment">///</span>
 <span class="doccomment">/// Note that the number of messages returned may be limited by servers.</span>
 <span class="attribute">#[<span class="ident">into_request</span>(<span class="string">&quot;GetChannelMessagesRequest&quot;</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">new</span>, <span class="ident">SelfBuilder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">new</span>, <span class="ident">Clone</span>, <span class="ident">SelfBuilder</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">GetChannelMessages</span> {
     <span class="ident">guild_id</span>: <span class="ident">u64</span>,
     <span class="ident">channel_id</span>: <span class="ident">u64</span>,
@@ -191,7 +191,7 @@
 }
 
 <span class="doccomment">/// Convenience type to create a valid [`CreateChannelRequest`].</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">new</span>, <span class="ident">SelfBuilder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">new</span>, <span class="ident">Clone</span>, <span class="ident">SelfBuilder</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">CreateChannel</span> {
     <span class="ident">guild_id</span>: <span class="ident">u64</span>,
     <span class="ident">channel_name</span>: <span class="ident">String</span>,
@@ -226,7 +226,7 @@
 
 <span class="doccomment">/// Convenience type to create a valid [`DeleteChannelRequest`].</span>
 <span class="attribute">#[<span class="ident">into_request</span>(<span class="string">&quot;DeleteChannelRequest&quot;</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">new</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">new</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">DeleteChannel</span> {
     <span class="ident">guild_id</span>: <span class="ident">u64</span>,
     <span class="ident">channel_id</span>: <span class="ident">u64</span>,
@@ -241,7 +241,7 @@
 
 <span class="doccomment">/// Convenience type to create a valid [`UpdateChannelInformationRequest`].</span>
 <span class="attribute">#[<span class="ident">into_request</span>(<span class="string">&quot;UpdateChannelInformationRequest&quot;</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">new</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">new</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">UpdateChannelInformation</span> {
     <span class="ident">guild_id</span>: <span class="ident">u64</span>,
     <span class="ident">channel_id</span>: <span class="ident">u64</span>,
@@ -279,7 +279,7 @@
 }
 
 <span class="doccomment">/// Convenience type to create a valid [`UpdateChannelOrderRequest`].</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">new</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">new</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">UpdateChannelOrder</span> {
     <span class="ident">guild_id</span>: <span class="ident">u64</span>,
     <span class="ident">channel_id</span>: <span class="ident">u64</span>,
