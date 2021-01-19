@@ -149,7 +149,7 @@
     <span class="ident">harmonytypes</span>::{<span class="ident">Action</span>, <span class="ident">Embed</span>, <span class="ident">Metadata</span>, <span class="ident">Override</span>},
     <span class="kw-2">*</span>,
 };
-<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">api</span>::<span class="ident">Hmcs</span>;
+<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">client</span>::<span class="ident">api</span>::<span class="ident">rest</span>::<span class="ident">FileIds</span>;
 
 <span class="macro">client_api</span><span class="macro">!</span> {
     <span class="doccomment">/// Get a message.</span>
@@ -181,7 +181,7 @@
     <span class="attribute">#[<span class="ident">new</span>(<span class="ident">default</span>)]</span>
     <span class="ident">actions</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Action</span><span class="op">&gt;</span>,
     <span class="attribute">#[<span class="ident">new</span>(<span class="ident">default</span>)]</span>
-    <span class="ident">attachments</span>: <span class="ident">Hmcs</span>,
+    <span class="ident">attachments</span>: <span class="ident">FileIds</span>,
     <span class="attribute">#[<span class="ident">new</span>(<span class="ident">default</span>)]</span>
     <span class="attribute">#[<span class="ident">builder</span>(<span class="ident">setter</span>(<span class="ident">strip_option</span>))]</span>
     <span class="ident">overrides</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Override</span><span class="op">&gt;</span>,
@@ -211,7 +211,7 @@
     <span class="attribute">#[<span class="ident">new</span>(<span class="ident">default</span>)]</span>
     <span class="ident">actions</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Action</span><span class="op">&gt;</span>,
     <span class="attribute">#[<span class="ident">new</span>(<span class="ident">default</span>)]</span>
-    <span class="ident">attachments</span>: <span class="ident">Hmcs</span>,
+    <span class="ident">attachments</span>: <span class="ident">FileIds</span>,
     <span class="attribute">#[<span class="ident">new</span>(<span class="ident">default</span>)]</span>
     <span class="ident">overrides</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Override</span><span class="op">&gt;</span>,
     <span class="attribute">#[<span class="ident">new</span>(<span class="ident">default</span>)]</span>
@@ -253,7 +253,7 @@
     }
 
     <span class="doccomment">/// Set the new attachments of this message.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new_attachments</span>(<span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">attachments</span>: <span class="ident">Hmcs</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new_attachments</span>(<span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">attachments</span>: <span class="ident">FileIds</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
         <span class="self">self</span>.<span class="ident">attachments</span> <span class="op">=</span> <span class="ident">attachments</span>;
         <span class="self">self</span>.<span class="ident">update_attachments</span> <span class="op">=</span> <span class="bool-val">true</span>;
         <span class="self">self</span>
