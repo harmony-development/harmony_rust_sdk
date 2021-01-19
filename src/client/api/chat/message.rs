@@ -6,7 +6,7 @@ use super::{
     harmonytypes::{Action, Embed, Metadata, Override},
     *,
 };
-use crate::api::Hmcs;
+use crate::client::api::rest::FileIds;
 
 client_api! {
     /// Get a message.
@@ -38,7 +38,7 @@ pub struct SendMessage {
     #[new(default)]
     actions: Vec<Action>,
     #[new(default)]
-    attachments: Hmcs,
+    attachments: FileIds,
     #[new(default)]
     #[builder(setter(strip_option))]
     overrides: Option<Override>,
@@ -68,7 +68,7 @@ pub struct UpdateMessage {
     #[new(default)]
     actions: Vec<Action>,
     #[new(default)]
-    attachments: Hmcs,
+    attachments: FileIds,
     #[new(default)]
     overrides: Option<Override>,
     #[new(default)]
@@ -110,7 +110,7 @@ impl UpdateMessage {
     }
 
     /// Set the new attachments of this message.
-    pub fn new_attachments(mut self, attachments: Hmcs) -> Self {
+    pub fn new_attachments(mut self, attachments: FileIds) -> Self {
         self.attachments = attachments;
         self.update_attachments = true;
         self

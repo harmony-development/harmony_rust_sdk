@@ -1,6 +1,6 @@
 //! Example showcasing a very simple echo bot.
 use std::{
-    convert::TryInto,
+    str::FromStr,
     sync::atomic::{AtomicBool, Ordering},
 };
 
@@ -18,13 +18,12 @@ use harmony_rust_sdk::{
                 EventSource,
             },
             harmonytypes::UserStatus,
-            Hmc,
+            rest::FileId,
         },
         error::ClientResult,
         Client,
     },
 };
-use http::Uri;
 
 const EMAIL: &str = "rust_sdk_test@example.org";
 const USERNAME: &str = "rust_sdk_test";
@@ -121,18 +120,11 @@ async fn main() -> ClientResult<()> {
                 if message.author_id != self_id {
                     log::info!("Echoing message: {}", message.message_id);
 
-                    let attachments = message
+                    let attachments: Vec<FileId> = message
                         .attachments
                         .into_iter()
-                        .map(|a| {
-                            // See if its an HMC, otherwise it must be a local homeserver
-                            if let Ok(hmc) = a.id.parse::<Uri>().unwrap().try_into() {
-                                hmc
-                            } else {
-                                Hmc::new(client.homeserver_url().authority().unwrap().clone(), a.id)
-                            }
-                        })
-                        .collect::<Vec<Hmc>>();
+                        .flat_map(|a| FileId::from_str(&a.id))
+                        .collect();
 
                     let send_message =
                         SendMessage::new(guild_id, message.channel_id, message.content)

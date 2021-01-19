@@ -1,12 +1,15 @@
 use crate::client::{api::Hmc, *};
 
+use std::{convert::TryInto, str::FromStr};
+
+use derive_more::{Display, From, Into, IntoIterator};
 use http::uri::PathAndQuery;
 use prost::bytes::Bytes;
 use reqwest::{multipart::*, Response};
 use serde::Deserialize;
 
 /// A "file id", which can either be a HMC URL or a plain ID string.
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Display)]
 pub enum FileId {
     /// A HMC describing where the file is.
     Hmc(Hmc),
@@ -14,6 +17,43 @@ pub enum FileId {
     Id(String),
     /// An external URI. This MUST be an image according to the protocol.
     External(Uri),
+}
+
+/// Error that maybe produced while parsing a string as a [`FileId`].
+#[derive(Debug, Clone, Display)]
+#[display(fmt = "Specified string is not a valid FileId.")]
+pub struct InvalidFileId;
+
+impl FromStr for FileId {
+    type Err = InvalidFileId;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        if let Ok(uri) = s.parse::<Uri>() {
+            if uri.scheme().is_some() {
+                if let Ok(hmc) = uri.clone().try_into() {
+                    Ok(FileId::Hmc(hmc))
+                } else {
+                    Ok(FileId::External(uri))
+                }
+            } else {
+                Ok(FileId::Id(s.to_owned()))
+            }
+        } else {
+            Err(InvalidFileId)
+        }
+    }
+}
+
+/// Wrapper type for `Vec<FileId>` so we can implement some traits.
+///
+/// You don't need to create this manually, since it implements `From<Vec<FileId>>`.
+#[derive(new, Debug, Default, Clone, Into, From, IntoIterator)]
+pub struct FileIds(Vec<FileId>);
+
+impl Into<Vec<String>> for FileIds {
+    fn into(self) -> Vec<String> {
+        self.into_iter().map(|id| id.to_string()).collect()
+    }
 }
 
 impl From<Hmc> for FileId {
@@ -226,4 +266,47 @@ pub async fn download_extract_file(
         name,
         mimetype,
     })
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn parse_id() {
+        const ID: &str = "654624512343";
+        let file_id = FileId::from_str(ID).expect("file id parse");
+        assert!(matches!(file_id, FileId::Id(_)));
+        assert_eq!(ID.to_string(), file_id.to_string());
+    }
+
+    #[test]
+    fn parse_hmc() {
+        const HMC: &str = "hmc://chat.harmonyapp.io/654624512343";
+        let file_id = FileId::from_str(HMC).expect("file id parse");
+        assert!(matches!(file_id, FileId::Hmc(_)));
+        assert_eq!(HMC.to_string(), file_id.to_string());
+    }
+
+    #[test]
+    fn parse_uri() {
+        const URI: &str = "https://media.discordapp.net/attachments/330412938277945345/801119250269339728/unknown.png";
+        let file_id = FileId::from_str(URI).expect("file id parse");
+        assert!(matches!(file_id, FileId::External(_)));
+        assert_eq!(URI.to_string(), file_id.to_string());
+    }
+
+    #[test]
+    #[should_panic(expected = "InvalidFileId")]
+    fn parse_empty() {
+        const EMPTY: &str = "";
+        FileId::from_str(EMPTY).expect("file id parse");
+    }
+
+    #[test]
+    #[should_panic(expected = "InvalidFileId")]
+    fn parse_invalid_uri() {
+        const INVALID_URI: &str = "https:///chat.harmona//";
+        FileId::from_str(INVALID_URI).expect("file id parse");
+    }
 }

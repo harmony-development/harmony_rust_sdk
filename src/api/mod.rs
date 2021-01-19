@@ -3,7 +3,6 @@ use std::{
     fmt::{self, Display, Formatter},
 };
 
-use derive_more::{From, Into, IntoIterator};
 use http::{uri::Authority, Uri};
 
 /// Chat service API.
@@ -168,18 +167,6 @@ impl TryFrom<Uri> for Hmc {
         };
 
         Ok(Self::new(server, id))
-    }
-}
-
-/// Wrapper type for `Vec<Hmc>` so we can implement some traits.
-///
-/// You don't need to create this manually, since it implements `From<Vec<Hmc>>`.
-#[derive(new, Debug, Default, Clone, Into, From, IntoIterator)]
-pub struct Hmcs(Vec<Hmc>);
-
-impl Into<Vec<String>> for Hmcs {
-    fn into(self) -> Vec<String> {
-        self.into_iter().map(|hmc| hmc.to_string()).collect()
     }
 }
 
