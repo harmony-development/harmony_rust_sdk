@@ -36,7 +36,7 @@ impl ClientError {
 impl Display for ClientError {
     fn fmt(&self, f: &mut Formatter) -> fmt::Result {
         match self {
-            ClientError::Grpc(status) => write!(f, "An error occured in the gRPC server or client: {}", status),
+            ClientError::Grpc(status) => write!(f, "An error occured in the gRPC client or the homeserver returned an error: {}", status),
             ClientError::Transport(transport_err) => write!(f, "And error occured in gRPC's transport layer: {}", transport_err),
             ClientError::Reqwest(reqwest_err) => write!(f, "An error occured in HTTP client, or request was unsuccessful: {}", reqwest_err),
             ClientError::Http(http_err) => write!(f, "An error occured while parsing an URL / creating an HTTP request: {}", http_err),
