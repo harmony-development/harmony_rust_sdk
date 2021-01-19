@@ -220,6 +220,16 @@
 <span id="217">217</span>
 <span id="218">218</span>
 <span id="219">219</span>
+<span id="220">220</span>
+<span id="221">221</span>
+<span id="222">222</span>
+<span id="223">223</span>
+<span id="224">224</span>
+<span id="225">225</span>
+<span id="226">226</span>
+<span id="227">227</span>
+<span id="228">228</span>
+<span id="229">229</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">client</span>::{<span class="ident">api</span>::<span class="ident">Hmc</span>, <span class="kw-2">*</span>};
 
@@ -235,6 +245,8 @@
     <span class="ident">Hmc</span>(<span class="ident">Hmc</span>),
     <span class="doccomment">/// A plain ID. When you use this for a request, the `Client`s homeserver will be used.</span>
     <span class="ident">Id</span>(<span class="ident">String</span>),
+    <span class="doccomment">/// An external URI. This MUST be an image according to the protocol.</span>
+    <span class="ident">External</span>(<span class="ident">Uri</span>),
 }
 
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">Hmc</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">FileId</span> {
@@ -294,6 +306,14 @@
                 <span class="ident">url</span>.<span class="ident">scheme_str</span>().<span class="ident">unwrap</span>(), <span class="comment">// Safe since we can&#39;t create a client without a scheme</span>
                 <span class="ident">url</span>.<span class="ident">authority</span>().<span class="ident">unwrap</span>().<span class="ident">to_string</span>(), <span class="comment">// Safe since we can&#39;t create a client without an authority (it cant connect)</span>
                 <span class="ident">id</span>,
+            )
+        }
+        <span class="ident">FileId</span>::<span class="ident">External</span>(<span class="ident">uri</span>) <span class="op">=</span><span class="op">&gt;</span> {
+            <span class="kw">let</span> <span class="ident">url</span> <span class="op">=</span> <span class="ident">client</span>.<span class="ident">homeserver_url</span>();
+            (
+                <span class="ident">url</span>.<span class="ident">scheme_str</span>().<span class="ident">unwrap</span>(), <span class="comment">// Safe since we can&#39;t create a client without a scheme</span>
+                <span class="ident">url</span>.<span class="ident">authority</span>().<span class="ident">unwrap</span>().<span class="ident">to_string</span>(), <span class="comment">// Safe since we can&#39;t create a client without an authority (it cant connect)</span>
+                <span class="ident">urlencoding</span>::<span class="ident">encode</span>(<span class="kw-2">&amp;</span><span class="ident">uri</span>.<span class="ident">to_string</span>()),
             )
         }
     };
