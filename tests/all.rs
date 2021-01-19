@@ -11,6 +11,7 @@ use harmony_rust_sdk::{
     },
 };
 use http::Uri;
+use rest::FileId;
 
 const EMAIL: &str = "rust_sdk_test@example.org";
 const PASSWORD: &str = "123456789Ab";
@@ -24,6 +25,8 @@ const FILE_DATA: &str = "They're waiting for you Gordon, in the test chamber.";
 const FILENAME: &str = "test_chamber.txt";
 const CONTENT_TYPE: &str = "text/plain";
 const FILE_ID: &str = "403cb46c-49cf-4ae1-b876-f38eb26accb0";
+const EXTERNAL_URL: &str =
+    "https://cdn.discordapp.com/avatars/363103389992747019/34ee306c324137ffdef785b1537672cd.jpg";
 
 const INSTANT_VIEW_URL: &str = "https://duckduckgo.com/";
 
@@ -171,6 +174,10 @@ async fn main() -> ClientResult<()> {
     );
     assert_eq!(downloaded_file.mimetype(), CONTENT_TYPE);
     assert_eq!(downloaded_file.name(), FILENAME);
+
+    let external_file =
+        rest::download(&client, FileId::External(Uri::from_static(EXTERNAL_URL))).await?;
+    let _ = external_file.bytes().await?;
 
     profile::profile_update(
         &client,

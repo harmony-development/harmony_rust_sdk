@@ -12,6 +12,8 @@ pub enum FileId {
     Hmc(Hmc),
     /// A plain ID. When you use this for a request, the `Client`s homeserver will be used.
     Id(String),
+    /// An external URI. This MUST be an image according to the protocol.
+    External(Uri),
 }
 
 impl From<Hmc> for FileId {
@@ -71,6 +73,14 @@ pub async fn download(client: &Client, file_id: impl Into<FileId>) -> ClientResu
                 url.scheme_str().unwrap(), // Safe since we can't create a client without a scheme
                 url.authority().unwrap().to_string(), // Safe since we can't create a client without an authority (it cant connect)
                 id,
+            )
+        }
+        FileId::External(uri) => {
+            let url = client.homeserver_url();
+            (
+                url.scheme_str().unwrap(), // Safe since we can't create a client without a scheme
+                url.authority().unwrap().to_string(), // Safe since we can't create a client without an authority (it cant connect)
+                urlencoding::encode(&uri.to_string()),
             )
         }
     };
