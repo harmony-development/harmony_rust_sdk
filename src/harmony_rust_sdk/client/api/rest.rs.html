@@ -324,14 +324,14 @@
 <span class="kw">use</span> <span class="ident">reqwest</span>::{<span class="ident">multipart</span>::<span class="kw-2">*</span>, <span class="ident">Response</span>};
 <span class="kw">use</span> <span class="ident">serde</span>::<span class="ident">Deserialize</span>;
 
-<span class="doccomment">/// A &quot;file id&quot;, which can either be a HMC URL or a plain ID string.</span>
+<span class="doccomment">/// A &quot;file id&quot;, which can be a HMC URL, an external URL or a plain ID string.</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">Display</span>)]</span>
 <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">FileId</span> {
     <span class="doccomment">/// A HMC describing where the file is.</span>
     <span class="ident">Hmc</span>(<span class="ident">Hmc</span>),
     <span class="doccomment">/// A plain ID. When you use this for a request, the `Client`s homeserver will be used.</span>
     <span class="ident">Id</span>(<span class="ident">String</span>),
-    <span class="doccomment">/// An external URI. This MUST be an image according to the protocol.</span>
+    <span class="doccomment">/// An external URL. This MUST be an image according to the protocol.</span>
     <span class="ident">External</span>(<span class="ident">Uri</span>),
 }
 
