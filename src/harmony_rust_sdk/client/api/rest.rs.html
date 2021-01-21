@@ -313,13 +313,15 @@
 <span id="310">310</span>
 <span id="311">311</span>
 <span id="312">312</span>
+<span id="313">313</span>
 </pre><div class="example-wrap"><pre class="rust ">
-<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">client</span>::{<span class="ident">api</span>::<span class="ident">Hmc</span>, <span class="kw-2">*</span>};
+<span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
+<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">client</span>::{<span class="ident">error</span>::<span class="ident">ClientError</span>, <span class="ident">AuthStatus</span>};
 
 <span class="kw">use</span> <span class="ident">std</span>::{<span class="ident">convert</span>::<span class="ident">TryInto</span>, <span class="ident">str</span>::<span class="ident">FromStr</span>};
 
-<span class="kw">use</span> <span class="ident">derive_more</span>::{<span class="ident">Display</span>, <span class="ident">From</span>, <span class="ident">Into</span>, <span class="ident">IntoIterator</span>};
-<span class="kw">use</span> <span class="ident">http</span>::<span class="ident">uri</span>::<span class="ident">PathAndQuery</span>;
+<span class="kw">use</span> <span class="ident">derive_more</span>::<span class="ident">IntoIterator</span>;
+<span class="kw">use</span> <span class="ident">http</span>::{<span class="ident">uri</span>::<span class="ident">PathAndQuery</span>, <span class="ident">Uri</span>};
 <span class="kw">use</span> <span class="ident">prost</span>::<span class="ident">bytes</span>::<span class="ident">Bytes</span>;
 <span class="kw">use</span> <span class="ident">reqwest</span>::{<span class="ident">multipart</span>::<span class="kw-2">*</span>, <span class="ident">Response</span>};
 <span class="kw">use</span> <span class="ident">serde</span>::<span class="ident">Deserialize</span>;

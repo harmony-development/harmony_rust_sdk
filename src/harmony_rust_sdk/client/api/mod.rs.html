@@ -154,6 +154,8 @@
 <span id="151">151</span>
 <span id="152">152</span>
 <span id="153">153</span>
+<span id="154">154</span>
+<span id="155">155</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">/// Auth service client API.</span>
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">auth</span>;
@@ -172,6 +174,8 @@
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;request_method&quot;</span>)]</span>
 <span class="kw">use</span> <span class="ident">async_trait</span>::<span class="ident">async_trait</span>;
 <span class="kw">use</span> <span class="ident">derive_more</span>::{<span class="ident">Display</span>, <span class="ident">From</span>, <span class="ident">Into</span>};
+<span class="kw">use</span> <span class="ident">derive_new</span>::<span class="ident">new</span>;
+<span class="kw">use</span> <span class="ident">harmony_derive</span>::{<span class="ident">into_request</span>, <span class="ident">SelfBuilder</span>};
 <span class="kw">use</span> <span class="ident">tonic</span>::{<span class="ident">IntoRequest</span>, <span class="ident">Request</span>, <span class="ident">Response</span>};
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;request_method&quot;</span>)]</span>
