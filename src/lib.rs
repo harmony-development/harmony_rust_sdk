@@ -36,11 +36,6 @@ Minimum Supported Rust Version: previous stable.
 
 Changing MSRV is not considered a semver-breaking change.
 !*/
-#[macro_use]
-extern crate derive_new;
-#[cfg(feature = "gen_chat")]
-#[macro_use]
-extern crate harmony_derive;
 
 /// Harmony protocol API.
 pub mod api;

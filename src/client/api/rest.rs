@@ -1,9 +1,10 @@
-use crate::client::{api::Hmc, *};
+use super::*;
+use crate::client::{error::ClientError, AuthStatus};
 
 use std::{convert::TryInto, str::FromStr};
 
-use derive_more::{Display, From, Into, IntoIterator};
-use http::uri::PathAndQuery;
+use derive_more::IntoIterator;
+use http::{uri::PathAndQuery, Uri};
 use prost::bytes::Bytes;
 use reqwest::{multipart::*, Response};
 use serde::Deserialize;

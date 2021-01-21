@@ -1,3 +1,4 @@
+use harmony_derive::into_request;
 use std::fmt::{self, Display, Formatter};
 
 pub mod v1 {
