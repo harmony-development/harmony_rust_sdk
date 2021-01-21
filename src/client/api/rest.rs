@@ -8,14 +8,14 @@ use prost::bytes::Bytes;
 use reqwest::{multipart::*, Response};
 use serde::Deserialize;
 
-/// A "file id", which can either be a HMC URL or a plain ID string.
+/// A "file id", which can be a HMC URL, an external URL or a plain ID string.
 #[derive(Debug, Clone, Display)]
 pub enum FileId {
     /// A HMC describing where the file is.
     Hmc(Hmc),
     /// A plain ID. When you use this for a request, the `Client`s homeserver will be used.
     Id(String),
-    /// An external URI. This MUST be an image according to the protocol.
+    /// An external URL. This MUST be an image according to the protocol.
     External(Uri),
 }
 
