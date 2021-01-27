@@ -13,7 +13,7 @@ pub mod chat;
 #[cfg(feature = "gen_auth")]
 pub mod auth {
     pub mod v1 {
-        tonic::include_proto!("protocol.auth.v1");
+        include!(concat!(env!("OUT_DIR"), "/protocol.auth.v1.rs"));
     }
     pub use v1::*;
 }
@@ -22,7 +22,7 @@ pub mod auth {
 #[cfg(feature = "gen_harmonytypes")]
 pub mod harmonytypes {
     pub mod v1 {
-        tonic::include_proto!("protocol.harmonytypes.v1");
+        include!(concat!(env!("OUT_DIR"), "/protocol.harmonytypes.v1.rs"));
     }
     pub use v1::*;
 }
@@ -31,7 +31,7 @@ pub mod harmonytypes {
 #[cfg(feature = "gen_mediaproxy")]
 pub mod mediaproxy {
     pub mod v1 {
-        tonic::include_proto!("protocol.mediaproxy.v1");
+        include!(concat!(env!("OUT_DIR"), "/protocol.mediaproxy.v1.rs"));
     }
     pub use v1::*;
 }
@@ -40,7 +40,7 @@ pub mod mediaproxy {
 #[cfg(feature = "gen_voice")]
 pub mod voice {
     pub mod v1 {
-        tonic::include_proto!("protocol.voice.v1");
+        include!(concat!(env!("OUT_DIR"), "/protocol.voice.v1.rs"));
     }
     pub use v1::*;
 }

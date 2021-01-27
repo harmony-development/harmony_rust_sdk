@@ -48,14 +48,6 @@ fn impl_into_req(input: &DeriveInput, req: Ident) -> TokenStream2 {
     let fields_again = fields.clone();
     let name = &input.ident;
     quote! {
-        impl ::tonic::IntoRequest<#req> for #name {
-            fn into_request(self) -> ::tonic::Request<#req> {
-                #req {
-                    #(#fields: self.#fields.into(),)*
-                }.into_request()
-            }
-        }
-
         impl ::std::convert::Into<#req> for #name {
             fn into(self) -> #req {
                 #req {

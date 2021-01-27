@@ -17,7 +17,6 @@ use async_trait::async_trait;
 use derive_more::{Display, From, Into};
 use derive_new::new;
 use harmony_derive::{into_request, SelfBuilder};
-use tonic::{IntoRequest, Request, Response};
 
 #[cfg(feature = "request_method")]
 #[async_trait]

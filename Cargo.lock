@@ -367,6 +367,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "harmony_build"
+version = "0.1.0"
+dependencies = [
+ "proc-macro2",
+ "prost",
+ "prost-build",
+ "quote",
+ "syn",
+]
+
+[[package]]
 name = "harmony_derive"
 version = "0.1.0"
 dependencies = [
@@ -388,6 +399,7 @@ dependencies = [
  "env_logger",
  "flume",
  "futures",
+ "harmony_build",
  "harmony_derive",
  "http",
  "log",
@@ -398,8 +410,6 @@ dependencies = [
  "reqwest",
  "serde",
  "tokio",
- "tonic",
- "tonic-build",
  "urlencoding",
 ]
 
@@ -533,6 +543,17 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "61124eeebbd69b8190558df225adf7e4caafce0d743919e5d6b19652314ec5ec"
 dependencies = [
  "cfg-if 1.0.0",
+]
+
+[[package]]
+name = "interop"
+version = "0.1.0"
+dependencies = [
+ "harmony_build",
+ "prost",
+ "reqwest",
+ "tokio",
+ "url",
 ]
 
 [[package]]
@@ -1318,74 +1339,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "tonic"
-version = "0.4.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3ba8f479158947373b6df40cf48f4779bb25c99ca3c661bd95e0ab1963ad8b0e"
-dependencies = [
- "async-stream",
- "async-trait",
- "base64",
- "bytes",
- "futures-core",
- "futures-util",
- "h2",
- "http",
- "http-body",
- "hyper",
- "percent-encoding",
- "pin-project 1.0.4",
- "prost",
- "prost-derive",
- "rustls-native-certs",
- "tokio",
- "tokio-rustls",
- "tokio-stream",
- "tokio-util",
- "tower",
- "tower-service",
- "tracing",
- "tracing-futures",
-]
-
-[[package]]
-name = "tonic-build"
-version = "0.4.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c1e8546fd40d56d28089835c0a81bb396848103b00f888aea42d46eb5974df07"
-dependencies = [
- "proc-macro2",
- "prost-build",
- "quote",
- "syn",
-]
-
-[[package]]
-name = "tower"
-version = "0.4.4"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5fd7b451959622e21de79261673d658a0944b835012c58c51878ea55957fb51a"
-dependencies = [
- "futures-core",
- "futures-util",
- "indexmap",
- "pin-project 1.0.4",
- "rand",
- "slab",
- "tokio",
- "tokio-stream",
- "tower-layer",
- "tower-service",
- "tracing",
-]
-
-[[package]]
-name = "tower-layer"
-version = "0.3.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "343bc9466d3fe6b0f960ef45960509f84480bf4fd96f92901afe7ff3df9d3a62"
-
-[[package]]
 name = "tower-service"
 version = "0.3.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1398,21 +1351,8 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "9f47026cdc4080c07e49b37087de021820269d996f581aac150ef9e5583eefe3"
 dependencies = [
  "cfg-if 1.0.0",
- "log",
  "pin-project-lite",
- "tracing-attributes",
  "tracing-core",
-]
-
-[[package]]
-name = "tracing-attributes"
-version = "0.1.11"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "80e0ccfc3378da0cce270c946b676a376943f5cd16aeba64568e7939806f4ada"
-dependencies = [
- "proc-macro2",
- "quote",
- "syn",
 ]
 
 [[package]]
