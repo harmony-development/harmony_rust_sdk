@@ -2,7 +2,7 @@ use harmony_derive::into_request;
 use std::fmt::{self, Display, Formatter};
 
 pub mod v1 {
-    tonic::include_proto!("protocol.chat.v1");
+    include!(concat!(env!("OUT_DIR"), "/protocol.chat.v1.rs"));
 }
 pub use v1::*;
 

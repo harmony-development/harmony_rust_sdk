@@ -1,3 +1,9 @@
 [submodule "protocol"]
 	path = protocol
 	url = https://github.com/harmony-development/protocol.git
+[submodule "harmony_derive/src/protocol"]
+	path = harmony_derive/src/protocol
+	url = https://github.com/harmony-development/protocol.git
+[submodule "harmony_build/src/protocol"]
+	path = harmony_build/src/protocol
+	url = https://github.com/harmony-development/protocol.git
