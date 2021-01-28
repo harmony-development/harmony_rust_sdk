@@ -1,8 +1,7 @@
 use super::*;
 use crate::{api::chat::*, client_api};
 
-use futures::StreamExt;
-use http::Uri;
+use url::Url;
 
 /// Describes where to subscribe for events.
 #[derive(Debug, Clone, Copy)]
@@ -13,6 +12,26 @@ pub enum EventSource {
     Homeserver,
     /// Subscription to action events.
     Action,
+}
+
+impl Into<StreamEventsRequest> for EventSource {
+    fn into(self) -> StreamEventsRequest {
+        StreamEventsRequest {
+            request: Some(match self {
+                EventSource::Guild(id) => stream_events_request::Request::SubscribeToGuild(
+                    stream_events_request::SubscribeToGuild { guild_id: id },
+                ),
+                EventSource::Homeserver => {
+                    stream_events_request::Request::SubscribeToHomeserverEvents(
+                        stream_events_request::SubscribeToHomeserverEvents {},
+                    )
+                }
+                EventSource::Action => stream_events_request::Request::SubscribeToActions(
+                    stream_events_request::SubscribeToActions {},
+                ),
+            }),
+        }
+    }
 }
 
 /// A message location. This type can be used as multiple requests.
@@ -99,37 +118,8 @@ client_api! {
 /// This endpoint requires authentication.
 pub async fn stream_events(
     client: &Client,
-    request: impl futures::stream::Stream<Item = EventSource> + Send + Sync + 'static,
-) -> ClientResult<tonic::Streaming<Event>> {
-    use stream_events_request::{Request as SReq, *};
-
-    let request = request.map(|source| match source {
-        EventSource::Action => StreamEventsRequest {
-            request: Some(SReq::SubscribeToActions(SubscribeToActions {})),
-        },
-        EventSource::Homeserver => StreamEventsRequest {
-            request: Some(SReq::SubscribeToHomeserverEvents(
-                SubscribeToHomeserverEvents {},
-            )),
-        },
-        EventSource::Guild(guild_id) => StreamEventsRequest {
-            request: Some(SReq::SubscribeToGuild(SubscribeToGuild { guild_id })),
-        },
-    });
-
-    log::debug!("Sending streaming request");
-    let mut request = request.into_request();
-
-    if let crate::client::AuthStatus::Complete(session) = client.auth_status() {
-        // Session session_token should be ASCII, so this unwrap won't panic
-        request
-            .metadata_mut()
-            .insert("auth", session.session_token.parse().unwrap());
-    }
-
-    let response = client.chat_lock().await.stream_events(request).await;
-
+) -> ClientResult<hrpc::Socket<StreamEventsRequest, Event>> {
+    let response = client.chat_lock().await.stream_events().await;
     log::debug!("Received response: {:?}", response);
-
-    response.map(Response::into_inner).map_err(Into::into)
+    response.map_err(Into::into)
 }

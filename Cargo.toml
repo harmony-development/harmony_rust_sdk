@@ -16,7 +16,7 @@ exclude = [
 ]
 
 [workspace]
-members = [ "harmony_derive", "harmony_build", "interop" ]
+members = [ "harmony_derive" ]
 
 [package.metadata.docs.rs]
 all-features = true
@@ -24,27 +24,29 @@ all-features = true
 [dependencies]
 prost = "0.7"
 prost-types = "0.7"
-http = "0.2"
 derive-new = "0.5"
 derive_more = "0.99"
 reqwest = { version = "0.11.0", default-features = false, features = [ "rustls-tls-native-roots", "json", "multipart" ] }
+hrpc = { version = "0.1.0", git = "https://github.com/harmony-development/hrpc-rs.git" }
 
 harmony_derive = { version = "0.1.0", path = "harmony_derive", optional = true }
 
+tokio = { version = "1.1", features = [ "rt", "macros", "fs" ], optional = true }
 async-trait = { version = "0.1.42", optional = true }
 async-mutex = { version = "1.4.0", optional = true }
 flume = { version = "0.10.1", optional = true }
 log = { version = "0.4", optional = true }
-assign = { version = "1.1", optional = true }
 paste = { version = "1.0", optional = true }
 futures = { version = "0.3", optional = true }
 serde = { version = "1.0", features = ["derive"] }
+
+url = "2.2"
 urlencoding = { version = "1.1", optional = true }
 
 parking_lot = { version = "0.11", optional = true }
 
 [build-dependencies]
-harmony_build = { version = "0.1.0", path = "harmony_build" }
+hrpc-build = { version = "0.1.0", git = "https://github.com/harmony-development/hrpc-rs.git" }
 
 [features]
 default = [
@@ -62,12 +64,12 @@ client = [
 	"gen_harmonytypes", 
 	"gen_client",
 	"async-mutex",
-	"futures", 
-	"paste", 
-	"assign", 
+	"futures",
+	"paste",
 	"log", 
 	"flume",
 	"urlencoding",
+	"tokio",
 ]
 request_method = [ "async-trait" ]
 gen_client = [ ]
@@ -80,7 +82,6 @@ gen_voice = [ ]
 gen_harmonytypes = [ ]
 
 [dev-dependencies]
-tokio = { version = "1.0.2", features = [ "rt", "macros", "fs" ] }
 env_logger = "0.8"
 ctrlc = "3.1.7"
 

@@ -4,10 +4,10 @@ use crate::client::{error::ClientError, AuthStatus};
 use std::{convert::TryInto, str::FromStr};
 
 use derive_more::IntoIterator;
-use http::{uri::PathAndQuery, Uri};
 use prost::bytes::Bytes;
 use reqwest::{multipart::*, Response};
 use serde::Deserialize;
+use url::Url;
 
 /// A "file id", which can be a HMC URL, an external URL or a plain ID string.
 #[derive(Debug, Clone, Display)]
@@ -17,7 +17,7 @@ pub enum FileId {
     /// A plain ID. When you use this for a request, the `Client`s homeserver will be used.
     Id(String),
     /// An external URL. This MUST be an image according to the protocol.
-    External(Uri),
+    External(Url),
 }
 
 /// Error that maybe produced while parsing a string as a [`FileId`].
@@ -29,8 +29,8 @@ impl FromStr for FileId {
     type Err = InvalidFileId;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        if let Ok(uri) = s.parse::<Uri>() {
-            if uri.scheme().is_some() {
+        if let Ok(uri) = s.parse::<Url>() {
+            if !uri.scheme().is_empty() {
                 if let Ok(hmc) = uri.clone().try_into() {
                     Ok(FileId::Hmc(hmc))
                 } else {
@@ -79,9 +79,11 @@ pub async fn upload(
         return Err(ClientError::Unauthenticated);
     };
 
-    let api = PathAndQuery::from_static("/_harmony/media/upload");
     // This unwrap is safe, since our client's homeserver url is valid, and the path we create is also checked at compile time.
-    let uri = Uri::from_parts(assign::assign!(client.homeserver_url().clone().into_parts(), { path_and_query: Some(api), })).unwrap();
+    let uri = client
+        .homeserver_url()
+        .join("/_harmony/media/upload")
+        .unwrap();
 
     let form = Form::new().part("file", Part::bytes(data));
 
@@ -111,26 +113,24 @@ pub async fn download(client: &Client, file_id: impl Into<FileId>) -> ClientResu
         FileId::Id(id) => {
             let url = client.homeserver_url();
             (
-                url.scheme_str().unwrap(), // Safe since we can't create a client without a scheme
-                url.authority().unwrap().to_string(), // Safe since we can't create a client without an authority (it cant connect)
+                url.scheme(),                    // Safe since we can't create a client without a scheme
+                url.host().unwrap().to_string(), // Safe since we can't create a client without an authority (it cant connect)
                 id,
             )
         }
         FileId::External(uri) => {
             let url = client.homeserver_url();
             (
-                url.scheme_str().unwrap(), // Safe since we can't create a client without a scheme
-                url.authority().unwrap().to_string(), // Safe since we can't create a client without an authority (it cant connect)
+                url.scheme(),                    // Safe since we can't create a client without a scheme
+                url.host().unwrap().to_string(), // Safe since we can't create a client without an authority (it cant connect)
                 urlencoding::encode(&uri.to_string()),
             )
         }
     };
 
-    let uri = Uri::builder()
-        .scheme(scheme)
-        .authority(server.as_str())
-        .path_and_query(format!("/_harmony/media/download/{}", id))
-        .build()?;
+    let uri: Url = format!("{}://{}/_harmony/media/download/{}", scheme, server, id)
+        .parse()
+        .unwrap();
 
     let request = client.data.http.get(uri.to_string().as_str()).build()?;
     log::debug!("Sending HTTP request: {:?}", request);
