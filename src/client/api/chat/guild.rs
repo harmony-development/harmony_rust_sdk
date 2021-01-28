@@ -64,16 +64,15 @@ client_api! {
 #[derive(Debug, Clone, new)]
 pub struct GuildList {
     guild_id: u64,
-    homeserver: Uri,
+    homeserver: Url,
 }
 
-impl IntoRequest<AddGuildToGuildListRequest> for GuildList {
-    fn into_request(self) -> Request<AddGuildToGuildListRequest> {
+impl Into<AddGuildToGuildListRequest> for GuildList {
+    fn into(self) -> AddGuildToGuildListRequest {
         AddGuildToGuildListRequest {
             guild_id: self.guild_id,
             homeserver: self.homeserver.to_string(),
         }
-        .into_request()
     }
 }
 
@@ -84,13 +83,12 @@ client_api! {
     service: chat,
 }
 
-impl IntoRequest<RemoveGuildFromGuildListRequest> for GuildList {
-    fn into_request(self) -> Request<RemoveGuildFromGuildListRequest> {
+impl Into<RemoveGuildFromGuildListRequest> for GuildList {
+    fn into(self) -> RemoveGuildFromGuildListRequest {
         RemoveGuildFromGuildListRequest {
             guild_id: self.guild_id,
             homeserver: self.homeserver.to_string(),
         }
-        .into_request()
     }
 }
 

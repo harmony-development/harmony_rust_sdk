@@ -39,15 +39,10 @@ macro_rules! client_api {
         ///
         /// This endpoint requires authentication.
         pub async fn $api_fn<
-            Req: ::tonic::IntoRequest<$req> + ::std::fmt::Debug,
+            Req: ::std::convert::Into<$req> + ::std::fmt::Debug,
         >(client: &$crate::client::Client, request: Req) -> $crate::client::ClientResult<$resp> {
             log::debug!("Sending request: {:?}", request);
-            let mut request: ::tonic::Request<$req> = request.into_request();
-
-            if let $crate::client::AuthStatus::Complete(session) = client.auth_status() {
-                // Session session_token should be ASCII, so this unwrap won't panic
-                request.metadata_mut().insert("auth", session.session_token.parse().unwrap());
-            }
+            let request = request.into();
 
             paste::paste! {
                 let response = client
@@ -58,47 +53,7 @@ macro_rules! client_api {
             }
             log::debug!("Received response: {:?}", response);
 
-            response
-                .map(::tonic::Response::into_inner)
-                .map_err(::std::convert::Into::into)
-        }
-
-        #[cfg(feature = "request_method")]
-        #[async_trait]
-        impl $crate::client::api::ClientRequest<$resp> for $req {
-            async fn request(self, client: &$crate::client::Client) -> $crate::client::ClientResult<$resp> {
-                $api_fn(client, self).await
-            }
-        }
-    };
-    {
-        $(#[$meta:meta])*
-        response: $resp:ty,
-        request: $req:ty,
-        api_fn: $api_fn:ident,
-        service: $service:ident,
-        no_auth,
-    } => {
-        $(#[$meta])*
-        ///
-        /// This endpoint does not require authentication.
-        pub async fn $api_fn<
-            Req: ::tonic::IntoRequest<$req> + ::std::fmt::Debug,
-            Resp: ::std::convert::From<::tonic::Response<$resp>> + ::std::fmt::Debug
-        >(client: &$crate::client::Client, request: Req) -> $crate::client::ClientResult<Resp> {
-            log::debug!("Sending request: {:?}", request);
-            paste::paste! {
-                let response = client
-                    .[<$service _lock>]()
-                    .await
-                    .$api_fn (request)
-                    .await;
-            }
-            log::debug!("Received response: {:?}", response);
-
-            response
-                .map(Resp::from)
-                .map_err(::std::convert::Into::into)
+            response.map_err(::std::convert::Into::into)
         }
 
         #[cfg(feature = "request_method")]

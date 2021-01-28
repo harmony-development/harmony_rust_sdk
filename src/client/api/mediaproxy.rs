@@ -3,23 +3,21 @@ pub use crate::api::mediaproxy::{FetchLinkMetadataRequest, InstantViewRequest, S
 use super::*;
 use crate::{api::mediaproxy::*, client_api};
 
-use http::Uri;
+use url::Url;
 
-impl IntoRequest<FetchLinkMetadataRequest> for Uri {
-    fn into_request(self) -> Request<FetchLinkMetadataRequest> {
+impl Into<FetchLinkMetadataRequest> for Url {
+    fn into(self) -> FetchLinkMetadataRequest {
         FetchLinkMetadataRequest {
             url: self.to_string(),
         }
-        .into_request()
     }
 }
 
-impl IntoRequest<InstantViewRequest> for Uri {
-    fn into_request(self) -> Request<InstantViewRequest> {
+impl Into<InstantViewRequest> for Url {
+    fn into(self) -> InstantViewRequest {
         InstantViewRequest {
             url: self.to_string(),
         }
-        .into_request()
     }
 }
 

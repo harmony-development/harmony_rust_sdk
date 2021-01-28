@@ -1,8 +1,9 @@
 use std::fmt::{self, Display, Formatter};
 
 pub use crate::api::HmcParseError;
-pub use http::Error as HttpError;
+pub use hrpc::ClientError as InternalClientError;
 pub use reqwest::Error as ReqwestError;
+pub use url::ParseError as UrlError;
 
 /// Result type used by many `Client` methods.
 pub type ClientResult<T> = Result<T, ClientError>;
@@ -10,10 +11,11 @@ pub type ClientResult<T> = Result<T, ClientError>;
 /// Error type used by `Client`.
 #[derive(Debug)]
 pub enum ClientError {
+    Internal(InternalClientError),
     /// Returned if an error occurs with the HTTP client.
     Reqwest(ReqwestError),
     /// Returned if an error occurs while creating HTTP requests / parsing for URLs.
-    Http(HttpError),
+    UrlParse(UrlError),
     /// Returned if an authentication session isn't in progress, but authentication step methods were called.
     NoAuthId,
     /// Returned if the client is unauthenticated, but an API endpoint requires authentication.
@@ -31,8 +33,9 @@ impl ClientError {
 impl Display for ClientError {
     fn fmt(&self, f: &mut Formatter) -> fmt::Result {
         match self {
+            ClientError::Internal(err) => write!(f, "An internal error occured: {}", err),
             ClientError::Reqwest(reqwest_err) => write!(f, "An error occured in HTTP client, or request was unsuccessful: {}", reqwest_err),
-            ClientError::Http(http_err) => write!(f, "An error occured while parsing an URL / creating an HTTP request: {}", http_err),
+            ClientError::UrlParse(err) => write!(f, "An error occured while parsing an URL: {}", err),
             ClientError::NoAuthId => write!(f, "No authentication session is in progress, but client tries to call auth API methods that need it"),
             ClientError::Unauthenticated => write!(f, "Client is not authenticated, but the API it tries to call requires authentication"),
             ClientError::UnexpectedResponse(msg) => write!(f, "Server responded with unexpected value: {}", msg),
@@ -46,8 +49,14 @@ impl From<ReqwestError> for ClientError {
     }
 }
 
-impl From<HttpError> for ClientError {
-    fn from(e: HttpError) -> Self {
-        Self::Http(e)
+impl From<UrlError> for ClientError {
+    fn from(e: UrlError) -> Self {
+        Self::UrlParse(e)
+    }
+}
+
+impl From<InternalClientError> for ClientError {
+    fn from(e: InternalClientError) -> Self {
+        Self::Internal(e)
     }
 }

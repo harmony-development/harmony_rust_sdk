@@ -1,6 +1,6 @@
 fn main() {
     #[allow(unused_mut)]
-    let mut builder = harmony_build::configure();
+    let mut builder = hrpc_build::configure();
     #[cfg(not(feature = "gen_server"))]
     {
         builder = builder.build_server(false);

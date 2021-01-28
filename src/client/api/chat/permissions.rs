@@ -73,13 +73,12 @@ pub struct AddGuildRole {
     role: Role,
 }
 
-impl IntoRequest<AddGuildRoleRequest> for AddGuildRole {
-    fn into_request(self) -> Request<AddGuildRoleRequest> {
+impl Into<AddGuildRoleRequest> for AddGuildRole {
+    fn into(self) -> AddGuildRoleRequest {
         AddGuildRoleRequest {
             guild_id: self.guild_id,
             role: Some(self.role),
         }
-        .into_request()
     }
 }
 
@@ -121,8 +120,8 @@ pub struct ModifyGuildRole {
     modify_pingable: bool,
 }
 
-impl IntoRequest<ModifyGuildRoleRequest> for ModifyGuildRole {
-    fn into_request(self) -> Request<ModifyGuildRoleRequest> {
+impl Into<ModifyGuildRoleRequest> for ModifyGuildRole {
+    fn into(self) -> ModifyGuildRoleRequest {
         ModifyGuildRoleRequest {
             guild_id: self.guild_id,
             modify_name: self.modify_name,
@@ -131,7 +130,6 @@ impl IntoRequest<ModifyGuildRoleRequest> for ModifyGuildRole {
             modify_pingable: self.modify_pingable,
             role: Some(self.role),
         }
-        .into_request()
     }
 }
 
@@ -150,15 +148,14 @@ pub struct MoveRole {
     new_role_place: Place,
 }
 
-impl IntoRequest<MoveRoleRequest> for MoveRole {
-    fn into_request(self) -> Request<MoveRoleRequest> {
+impl Into<MoveRoleRequest> for MoveRole {
+    fn into(self) -> MoveRoleRequest {
         MoveRoleRequest {
             guild_id: self.guild_id,
             role_id: self.role_id,
             before_id: self.new_role_place.next(),
             after_id: self.new_role_place.previous(),
         }
-        .into_request()
     }
 }
 

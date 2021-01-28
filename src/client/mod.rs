@@ -18,23 +18,21 @@ use api::ClientRequest;
 use api::{auth::*, chat::EventSource, Hmc};
 use error::*;
 
-use std::sync::Arc;
 #[cfg(not(feature = "parking_lot"))]
 use std::sync::{Mutex, MutexGuard};
+use std::{sync::Arc, time::Duration};
 
-use assign::assign;
 use async_mutex::Mutex as AsyncMutex;
 use futures::prelude::*;
-use http::{uri::PathAndQuery, Uri};
 #[cfg(feature = "parking_lot")]
 use parking_lot::{Mutex, MutexGuard};
 use reqwest::Client as HttpClient;
-use tonic::transport::Channel;
+use url::Url;
 
-type AuthService = crate::api::auth::auth_service_client::AuthServiceClient<Channel>;
-type ChatService = crate::api::chat::chat_service_client::ChatServiceClient<Channel>;
+type AuthService = crate::api::auth::auth_service_client::AuthServiceClient;
+type ChatService = crate::api::chat::chat_service_client::ChatServiceClient;
 type MediaProxyService =
-    crate::api::mediaproxy::media_proxy_service_client::MediaProxyServiceClient<Channel>;
+    crate::api::mediaproxy::media_proxy_service_client::MediaProxyServiceClient;
 
 /// Represents an authentication state in which a [`Client`] can be.
 #[derive(Debug, Clone)]
@@ -79,7 +77,7 @@ impl AuthStatus {
 
 #[derive(Debug)]
 struct ClientData {
-    homeserver_url: Uri,
+    homeserver_url: Url,
     auth_status: Mutex<AuthStatus>,
     chat: AsyncMutex<ChatService>,
     auth: AsyncMutex<AuthService>,
@@ -108,21 +106,10 @@ impl Client {
     /// # Ok(())
     /// # }
     /// ```
-    pub async fn new(mut homeserver_url: Uri, session: Option<Session>) -> ClientResult<Self> {
+    pub async fn new(mut homeserver_url: Url, session: Option<Session>) -> ClientResult<Self> {
         // Add the default scheme if not specified
-        if homeserver_url.scheme().is_none() {
-            let parts = homeserver_url.into_parts();
-
-            homeserver_url = Uri::builder()
-                .scheme("https")
-                .authority(parts.authority.unwrap())
-                .path_and_query(
-                    parts
-                        .path_and_query
-                        .unwrap_or_else(|| PathAndQuery::from_static("")),
-                )
-                .build()
-                .unwrap();
+        if homeserver_url.scheme().is_empty() {
+            homeserver_url.set_scheme("https").unwrap();
         }
 
         let http = HttpClient::builder().build()?;
@@ -137,36 +124,25 @@ impl Client {
                 server: String,
             }
 
-            let uri = Uri::from_parts(assign!(
-                homeserver_url.clone().into_parts(),
-                {
-                    path_and_query: Some(PathAndQuery::from_static("/_harmony/server"))
-                }
-            ))
-            .unwrap();
+            let url = homeserver_url.join("/_harmony/server").unwrap();
 
             if let Ok(response) = http
-                .get(&uri.to_string())
+                .get(&url.to_string())
                 .send()
                 .await?
                 .json::<Server>()
                 .await
             {
-                let host: Uri = response.server.parse().unwrap();
+                let host: Url = response.server.parse().unwrap();
                 homeserver_url = host;
             }
         };
 
         // Add the default port if not specified
-        if let (None, Some(authority)) = (homeserver_url.port(), homeserver_url.authority()) {
-            let new_authority = format!("{}:2289", authority);
-
-            // These unwraps are safe since we use `Uri` everywhere and we are sure that our `new_authority` is
+        if homeserver_url.port().is_none() {
+            // These unwraps are safe since we use `Url` everywhere and we are sure that our `new_authority` is
             // indeed a correct authority.
-            homeserver_url = Uri::from_parts(
-                assign!(homeserver_url.into_parts(), { authority: Some(new_authority.parse().unwrap()) }),
-            )
-            .unwrap();
+            homeserver_url.set_port(Some(2289)).unwrap();
         }
 
         log::debug!(
@@ -175,18 +151,13 @@ impl Client {
             session
         );
 
-        let mut endpoint = Channel::builder(homeserver_url.clone());
+        let auth = AuthService::new(http.clone(), homeserver_url.clone())?;
+        let mut chat = ChatService::new(http.clone(), homeserver_url.clone())?;
+        let mediaproxy = MediaProxyService::new(http.clone(), homeserver_url.clone())?;
 
-        // Use tls if scheme is https
-        if homeserver_url.scheme_str().unwrap() == "https" {
-            endpoint = endpoint.tls_config(tonic::transport::ClientTlsConfig::new())?;
+        if let Some(session) = &session {
+            chat.set_auth_token(Some(session.session_token.clone()));
         }
-
-        let channel = endpoint.connect().await?;
-
-        let auth = AuthService::new(channel.clone());
-        let chat = ChatService::new(channel.clone());
-        let mediaproxy = MediaProxyService::new(channel);
 
         let data = ClientData {
             homeserver_url,
@@ -279,7 +250,7 @@ impl Client {
     /// # Ok(())
     /// # }
     /// ```
-    pub fn homeserver_url(&self) -> &Uri {
+    pub fn homeserver_url(&self) -> &Url {
         &self.data.homeserver_url
     }
 
@@ -297,7 +268,7 @@ impl Client {
     /// ```
     pub fn make_hmc(&self, id: impl ToString) -> Hmc {
         Hmc::new(
-            self.data.homeserver_url.authority().unwrap().clone(),
+            self.data.homeserver_url.host().unwrap().to_owned(),
             id.to_string(),
         )
     }
@@ -346,6 +317,9 @@ impl Client {
             let step = api::auth::next_step(self, AuthResponse::new(auth_id, response)).await?;
 
             Ok(if let Some(auth_step::Step::Session(session)) = step.step {
+                self.chat_lock()
+                    .await
+                    .set_auth_token(Some(session.session_token.clone()));
                 *self.auth_status_lock() = AuthStatus::Complete(session);
                 None
             } else {
@@ -380,7 +354,7 @@ impl Client {
         }
     }
 
-    /// Begin an authentication steps stream for the current authentication session.
+    /*/// Begin an authentication steps stream for the current authentication session.
     ///
     /// # Example
     /// ```no_run
@@ -404,7 +378,7 @@ impl Client {
         } else {
             Err(ClientError::NoAuthId)
         }
-    }
+    }*/
 
     /// Subscribe to events coming from specified event sources.
     ///
@@ -427,24 +401,33 @@ impl Client {
         impl Stream<Item = ClientResult<crate::api::chat::event::Event>> + Send + Sync,
         impl Sink<EventSource, Error = impl std::fmt::Debug> + Send + Sync,
     )> {
-        let (tx, rx) = flume::unbounded();
+        let (tx_ev, rx_ev) = flume::unbounded();
+        let (tx_sub, rx_sub) = flume::unbounded();
         for sub in subscriptions {
-            tx.send(sub).unwrap();
+            tx_sub.send(sub).unwrap();
         }
 
-        let sub = api::chat::stream_events(self, rx.into_stream()).await?;
+        let mut socket = api::chat::stream_events(self).await?;
+        tokio::task::spawn(async move {
+            loop {
+                if let Ok(source) = rx_sub.recv_timeout(Duration::from_millis(10)) {
+                    socket.send_message(source.into()).await.unwrap();
+                }
 
-        Ok((
-            sub.map_err(Into::into)
-                .map_ok(|outer_event| outer_event.event)
-                .filter_map(|result| {
-                    // Remove items which dont have an event
-                    future::ready(match result {
-                        Ok(maybe_event) => maybe_event.map(Ok),
-                        Err(err) => Some(Err(err)),
-                    })
-                }),
-            tx.into_sink(),
-        ))
+                let msg = socket.get_message().await;
+                if let Some(Ok(hrpc::SocketMessage::Protobuf(ev))) = msg {
+                    if let Some(ev) = ev.event {
+                        tx_ev.send_async(Ok(ev)).await.unwrap();
+                    }
+                } else if let Some(Err(err)) = msg {
+                    tx_ev
+                        .send_async(Err(ClientError::Internal(err)))
+                        .await
+                        .unwrap();
+                }
+            }
+        });
+
+        Ok((rx_ev.into_stream(), tx_sub.into_sink()))
     }
 }

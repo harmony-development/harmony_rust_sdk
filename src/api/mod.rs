@@ -3,7 +3,7 @@ use std::{
     fmt::{self, Display, Formatter},
 };
 
-use http::{uri::Authority, Uri};
+use url::{Host, Url};
 
 /// Chat service API.
 #[cfg(feature = "gen_chat")]
@@ -47,8 +47,8 @@ pub mod voice {
 
 /// Some crates re-exported for user convenience.
 pub mod exports {
-    pub use http;
     pub use prost;
+    pub use url;
 }
 
 /// Errors that can occur when converting a possibly non-HMC URL to a HMC URL.
@@ -77,9 +77,9 @@ impl Display for HmcParseError {
 /// A HMC.
 ///
 /// An example HMC looks like `hmc://chat.harmonyapp.io/403cb46c-49cf-4ae1-b876-f38eb26accb0`.
-#[derive(Debug, Default, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct Hmc {
-    inner: Uri,
+    inner: Url,
 }
 
 impl Hmc {
@@ -94,17 +94,10 @@ impl Hmc {
     /// let hmc = Hmc::new("example.org".parse().unwrap(), "403cb46c-49cf-4ae1-b876-f38eb26accb0");
     /// assert_eq!(hmc.to_string(), "hmc://example.org/403cb46c-49cf-4ae1-b876-f38eb26accb0");
     /// ```
-    pub fn new(server: Authority, id: impl std::fmt::Display) -> Self {
-        let hmc_compliant_uri = Uri::builder()
-            .authority(server)
-            .path_and_query(format!("/{}", id))
-            .scheme("hmc")
-            .build()
-            .unwrap();
+    pub fn new(server: Host, id: impl std::fmt::Display) -> Self {
+        let inner = format!("hmc://{}/{}", server, id).parse().unwrap();
 
-        Self {
-            inner: hmc_compliant_uri,
-        }
+        Self { inner }
     }
 
     /// Gets the ID of this HMC.
@@ -128,7 +121,15 @@ impl Hmc {
     /// assert_eq!(hmc.server(), "example.org");
     /// ```
     pub fn server(&self) -> &str {
-        self.inner.authority().unwrap().as_str()
+        self.inner.host_str().unwrap()
+    }
+}
+
+impl Default for Hmc {
+    fn default() -> Self {
+        Self {
+            inner: "".parse().unwrap(),
+        }
     }
 }
 
@@ -144,12 +145,12 @@ impl Into<String> for Hmc {
     }
 }
 
-impl TryFrom<Uri> for Hmc {
+impl TryFrom<Url> for Hmc {
     type Error = HmcParseError;
 
-    fn try_from(value: Uri) -> Result<Self, Self::Error> {
-        let server = if let Some(authority) = value.authority().cloned() {
-            authority
+    fn try_from(value: Url) -> Result<Self, Self::Error> {
+        let server = if let Some(authority) = value.host() {
+            authority.to_owned()
         } else {
             return Err(HmcParseError::NoServer);
         };
@@ -182,13 +183,13 @@ mod test {
 
     #[test]
     fn parse_valid_hmc() {
-        Hmc::try_from(Uri::from_static(VALID_HMC)).unwrap();
+        Hmc::try_from(VALID_HMC.parse::<Url>().unwrap()).unwrap();
     }
 
     #[test]
     #[should_panic(expected = "InvalidId")]
     fn parse_invalid_id_hmc() {
-        if let Err(e) = Hmc::try_from(Uri::from_static(INVALID_ID_HMC)) {
+        if let Err(e) = Hmc::try_from(INVALID_ID_HMC.parse::<Url>().unwrap()) {
             panic!("{:?}", e)
         }
     }
@@ -196,7 +197,7 @@ mod test {
     #[test]
     #[should_panic(expected = "NoServer")]
     fn parse_no_server_hmc() {
-        if let Err(e) = Hmc::try_from(Uri::from_static(NO_SERVER_HMC)) {
+        if let Err(e) = Hmc::try_from(NO_SERVER_HMC.parse::<Url>().unwrap()) {
             panic!("{:?}", e)
         }
     }
@@ -204,7 +205,7 @@ mod test {
     #[test]
     #[should_panic(expected = "NoId")]
     fn parse_no_id_hmc() {
-        if let Err(e) = Hmc::try_from(Uri::from_static(NO_ID_HMC)) {
+        if let Err(e) = Hmc::try_from(NO_ID_HMC.parse::<Url>().unwrap()) {
             panic!("{:?}", e)
         }
     }

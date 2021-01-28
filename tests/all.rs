@@ -10,8 +10,8 @@ use harmony_rust_sdk::{
         *,
     },
 };
-use http::Uri;
 use rest::FileId;
+use url::Url;
 
 const EMAIL: &str = "rust_sdk_test@example.org";
 const PASSWORD: &str = "123456789Ab";
@@ -36,12 +36,12 @@ async fn main() -> ClientResult<()> {
 
     {
         log::info!("Testing name resolution...");
-        Client::new(Uri::from_static(TEST_SERVER_NAME_RES), None).await?;
+        Client::new(TEST_SERVER_NAME_RES.parse().unwrap(), None).await?;
         log::info!("Name resolution works!");
     }
 
     log::info!("Testing client connection...");
-    let client = Client::new(Uri::from_static(TEST_SERVER), None).await?;
+    let client = Client::new(TEST_SERVER.parse().unwrap(), None).await?;
     log::info!("Created client");
 
     log::info!("Testing auth...");
@@ -103,12 +103,12 @@ async fn main() -> ClientResult<()> {
     assert_eq!(our_msg.content, msg.as_str());
 
     let instant_view =
-        mediaproxy::instant_view(&client, Uri::from_static(INSTANT_VIEW_URL)).await?;
+        mediaproxy::instant_view(&client, INSTANT_VIEW_URL.parse::<Url>().unwrap()).await?;
     log::info!("Instant view response: {:?}", instant_view);
     assert_eq!(&instant_view.metadata.unwrap().url, INSTANT_VIEW_URL);
 
     let can_instant_view =
-        mediaproxy::can_instant_view(&client, Uri::from_static(INSTANT_VIEW_URL)).await?;
+        mediaproxy::can_instant_view(&client, INSTANT_VIEW_URL.parse::<Url>().unwrap()).await?;
     log::info!("Can instant view response: {:?}", can_instant_view);
 
     let response = rest::upload(
@@ -140,10 +140,12 @@ async fn main() -> ClientResult<()> {
     let response = rest::download(
         &client,
         rest::FileId::Hmc(Hmc::new(
-            Uri::from_static(TEST_SERVER)
-                .authority()
+            TEST_SERVER
+                .parse::<Url>()
+                .unwrap()
+                .host()
                 .unwrap() // must have authority
-                .clone(),
+                .to_owned(),
             FILE_ID.to_string(),
         )),
     )
@@ -176,7 +178,7 @@ async fn main() -> ClientResult<()> {
     assert_eq!(downloaded_file.name(), FILENAME);
 
     let external_file =
-        rest::download(&client, FileId::External(Uri::from_static(EXTERNAL_URL))).await?;
+        rest::download(&client, FileId::External(EXTERNAL_URL.parse().unwrap())).await?;
     let _ = external_file.bytes().await?;
 
     profile::profile_update(

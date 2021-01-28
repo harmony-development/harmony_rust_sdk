@@ -126,10 +126,10 @@ client_api! {
     service: auth,
 }
 
-client_api! {
+/*client_api! {
     /// Stream steps sent from the server.
     response: tonic::Streaming<AuthStep>,
     request: StreamStepsRequest,
     api_fn: stream_steps,
     service: auth,
-}
+}*/
