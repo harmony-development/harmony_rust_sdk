@@ -463,7 +463,7 @@ dependencies = [
 [[package]]
 name = "hrpc"
 version = "0.1.0"
-source = "git+https://github.com/harmony-development/hrpc-rs.git#9993141f40b61b727131b6f2cd6eb632a22d11e3"
+source = "git+https://github.com/harmony-development/hrpc-rs.git#f4a54bd3a39e1c88071a348c40b0d8d5ba98a157"
 dependencies = [
  "bytes",
  "futures-util",
@@ -477,7 +477,7 @@ dependencies = [
 [[package]]
 name = "hrpc-build"
 version = "0.1.0"
-source = "git+https://github.com/harmony-development/hrpc-rs.git#9993141f40b61b727131b6f2cd6eb632a22d11e3"
+source = "git+https://github.com/harmony-development/hrpc-rs.git#f4a54bd3a39e1c88071a348c40b0d8d5ba98a157"
 dependencies = [
  "proc-macro2",
  "prost",
@@ -641,9 +641,9 @@ checksum = "e2abad23fbc42b3700f2f279844dc832adb2b2eb069b2df918f455c4e18cc646"
 
 [[package]]
 name = "libc"
-version = "0.2.83"
+version = "0.2.84"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7eb0c4e9c72ee9d69b767adebc5f4788462a3b45624acd919475c92597bcaf4f"
+checksum = "1cca32fa0182e8c0989459524dc356b8f2b5c10f1b9eb521b7d182c03cf8c5ff"
 
 [[package]]
 name = "lock_api"
@@ -1342,9 +1342,9 @@ checksum = "cda74da7e1a664f795bb1f8a87ec406fb89a02522cf6e50620d016add6dbbf5c"
 
 [[package]]
 name = "tokio"
-version = "1.1.0"
+version = "1.1.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8efab2086f17abcddb8f756117665c958feee6b2e39974c2f1600592ab3a4195"
+checksum = "6714d663090b6b0acb0fa85841c6d66233d150cdb2602c8f9b8abb03370beb3f"
 dependencies = [
  "autocfg",
  "bytes",
@@ -1571,9 +1571,9 @@ dependencies = [
 
 [[package]]
 name = "wasi"
-version = "0.10.1+wasi-snapshot-preview1"
+version = "0.10.2+wasi-snapshot-preview1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "93c6c3420963c5c64bca373b25e77acb562081b9bb4dd5bb864187742186cea9"
+checksum = "fd6fbd9a79829dd1ad0cc20627bf1ed606756a7f77edff7b66b7064f9cb327c6"
 
 [[package]]
 name = "wasm-bindgen"
