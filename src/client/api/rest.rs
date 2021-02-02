@@ -4,10 +4,10 @@ use crate::client::{error::ClientError, AuthStatus};
 use std::{convert::TryInto, str::FromStr};
 
 use derive_more::IntoIterator;
+use hrpc::url::Url;
 use prost::bytes::Bytes;
 use reqwest::{multipart::*, Response};
 use serde::Deserialize;
-use url::Url;
 
 /// A "file id", which can be a HMC URL, an external URL or a plain ID string.
 #[derive(Debug, Clone, Display)]
@@ -29,18 +29,20 @@ impl FromStr for FileId {
     type Err = InvalidFileId;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        if let Ok(uri) = s.parse::<Url>() {
-            if !uri.scheme().is_empty() {
-                if let Ok(hmc) = uri.clone().try_into() {
-                    Ok(FileId::Hmc(hmc))
-                } else {
-                    Ok(FileId::External(uri))
-                }
-            } else {
-                Ok(FileId::Id(s.to_owned()))
-            }
-        } else {
+        if s.is_empty() {
             Err(InvalidFileId)
+        } else {
+            match s.parse::<Url>() {
+                Ok(uri) => {
+                    if let Ok(hmc) = uri.clone().try_into() {
+                        Ok(FileId::Hmc(hmc))
+                    } else {
+                        Ok(FileId::External(uri))
+                    }
+                }
+                Err(hrpc::url::ParseError::RelativeUrlWithoutBase) => Ok(FileId::Id(s.to_owned())),
+                _ => Err(InvalidFileId),
+            }
         }
     }
 }
@@ -302,12 +304,5 @@ mod tests {
     fn parse_empty() {
         const EMPTY: &str = "";
         FileId::from_str(EMPTY).expect("file id parse");
-    }
-
-    #[test]
-    #[should_panic(expected = "InvalidFileId")]
-    fn parse_invalid_uri() {
-        const INVALID_URI: &str = "https:///chat.harmona//";
-        FileId::from_str(INVALID_URI).expect("file id parse");
     }
 }
