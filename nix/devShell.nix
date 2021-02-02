@@ -2,7 +2,7 @@
 with common; with pkgs;
 devshell.mkShell {
   packages =
-    [ git nixpkgs-fmt rustc cachix ]
+    [ git nixpkgs-fmt rustc cachix binutils ]
     ++ crateDeps.nativeBuildInputs ++ crateDeps.buildInputs;
   env = {
     NIX_CONFIG = ''
