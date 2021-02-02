@@ -3,7 +3,7 @@ use std::{
     fmt::{self, Display, Formatter},
 };
 
-use url::{Host, Url};
+use hrpc::url::Url;
 
 /// Chat service API.
 #[cfg(feature = "gen_chat")]
@@ -13,7 +13,7 @@ pub mod chat;
 #[cfg(feature = "gen_auth")]
 pub mod auth {
     pub mod v1 {
-        include!(concat!(env!("OUT_DIR"), "/protocol.auth.v1.rs"));
+        hrpc::include_proto!("protocol.auth.v1");
     }
     pub use v1::*;
 }
@@ -22,7 +22,7 @@ pub mod auth {
 #[cfg(feature = "gen_harmonytypes")]
 pub mod harmonytypes {
     pub mod v1 {
-        include!(concat!(env!("OUT_DIR"), "/protocol.harmonytypes.v1.rs"));
+        hrpc::include_proto!("protocol.harmonytypes.v1");
     }
     pub use v1::*;
 }
@@ -31,7 +31,7 @@ pub mod harmonytypes {
 #[cfg(feature = "gen_mediaproxy")]
 pub mod mediaproxy {
     pub mod v1 {
-        include!(concat!(env!("OUT_DIR"), "/protocol.mediaproxy.v1.rs"));
+        hrpc::include_proto!("protocol.mediaproxy.v1");
     }
     pub use v1::*;
 }
@@ -40,15 +40,15 @@ pub mod mediaproxy {
 #[cfg(feature = "gen_voice")]
 pub mod voice {
     pub mod v1 {
-        include!(concat!(env!("OUT_DIR"), "/protocol.voice.v1.rs"));
+        hrpc::include_proto!("protocol.voice.v1");
     }
     pub use v1::*;
 }
 
 /// Some crates re-exported for user convenience.
 pub mod exports {
+    pub use hrpc;
     pub use prost;
-    pub use url;
 }
 
 /// Errors that can occur when converting a possibly non-HMC URL to a HMC URL.
@@ -85,16 +85,16 @@ pub struct Hmc {
 impl Hmc {
     /// Creates a new HMC given a homeserver and (attachment) ID.
     ///
-    /// Note that this function *does not* check that the `id` arguments is actually an ID,
+    /// Note that this function *does not* check that the `id` argument is actually an ID,
     /// so it may panic or requests made with this `Hmc` may fail.
     ///
     /// # Example
     /// ```
     /// # use harmony_rust_sdk::api::Hmc;
-    /// let hmc = Hmc::new("example.org".parse().unwrap(), "403cb46c-49cf-4ae1-b876-f38eb26accb0");
+    /// let hmc = Hmc::new("example.org", "403cb46c-49cf-4ae1-b876-f38eb26accb0");
     /// assert_eq!(hmc.to_string(), "hmc://example.org/403cb46c-49cf-4ae1-b876-f38eb26accb0");
     /// ```
-    pub fn new(server: Host, id: impl std::fmt::Display) -> Self {
+    pub fn new(server: impl std::fmt::Display, id: impl std::fmt::Display) -> Self {
         let inner = format!("hmc://{}/{}", server, id).parse().unwrap();
 
         Self { inner }
@@ -105,7 +105,7 @@ impl Hmc {
     /// # Example
     /// ```
     /// # use harmony_rust_sdk::api::Hmc;
-    /// let hmc = Hmc::new("example.org".parse().unwrap(), "403cb46c-49cf-4ae1-b876-f38eb26accb0");
+    /// let hmc = Hmc::new("example.org", "403cb46c-49cf-4ae1-b876-f38eb26accb0");
     /// assert_eq!(hmc.id(), "403cb46c-49cf-4ae1-b876-f38eb26accb0");
     /// ```
     pub fn id(&self) -> &str {
@@ -117,7 +117,7 @@ impl Hmc {
     /// # Example
     /// ```
     /// # use harmony_rust_sdk::api::Hmc;
-    /// let hmc = Hmc::new("example.org".parse().unwrap(), "403cb46c-49cf-4ae1-b876-f38eb26accb0");
+    /// let hmc = Hmc::new("example.org", "403cb46c-49cf-4ae1-b876-f38eb26accb0");
     /// assert_eq!(hmc.server(), "example.org");
     /// ```
     pub fn server(&self) -> &str {
@@ -195,7 +195,7 @@ mod test {
     }
 
     #[test]
-    #[should_panic(expected = "NoServer")]
+    #[should_panic(expected = "RelativeUrlWithoutBase")]
     fn parse_no_server_hmc() {
         if let Err(e) = Hmc::try_from(NO_SERVER_HMC.parse::<Url>().unwrap()) {
             panic!("{:?}", e)

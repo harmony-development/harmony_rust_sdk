@@ -1,7 +1,7 @@
 use super::*;
 use crate::{api::chat::*, client_api};
 
-use url::Url;
+use hrpc::url::Url;
 
 /// Describes where to subscribe for events.
 #[derive(Debug, Clone, Copy)]

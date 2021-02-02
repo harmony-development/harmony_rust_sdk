@@ -3,7 +3,7 @@ pub use crate::api::mediaproxy::{FetchLinkMetadataRequest, InstantViewRequest, S
 use super::*;
 use crate::{api::mediaproxy::*, client_api};
 
-use url::Url;
+use hrpc::url::Url;
 
 impl Into<FetchLinkMetadataRequest> for Url {
     fn into(self) -> FetchLinkMetadataRequest {

@@ -23,7 +23,7 @@ use harmony_rust_sdk::{
 const EMAIL: &str = "rust_sdk_test@example.org";
 const USERNAME: &str = "rust_sdk_test";
 const PASSWORD: &str = "123456789Ab";
-const HOMESERVER: &str = "chat.harmonyapp.io:2289";
+const HOMESERVER: &str = "https://chat.harmonyapp.io:2289";
 
 const GUILD_ID_FILE: &str = "guild_id";
 

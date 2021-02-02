@@ -24,10 +24,10 @@ use std::{sync::Arc, time::Duration};
 
 use async_mutex::Mutex as AsyncMutex;
 use futures::prelude::*;
+use hrpc::url::Url;
 #[cfg(feature = "parking_lot")]
 use parking_lot::{Mutex, MutexGuard};
 use reqwest::Client as HttpClient;
-use url::Url;
 
 type AuthService = crate::api::auth::auth_service_client::AuthServiceClient;
 type ChatService = crate::api::chat::chat_service_client::ChatServiceClient;
@@ -102,13 +102,13 @@ impl Client {
     /// # use harmony_rust_sdk::client::*;
     /// # #[tokio::main(flavor = "current_thread")]
     /// # async fn main() -> error::ClientResult<()> {
-    /// let client = Client::new("chat.harmonyapp.io:2289".parse().unwrap(), None).await?;
+    /// let client = Client::new("https://chat.harmonyapp.io:2289".parse().unwrap(), None).await?;
     /// # Ok(())
     /// # }
     /// ```
     pub async fn new(mut homeserver_url: Url, session: Option<Session>) -> ClientResult<Self> {
         // Add the default scheme if not specified
-        if homeserver_url.scheme().is_empty() {
+        if !matches!(homeserver_url.scheme(), "http" | "https") {
             homeserver_url.set_scheme("https").unwrap();
         }
 

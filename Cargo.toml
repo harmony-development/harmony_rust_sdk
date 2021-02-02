@@ -1,22 +1,18 @@
 [package]
 name = "harmony_rust_sdk"
 version = "0.3.1"
-authors = [ "Yusuf Bera Ertan <y.bera003.06@protonmail.com>" ]
+authors = ["Yusuf Bera Ertan <y.bera003.06@protonmail.com>"]
 edition = "2018"
 license = "MIT"
 description = "Rust library to work with the Harmony chat protocol."
 repository = "https://github.com/harmony-development/harmony_rust_sdk"
 homepage = "https://github.com/harmony-development/harmony_rust_sdk"
-keywords = [ "harmony", "protocol", "api", "chat", "client" ]
-categories = [ "api-bindings" ]
-exclude = [
-	"*.nix",
-	"flake.lock",
-	".github/*",
-]
+keywords = ["harmony", "protocol", "api", "chat", "client"]
+categories = ["api-bindings"]
+exclude = ["*.nix", "flake.lock", ".github/*"]
 
 [workspace]
-members = [ "harmony_derive" ]
+members = ["harmony_derive"]
 
 [package.metadata.docs.rs]
 all-features = true
@@ -26,12 +22,16 @@ prost = "0.7"
 prost-types = "0.7"
 derive-new = "0.5"
 derive_more = "0.99"
-reqwest = { version = "0.11.0", default-features = false, features = [ "rustls-tls-native-roots", "json", "multipart" ] }
+reqwest = { version = "0.11.0", default-features = false, features = [
+	"rustls-tls-native-roots",
+	"json",
+	"multipart",
+] }
 hrpc = { version = "0.1.0", git = "https://github.com/harmony-development/hrpc-rs.git" }
 
 harmony_derive = { version = "0.1.0", path = "harmony_derive", optional = true }
 
-tokio = { version = "1.1", features = [ "rt", "macros", "fs" ], optional = true }
+tokio = { version = "1.1", features = ["rt", "macros", "fs"], optional = true }
 async-trait = { version = "0.1.42", optional = true }
 async-mutex = { version = "1.4.0", optional = true }
 flume = { version = "0.10.1", optional = true }
@@ -40,7 +40,6 @@ paste = { version = "1.0", optional = true }
 futures = { version = "0.3", optional = true }
 serde = { version = "1.0", features = ["derive"] }
 
-url = "2.2"
 urlencoding = { version = "1.1", optional = true }
 
 parking_lot = { version = "0.11", optional = true }
@@ -50,36 +49,36 @@ hrpc-build = { version = "0.1.0", git = "https://github.com/harmony-development/
 
 [features]
 default = [
-	"gen_chat", 
-	"gen_auth", 
-	"gen_mediaproxy", 
-	"gen_voice", 
-	"gen_harmonytypes", 
+	"gen_chat",
+	"gen_auth",
+	"gen_mediaproxy",
+	"gen_voice",
+	"gen_harmonytypes",
 ]
 client = [
-	"gen_chat", 
-	"gen_auth", 
-	"gen_mediaproxy", 
-	"gen_voice", 
-	"gen_harmonytypes", 
+	"gen_chat",
+	"gen_auth",
+	"gen_mediaproxy",
+	"gen_voice",
+	"gen_harmonytypes",
 	"gen_client",
 	"async-mutex",
 	"futures",
 	"paste",
-	"log", 
+	"log",
 	"flume",
 	"urlencoding",
 	"tokio",
 ]
-request_method = [ "async-trait" ]
-gen_client = [ ]
-gen_server = [ ]
+request_method = ["async-trait"]
+gen_client = []
+gen_server = []
 
-gen_chat = [ "gen_harmonytypes", "harmony_derive" ]
-gen_auth = [ ]
-gen_mediaproxy = [ "gen_harmonytypes" ]
-gen_voice = [ ]
-gen_harmonytypes = [ ]
+gen_chat = ["gen_harmonytypes", "harmony_derive"]
+gen_auth = []
+gen_mediaproxy = ["gen_harmonytypes"]
+gen_voice = []
+gen_harmonytypes = []
 
 [dev-dependencies]
 env_logger = "0.8"
@@ -87,12 +86,12 @@ ctrlc = "3.1.7"
 
 [[test]]
 name = "all"
-required-features = [ "client" ]
+required-features = ["client"]
 
 [[example]]
 name = "echo_bot"
-required-features = [ "client" ]
+required-features = ["client"]
 
 [[example]]
 name = "message_log"
-required-features = [ "client" ]
+required-features = ["client"]

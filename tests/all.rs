@@ -10,14 +10,14 @@ use harmony_rust_sdk::{
         *,
     },
 };
+use hrpc::url::Url;
 use rest::FileId;
-use url::Url;
 
 const EMAIL: &str = "rust_sdk_test@example.org";
 const PASSWORD: &str = "123456789Ab";
 
-const TEST_SERVER: &str = "chat.harmonyapp.io:2289";
-const TEST_SERVER_NAME_RES: &str = "chat.harmonyapp.io";
+const TEST_SERVER: &str = "https://chat.harmonyapp.io:2289";
+const TEST_SERVER_NAME_RES: &str = "https://chat.harmonyapp.io";
 const TEST_GUILD: u64 = 2699074975217745925;
 const TEST_CHANNEL: u64 = 2700365654061481989;
 
