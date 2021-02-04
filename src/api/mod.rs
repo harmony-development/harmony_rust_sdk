@@ -128,7 +128,7 @@ impl Hmc {
 impl Default for Hmc {
     fn default() -> Self {
         Self {
-            inner: "".parse().unwrap(),
+            inner: "http://127.0.0.1".parse().unwrap(),
         }
     }
 }
