@@ -113,9 +113,15 @@ pub async fn download(client: &Client, file_id: impl Into<FileId>) -> ClientResu
     const ENDPOINT: &str = "/_harmony/media/download/";
 
     let uri = match file_id.into() {
-        FileId::Hmc(hmc) => format!("https://{}{}{}", hmc.server(), ENDPOINT, hmc.id())
-            .parse()
-            .unwrap(),
+        FileId::Hmc(hmc) => format!(
+            "https://{}:{}{}{}",
+            hmc.server(),
+            hmc.port(),
+            ENDPOINT,
+            hmc.id()
+        )
+        .parse()
+        .unwrap(),
         FileId::Id(id) => client
             .homeserver_url()
             .join(ENDPOINT)
