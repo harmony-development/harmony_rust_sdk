@@ -123,6 +123,18 @@ impl Hmc {
     pub fn server(&self) -> &str {
         self.inner.host_str().unwrap()
     }
+
+    /// Gets the port of this HMC.
+    ///
+    /// # Example
+    /// ```
+    /// # use harmony_rust_sdk::api::Hmc;
+    /// let hmc = Hmc::new("example.org:2289", "403cb46c-49cf-4ae1-b876-f38eb26accb0");
+    /// assert_eq!(hmc.port(), 2289);
+    /// ```
+    pub fn port(&self) -> u16 {
+        self.inner.port().unwrap_or(2289)
+    }
 }
 
 impl Default for Hmc {
