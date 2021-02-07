@@ -110,29 +110,25 @@ pub async fn upload(
 /// This endpoint does not require authentication.
 /// See [API documentation](https://github.com/harmony-development/protocol/blob/master/rest/rest.md#get-_harmonymediadownloadfile_id).
 pub async fn download(client: &Client, file_id: impl Into<FileId>) -> ClientResult<Response> {
-    let (scheme, server, id) = match file_id.into() {
-        FileId::Hmc(hmc) => ("https", hmc.server().to_string(), hmc.id().to_string()),
-        FileId::Id(id) => {
-            let url = client.homeserver_url();
-            (
-                url.scheme(),                    // Safe since we can't create a client without a scheme
-                url.host().unwrap().to_string(), // Safe since we can't create a client without an authority (it cant connect)
-                id,
-            )
-        }
-        FileId::External(uri) => {
-            let url = client.homeserver_url();
-            (
-                url.scheme(),                    // Safe since we can't create a client without a scheme
-                url.host().unwrap().to_string(), // Safe since we can't create a client without an authority (it cant connect)
-                urlencoding::encode(&uri.to_string()),
-            )
-        }
-    };
+    const ENDPOINT: &str = "/_harmony/media/download/";
 
-    let uri: Url = format!("{}://{}/_harmony/media/download/{}", scheme, server, id)
-        .parse()
-        .unwrap();
+    let uri = match file_id.into() {
+        FileId::Hmc(hmc) => format!("https://{}{}{}", hmc.server(), ENDPOINT, hmc.id())
+            .parse()
+            .unwrap(),
+        FileId::Id(id) => client
+            .homeserver_url()
+            .join(ENDPOINT)
+            .unwrap()
+            .join(&id)
+            .unwrap(),
+        FileId::External(uri) => client
+            .homeserver_url()
+            .join(ENDPOINT)
+            .unwrap()
+            .join(&urlencoding::encode(&uri.to_string()))
+            .unwrap(),
+    };
 
     let request = client.data.http.get(uri.to_string().as_str()).build()?;
     log::debug!("Sending HTTP request: {:?}", request);
