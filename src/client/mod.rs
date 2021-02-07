@@ -153,10 +153,11 @@ impl Client {
 
         let auth = AuthService::new(http.clone(), homeserver_url.clone())?;
         let mut chat = ChatService::new(http.clone(), homeserver_url.clone())?;
-        let mediaproxy = MediaProxyService::new(http.clone(), homeserver_url.clone())?;
+        let mut mediaproxy = MediaProxyService::new(http.clone(), homeserver_url.clone())?;
 
         if let Some(session) = &session {
             chat.set_auth_token(Some(session.session_token.clone()));
+            mediaproxy.set_auth_token(Some(session.session_token.clone()));
         }
 
         let data = ClientData {
@@ -318,6 +319,9 @@ impl Client {
 
             Ok(if let Some(auth_step::Step::Session(session)) = step.step {
                 self.chat_lock()
+                    .await
+                    .set_auth_token(Some(session.session_token.clone()));
+                self.mediaproxy_lock()
                     .await
                     .set_auth_token(Some(session.session_token.clone()));
                 *self.auth_status_lock() = AuthStatus::Complete(session);
