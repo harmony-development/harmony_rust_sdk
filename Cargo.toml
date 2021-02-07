@@ -27,7 +27,7 @@ reqwest = { version = "0.11.0", default-features = false, features = [
 	"json",
 	"multipart",
 ] }
-hrpc = "0.1.0"
+hrpc = "0.1.1"
 
 harmony_derive = { version = "0.1.0", path = "harmony_derive", optional = true }
 
