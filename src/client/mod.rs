@@ -18,12 +18,11 @@ use api::ClientRequest;
 use api::{auth::*, chat::EventSource, Hmc};
 use error::*;
 
+use std::sync::Arc;
 #[cfg(not(feature = "parking_lot"))]
 use std::sync::{Mutex, MutexGuard};
-use std::{sync::Arc, time::Duration};
 
 use async_mutex::Mutex as AsyncMutex;
-use futures::prelude::*;
 use hrpc::url::Url;
 #[cfg(feature = "parking_lot")]
 use parking_lot::{Mutex, MutexGuard};
@@ -401,37 +400,47 @@ impl Client {
     pub async fn subscribe_events(
         &self,
         subscriptions: Vec<EventSource>,
-    ) -> ClientResult<(
-        impl Stream<Item = ClientResult<crate::api::chat::event::Event>> + Send + Sync,
-        impl Sink<EventSource, Error = impl std::fmt::Debug> + Send + Sync,
-    )> {
-        let (tx_ev, rx_ev) = flume::unbounded();
-        let (tx_sub, rx_sub) = flume::unbounded();
-        for sub in subscriptions {
-            tx_sub.send(sub).unwrap();
+    ) -> ClientResult<EventsSocket> {
+        let inner = api::chat::stream_events(self).await?;
+        let mut socket = EventsSocket { inner };
+        for source in subscriptions {
+            socket.add_source(source).await?;
         }
 
-        let mut socket = api::chat::stream_events(self).await?;
-        tokio::task::spawn(async move {
-            loop {
-                if let Ok(source) = rx_sub.recv_timeout(Duration::from_millis(10)) {
-                    socket.send_message(source.into()).await.unwrap();
-                }
+        Ok(socket)
+    }
+}
 
-                let msg = socket.get_message().await;
-                if let Some(Ok(hrpc::SocketMessage::Protobuf(ev))) = msg {
-                    if let Some(ev) = ev.event {
-                        tx_ev.send_async(Ok(ev)).await.unwrap();
+/// Event subscription socket.
+pub struct EventsSocket {
+    inner: hrpc::Socket<crate::api::chat::StreamEventsRequest, crate::api::chat::Event>,
+}
+
+impl EventsSocket {
+    /// Get an event.
+    pub async fn get_event(&mut self) -> Option<ClientResult<crate::api::chat::event::Event>> {
+        let res = self.inner.get_message().await?;
+        match res {
+            Ok(maybe_ev) => {
+                if let hrpc::SocketMessage::Protobuf(ev) = maybe_ev {
+                    if let Some(event) = ev.event {
+                        Some(Ok(event))
+                    } else {
+                        None
                     }
-                } else if let Some(Err(err)) = msg {
-                    tx_ev
-                        .send_async(Err(ClientError::Internal(err)))
-                        .await
-                        .unwrap();
+                } else {
+                    None
                 }
             }
-        });
+            Err(err) => Some(Err(err.into())),
+        }
+    }
 
-        Ok((rx_ev.into_stream(), tx_sub.into_sink()))
+    /// Add a new event source.
+    pub async fn add_source(&mut self, source: EventSource) -> ClientResult<()> {
+        self.inner
+            .send_message(source.into())
+            .await
+            .map_err(Into::into)
     }
 }
