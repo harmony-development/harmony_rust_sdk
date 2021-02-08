@@ -1,4 +1,4 @@
-//! Rust client implementation for Harmony, powered by [`tonic`].
+//! Rust client implementation for Harmony, powered by [`hrpc`].
 //!
 //! See the `examples` directory in the repository on how to use this.
 
@@ -91,7 +91,7 @@ pub struct Client {
 }
 
 impl Client {
-    /// Create a new [`Client`] from a homeserver [`Uri`] (URL) and an (optional) session.
+    /// Create a new [`Client`] from a homeserver [`Url`] (URL) and an (optional) session.
     ///
     /// If port is not specified in the URL, this will add the default port `2289` to it.
     /// If scheme is not specified, this will assume the scheme is `https`.
