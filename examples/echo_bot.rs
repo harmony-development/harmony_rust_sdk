@@ -4,7 +4,6 @@ use std::{
     sync::atomic::{AtomicBool, Ordering},
 };
 
-use futures::StreamExt;
 use harmony_rust_sdk::{
     api::chat::event,
     client::{
@@ -105,7 +104,7 @@ async fn main() -> ClientResult<()> {
     let self_id = client.auth_status().session().unwrap().user_id;
 
     // Subscribe to guild events
-    let (mut event_stream, _source_sink) = client
+    let mut socket = client
         .subscribe_events(vec![EventSource::Guild(guild_id)])
         .await?;
 
@@ -114,7 +113,7 @@ async fn main() -> ClientResult<()> {
         if DID_CTRLC.load(Ordering::Relaxed) {
             break;
         }
-        if let Some(Ok(event::Event::SentMessage(sent_message))) = event_stream.next().await {
+        if let Some(Ok(event::Event::SentMessage(sent_message))) = socket.get_event().await {
             if let Some(message) = sent_message.message {
                 // Dont sent message if we sent it
                 if message.author_id != self_id {

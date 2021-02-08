@@ -1,7 +1,6 @@
 //! Example showcasing a very simple message logging bot.
 use std::sync::atomic::{AtomicBool, Ordering};
 
-use futures::StreamExt;
 use harmony_rust_sdk::{
     api::chat::event,
     client::{
@@ -97,7 +96,7 @@ async fn main() -> ClientResult<()> {
     log::info!("In guild: {}", guild_id);
 
     // Subscribe to guild events
-    let (mut event_stream, _source_sink) = client
+    let mut socket = client
         .subscribe_events(vec![EventSource::Guild(guild_id)])
         .await?;
 
@@ -106,7 +105,7 @@ async fn main() -> ClientResult<()> {
         if DID_CTRLC.load(Ordering::Relaxed) {
             break;
         }
-        if let Some(Ok(event::Event::SentMessage(sent_message))) = event_stream.next().await {
+        if let Some(Ok(event::Event::SentMessage(sent_message))) = socket.get_event().await {
             if let Some(message) = sent_message.message {
                 log::info!("Received new message: {:?}", message);
                 println!(
