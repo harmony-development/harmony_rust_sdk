@@ -44,31 +44,13 @@ fn main() {
         If so, please also set the PROTOC and PROTOC_INCLUDE as mentioned in the README.",
     );
 
-    #[cfg(any(
-        all(feature = "gen_client", feature = "gen_voice"),
-        feature = "gen_chat"
-    ))]
-    let out_dir = std::path::PathBuf::from(
-        std::env::var_os("OUT_DIR")
-            .expect("Failed to get OUT_DIR! Something must be horribly wrong."),
-    );
-
-    #[cfg(all(feature = "gen_client", feature = "gen_voice"))]
-    {
-        // Patch voice generated code (only for client)
-        // We patch this because two methods with the same name are generated and prost
-        // doesnt check this.
-        let voice_gen_path = out_dir.join("protocol.voice.v1.rs");
-        let voice_gen = std::fs::read_to_string(&voice_gen_path).expect("Failed to read from voice service generated code, are you sure you have correct permissions?");
-        let patched_voice_gen = voice_gen.replace(
-            "pub async fn connect<D>(dst: D)",
-            "pub async fn _connect<D>(dst: D)",
-        );
-        std::fs::write(voice_gen_path, patched_voice_gen).expect("Failed to write to voice service generated code, are you sure you have correct permissions?");
-    }
-
     #[cfg(feature = "gen_chat")]
     {
+        let out_dir = std::path::PathBuf::from(
+            std::env::var_os("OUT_DIR")
+                .expect("Failed to get OUT_DIR! Something must be horribly wrong."),
+        );
+
         // Patch chat message event
         // We patch these because of enum variant size differences, since they will be sent more than any other
         // event (its a realtime chat platform, so) this should help.
