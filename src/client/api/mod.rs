@@ -36,8 +36,6 @@ macro_rules! client_api {
         service: $service:ident,
     } => {
         $(#[$meta])*
-        ///
-        /// This endpoint requires authentication.
         pub async fn $api_fn<
             Req: ::std::convert::Into<$req> + ::std::fmt::Debug,
         >(client: &$crate::client::Client, request: Req) -> $crate::client::ClientResult<$resp> {
