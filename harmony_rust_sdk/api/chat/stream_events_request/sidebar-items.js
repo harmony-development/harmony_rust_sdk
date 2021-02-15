@@ -1,1 +1,0 @@
-initSidebarItems({"enum":[["Request",""]],"struct":[["SubscribeToActions",""],["SubscribeToGuild",""],["SubscribeToHomeserverEvents",""]]});
