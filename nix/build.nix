@@ -18,7 +18,7 @@ let
     buildInputs = crateDeps.buildInputs;
     cargoBuildOptions = defs: defs ++ [ "--all-features" ];
     cargoTestOptions = defs: defs ++ [ "--all-features" "--tests" "--" "api" ];
-    override = (_: env);
+    override = (_: (lib.listToAttrs (map (e: { "${e.name}" = e.value; }) env)));
     overrideMain = (prev: {
       inherit meta;
       nativeBuildInputs = prev.nativeBuildInputs ++ [ rustfmt ];

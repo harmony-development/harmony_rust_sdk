@@ -40,8 +40,12 @@ with pkgs;
       nativeBuildInputs = [ /* Add compile time dependencies here */ ];
     };
 
-  env = {
-    PROTOC = "${protobuf}/bin/protoc";
-    PROTOC_INCLUDE = "${protobuf}/include";
-  };
+  env =
+    let
+      nv = lib.nameValuePair;
+    in
+    [
+      (nv "PROTOC" "${protobuf}/bin/protoc")
+      (nv "PROTOC_INCLUDE" "${protobuf}/include")
+    ];
 }
