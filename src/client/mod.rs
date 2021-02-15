@@ -229,7 +229,7 @@ impl Client {
     /// # use harmony_rust_sdk::client::*;
     /// # #[tokio::main(flavor = "current_thread")]
     /// # async fn main() -> error::ClientResult<()> {
-    /// # let client = Client::new("chat.harmonyapp.io:2289".parse().unwrap(), None).await?;
+    /// # let client = Client::new("https://chat.harmonyapp.io:2289".parse().unwrap(), None).await?;
     /// assert!(!client.auth_status().is_authenticated());
     /// # Ok(())
     /// # }
@@ -245,7 +245,7 @@ impl Client {
     /// # use harmony_rust_sdk::client::*;
     /// # #[tokio::main(flavor = "current_thread")]
     /// # async fn main() -> error::ClientResult<()> {
-    /// # let client = Client::new("chat.harmonyapp.io:2289".parse().unwrap(), None).await?;
+    /// # let client = Client::new("https://chat.harmonyapp.io:2289".parse().unwrap(), None).await?;
     /// assert_eq!(&client.homeserver_url().to_string(), "https://chat.harmonyapp.io:2289/");
     /// # Ok(())
     /// # }
@@ -261,14 +261,18 @@ impl Client {
     /// # use harmony_rust_sdk::{api::Hmc, client::*};
     /// # #[tokio::main(flavor = "current_thread")]
     /// # async fn main() -> error::ClientResult<()> {
-    /// # let client = Client::new("chat.harmonyapp.io:2289".parse().unwrap(), None).await?;
-    /// assert_eq!(client.make_hmc("404"), Hmc::new("chat.harmonyapp.io:2289".parse().unwrap(), "404"));
+    /// # let client = Client::new("https://chat.harmonyapp.io:2289".parse().unwrap(), None).await?;
+    /// assert_eq!(client.make_hmc("404"), Hmc::new("chat.harmonyapp.io:2289", "404"));
     /// # Ok(())
     /// # }
     /// ```
     pub fn make_hmc(&self, id: impl ToString) -> Hmc {
         Hmc::new(
-            self.data.homeserver_url.host().unwrap().to_owned(),
+            format!(
+                "{}:{}",
+                self.data.homeserver_url.host_str().unwrap(),
+                self.data.homeserver_url.port().unwrap()
+            ),
             id.to_string(),
         )
     }
