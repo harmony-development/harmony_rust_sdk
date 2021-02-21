@@ -426,13 +426,9 @@ impl EventsSocket {
     pub async fn get_event(&mut self) -> Option<ClientResult<crate::api::chat::event::Event>> {
         let res = self.inner.get_message().await?;
         match res {
-            Ok(maybe_ev) => {
-                if let hrpc::SocketMessage::Protobuf(ev) = maybe_ev {
-                    if let Some(event) = ev.event {
-                        Some(Ok(event))
-                    } else {
-                        None
-                    }
+            Ok(ev) => {
+                if let Some(event) = ev.event {
+                    Some(Ok(event))
                 } else {
                     None
                 }

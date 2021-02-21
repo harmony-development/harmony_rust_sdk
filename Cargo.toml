@@ -22,10 +22,10 @@ prost = "0.7"
 prost-types = "0.7"
 derive-new = "0.5"
 derive_more = "0.99"
-hrpc = "0.1.3"
+hrpc = "0.2.3"
 
 harmony_derive = { version = "0.1.1", path = "harmony_derive", optional = true }
-reqwest = { version = "0.11.0", default-features = false, features = [
+reqwest = { version = "0.11.1", default-features = false, features = [
 	"rustls-tls-native-roots",
 	"json",
 	"multipart",
