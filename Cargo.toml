@@ -93,3 +93,7 @@ required-features = ["client"]
 [[example]]
 name = "message_log"
 required-features = ["client"]
+
+[[example]]
+name = "cmd_bot"
+required-features = ["client"]
