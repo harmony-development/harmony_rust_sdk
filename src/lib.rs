@@ -13,6 +13,10 @@ Currently implements a lightweight client and a client API (powered by [hrpc](ht
 ## Examples
 - `echo_bot`: Showcases a simple message echo bot that operates in a guild. It will repost messages whenever someone else posts a message.
 - `message_log`: Showcases a simple message log bot that operates in a guild. It will log messages to the console whenever someone posts a message.
+- `cmd_bot`: A more complex bot that responds to "commands". The commands are:
+  - ping: responds with "Pong! Took X secs."
+  - hello: responds with "Hello, username!"
+  - uptime: responds with "Been running for X secs."
 
 - Bot run instructions:
   - Run bots with `GUILD_INVITE=invite cargo run --example example_name`.
