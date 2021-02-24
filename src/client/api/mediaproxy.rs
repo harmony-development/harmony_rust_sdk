@@ -1,5 +1,6 @@
 pub use crate::api::mediaproxy::{FetchLinkMetadataRequest, InstantViewRequest, SiteMetadata};
 
+#[cfg(feature = "request_method")]
 use super::*;
 use crate::{api::mediaproxy::*, client_api};
 
