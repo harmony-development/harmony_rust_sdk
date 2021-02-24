@@ -1,8 +1,8 @@
 use std::fmt::{self, Display, Formatter};
 
 pub use crate::api::HmcParseError;
+pub use hrpc::client::ClientError as InternalClientError;
 pub use hrpc::url::ParseError as UrlError;
-pub use hrpc::ClientError as InternalClientError;
 pub use reqwest::Error as ReqwestError;
 
 /// Result type used by many `Client` methods.

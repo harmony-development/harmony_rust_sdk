@@ -2,6 +2,7 @@ use harmony_derive::into_request;
 use std::fmt::{self, Display, Formatter};
 
 pub mod v1 {
+    #![allow(clippy::unit_arg)]
     hrpc::include_proto!("protocol.chat.v1");
 }
 pub use v1::*;

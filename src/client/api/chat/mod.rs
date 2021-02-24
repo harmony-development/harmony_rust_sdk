@@ -118,7 +118,7 @@ client_api! {
 /// This endpoint requires authentication.
 pub async fn stream_events(
     client: &Client,
-) -> ClientResult<hrpc::Socket<StreamEventsRequest, Event>> {
+) -> ClientResult<hrpc::client::Socket<StreamEventsRequest, Event>> {
     let response = client.chat_lock().await.stream_events().await;
     log::debug!("Received response: {:?}", response);
     response.map_err(Into::into)

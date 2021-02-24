@@ -13,6 +13,7 @@ pub mod chat;
 #[cfg(feature = "gen_auth")]
 pub mod auth {
     pub mod v1 {
+        #![allow(clippy::unit_arg)]
         hrpc::include_proto!("protocol.auth.v1");
     }
     pub use v1::*;
