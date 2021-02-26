@@ -528,9 +528,9 @@ dependencies = [
 
 [[package]]
 name = "hrpc"
-version = "0.3.1"
+version = "0.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e4b830025c885c0fa4864da7310d779b80ce5ba16ed76c06f4679854cb8a49a2"
+checksum = "3dbadff9ce6de69acf8bdfb53d666fc60ba57747ffad552db6da171bca30a0b5"
 dependencies = [
  "async-trait",
  "async-tungstenite",
@@ -547,9 +547,9 @@ dependencies = [
 
 [[package]]
 name = "hrpc-build"
-version = "0.2.3"
+version = "0.3.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "73437cf6df3d806863ff34c02d15251b4ac72517419d1dc3d6f87661da996f38"
+checksum = "d883876ed4002502cf0e90f1a34205362ef41bd374a7ee9fefb717faf6b494b6"
 dependencies = [
  "proc-macro2",
  "prost",
@@ -1267,9 +1267,9 @@ dependencies = [
 
 [[package]]
 name = "security-framework"
-version = "2.1.0"
+version = "2.1.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c6af1b6204f89cf0069736daf8b852573e3bc34898eee600e95d3dd855c12e81"
+checksum = "2dfd318104249865096c8da1dfabf09ddbb6d0330ea176812a62ec75e40c4166"
 dependencies = [
  "bitflags",
  "core-foundation",
@@ -1280,9 +1280,9 @@ dependencies = [
 
 [[package]]
 name = "security-framework-sys"
-version = "2.1.0"
+version = "2.1.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "31531d257baab426203cf81c5ce1b0b55159dda7ed602ac81b582ccd62265741"
+checksum = "dee48cdde5ed250b0d3252818f646e174ab414036edb884dde62d80a3ac6082d"
 dependencies = [
  "core-foundation-sys",
  "libc",
@@ -1310,9 +1310,9 @@ dependencies = [
 
 [[package]]
 name = "serde_json"
-version = "1.0.62"
+version = "1.0.63"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ea1c6153794552ea7cf7cf63b1231a25de00ec90db326ba6264440fa08e31486"
+checksum = "43535db9747a4ba938c0ce0a98cc631a46ebf943c9e1d604e091df6007620bf6"
 dependencies = [
  "itoa",
  "ryu",
