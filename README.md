@@ -5,7 +5,7 @@
 ![MSRV](https://img.shields.io/badge/MSRV-previous%20stable-red)
 
 Rust implementation of [the Harmony chat protocol](https://github.com/harmony-development).
-Currently implements a lightweight client and a client API (powered by [tonic](https://crates.io/crates/tonic)), along with auto generated API via [tonic-build](https://crates.io/crates/tonic-build).
+Currently implements a lightweight client and a client API (powered by [hrpc](https://crates.io/crates/hrpc)), along with auto generated API via [hrpc-build](https://crates.io/crates/hrpc-build).
 
 ## Requirements
 - Latest stable Rust and Cargo.
