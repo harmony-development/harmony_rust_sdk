@@ -137,7 +137,7 @@
 <span id="134">134</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
-<span class="kw">use</span> <span class="kw">crate</span>::{<span class="ident">api</span>::<span class="ident">chat</span>::<span class="kw-2">*</span>, <span class="ident">client</span>, <span class="ident">client_api</span>};
+<span class="kw">use</span> <span class="kw">crate</span>::{<span class="ident">api</span>::<span class="ident">chat</span>::<span class="kw-2">*</span>, <span class="ident">client_api</span>};
 
 <span class="kw">use</span> <span class="ident">hrpc</span>::<span class="ident">url</span>::<span class="ident">Url</span>;
 
@@ -256,7 +256,7 @@
 <span class="doccomment">/// This endpoint requires authentication.</span>
 <span class="kw">pub</span> <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">stream_events</span>(
     <span class="ident">client</span>: <span class="kw-2">&amp;</span><span class="ident">Client</span>,
-) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">ClientResult</span><span class="op">&lt;</span><span class="ident">hrpc</span>::<span class="ident">client</span>::<span class="ident">Socket</span><span class="op">&lt;</span><span class="ident">StreamEventsRequest</span>, <span class="ident">Event</span><span class="op">&gt;</span><span class="op">&gt;</span> {
+) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">ClientResult</span><span class="op">&lt;</span><span class="ident">hrpc</span>::<span class="ident">client</span>::<span class="ident">socket</span>::<span class="ident">Socket</span><span class="op">&lt;</span><span class="ident">StreamEventsRequest</span>, <span class="ident">Event</span><span class="op">&gt;</span><span class="op">&gt;</span> {
     <span class="kw">use</span> <span class="ident">hrpc</span>::<span class="ident">IntoRequest</span>;
 
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">req</span> <span class="op">=</span> ().<span class="ident">into_request</span>();

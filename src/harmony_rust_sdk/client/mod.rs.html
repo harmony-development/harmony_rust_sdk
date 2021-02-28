@@ -437,6 +437,9 @@
 <span id="434">434</span>
 <span id="435">435</span>
 <span id="436">436</span>
+<span id="437">437</span>
+<span id="438">438</span>
+<span id="439">439</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! Rust client implementation for Harmony, powered by [`hrpc`].</span>
 <span class="doccomment">//!</span>
@@ -847,7 +850,10 @@
 <span class="doccomment">/// Event subscription socket.</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">EventsSocket</span> {
-    <span class="ident">inner</span>: <span class="ident">hrpc</span>::<span class="ident">client</span>::<span class="ident">Socket</span><span class="op">&lt;</span><span class="kw">crate</span>::<span class="ident">api</span>::<span class="ident">chat</span>::<span class="ident">StreamEventsRequest</span>, <span class="kw">crate</span>::<span class="ident">api</span>::<span class="ident">chat</span>::<span class="ident">Event</span><span class="op">&gt;</span>,
+    <span class="ident">inner</span>: <span class="ident">hrpc</span>::<span class="ident">client</span>::<span class="ident">socket</span>::<span class="ident">Socket</span><span class="op">&lt;</span>
+        <span class="kw">crate</span>::<span class="ident">api</span>::<span class="ident">chat</span>::<span class="ident">StreamEventsRequest</span>,
+        <span class="kw">crate</span>::<span class="ident">api</span>::<span class="ident">chat</span>::<span class="ident">Event</span>,
+    <span class="op">&gt;</span>,
 }
 
 <span class="kw">impl</span> <span class="ident">EventsSocket</span> {
