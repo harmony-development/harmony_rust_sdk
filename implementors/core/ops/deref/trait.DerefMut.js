@@ -1,3 +1,0 @@
-(function() {var implementors = {};
-implementors["harmony_rust_sdk"] = [{"text":"impl DerefMut for ChatServiceClient","synthetic":false,"types":[]},{"text":"impl DerefMut for AuthServiceClient","synthetic":false,"types":[]},{"text":"impl DerefMut for MediaProxyServiceClient","synthetic":false,"types":[]},{"text":"impl DerefMut for VoiceServiceClient","synthetic":false,"types":[]}];
-if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()

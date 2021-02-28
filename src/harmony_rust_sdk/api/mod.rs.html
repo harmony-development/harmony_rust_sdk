@@ -225,6 +225,7 @@
 <span id="222">222</span>
 <span id="223">223</span>
 <span id="224">224</span>
+<span id="225">225</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="kw">use</span> <span class="ident">std</span>::{
     <span class="ident">convert</span>::<span class="ident">TryFrom</span>,
@@ -241,6 +242,7 @@
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;gen_auth&quot;</span>)]</span>
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">auth</span> {
     <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">v1</span> {
+        <span class="attribute">#![<span class="ident">allow</span>(<span class="ident">clippy</span>::<span class="ident">unit_arg</span>)]</span>
         <span class="ident">hrpc</span>::<span class="macro">include_proto</span><span class="macro">!</span>(<span class="string">&quot;protocol.auth.v1&quot;</span>);
     }
     <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">v1</span>::<span class="kw-2">*</span>;

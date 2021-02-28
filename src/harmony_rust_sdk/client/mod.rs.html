@@ -437,21 +437,6 @@
 <span id="434">434</span>
 <span id="435">435</span>
 <span id="436">436</span>
-<span id="437">437</span>
-<span id="438">438</span>
-<span id="439">439</span>
-<span id="440">440</span>
-<span id="441">441</span>
-<span id="442">442</span>
-<span id="443">443</span>
-<span id="444">444</span>
-<span id="445">445</span>
-<span id="446">446</span>
-<span id="447">447</span>
-<span id="448">448</span>
-<span id="449">449</span>
-<span id="450">450</span>
-<span id="451">451</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! Rust client implementation for Harmony, powered by [`hrpc`].</span>
 <span class="doccomment">//!</span>
@@ -606,13 +591,8 @@
         );
 
         <span class="kw">let</span> <span class="ident">auth</span> <span class="op">=</span> <span class="ident">AuthService</span>::<span class="ident">new</span>(<span class="ident">http</span>.<span class="ident">clone</span>(), <span class="ident">homeserver_url</span>.<span class="ident">clone</span>())<span class="question-mark">?</span>;
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">chat</span> <span class="op">=</span> <span class="ident">ChatService</span>::<span class="ident">new</span>(<span class="ident">http</span>.<span class="ident">clone</span>(), <span class="ident">homeserver_url</span>.<span class="ident">clone</span>())<span class="question-mark">?</span>;
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">mediaproxy</span> <span class="op">=</span> <span class="ident">MediaProxyService</span>::<span class="ident">new</span>(<span class="ident">http</span>.<span class="ident">clone</span>(), <span class="ident">homeserver_url</span>.<span class="ident">clone</span>())<span class="question-mark">?</span>;
-
-        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">session</span>) <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">session</span> {
-            <span class="ident">chat</span>.<span class="ident">set_auth_token</span>(<span class="prelude-val">Some</span>(<span class="ident">session</span>.<span class="ident">session_token</span>.<span class="ident">clone</span>()));
-            <span class="ident">mediaproxy</span>.<span class="ident">set_auth_token</span>(<span class="prelude-val">Some</span>(<span class="ident">session</span>.<span class="ident">session_token</span>.<span class="ident">clone</span>()));
-        }
+        <span class="kw">let</span> <span class="ident">chat</span> <span class="op">=</span> <span class="ident">ChatService</span>::<span class="ident">new</span>(<span class="ident">http</span>.<span class="ident">clone</span>(), <span class="ident">homeserver_url</span>.<span class="ident">clone</span>())<span class="question-mark">?</span>;
+        <span class="kw">let</span> <span class="ident">mediaproxy</span> <span class="op">=</span> <span class="ident">MediaProxyService</span>::<span class="ident">new</span>(<span class="ident">http</span>.<span class="ident">clone</span>(), <span class="ident">homeserver_url</span>.<span class="ident">clone</span>())<span class="question-mark">?</span>;
 
         <span class="kw">let</span> <span class="ident">data</span> <span class="op">=</span> <span class="ident">ClientData</span> {
             <span class="ident">homeserver_url</span>,
@@ -776,12 +756,6 @@
             <span class="kw">let</span> <span class="ident">step</span> <span class="op">=</span> <span class="ident">api</span>::<span class="ident">auth</span>::<span class="ident">next_step</span>(<span class="self">self</span>, <span class="ident">AuthResponse</span>::<span class="ident">new</span>(<span class="ident">auth_id</span>, <span class="ident">response</span>)).<span class="kw">await</span><span class="question-mark">?</span>;
 
             <span class="prelude-val">Ok</span>(<span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">auth_step</span>::<span class="ident">Step</span>::<span class="ident">Session</span>(<span class="ident">session</span>)) <span class="op">=</span> <span class="ident">step</span>.<span class="ident">step</span> {
-                <span class="self">self</span>.<span class="ident">chat_lock</span>()
-                    .<span class="kw">await</span>
-                    .<span class="ident">set_auth_token</span>(<span class="prelude-val">Some</span>(<span class="ident">session</span>.<span class="ident">session_token</span>.<span class="ident">clone</span>()));
-                <span class="self">self</span>.<span class="ident">mediaproxy_lock</span>()
-                    .<span class="kw">await</span>
-                    .<span class="ident">set_auth_token</span>(<span class="prelude-val">Some</span>(<span class="ident">session</span>.<span class="ident">session_token</span>.<span class="ident">clone</span>()));
                 <span class="kw-2">*</span><span class="self">self</span>.<span class="ident">auth_status_lock</span>() <span class="op">=</span> <span class="ident">AuthStatus</span>::<span class="ident">Complete</span>(<span class="ident">session</span>);
                 <span class="prelude-val">None</span>
             } <span class="kw">else</span> {
@@ -873,7 +847,7 @@
 <span class="doccomment">/// Event subscription socket.</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">EventsSocket</span> {
-    <span class="ident">inner</span>: <span class="ident">hrpc</span>::<span class="ident">Socket</span><span class="op">&lt;</span><span class="kw">crate</span>::<span class="ident">api</span>::<span class="ident">chat</span>::<span class="ident">StreamEventsRequest</span>, <span class="kw">crate</span>::<span class="ident">api</span>::<span class="ident">chat</span>::<span class="ident">Event</span><span class="op">&gt;</span>,
+    <span class="ident">inner</span>: <span class="ident">hrpc</span>::<span class="ident">client</span>::<span class="ident">Socket</span><span class="op">&lt;</span><span class="kw">crate</span>::<span class="ident">api</span>::<span class="ident">chat</span>::<span class="ident">StreamEventsRequest</span>, <span class="kw">crate</span>::<span class="ident">api</span>::<span class="ident">chat</span>::<span class="ident">Event</span><span class="op">&gt;</span>,
 }
 
 <span class="kw">impl</span> <span class="ident">EventsSocket</span> {
@@ -881,13 +855,9 @@
     <span class="kw">pub</span> <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">get_event</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ClientResult</span><span class="op">&lt;</span><span class="kw">crate</span>::<span class="ident">api</span>::<span class="ident">chat</span>::<span class="ident">event</span>::<span class="ident">Event</span><span class="op">&gt;</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">get_message</span>().<span class="kw">await</span><span class="question-mark">?</span>;
         <span class="kw">match</span> <span class="ident">res</span> {
-            <span class="prelude-val">Ok</span>(<span class="ident">maybe_ev</span>) <span class="op">=</span><span class="op">&gt;</span> {
-                <span class="kw">if</span> <span class="kw">let</span> <span class="ident">hrpc</span>::<span class="ident">SocketMessage</span>::<span class="ident">Protobuf</span>(<span class="ident">ev</span>) <span class="op">=</span> <span class="ident">maybe_ev</span> {
-                    <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">event</span>) <span class="op">=</span> <span class="ident">ev</span>.<span class="ident">event</span> {
-                        <span class="prelude-val">Some</span>(<span class="prelude-val">Ok</span>(<span class="ident">event</span>))
-                    } <span class="kw">else</span> {
-                        <span class="prelude-val">None</span>
-                    }
+            <span class="prelude-val">Ok</span>(<span class="ident">ev</span>) <span class="op">=</span><span class="op">&gt;</span> {
+                <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">event</span>) <span class="op">=</span> <span class="ident">ev</span>.<span class="ident">event</span> {
+                    <span class="prelude-val">Some</span>(<span class="prelude-val">Ok</span>(<span class="ident">event</span>))
                 } <span class="kw">else</span> {
                     <span class="prelude-val">None</span>
                 }

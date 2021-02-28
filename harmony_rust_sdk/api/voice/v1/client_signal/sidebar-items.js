@@ -1,1 +1,0 @@
-initSidebarItems({"enum":[["Event",""]],"struct":[["Answer",""],["Candidate",""]]});

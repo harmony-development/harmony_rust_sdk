@@ -155,11 +155,13 @@
 <span id="152">152</span>
 <span id="153">153</span>
 <span id="154">154</span>
+<span id="155">155</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="kw">use</span> <span class="ident">harmony_derive</span>::<span class="ident">into_request</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">fmt</span>::{<span class="self">self</span>, <span class="ident">Display</span>, <span class="ident">Formatter</span>};
 
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">v1</span> {
+    <span class="attribute">#![<span class="ident">allow</span>(<span class="ident">clippy</span>::<span class="ident">unit_arg</span>)]</span>
     <span class="ident">hrpc</span>::<span class="macro">include_proto</span><span class="macro">!</span>(<span class="string">&quot;protocol.chat.v1&quot;</span>);
 }
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">v1</span>::<span class="kw-2">*</span>;
