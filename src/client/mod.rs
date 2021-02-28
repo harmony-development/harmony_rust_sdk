@@ -151,13 +151,8 @@ impl Client {
         );
 
         let auth = AuthService::new(http.clone(), homeserver_url.clone())?;
-        let mut chat = ChatService::new(http.clone(), homeserver_url.clone())?;
-        let mut mediaproxy = MediaProxyService::new(http.clone(), homeserver_url.clone())?;
-
-        if let Some(session) = &session {
-            chat.set_auth_token(Some(session.session_token.clone()));
-            mediaproxy.set_auth_token(Some(session.session_token.clone()));
-        }
+        let chat = ChatService::new(http.clone(), homeserver_url.clone())?;
+        let mediaproxy = MediaProxyService::new(http.clone(), homeserver_url.clone())?;
 
         let data = ClientData {
             homeserver_url,
@@ -321,12 +316,6 @@ impl Client {
             let step = api::auth::next_step(self, AuthResponse::new(auth_id, response)).await?;
 
             Ok(if let Some(auth_step::Step::Session(session)) = step.step {
-                self.chat_lock()
-                    .await
-                    .set_auth_token(Some(session.session_token.clone()));
-                self.mediaproxy_lock()
-                    .await
-                    .set_auth_token(Some(session.session_token.clone()));
                 *self.auth_status_lock() = AuthStatus::Complete(session);
                 None
             } else {

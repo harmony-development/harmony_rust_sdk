@@ -119,7 +119,7 @@ client_api! {
 pub async fn stream_events(
     client: &Client,
 ) -> ClientResult<hrpc::client::Socket<StreamEventsRequest, Event>> {
-    let response = client.chat_lock().await.stream_events().await;
+    let response = client.chat_lock().await.stream_events(()).await;
     log::debug!("Received response: {:?}", response);
     response.map_err(Into::into)
 }

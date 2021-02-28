@@ -1,3 +1,5 @@
+#![recursion_limit = "256"]
+
 /*!
 Rust implementation of [the Harmony chat protocol](https://github.com/harmony-development).
 Currently implements a lightweight client and a client API (powered by [hrpc](https://crates.io/crates/hrpc)), along with auto generated API via [hrpc-build](https://crates.io/crates/hrpc-build).
