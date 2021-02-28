@@ -1,5 +1,5 @@
 use super::*;
-use crate::{api::chat::*, client_api};
+use crate::{api::chat::*, client, client_api};
 
 use hrpc::url::Url;
 
@@ -119,7 +119,16 @@ client_api! {
 pub async fn stream_events(
     client: &Client,
 ) -> ClientResult<hrpc::client::Socket<StreamEventsRequest, Event>> {
-    let response = client.chat_lock().await.stream_events(()).await;
+    use hrpc::IntoRequest;
+
+    let mut req = ().into_request();
+    if let Some(session_token) = client.auth_status().session().map(|s| &s.session_token) {
+        req = req.header(
+            "Authorization".parse().unwrap(),
+            session_token.parse().unwrap(),
+        );
+    }
+    let response = client.chat_lock().await.stream_events(req).await;
     log::debug!("Received response: {:?}", response);
     response.map_err(Into::into)
 }

@@ -39,8 +39,13 @@ macro_rules! client_api {
         pub async fn $api_fn<
             Req: ::std::convert::Into<$req> + ::std::fmt::Debug,
         >(client: &$crate::client::Client, request: Req) -> $crate::client::ClientResult<$resp> {
+            use hrpc::IntoRequest;
+
             log::debug!("Sending request: {:?}", request);
-            let request = request.into();
+            let mut request = request.into().into_request();
+            if let Some(session_token) = client.auth_status().session().map(|s| &s.session_token) {
+                request = request.header("Authorization".parse().unwrap(), session_token.parse().unwrap());
+            }
 
             paste::paste! {
                 let response = client
