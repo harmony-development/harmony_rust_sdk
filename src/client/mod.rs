@@ -407,7 +407,10 @@ impl Client {
 /// Event subscription socket.
 #[derive(Debug)]
 pub struct EventsSocket {
-    inner: hrpc::client::Socket<crate::api::chat::StreamEventsRequest, crate::api::chat::Event>,
+    inner: hrpc::client::socket::Socket<
+        crate::api::chat::StreamEventsRequest,
+        crate::api::chat::Event,
+    >,
 }
 
 impl EventsSocket {

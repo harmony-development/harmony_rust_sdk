@@ -527,9 +527,9 @@ dependencies = [
 
 [[package]]
 name = "hrpc"
-version = "0.5.1"
+version = "0.6.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "198cb57c9fae0aa54e5272457af163534ddf73b48bcb6146f64611c0887faa96"
+checksum = "91a3cba5f5eebde023bf87e04bb069c8d8457374fbbaa6a692b9413c6eba1502"
 dependencies = [
  "async-trait",
  "async-tungstenite",
@@ -547,9 +547,9 @@ dependencies = [
 
 [[package]]
 name = "hrpc-build"
-version = "0.3.1"
+version = "0.3.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "273e0aa104f232dde40ba7b4fb0b77c435a947903ef9cc1a294e553a0e0f4aa1"
+checksum = "24444e8c30d64118479132c9a7df9edb0f4f05bc355610bd133db504668b2287"
 dependencies = [
  "proc-macro2",
  "prost",
@@ -1310,9 +1310,9 @@ dependencies = [
 
 [[package]]
 name = "serde_json"
-version = "1.0.63"
+version = "1.0.64"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "43535db9747a4ba938c0ce0a98cc631a46ebf943c9e1d604e091df6007620bf6"
+checksum = "799e97dc9fdae36a5c8b8f2cae9ce2ee9fdce2058c57a93e6099d919fd982f79"
 dependencies = [
  "itoa",
  "ryu",
@@ -1755,6 +1755,7 @@ dependencies = [
  "serde_json",
  "serde_urlencoded",
  "tokio",
+ "tokio-rustls",
  "tokio-stream",
  "tokio-tungstenite",
  "tokio-util",

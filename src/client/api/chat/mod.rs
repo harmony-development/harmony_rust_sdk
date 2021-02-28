@@ -1,5 +1,5 @@
 use super::*;
-use crate::{api::chat::*, client, client_api};
+use crate::{api::chat::*, client_api};
 
 use hrpc::url::Url;
 
@@ -118,7 +118,7 @@ client_api! {
 /// This endpoint requires authentication.
 pub async fn stream_events(
     client: &Client,
-) -> ClientResult<hrpc::client::Socket<StreamEventsRequest, Event>> {
+) -> ClientResult<hrpc::client::socket::Socket<StreamEventsRequest, Event>> {
     use hrpc::IntoRequest;
 
     let mut req = ().into_request();
