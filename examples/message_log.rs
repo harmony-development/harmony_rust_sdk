@@ -19,6 +19,8 @@ use harmony_rust_sdk::{
     },
 };
 
+use tracing::info;
+
 const EMAIL: &str = "rust_sdk_test@example.org";
 const USERNAME: &str = "rust_sdk_test";
 const PASSWORD: &str = "123456789Ab";
@@ -42,7 +44,7 @@ async fn main() -> ClientResult<()> {
 
     // Let's create our client first
     let client = Client::new(HOMESERVER.parse().unwrap(), None).await?;
-    log::info!("Successfully created client.");
+    info!("Successfully created client.");
 
     // We try to login, if it fails we register (which also authenticates)
     client.begin_auth().await?;
@@ -55,7 +57,7 @@ async fn main() -> ClientResult<()> {
         .await;
 
     if login_result.map_or(false, |maybe_step| maybe_step.is_some()) {
-        log::info!("Login failed, let's try registering.");
+        info!("Login failed, let's try registering.");
         client.prev_auth_step().await?;
         client
             .next_auth_step(AuthStepResponse::register_choice())
@@ -63,9 +65,9 @@ async fn main() -> ClientResult<()> {
         client
             .next_auth_step(AuthStepResponse::register_form(EMAIL, USERNAME, PASSWORD))
             .await?;
-        log::info!("Successfully registered.");
+        info!("Successfully registered.");
     } else {
-        log::info!("Successfully logon.");
+        info!("Successfully logon.");
     }
 
     // Change our bots status to online and make sure its marked as a bot
@@ -93,7 +95,7 @@ async fn main() -> ClientResult<()> {
     tokio::fs::write(GUILD_ID_FILE, guild_id.to_string())
         .await
         .unwrap();
-    log::info!("In guild: {}", guild_id);
+    info!("In guild: {}", guild_id);
 
     // Subscribe to guild events
     let mut socket = client
@@ -107,7 +109,7 @@ async fn main() -> ClientResult<()> {
         }
         if let Some(Ok(event::Event::SentMessage(sent_message))) = socket.get_event().await {
             if let Some(message) = sent_message.message {
-                log::info!("Received new message: {:?}", message);
+                info!("Received new message: {:?}", message);
                 println!(
                     "Received new message with ID {}, from guild {} in channel {} sent by {}:\n{}",
                     message.message_id,

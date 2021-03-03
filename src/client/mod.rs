@@ -144,7 +144,7 @@ impl Client {
             homeserver_url.set_port(Some(2289)).unwrap();
         }
 
-        log::debug!(
+        tracing::debug!(
             "Using homeserver URL {} with session {:?} to create a `Client`",
             homeserver_url,
             session

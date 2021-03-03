@@ -12,6 +12,7 @@ use harmony_rust_sdk::{
 };
 use hrpc::url::Url;
 use rest::FileId;
+use tracing::info;
 
 const EMAIL: &str = "rust_sdk_test@example.org";
 const PASSWORD: &str = "123456789Ab";
@@ -35,16 +36,16 @@ async fn main() -> ClientResult<()> {
     env_logger::init();
 
     {
-        log::info!("Testing name resolution...");
+        info!("Testing name resolution...");
         Client::new(TEST_SERVER_NAME_RES.parse().unwrap(), None).await?;
-        log::info!("Name resolution works!");
+        info!("Name resolution works!");
     }
 
-    log::info!("Testing client connection...");
+    info!("Testing client connection...");
     let client = Client::new(TEST_SERVER.parse().unwrap(), None).await?;
-    log::info!("Created client");
+    info!("Created client");
 
-    log::info!("Testing auth...");
+    info!("Testing auth...");
     client.begin_auth().await?;
     client.next_auth_step(AuthStepResponse::Initial).await?;
     client
@@ -54,37 +55,37 @@ async fn main() -> ClientResult<()> {
         .next_auth_step(AuthStepResponse::login_form(EMAIL, PASSWORD))
         .await?;
     assert_eq!(client.auth_status().is_authenticated(), true);
-    log::info!("Logged in");
+    info!("Logged in");
 
-    log::info!("Testing profile update...");
+    info!("Testing profile update...");
     profile::profile_update(
         &client,
         ProfileUpdate::default().new_status(harmonytypes::UserStatus::OnlineUnspecified),
     )
     .await?;
-    log::info!("Updated profile");
+    info!("Updated profile");
 
     let response = guild::preview_guild(&client, invite::InviteId::new("harmony").unwrap()).await?;
-    log::info!("Preview guild response: {:?}", response);
+    info!("Preview guild response: {:?}", response);
     assert_eq!(response.name.as_str(), "Harmony Development");
 
     let response = guild::get_guild_list(&client, GetGuildListRequest {}).await?;
-    log::info!("Get guild list response: {:?}", response);
+    info!("Get guild list response: {:?}", response);
 
     // let response = permissions::get_guild_roles(&client, TEST_GUILD).await?;
-    // log::info!("Get guild roles response: {:?}", response);
+    // info!("Get guild roles response: {:?}", response);
 
     let response = guild::get_guild_members(&client, GuildId::new(TEST_GUILD)).await?;
-    log::info!("Get guild members response: {:?}", response);
+    info!("Get guild members response: {:?}", response);
 
     let response = emote::get_emote_packs(&client, GetEmotePacksRequest {}).await?;
-    log::info!("Get emote packs response: {:?}", response);
+    info!("Get emote packs response: {:?}", response);
 
     let response = channel::get_guild_channels(&client, GuildId::new(TEST_GUILD)).await?;
-    log::info!("Get guild channels response: {:?}", response);
+    info!("Get guild channels response: {:?}", response);
 
     typing(&client, Typing::new(TEST_GUILD, TEST_CHANNEL)).await?;
-    log::info!("Notified the server that we are typing");
+    info!("Notified the server that we are typing");
 
     let current_time = std::time::UNIX_EPOCH.elapsed().unwrap().as_secs();
     let msg = format!("test at {}", current_time);
@@ -93,23 +94,23 @@ async fn main() -> ClientResult<()> {
         SendMessage::new(TEST_GUILD, TEST_CHANNEL, msg.clone()),
     )
     .await?;
-    log::info!("Sent a test message");
+    info!("Sent a test message");
 
     let response =
         channel::get_channel_messages(&client, GetChannelMessages::new(TEST_GUILD, TEST_CHANNEL))
             .await?;
-    log::info!("Get channel messages response: {:?}", response);
+    info!("Get channel messages response: {:?}", response);
     let our_msg = response.messages.first().unwrap();
     assert_eq!(our_msg.content, msg.as_str());
 
     let instant_view =
         mediaproxy::instant_view(&client, INSTANT_VIEW_URL.parse::<Url>().unwrap()).await?;
-    log::info!("Instant view response: {:?}", instant_view);
+    info!("Instant view response: {:?}", instant_view);
     assert_eq!(&instant_view.metadata.unwrap().url, INSTANT_VIEW_URL);
 
     let can_instant_view =
         mediaproxy::can_instant_view(&client, INSTANT_VIEW_URL.parse::<Url>().unwrap()).await?;
-    log::info!("Can instant view response: {:?}", can_instant_view);
+    info!("Can instant view response: {:?}", can_instant_view);
 
     let response = rest::upload(
         &client,
@@ -118,13 +119,13 @@ async fn main() -> ClientResult<()> {
         FILE_DATA.as_bytes().to_vec(),
     )
     .await?;
-    log::info!("Upload file response: {:?}", response);
+    info!("Upload file response: {:?}", response);
 
     let file_id = response.text().await?;
-    log::info!("Uploaded file, returned ID: {}", file_id);
+    info!("Uploaded file, returned ID: {}", file_id);
 
     let response = rest::download(&client, rest::FileId::Id(FILE_ID.to_string())).await?;
-    log::info!("Download file response: {:?}", response);
+    info!("Download file response: {:?}", response);
 
     let content_type = response
         .headers()
@@ -150,7 +151,7 @@ async fn main() -> ClientResult<()> {
         )),
     )
     .await?;
-    log::info!("Download file response: {:?}", response);
+    info!("Download file response: {:?}", response);
 
     let content_type = response
         .headers()

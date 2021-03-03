@@ -41,7 +41,7 @@ macro_rules! client_api {
         >(client: &$crate::client::Client, request: Req) -> $crate::client::ClientResult<$resp> {
             use hrpc::IntoRequest;
 
-            log::debug!("Sending request: {:?}", request);
+            tracing::debug!("Sending request: {:?}", request);
             let mut request = request.into().into_request();
             if let Some(session_token) = client.auth_status().session().map(|s| &s.session_token) {
                 request = request.header("Authorization".parse().unwrap(), session_token.parse().unwrap());
@@ -54,7 +54,7 @@ macro_rules! client_api {
                     .$api_fn (request)
                     .await;
             }
-            log::debug!("Received response: {:?}", response);
+            tracing::debug!("Received response: {:?}", response);
 
             response.map_err(::std::convert::Into::into)
         }
