@@ -587,7 +587,7 @@
             <span class="ident">homeserver_url</span>.<span class="ident">set_port</span>(<span class="prelude-val">Some</span>(<span class="number">2289</span>)).<span class="ident">unwrap</span>();
         }
 
-        <span class="ident">log</span>::<span class="macro">debug</span><span class="macro">!</span>(
+        <span class="ident">tracing</span>::<span class="macro">debug</span><span class="macro">!</span>(
             <span class="string">&quot;Using homeserver URL {} with session {:?} to create a `Client`&quot;</span>,
             <span class="ident">homeserver_url</span>,
             <span class="ident">session</span>
