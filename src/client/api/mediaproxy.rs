@@ -1,4 +1,6 @@
-pub use crate::api::mediaproxy::{FetchLinkMetadataRequest, InstantViewRequest, SiteMetadata};
+pub use crate::api::mediaproxy::{
+    FetchLinkMetadataRequest, FetchLinkMetadataResponse, InstantViewRequest, SiteMetadata,
+};
 
 #[cfg(feature = "request_method")]
 use super::*;
@@ -31,8 +33,7 @@ client_api! {
 
 client_api! {
     /// Request a link's (site) metadata from the server.
-    response: SiteMetadata,
-    request: FetchLinkMetadataRequest,
+    action: FetchLinkMetadata,
     api_fn: fetch_link_metadata,
     service: mediaproxy,
 }

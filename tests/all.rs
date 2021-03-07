@@ -112,6 +112,10 @@ async fn main() -> ClientResult<()> {
         mediaproxy::can_instant_view(&client, INSTANT_VIEW_URL.parse::<Url>().unwrap()).await?;
     info!("Can instant view response: {:?}", can_instant_view);
 
+    let fetch_link_metadata =
+        mediaproxy::fetch_link_metadata(&client, INSTANT_VIEW_URL.parse::<Url>().unwrap()).await?;
+    info!("Fetch link metadata response: {:?}", fetch_link_metadata);
+
     let response = rest::upload(
         &client,
         FILENAME.to_string(),
