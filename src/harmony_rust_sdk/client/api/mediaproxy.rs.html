@@ -47,8 +47,11 @@
 <span id="44">44</span>
 <span id="45">45</span>
 <span id="46">46</span>
+<span id="47">47</span>
 </pre><div class="example-wrap"><pre class="rust ">
-<span class="kw">pub</span> <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">api</span>::<span class="ident">mediaproxy</span>::{<span class="ident">FetchLinkMetadataRequest</span>, <span class="ident">InstantViewRequest</span>, <span class="ident">SiteMetadata</span>};
+<span class="kw">pub</span> <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">api</span>::<span class="ident">mediaproxy</span>::{
+    <span class="ident">FetchLinkMetadataRequest</span>, <span class="ident">FetchLinkMetadataResponse</span>, <span class="ident">InstantViewRequest</span>, <span class="ident">SiteMetadata</span>,
+};
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;request_method&quot;</span>)]</span>
 <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
@@ -81,8 +84,7 @@
 
 <span class="macro">client_api</span><span class="macro">!</span> {
     <span class="doccomment">/// Request a link&#39;s (site) metadata from the server.</span>
-    <span class="ident">response</span>: <span class="ident">SiteMetadata</span>,
-    <span class="ident">request</span>: <span class="ident">FetchLinkMetadataRequest</span>,
+    <span class="ident">action</span>: <span class="ident">FetchLinkMetadata</span>,
     <span class="ident">api_fn</span>: <span class="ident">fetch_link_metadata</span>,
     <span class="ident">service</span>: <span class="ident">mediaproxy</span>,
 }
