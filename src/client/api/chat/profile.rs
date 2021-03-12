@@ -1,4 +1,6 @@
-pub use crate::api::chat::{GetUserMetadataRequest, GetUserRequest, ProfileUpdateRequest};
+pub use crate::api::chat::{
+    GetUserBulkRequest, GetUserMetadataRequest, GetUserRequest, ProfileUpdateRequest,
+};
 
 use super::{harmonytypes::UserStatus, *};
 
@@ -7,6 +9,27 @@ client_api! {
     action: GetUser,
     api_fn: get_user,
     service: chat,
+}
+
+client_api! {
+    /// Get given users' profile.
+    action: GetUserBulk,
+    api_fn: get_user_bulk,
+    service: chat,
+}
+
+impl From<Vec<u64>> for GetUserBulkRequest {
+    fn from(ids: Vec<u64>) -> Self {
+        Self { user_ids: ids }
+    }
+}
+
+impl From<Vec<UserId>> for GetUserBulkRequest {
+    fn from(ids: Vec<UserId>) -> Self {
+        Self {
+            user_ids: ids.into_iter().map(Into::into).collect(),
+        }
+    }
 }
 
 /// Convenience type to create a valid [`GetUserMetadataRequest`].

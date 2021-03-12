@@ -75,8 +75,23 @@ async fn main() -> ClientResult<()> {
     // let response = permissions::get_guild_roles(&client, TEST_GUILD).await?;
     // info!("Get guild roles response: {:?}", response);
 
-    let response = guild::get_guild_members(&client, GuildId::new(TEST_GUILD)).await?;
-    info!("Get guild members response: {:?}", response);
+    let members_response = guild::get_guild_members(&client, GuildId::new(TEST_GUILD)).await?;
+    info!("Get guild members response: {:?}", members_response);
+
+    let response = profile::get_user(
+        &client,
+        UserId::new(
+            *members_response
+                .members
+                .first()
+                .expect("expected at least one user in guild"),
+        ),
+    )
+    .await?;
+    info!("Get user response: {:?}", response);
+
+    let response = profile::get_user_bulk(&client, members_response.members).await?;
+    info!("Get user bulk response: {:?}", response);
 
     let response = emote::get_emote_packs(&client, GetEmotePacksRequest {}).await?;
     info!("Get emote packs response: {:?}", response);

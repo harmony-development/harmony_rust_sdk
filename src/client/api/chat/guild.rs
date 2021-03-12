@@ -1,8 +1,8 @@
 pub use crate::api::chat::{
-    get_guild_list_response, AddGuildToGuildListRequest, CreateGuildRequest, DeleteGuildRequest,
-    GetGuildListRequest, GetGuildMembersRequest, GetGuildRequest, JoinGuildRequest,
-    LeaveGuildRequest, PreviewGuildRequest, RemoveGuildFromGuildListRequest,
-    UpdateGuildInformationRequest,
+    get_guild_list_response, AddGuildToGuildListRequest, BanUserRequest, CreateGuildRequest,
+    DeleteGuildRequest, GetGuildListRequest, GetGuildMembersRequest, GetGuildRequest,
+    JoinGuildRequest, KickUserRequest, LeaveGuildRequest, PreviewGuildRequest,
+    RemoveGuildFromGuildListRequest, UnbanUserRequest, UpdateGuildInformationRequest,
 };
 
 use super::{harmonytypes::Metadata, *};
@@ -173,5 +173,26 @@ client_api! {
     /// Preview a guild.
     action: PreviewGuild,
     api_fn: preview_guild,
+    service: chat,
+}
+
+client_api! {
+    /// Ban a user.
+    request: BanUserRequest,
+    api_fn: ban_user,
+    service: chat,
+}
+
+client_api! {
+    /// Kick a user.
+    request: KickUserRequest,
+    api_fn: kick_user,
+    service: chat,
+}
+
+client_api! {
+    /// Unban a user.
+    request: UnbanUserRequest,
+    api_fn: unban_user,
     service: chat,
 }
