@@ -48,7 +48,7 @@ impl AuthStepResponse {
     pub fn login_form(email: impl ToString, password: impl ToString) -> Self {
         Self::form(vec![
             Field::String(email.to_string()),
-            Field::Bytes(password.to_string().into_bytes()),
+            Field::Bytes(password.to_string().into_bytes().into()),
         ])
     }
 
@@ -61,7 +61,7 @@ impl AuthStepResponse {
         Self::form(vec![
             Field::String(email.to_string()),
             Field::String(username.to_string()),
-            Field::Bytes(password.to_string().into_bytes()),
+            Field::Bytes(password.to_string().into_bytes().into()),
         ])
     }
 }

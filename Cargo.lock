@@ -417,6 +417,7 @@ dependencies = [
  "parking_lot",
  "paste",
  "prost",
+ "prost-build",
  "prost-types",
  "reqwest",
  "serde",

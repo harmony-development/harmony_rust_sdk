@@ -33,7 +33,9 @@ fn main() {
 
     let protocol_path =
         std::env::var("HARMONY_PROTOCOL_PATH").unwrap_or_else(|_| "protocol".to_string());
-    builder.compile(&protos, &[protocol_path.as_str()]).expect(
+    let mut prost_config = prost_build::Config::default();
+    prost_config.bytes(&["."]);
+    builder.compile_with_config(prost_config, &protos, &[protocol_path.as_str()]).expect(
         "\nProtobuf code generation failed! Are you sure you have `protoc` installed?\nIf so, please also set the PROTOC and PROTOC_INCLUDE as mentioned in the README.\nError",
     );
 
