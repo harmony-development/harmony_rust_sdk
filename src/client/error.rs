@@ -1,4 +1,7 @@
-use std::fmt::{self, Display, Formatter};
+use std::{
+    error::Error as StdError,
+    fmt::{self, Display, Formatter},
+};
 
 pub use crate::api::HmcParseError;
 pub use hrpc::client::ClientError as InternalClientError;
@@ -58,5 +61,16 @@ impl From<UrlError> for ClientError {
 impl From<InternalClientError> for ClientError {
     fn from(e: InternalClientError) -> Self {
         Self::Internal(e)
+    }
+}
+
+impl StdError for ClientError {
+    fn source(&self) -> Option<&(dyn StdError + 'static)> {
+        match self {
+            ClientError::Internal(err) => Some(err),
+            ClientError::Reqwest(err) => Some(err),
+            ClientError::UrlParse(err) => Some(err),
+            _ => None,
+        }
     }
 }
