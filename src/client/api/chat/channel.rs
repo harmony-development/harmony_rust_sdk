@@ -48,15 +48,15 @@ pub struct CreateChannel {
     is_category: bool,
 }
 
-impl Into<CreateChannelRequest> for CreateChannel {
-    fn into(self) -> CreateChannelRequest {
+impl From<CreateChannel> for CreateChannelRequest {
+    fn from(o: CreateChannel) -> CreateChannelRequest {
         CreateChannelRequest {
-            guild_id: self.guild_id,
-            channel_name: self.channel_name,
-            previous_id: self.channel_place.previous(),
-            next_id: self.channel_place.next(),
-            metadata: self.metadata,
-            is_category: self.is_category,
+            guild_id: o.guild_id,
+            channel_name: o.channel_name,
+            previous_id: o.channel_place.previous(),
+            next_id: o.channel_place.next(),
+            metadata: o.metadata,
+            is_category: o.is_category,
         }
     }
 }
@@ -130,13 +130,13 @@ pub struct UpdateChannelOrder {
     new_channel_place: Place,
 }
 
-impl Into<UpdateChannelOrderRequest> for UpdateChannelOrder {
-    fn into(self) -> UpdateChannelOrderRequest {
+impl From<UpdateChannelOrder> for UpdateChannelOrderRequest {
+    fn from(o: UpdateChannelOrder) -> UpdateChannelOrderRequest {
         UpdateChannelOrderRequest {
-            guild_id: self.guild_id,
-            channel_id: self.channel_id,
-            previous_id: self.new_channel_place.previous(),
-            next_id: self.new_channel_place.next(),
+            guild_id: o.guild_id,
+            channel_id: o.channel_id,
+            previous_id: o.new_channel_place.previous(),
+            next_id: o.new_channel_place.next(),
         }
     }
 }

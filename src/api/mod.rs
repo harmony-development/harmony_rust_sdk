@@ -152,9 +152,9 @@ impl Display for Hmc {
     }
 }
 
-impl Into<String> for Hmc {
-    fn into(self) -> String {
-        self.to_string()
+impl From<Hmc> for String {
+    fn from(hmc: Hmc) -> String {
+        hmc.to_string()
     }
 }
 

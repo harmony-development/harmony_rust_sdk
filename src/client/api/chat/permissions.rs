@@ -73,11 +73,11 @@ pub struct AddGuildRole {
     role: Role,
 }
 
-impl Into<AddGuildRoleRequest> for AddGuildRole {
-    fn into(self) -> AddGuildRoleRequest {
+impl From<AddGuildRole> for AddGuildRoleRequest {
+    fn from(o: AddGuildRole) -> AddGuildRoleRequest {
         AddGuildRoleRequest {
-            guild_id: self.guild_id,
-            role: Some(self.role),
+            guild_id: o.guild_id,
+            role: Some(o.role),
         }
     }
 }
@@ -120,15 +120,15 @@ pub struct ModifyGuildRole {
     modify_pingable: bool,
 }
 
-impl Into<ModifyGuildRoleRequest> for ModifyGuildRole {
-    fn into(self) -> ModifyGuildRoleRequest {
+impl From<ModifyGuildRole> for ModifyGuildRoleRequest {
+    fn from(o: ModifyGuildRole) -> ModifyGuildRoleRequest {
         ModifyGuildRoleRequest {
-            guild_id: self.guild_id,
-            modify_name: self.modify_name,
-            modify_color: self.modify_color,
-            modify_hoist: self.modify_hoist,
-            modify_pingable: self.modify_pingable,
-            role: Some(self.role),
+            guild_id: o.guild_id,
+            modify_name: o.modify_name,
+            modify_color: o.modify_color,
+            modify_hoist: o.modify_hoist,
+            modify_pingable: o.modify_pingable,
+            role: Some(o.role),
         }
     }
 }
@@ -148,13 +148,13 @@ pub struct MoveRole {
     new_role_place: Place,
 }
 
-impl Into<MoveRoleRequest> for MoveRole {
-    fn into(self) -> MoveRoleRequest {
+impl From<MoveRole> for MoveRoleRequest {
+    fn from(o: MoveRole) -> MoveRoleRequest {
         MoveRoleRequest {
-            guild_id: self.guild_id,
-            role_id: self.role_id,
-            before_id: self.new_role_place.next(),
-            after_id: self.new_role_place.previous(),
+            guild_id: o.guild_id,
+            role_id: o.role_id,
+            before_id: o.new_role_place.next(),
+            after_id: o.new_role_place.previous(),
         }
     }
 }

@@ -14,10 +14,10 @@ pub enum EventSource {
     Action,
 }
 
-impl Into<StreamEventsRequest> for EventSource {
-    fn into(self) -> StreamEventsRequest {
+impl From<EventSource> for StreamEventsRequest {
+    fn from(o: EventSource) -> StreamEventsRequest {
         StreamEventsRequest {
-            request: Some(match self {
+            request: Some(match o {
                 EventSource::Guild(id) => stream_events_request::Request::SubscribeToGuild(
                     stream_events_request::SubscribeToGuild { guild_id: id },
                 ),

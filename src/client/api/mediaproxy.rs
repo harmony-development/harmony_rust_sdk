@@ -8,19 +8,15 @@ use crate::{api::mediaproxy::*, client_api};
 
 use hrpc::url::Url;
 
-impl Into<FetchLinkMetadataRequest> for Url {
-    fn into(self) -> FetchLinkMetadataRequest {
-        FetchLinkMetadataRequest {
-            url: self.to_string(),
-        }
+impl From<Url> for FetchLinkMetadataRequest {
+    fn from(o: Url) -> FetchLinkMetadataRequest {
+        FetchLinkMetadataRequest { url: o.to_string() }
     }
 }
 
-impl Into<InstantViewRequest> for Url {
-    fn into(self) -> InstantViewRequest {
-        InstantViewRequest {
-            url: self.to_string(),
-        }
+impl From<Url> for InstantViewRequest {
+    fn from(o: Url) -> InstantViewRequest {
+        InstantViewRequest { url: o.to_string() }
     }
 }
 

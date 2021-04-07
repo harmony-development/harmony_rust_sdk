@@ -47,10 +47,10 @@ fn impl_into_req(input: &DeriveInput, req: Ident) -> TokenStream2 {
     };
     let name = &input.ident;
     quote! {
-        impl ::std::convert::Into<#req> for #name {
-            fn into(self) -> #req {
+        impl ::std::convert::From<#name> for #req {
+            fn from(o: #name) -> Self {
                 #req {
-                    #(#fields: self.#fields.into(),)*
+                    #(#fields: o.#fields.into(),)*
                 }
             }
         }

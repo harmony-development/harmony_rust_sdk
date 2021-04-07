@@ -67,11 +67,11 @@ pub struct GuildList {
     homeserver: Url,
 }
 
-impl Into<AddGuildToGuildListRequest> for GuildList {
-    fn into(self) -> AddGuildToGuildListRequest {
+impl From<GuildList> for AddGuildToGuildListRequest {
+    fn from(o: GuildList) -> AddGuildToGuildListRequest {
         AddGuildToGuildListRequest {
-            guild_id: self.guild_id,
-            homeserver: self.homeserver.to_string(),
+            guild_id: o.guild_id,
+            homeserver: o.homeserver.to_string(),
         }
     }
 }
@@ -83,11 +83,11 @@ client_api! {
     service: chat,
 }
 
-impl Into<RemoveGuildFromGuildListRequest> for GuildList {
-    fn into(self) -> RemoveGuildFromGuildListRequest {
+impl From<GuildList> for RemoveGuildFromGuildListRequest {
+    fn from(o: GuildList) -> RemoveGuildFromGuildListRequest {
         RemoveGuildFromGuildListRequest {
-            guild_id: self.guild_id,
-            homeserver: self.homeserver.to_string(),
+            guild_id: o.guild_id,
+            homeserver: o.homeserver.to_string(),
         }
     }
 }

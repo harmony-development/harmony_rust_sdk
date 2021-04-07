@@ -53,9 +53,9 @@ impl FromStr for FileId {
 #[derive(new, Debug, Default, Clone, Into, From, IntoIterator)]
 pub struct FileIds(Vec<FileId>);
 
-impl Into<Vec<String>> for FileIds {
-    fn into(self) -> Vec<String> {
-        self.into_iter().map(|id| id.to_string()).collect()
+impl From<FileIds> for Vec<String> {
+    fn from(o: FileIds) -> Vec<String> {
+        o.into_iter().map(|id| id.to_string()).collect()
     }
 }
 
