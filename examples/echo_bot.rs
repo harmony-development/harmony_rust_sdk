@@ -1,8 +1,5 @@
 //! Example showcasing a very simple echo bot.
-use std::{
-    str::FromStr,
-    sync::atomic::{AtomicBool, Ordering},
-};
+use std::sync::atomic::{AtomicBool, Ordering};
 
 use harmony_rust_sdk::{
     api::chat::event,
@@ -17,7 +14,6 @@ use harmony_rust_sdk::{
                 EventSource,
             },
             harmonytypes::UserStatus,
-            rest::FileId,
         },
         error::ClientResult,
         Client,
@@ -121,20 +117,14 @@ async fn main() -> ClientResult<()> {
                 if message.author_id != self_id {
                     info!("Echoing message: {}", message.message_id);
 
-                    let attachments: Vec<FileId> = message
-                        .attachments
-                        .into_iter()
-                        .flat_map(|a| FileId::from_str(&a.id))
-                        .collect();
+                    let mut send_message = SendMessage::new(guild_id, message.channel_id)
+                        .in_reply_to(message.in_reply_to)
+                        .overrides(message.overrides)
+                        .metadata(message.metadata);
 
-                    let send_message =
-                        SendMessage::new(guild_id, message.channel_id, message.content)
-                            .in_reply_to(message.in_reply_to)
-                            .embeds(message.embeds)
-                            .attachments(attachments)
-                            .actions(message.actions)
-                            .overrides(message.overrides)
-                            .metadata(message.metadata);
+                    if let Some(content) = message.content {
+                        send_message = send_message.content(content);
+                    }
 
                     message::send_message(&client, send_message).await?;
                 }

@@ -9,6 +9,7 @@ use harmony_rust_sdk::{
             chat::{
                 guild,
                 invite::InviteId,
+                message::MessageExt,
                 profile::{self, ProfileUpdate},
                 EventSource,
             },
@@ -116,7 +117,7 @@ async fn main() -> ClientResult<()> {
                     message.guild_id,
                     message.channel_id,
                     message.author_id,
-                    message.content
+                    message.text().unwrap_or("<empty message>"),
                 );
             }
         }

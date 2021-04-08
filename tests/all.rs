@@ -106,7 +106,7 @@ async fn main() -> ClientResult<()> {
     let msg = format!("test at {}", current_time);
     message::send_message(
         &client,
-        SendMessage::new(TEST_GUILD, TEST_CHANNEL, msg.clone()),
+        SendMessage::new(TEST_GUILD, TEST_CHANNEL).text(&msg),
     )
     .await?;
     info!("Sent a test message");
@@ -116,7 +116,7 @@ async fn main() -> ClientResult<()> {
             .await?;
     info!("Get channel messages response: {:?}", response);
     let our_msg = response.messages.first().unwrap();
-    assert_eq!(our_msg.content, msg.as_str());
+    assert_eq!(our_msg.text(), Some(msg.as_str()));
 
     let instant_view =
         mediaproxy::instant_view(&client, INSTANT_VIEW_URL.parse::<Url>().unwrap()).await?;

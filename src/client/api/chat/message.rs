@@ -1,12 +1,47 @@
 pub use crate::api::chat::{
-    DeleteMessageRequest, GetMessageRequest, SendMessageRequest, UpdateMessageRequest,
+    DeleteMessageRequest, GetMessageRequest, SendMessageRequest, UpdateMessageTextRequest,
 };
 
 use super::{
-    harmonytypes::{Action, Embed, Metadata, Override},
+    harmonytypes::{
+        content, Action, Attachment, Content, ContentEmbed, ContentFiles, ContentText, Embed,
+        Message, Metadata, Override,
+    },
     *,
 };
-use crate::client::api::rest::FileIds;
+
+/// Trait that implements convenience methods for [`Message`] type.
+pub trait MessageExt {
+    /// Get the text content of the message if it has one.
+    fn text(&self) -> Option<&str>;
+    /// Get the embed content of the message if it has one.
+    fn embeds(&self) -> Option<&[Embed]>;
+    /// Get the file content of the message if it has one.
+    fn files(&self) -> Option<&[Attachment]>;
+}
+
+impl MessageExt for Message {
+    fn text(&self) -> Option<&str> {
+        match self.content.as_ref()?.content.as_ref()? {
+            content::Content::TextMessage(text) => Some(&text.content),
+            _ => None,
+        }
+    }
+
+    fn embeds(&self) -> Option<&[Embed]> {
+        match self.content.as_ref()?.content.as_ref()? {
+            content::Content::EmbedMessage(embeds) => Some(&embeds.embeds),
+            _ => None,
+        }
+    }
+
+    fn files(&self) -> Option<&[Attachment]> {
+        match self.content.as_ref()?.content.as_ref()? {
+            content::Content::FilesMessage(files) => Some(&files.attachments),
+            _ => None,
+        }
+    }
+}
 
 client_api! {
     /// Get a message.
@@ -28,23 +63,46 @@ client_api! {
 pub struct SendMessage {
     guild_id: u64,
     channel_id: u64,
-    content: String,
+    #[new(default)]
+    content: Content,
     #[new(default)]
     echo_id: u64,
     #[new(default)]
     in_reply_to: u64,
-    #[new(default)]
-    embeds: Vec<Embed>,
-    #[new(default)]
-    actions: Vec<Action>,
-    #[new(default)]
-    attachments: FileIds,
     #[new(default)]
     #[builder(setter(strip_option))]
     overrides: Option<Override>,
     #[new(default)]
     #[builder(setter(strip_option))]
     metadata: Option<Metadata>,
+}
+
+impl SendMessage {
+    pub fn actions(mut self, actions: impl Into<Vec<Action>>) -> Self {
+        self.content.actions = actions.into();
+        self
+    }
+
+    pub fn text(mut self, text: impl std::fmt::Display) -> Self {
+        self.content.content = Some(content::Content::TextMessage(ContentText {
+            content: text.to_string(),
+        }));
+        self
+    }
+
+    pub fn files(mut self, files: impl Into<Vec<Attachment>>) -> Self {
+        self.content.content = Some(content::Content::FilesMessage(ContentFiles {
+            attachments: files.into(),
+        }));
+        self
+    }
+
+    pub fn embeds(mut self, embeds: impl Into<Vec<Embed>>) -> Self {
+        self.content.content = Some(content::Content::EmbedMessage(ContentEmbed {
+            embeds: embeds.into(),
+        }));
+        self
+    }
 }
 
 client_api! {
@@ -54,86 +112,9 @@ client_api! {
     service: chat,
 }
 
-/// Convenience type to create a valid [`UpdateMessageRequest`].
-#[into_request("UpdateMessageRequest")]
-#[derive(new, Debug, Clone)]
-pub struct UpdateMessage {
-    guild_id: u64,
-    channel_id: u64,
-    message_id: u64,
-    #[new(default)]
-    content: String,
-    #[new(default)]
-    embeds: Vec<Embed>,
-    #[new(default)]
-    actions: Vec<Action>,
-    #[new(default)]
-    attachments: FileIds,
-    #[new(default)]
-    overrides: Option<Override>,
-    #[new(default)]
-    metadata: Option<Metadata>,
-    #[new(default)]
-    update_content: bool,
-    #[new(default)]
-    update_embeds: bool,
-    #[new(default)]
-    update_actions: bool,
-    #[new(default)]
-    update_attachments: bool,
-    #[new(default)]
-    update_overrides: bool,
-    #[new(default)]
-    update_metadata: bool,
-}
-
-impl UpdateMessage {
-    /// Set the new content of this message.
-    pub fn new_content(mut self, content: String) -> Self {
-        self.content = content;
-        self.update_content = true;
-        self
-    }
-
-    /// Set the new embeds of this message.
-    pub fn new_embeds(mut self, embeds: Vec<Embed>) -> Self {
-        self.embeds = embeds;
-        self.update_embeds = true;
-        self
-    }
-
-    /// Set the new actions of this message.
-    pub fn new_actions(mut self, actions: Vec<Action>) -> Self {
-        self.actions = actions;
-        self.update_actions = true;
-        self
-    }
-
-    /// Set the new attachments of this message.
-    pub fn new_attachments(mut self, attachments: FileIds) -> Self {
-        self.attachments = attachments;
-        self.update_attachments = true;
-        self
-    }
-
-    /// Set the new overrides of this message.
-    pub fn new_overrides(mut self, overrides: Option<Override>) -> Self {
-        self.overrides = overrides;
-        self.update_overrides = true;
-        self
-    }
-
-    /// Set the new metadata of this message.
-    pub fn new_metadata(mut self, metadata: Option<Metadata>) -> Self {
-        self.metadata = metadata;
-        self.update_metadata = true;
-        self
-    }
-}
-
 client_api! {
     /// Update a message.
-    request: UpdateMessageRequest,
-    api_fn: update_message,
+    request: UpdateMessageTextRequest,
+    api_fn: update_message_text,
     service: chat,
 }

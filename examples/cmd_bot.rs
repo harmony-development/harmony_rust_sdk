@@ -12,7 +12,7 @@ use harmony_rust_sdk::{
             chat::{
                 guild,
                 invite::InviteId,
-                message::{self, SendMessage},
+                message::{self, MessageExt, SendMessage, SendMessageSelfBuilder},
                 profile::{self, ProfileUpdate},
                 EventSource, UserId,
             },
@@ -115,11 +115,14 @@ async fn main() -> ClientResult<()> {
         }
         if let Some(Ok(event::Event::SentMessage(sent_message))) = socket.get_event().await {
             if let Some(message) = sent_message.message {
-                info!("got message: {}", message.content);
-                if message.content.starts_with("r!") {
-                    let mut parts = message.content[2..].split_whitespace();
+                let text_content = message.text().unwrap_or("<empty message>");
+                info!("got message: {}", text_content);
+                if let Some(mut parts) = text_content
+                    .strip_prefix("r!")
+                    .map(|c| c.split_whitespace())
+                {
                     if let Some(cmd) = parts.next() {
-                        match cmd {
+                        let reply = match cmd {
                             "ping" => {
                                 let created_at = {
                                     let tmp = message.created_at.unwrap_or_default();
@@ -128,47 +131,27 @@ async fn main() -> ClientResult<()> {
                                 let arrive_duration =
                                     (UNIX_EPOCH.elapsed().unwrap() - created_at).as_secs_f32();
 
-                                message::send_message(
-                                    &client,
-                                    SendMessage::new(
-                                        guild_id,
-                                        message.channel_id,
-                                        format!("Pong! Took {} secs.", arrive_duration),
-                                    ),
-                                )
-                                .await?;
+                                format!("Pong! Took {} secs.", arrive_duration)
                             }
                             "hello" => {
                                 let user_profile =
                                     profile::get_user(&client, UserId::new(message.author_id))
                                         .await?;
 
-                                message::send_message(
-                                    &client,
-                                    SendMessage::new(
-                                        guild_id,
-                                        message.channel_id,
-                                        format!("Hello, {}!", user_profile.user_name),
-                                    ),
-                                )
-                                .await?;
+                                format!("Hello, {}!", user_profile.user_name)
                             }
                             "uptime" => {
-                                message::send_message(
-                                    &client,
-                                    SendMessage::new(
-                                        guild_id,
-                                        message.channel_id,
-                                        format!(
-                                            "Been running for {} seconds.",
-                                            start.elapsed().as_secs()
-                                        ),
-                                    ),
-                                )
-                                .await?;
+                                format!("Been running for {} seconds.", start.elapsed().as_secs())
                             }
-                            _ => {}
-                        }
+                            _ => "No such command.".to_string(),
+                        };
+                        message::send_message(
+                            &client,
+                            SendMessage::new(guild_id, message.channel_id)
+                                .in_reply_to(message.message_id)
+                                .text(reply),
+                        )
+                        .await?;
                     }
                 }
             }
