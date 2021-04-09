@@ -4,8 +4,8 @@ pub use crate::api::chat::{
 
 use super::{
     harmonytypes::{
-        content, Action, Attachment, Content, ContentEmbed, ContentFiles, ContentText, Embed,
-        Message, Metadata, Override,
+        content, Attachment, Content, ContentEmbed, ContentFiles, ContentText, Embed, Message,
+        Metadata, Override,
     },
     *,
 };
@@ -15,7 +15,7 @@ pub trait MessageExt {
     /// Get the text content of the message if it has one.
     fn text(&self) -> Option<&str>;
     /// Get the embed content of the message if it has one.
-    fn embeds(&self) -> Option<&[Embed]>;
+    fn embeds(&self) -> Option<&Embed>;
     /// Get the file content of the message if it has one.
     fn files(&self) -> Option<&[Attachment]>;
 }
@@ -28,9 +28,9 @@ impl MessageExt for Message {
         }
     }
 
-    fn embeds(&self) -> Option<&[Embed]> {
+    fn embeds(&self) -> Option<&Embed> {
         match self.content.as_ref()?.content.as_ref()? {
-            content::Content::EmbedMessage(embeds) => Some(&embeds.embeds),
+            content::Content::EmbedMessage(embeds) => embeds.embeds.as_deref(),
             _ => None,
         }
     }
@@ -78,11 +78,6 @@ pub struct SendMessage {
 }
 
 impl SendMessage {
-    pub fn actions(mut self, actions: impl Into<Vec<Action>>) -> Self {
-        self.content.actions = actions.into();
-        self
-    }
-
     pub fn text(mut self, text: impl std::fmt::Display) -> Self {
         self.content.content = Some(content::Content::TextMessage(ContentText {
             content: text.to_string(),
@@ -97,9 +92,9 @@ impl SendMessage {
         self
     }
 
-    pub fn embeds(mut self, embeds: impl Into<Vec<Embed>>) -> Self {
+    pub fn embed(mut self, embed: impl Into<Embed>) -> Self {
         self.content.content = Some(content::Content::EmbedMessage(ContentEmbed {
-            embeds: embeds.into(),
+            embeds: Some(Box::new(embed.into())),
         }));
         self
     }

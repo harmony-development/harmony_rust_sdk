@@ -37,13 +37,14 @@ fn main() {
         "\nProtobuf code generation failed! Are you sure you have `protoc` installed?\nIf so, please also set the PROTOC and PROTOC_INCLUDE as mentioned in the README.\nError",
     );
 
+    #[cfg(any(feature = "gen_chat", feature = "gen_harmonytypes"))]
+    let out_dir = std::path::PathBuf::from(
+        std::env::var_os("OUT_DIR")
+            .expect("Failed to get OUT_DIR! Something must be horribly wrong."),
+    );
+
     #[cfg(feature = "gen_chat")]
     {
-        let out_dir = std::path::PathBuf::from(
-            std::env::var_os("OUT_DIR")
-                .expect("Failed to get OUT_DIR! Something must be horribly wrong."),
-        );
-
         // Patch chat message event
         // We patch these because of enum variant size differences, since they will be sent more than any other
         // event (its a realtime chat platform, so) this should help.
@@ -58,5 +59,16 @@ fn main() {
             "EditedMessage(Box<MessageUpdated>),",
         );
         std::fs::write(&chat_gen_path, patched_chat_gen).expect("Failed to read from chat service generated code, are you sure you have correct permissions?");
+    }
+
+    #[cfg(feature = "gen_harmonytypes")]
+    {
+        let type_gen_path = out_dir.join("protocol.harmonytypes.v1.rs");
+        let type_gen = std::fs::read_to_string(&type_gen_path).expect("Failed to read from chat service generated code, are you sure you have correct permissions?");
+        let patched_type_gen = type_gen.replace(
+            "pub embeds: ::core::option::Option<Embed>,",
+            "pub embeds: ::core::option::Option<Box<Embed>>,",
+        );
+        std::fs::write(&type_gen_path, patched_type_gen).expect("Failed to read from chat service generated code, are you sure you have correct permissions?");
     }
 }
