@@ -1,15 +1,14 @@
-# direnv
-.direnv
-.envrc
-
 # Rust
-/target
-
-# Editors / IDEs
-/.vscode/
+/target/
+**/*.rs.bk
 
 # Nix
 /result*
-/shell.nix
+/nix/result*
+
+# Direnv
+/.direnv
+/.envrc
 
 /guild_id
+/.vscode

@@ -97,3 +97,12 @@ required-features = ["client"]
 [[example]]
 name = "cmd_bot"
 required-features = ["client"]
+
+[package.metadata.nix]
+build = true
+library = true
+app = false
+toolchain = "stable"
+env.PROTOC = "protoc"
+buildInputs = ["protobuf"]
+nativeBuildInputs = ["binutils"]
