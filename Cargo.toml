@@ -101,7 +101,8 @@ required-features = ["client"]
 [package.metadata.nix]
 build = true
 library = true
-app = false
+
+[workspace.metadata.nix]
 toolchain = "stable"
 env.PROTOC = "protoc"
 buildInputs = ["protobuf"]
