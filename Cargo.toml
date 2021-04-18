@@ -103,7 +103,6 @@ build = true
 library = true
 
 [workspace.metadata.nix]
-toolchain = "stable"
 env.PROTOC = "protoc"
 buildInputs = ["protobuf"]
 nativeBuildInputs = ["binutils"]
