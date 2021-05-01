@@ -10,7 +10,7 @@ use reqwest::{multipart::*, Response};
 use serde::Deserialize;
 
 /// A "file id", which can be a HMC URL, an external URL or a plain ID string.
-#[derive(Debug, Clone, Display, PartialEq, Eq)]
+#[derive(Debug, Clone, Display, PartialEq, Eq, Hash)]
 pub enum FileId {
     /// A HMC describing where the file is.
     Hmc(Hmc),
