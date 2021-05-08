@@ -165,6 +165,18 @@ impl Hmc {
     pub fn port(&self) -> u16 {
         self.inner.port().unwrap_or(2289)
     }
+
+    /// Get the HMC URL as a string reference.
+    ///
+    /// # Example
+    /// ```
+    /// # use harmony_rust_sdk::api::Hmc;
+    /// let hmc = Hmc::new("example.org:2289", "403cb46c-49cf-4ae1-b876-f38eb26accb0").unwrap();
+    /// assert_eq!(hmc.as_str(), "hmc://example.org:2289/403cb46c-49cf-4ae1-b876-f38eb26accb0");
+    /// ```
+    pub fn as_str(&self) -> &str {
+        self.inner.as_str()
+    }
 }
 
 impl Display for Hmc {

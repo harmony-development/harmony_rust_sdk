@@ -20,6 +20,17 @@ pub enum FileId {
     External(Url),
 }
 
+impl FileId {
+    /// Get a string reference to this `FileId`.
+    pub fn as_str(&self) -> &str {
+        match self {
+            FileId::Hmc(hmc) => hmc.as_str(),
+            FileId::Id(id) => id.as_str(),
+            FileId::External(url) => url.as_str(),
+        }
+    }
+}
+
 /// Error that maybe produced while parsing a string as a [`FileId`].
 #[derive(Debug, Clone, Display)]
 #[display(fmt = "Specified string is not a valid FileId.")]
