@@ -1,7 +1,7 @@
 use super::*;
 use crate::client::{error::ClientError, AuthStatus};
 
-use std::{convert::TryInto, str::FromStr};
+use std::{convert::TryInto, error::Error as StdError, str::FromStr};
 
 use derive_more::IntoIterator;
 use hrpc::url::Url;
@@ -36,6 +36,8 @@ impl FileId {
 #[display(fmt = "Specified string is not a valid FileId.")]
 pub struct InvalidFileId;
 
+impl StdError for InvalidFileId {}
+
 impl FromStr for FileId {
     type Err = InvalidFileId;
 
@@ -44,11 +46,13 @@ impl FromStr for FileId {
             Err(InvalidFileId)
         } else {
             match s.parse::<Url>() {
-                Ok(uri) => {
-                    if let Ok(hmc) = uri.clone().try_into() {
+                Ok(url) => {
+                    if let Ok(hmc) = url.clone().try_into() {
                         Ok(FileId::Hmc(hmc))
+                    } else if !url.path().trim_start_matches('/').is_empty() {
+                        Ok(FileId::External(url))
                     } else {
-                        Ok(FileId::External(uri))
+                        Err(InvalidFileId)
                     }
                 }
                 Err(hrpc::url::ParseError::RelativeUrlWithoutBase) => Ok(FileId::Id(s.to_owned())),
