@@ -29,12 +29,11 @@ client_api! {
 }
 
 /// Convenience type to create a valid [`CreateGuildRequest`].
-#[into_request("CreateGuildRequest")]
 #[derive(Debug, Clone, new)]
 pub struct CreateGuild {
     guild_name: String,
     #[new(default)]
-    picture_url: Hmc,
+    picture_url: Option<Hmc>,
     #[new(default)]
     metadata: Option<Metadata>,
 }
@@ -42,14 +41,24 @@ pub struct CreateGuild {
 impl CreateGuild {
     /// Set the picture HMC for this new guild.
     pub fn picture(mut self, picture: impl Into<Hmc>) -> Self {
-        self.picture_url = picture.into();
+        self.picture_url = Some(picture.into());
         self
     }
 
     /// Set the metadata for this new guild.
-    pub fn metadata(mut self, metadata: impl Into<Option<Metadata>>) -> Self {
-        self.metadata = metadata.into();
+    pub fn metadata(mut self, metadata: impl Into<Metadata>) -> Self {
+        self.metadata = Some(metadata.into());
         self
+    }
+}
+
+impl From<CreateGuild> for CreateGuildRequest {
+    fn from(o: CreateGuild) -> Self {
+        Self {
+            guild_name: o.guild_name,
+            picture_url: o.picture_url.map_or_else(String::default, Into::into),
+            metadata: o.metadata,
+        }
     }
 }
 
@@ -68,8 +77,8 @@ pub struct GuildList {
 }
 
 impl From<GuildList> for AddGuildToGuildListRequest {
-    fn from(o: GuildList) -> AddGuildToGuildListRequest {
-        AddGuildToGuildListRequest {
+    fn from(o: GuildList) -> Self {
+        Self {
             guild_id: o.guild_id,
             homeserver: o.homeserver.to_string(),
         }
@@ -84,8 +93,8 @@ client_api! {
 }
 
 impl From<GuildList> for RemoveGuildFromGuildListRequest {
-    fn from(o: GuildList) -> RemoveGuildFromGuildListRequest {
-        RemoveGuildFromGuildListRequest {
+    fn from(o: GuildList) -> Self {
+        Self {
             guild_id: o.guild_id,
             homeserver: o.homeserver.to_string(),
         }
@@ -100,14 +109,13 @@ client_api! {
 }
 
 /// Convenience type to create a valid [`UpdateGuildInformationRequest`].
-#[into_request("UpdateGuildInformationRequest")]
 #[derive(Debug, Clone, new)]
 pub struct UpdateGuildInformation {
     guild_id: u64,
     #[new(default)]
     new_guild_name: String,
     #[new(default)]
-    new_guild_picture: Hmc,
+    new_guild_picture: Option<Hmc>,
     #[new(default)]
     metadata: Option<Metadata>,
     #[new(default)]
@@ -120,14 +128,14 @@ pub struct UpdateGuildInformation {
 
 impl UpdateGuildInformation {
     /// Set the new name of this guild.
-    pub fn new_guild_name(mut self, guild_name: impl Into<String>) -> Self {
-        self.new_guild_name = guild_name.into();
+    pub fn new_guild_name(mut self, guild_name: impl std::fmt::Display) -> Self {
+        self.new_guild_name = guild_name.to_string();
         self.update_guild_name = true;
         self
     }
 
     /// Set the new picture of this guild.
-    pub fn new_guild_picture(mut self, guild_picture: impl Into<Hmc>) -> Self {
+    pub fn new_guild_picture(mut self, guild_picture: impl Into<Option<Hmc>>) -> Self {
         self.new_guild_picture = guild_picture.into();
         self.update_guild_picture = true;
         self
@@ -138,6 +146,20 @@ impl UpdateGuildInformation {
         self.metadata = metadata.into();
         self.update_metadata = true;
         self
+    }
+}
+
+impl From<UpdateGuildInformation> for UpdateGuildInformationRequest {
+    fn from(o: UpdateGuildInformation) -> Self {
+        Self {
+            guild_id: o.guild_id,
+            new_guild_name: o.new_guild_name,
+            new_guild_picture: o.new_guild_picture.map_or_else(String::default, Into::into),
+            metadata: o.metadata,
+            update_guild_name: o.update_guild_name,
+            update_guild_picture: o.update_guild_picture,
+            update_metadata: o.update_metadata,
+        }
     }
 }
 

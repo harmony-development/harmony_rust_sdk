@@ -159,15 +159,18 @@ async fn main() -> ClientResult<()> {
 
     let response = rest::download(
         &client,
-        rest::FileId::Hmc(Hmc::new(
-            TEST_SERVER
-                .parse::<Url>()
-                .unwrap()
-                .host()
-                .unwrap() // must have authority
-                .to_owned(),
-            FILE_ID.to_string(),
-        )),
+        rest::FileId::Hmc(
+            Hmc::new(
+                TEST_SERVER
+                    .parse::<Url>()
+                    .unwrap()
+                    .host()
+                    .unwrap() // must have authority
+                    .to_owned(),
+                FILE_ID.to_string(),
+            )
+            .unwrap(),
+        ),
     )
     .await?;
     info!("Download file response: {:?}", response);
@@ -183,7 +186,8 @@ async fn main() -> ClientResult<()> {
     assert_eq!(response.text().await?.as_str(), FILE_DATA);
     assert_eq!(content_type.as_str(), CONTENT_TYPE);
 
-    let downloaded_file = rest::download_extract_file(&client, client.make_hmc(FILE_ID)).await?;
+    let downloaded_file =
+        rest::download_extract_file(&client, client.make_hmc(FILE_ID).unwrap()).await?;
     assert_eq!(
         downloaded_file
             .data()

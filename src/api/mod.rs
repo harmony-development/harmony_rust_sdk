@@ -1,9 +1,11 @@
 use std::{
     convert::TryFrom,
+    error::Error as StdError,
     fmt::{self, Display, Formatter},
+    str::FromStr,
 };
 
-use hrpc::url::Url;
+use hrpc::url::{ParseError as UrlParseError, Url};
 
 /// Chat service API.
 #[cfg(feature = "gen_chat")]
@@ -53,7 +55,7 @@ pub mod exports {
 }
 
 /// Errors that can occur when converting a possibly non-HMC URL to a HMC URL.
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub enum HmcParseError {
     /// Returned when no server could be extracted.
     NoServer,
@@ -75,6 +77,35 @@ impl Display for HmcParseError {
     }
 }
 
+impl StdError for HmcParseError {}
+
+/// Errors that can occur when converting a possibly non-HMC string to a HMC URL.
+#[derive(Debug, Clone)]
+pub enum HmcFromStrError {
+    /// Returned if the string isn't a valid URL.
+    UrlParse(UrlParseError),
+    /// Returned if the string isn't a valid HMC URL.
+    HmcParse(HmcParseError),
+}
+
+impl Display for HmcFromStrError {
+    fn fmt(&self, f: &mut Formatter) -> fmt::Result {
+        match self {
+            HmcFromStrError::HmcParse(err) => write!(f, "{}", err),
+            HmcFromStrError::UrlParse(err) => write!(f, "{}", err),
+        }
+    }
+}
+
+impl StdError for HmcFromStrError {
+    fn source(&self) -> Option<&(dyn StdError + 'static)> {
+        Some(match self {
+            HmcFromStrError::HmcParse(err) => err,
+            HmcFromStrError::UrlParse(err) => err,
+        })
+    }
+}
+
 /// A HMC.
 ///
 /// An example HMC looks like `hmc://chat.harmonyapp.io/403cb46c-49cf-4ae1-b876-f38eb26accb0`.
@@ -84,21 +115,19 @@ pub struct Hmc {
 }
 
 impl Hmc {
-    /// Creates a new HMC given a homeserver and (attachment) ID.
-    ///
-    /// Note that this function *does not* check that the `id` argument is actually an ID,
-    /// so it may panic or requests made with this `Hmc` may fail.
+    /// Validates and creates a new HMC given a homeserver and (attachment) ID.
     ///
     /// # Example
     /// ```
     /// # use harmony_rust_sdk::api::Hmc;
-    /// let hmc = Hmc::new("example.org", "403cb46c-49cf-4ae1-b876-f38eb26accb0");
+    /// let hmc = Hmc::new("example.org", "403cb46c-49cf-4ae1-b876-f38eb26accb0").unwrap();
     /// assert_eq!(hmc.to_string(), "hmc://example.org/403cb46c-49cf-4ae1-b876-f38eb26accb0");
     /// ```
-    pub fn new(server: impl std::fmt::Display, id: impl std::fmt::Display) -> Self {
-        let inner = format!("hmc://{}/{}", server, id).parse().unwrap();
-
-        Self { inner }
+    pub fn new(
+        server: impl std::fmt::Display,
+        id: impl std::fmt::Display,
+    ) -> Result<Self, HmcFromStrError> {
+        Self::from_str(&format!("hmc://{}/{}", server, id))
     }
 
     /// Gets the ID of this HMC.
@@ -106,7 +135,7 @@ impl Hmc {
     /// # Example
     /// ```
     /// # use harmony_rust_sdk::api::Hmc;
-    /// let hmc = Hmc::new("example.org", "403cb46c-49cf-4ae1-b876-f38eb26accb0");
+    /// let hmc = Hmc::new("example.org", "403cb46c-49cf-4ae1-b876-f38eb26accb0").unwrap();
     /// assert_eq!(hmc.id(), "403cb46c-49cf-4ae1-b876-f38eb26accb0");
     /// ```
     pub fn id(&self) -> &str {
@@ -118,7 +147,7 @@ impl Hmc {
     /// # Example
     /// ```
     /// # use harmony_rust_sdk::api::Hmc;
-    /// let hmc = Hmc::new("example.org", "403cb46c-49cf-4ae1-b876-f38eb26accb0");
+    /// let hmc = Hmc::new("example.org", "403cb46c-49cf-4ae1-b876-f38eb26accb0").unwrap();
     /// assert_eq!(hmc.server(), "example.org");
     /// ```
     pub fn server(&self) -> &str {
@@ -130,19 +159,11 @@ impl Hmc {
     /// # Example
     /// ```
     /// # use harmony_rust_sdk::api::Hmc;
-    /// let hmc = Hmc::new("example.org:2289", "403cb46c-49cf-4ae1-b876-f38eb26accb0");
+    /// let hmc = Hmc::new("example.org:2289", "403cb46c-49cf-4ae1-b876-f38eb26accb0").unwrap();
     /// assert_eq!(hmc.port(), 2289);
     /// ```
     pub fn port(&self) -> u16 {
         self.inner.port().unwrap_or(2289)
-    }
-}
-
-impl Default for Hmc {
-    fn default() -> Self {
-        Self {
-            inner: "http://127.0.0.1".parse().unwrap(),
-        }
     }
 }
 
@@ -154,7 +175,17 @@ impl Display for Hmc {
 
 impl From<Hmc> for String {
     fn from(hmc: Hmc) -> String {
-        hmc.to_string()
+        hmc.inner.into()
+    }
+}
+
+impl FromStr for Hmc {
+    type Err = HmcFromStrError;
+
+    fn from_str(value: &str) -> Result<Self, Self::Err> {
+        let url: Url = value.parse().map_err(HmcFromStrError::UrlParse)?;
+
+        Self::try_from(url).map_err(HmcFromStrError::HmcParse)
     }
 }
 
@@ -162,25 +193,19 @@ impl TryFrom<Url> for Hmc {
     type Error = HmcParseError;
 
     fn try_from(value: Url) -> Result<Self, Self::Error> {
-        let server = if let Some(authority) = value.host() {
-            authority.to_owned()
-        } else {
+        if value.host().is_none() {
             return Err(HmcParseError::NoServer);
         };
 
         // We trim the first '/' if it exists since it will always be the authority - path seperator
         let path = value.path().trim_start_matches('/');
-        let id = if !path.is_empty() {
-            if !path.contains('/') {
-                path.to_string()
-            } else {
-                return Err(HmcParseError::InvalidId);
-            }
-        } else {
+        if path.is_empty() {
             return Err(HmcParseError::NoId);
-        };
+        } else if path.contains('/') {
+            return Err(HmcParseError::InvalidId);
+        }
 
-        Ok(Self::new(server, id))
+        Ok(Self { inner: value })
     }
 }
 

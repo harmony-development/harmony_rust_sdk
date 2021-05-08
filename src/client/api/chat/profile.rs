@@ -47,12 +47,11 @@ client_api! {
 }
 
 /// Convenience type to create a valid [`ProfileUpdateRequest`].
-#[into_request("ProfileUpdateRequest")]
 #[derive(Debug, Clone, Default)]
 pub struct ProfileUpdate {
     new_username: String,
     new_status: UserStatus,
-    new_avatar: Hmc,
+    new_avatar: Option<Hmc>,
     is_bot: bool,
     update_username: bool,
     update_status: bool,
@@ -62,8 +61,8 @@ pub struct ProfileUpdate {
 
 impl ProfileUpdate {
     /// Set the new username of this user.
-    pub fn new_username(mut self, username: impl Into<String>) -> Self {
-        self.new_username = username.into();
+    pub fn new_username(mut self, username: impl std::fmt::Display) -> Self {
+        self.new_username = username.to_string();
         self.update_username = true;
         self
     }
@@ -76,7 +75,7 @@ impl ProfileUpdate {
     }
 
     /// Set the new avatar of this user.
-    pub fn new_avatar(mut self, avatar: impl Into<Hmc>) -> Self {
+    pub fn new_avatar(mut self, avatar: impl Into<Option<Hmc>>) -> Self {
         self.new_avatar = avatar.into();
         self.update_avatar = true;
         self
@@ -87,6 +86,21 @@ impl ProfileUpdate {
         self.is_bot = is_bot.into();
         self.update_is_bot = true;
         self
+    }
+}
+
+impl From<ProfileUpdate> for ProfileUpdateRequest {
+    fn from(o: ProfileUpdate) -> Self {
+        Self {
+            new_username: o.new_username,
+            new_status: o.new_status.into(),
+            new_avatar: o.new_avatar.map_or_else(String::default, Into::into),
+            is_bot: o.is_bot,
+            update_username: o.update_username,
+            update_status: o.update_status,
+            update_avatar: o.update_avatar,
+            update_is_bot: o.update_is_bot,
+        }
     }
 }
 

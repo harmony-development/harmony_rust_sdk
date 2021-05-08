@@ -8,7 +8,7 @@ pub mod mediaproxy;
 pub mod rest;
 
 #[doc(inline)]
-pub use crate::api::{harmonytypes, Hmc};
+pub use crate::api::{harmonytypes, Hmc, HmcFromStrError, HmcParseError};
 
 use crate::client::{Client, ClientResult};
 

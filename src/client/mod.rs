@@ -15,7 +15,7 @@ pub mod exports {
 
 #[cfg(feature = "request_method")]
 use api::ClientRequest;
-use api::{auth::*, chat::EventSource, Hmc};
+use api::{auth::*, chat::EventSource, Hmc, HmcFromStrError};
 use error::*;
 
 use std::sync::Arc;
@@ -257,18 +257,15 @@ impl Client {
     /// # #[tokio::main(flavor = "current_thread")]
     /// # async fn main() -> error::ClientResult<()> {
     /// # let client = Client::new("https://chat.harmonyapp.io:2289".parse().unwrap(), None).await?;
-    /// assert_eq!(client.make_hmc("404"), Hmc::new("chat.harmonyapp.io:2289", "404"));
+    /// assert_eq!(client.make_hmc("404").unwrap(), Hmc::new("chat.harmonyapp.io:2289", "404").unwrap());
     /// # Ok(())
     /// # }
     /// ```
-    pub fn make_hmc(&self, id: impl ToString) -> Hmc {
+    pub fn make_hmc(&self, id: impl std::fmt::Display) -> Result<Hmc, HmcFromStrError> {
+        let url = &self.data.homeserver_url;
         Hmc::new(
-            format!(
-                "{}:{}",
-                self.data.homeserver_url.host_str().unwrap(),
-                self.data.homeserver_url.port().unwrap()
-            ),
-            id.to_string(),
+            format!("{}:{}", url.host().unwrap(), url.port().unwrap()),
+            id,
         )
     }
 
