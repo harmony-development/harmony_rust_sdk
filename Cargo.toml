@@ -78,7 +78,7 @@ gen_voice = []
 gen_harmonytypes = []
 
 [dev-dependencies]
-tokio = { version = "1.5.0", features = ["rt", "macros", "fs"] }
+tokio = { version = "1.6.0", features = ["rt", "macros", "fs"] }
 env_logger = "0.8"
 ctrlc = "3.1.8"
 

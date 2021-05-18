@@ -488,9 +488,9 @@ dependencies = [
 
 [[package]]
 name = "hrpc"
-version = "0.6.5"
+version = "0.6.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6a197c0c744a5ef665822257a24bfd97969e52ee9642d5c81337b6b9dec9c766"
+checksum = "6b6e3a3f7ebad9893c056444643a3f830592d113e9c3c14e6e4ed5cce7f3da63"
 dependencies = [
  "async-trait",
  "async-tungstenite",
@@ -508,9 +508,9 @@ dependencies = [
 
 [[package]]
 name = "hrpc-build"
-version = "0.3.5"
+version = "0.3.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ea9ed86d6bdc1dfb9928bc0b493cbd1766bbd6fe14e1387ba85dae666240fdaf"
+checksum = "94910dd78c0200f0dcefc082a0c39c4ee3264e212e5b7a354346639440b61962"
 dependencies = [
  "proc-macro2",
  "prost",
