@@ -7,6 +7,9 @@ use std::{
 
 use hrpc::url::{ParseError as UrlParseError, Url};
 
+/// Rest API common types.
+pub mod rest;
+
 /// Chat service API.
 #[cfg(feature = "gen_chat")]
 pub mod chat;
