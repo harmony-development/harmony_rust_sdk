@@ -38,6 +38,7 @@ futures = { version = "0.3", optional = true }
 serde = { version = "1.0", features = ["derive"], optional = true }
 
 urlencoding = { version = "1.1", optional = true }
+http = "0.2"
 
 parking_lot = { version = "0.11", optional = true }
 

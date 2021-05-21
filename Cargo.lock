@@ -426,6 +426,7 @@ dependencies = [
  "harmony_derive",
  "hrpc",
  "hrpc-build",
+ "http",
  "parking_lot",
  "paste",
  "prost",

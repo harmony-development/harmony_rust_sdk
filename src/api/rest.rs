@@ -82,3 +82,40 @@ impl From<Hmc> for FileId {
         Self::Hmc(hmc)
     }
 }
+
+pub fn extract_file_info_from_download_response(
+    headers: &http::HeaderMap,
+) -> Result<(String, String, FileKind), &str> {
+    let mimetype = headers
+        .get("Content-Type")
+        .ok_or("server did not respond with `Content-Type` header")?
+        .to_str()
+        .map_err(|_| "server responded with non ASCII content type")?
+        .to_owned();
+
+    let mut split = headers
+        .get("Content-Disposition")
+        .ok_or("server did not respond with `Content-Disposition` header")?
+        .to_str()
+        .map_err(|_| "server responded with non ASCII content disposition")?
+        .split(';');
+    let kind = match split
+        .next()
+        .ok_or("server did not respond with file kind")?
+    {
+        "attachment" => FileKind::Attachment,
+        "inline" => FileKind::Inline,
+        _ => return Err("server responded with invalid file kind"),
+    };
+    const NO_NAME: &str = "server did not respond with a file name";
+    let name = split
+        .next()
+        .ok_or(NO_NAME)?
+        .split('=')
+        .nth(1)
+        .ok_or(NO_NAME)?
+        .trim_matches('"')
+        .to_owned();
+
+    Ok((name, mimetype, kind))
+}

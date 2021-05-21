@@ -147,57 +147,9 @@ pub async fn download_extract_file(
 ) -> ClientResult<DownloadedFile> {
     let resp = download(client, file_id).await?;
 
-    let mimetype = resp
-        .headers()
-        .get("Content-Type")
-        .ok_or_else(|| {
-            ClientError::unexpected("server did not respond with `Content-Type` header")
-        })?
-        .to_str()
-        .map_err(|e| {
-            ClientError::unexpected(format!(
-                "server responded with non ASCII content type: {}",
-                e
-            ))
-        })?
-        .to_owned();
+    let (name, mimetype, kind) = extract_file_info_from_download_response(resp.headers())
+        .map_err(ClientError::unexpected)?;
 
-    let mut split = resp
-        .headers()
-        .get("Content-Disposition")
-        .ok_or_else(|| {
-            ClientError::unexpected("server did not respond with `Content-Disposition` header")
-        })?
-        .to_str()
-        .map_err(|e| {
-            ClientError::unexpected(format!(
-                "server responded with non ASCII content disposition: {}",
-                e
-            ))
-        })?
-        .split(';');
-    let kind = match split
-        .next()
-        .ok_or_else(|| ClientError::unexpected("server did not respond with file kind"))?
-    {
-        "attachment" => FileKind::Attachment,
-        "inline" => FileKind::Inline,
-        other => {
-            return Err(ClientError::unexpected(format!(
-                "server responded with invalid file kind: {}",
-                other
-            )))
-        }
-    };
-    let no_name = || ClientError::unexpected("server did not respond with a file name");
-    let name = split
-        .next()
-        .ok_or_else(no_name)?
-        .split('=')
-        .nth(1)
-        .ok_or_else(no_name)?
-        .trim_matches('"')
-        .to_owned();
     let data = resp.bytes().await?;
 
     Ok(DownloadedFile {
