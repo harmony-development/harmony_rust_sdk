@@ -109,13 +109,13 @@ async fn main() -> ClientResult<()> {
                     if let Some(message) = sent_message.message {
                         info!("Received new message: {:?}", message);
                         println!(
-                    "Received new message with ID {}, from guild {} in channel {} sent by {}:\n{}",
-                    message.message_id,
-                    message.guild_id,
-                    message.channel_id,
-                    message.author_id,
-                    message.text().unwrap_or("<empty message>"),
-                );
+                            "Received new message with ID {}, from guild {} in channel {} sent by {}:\n{}",
+                            message.message_id,
+                            message.guild_id,
+                            message.channel_id,
+                            message.author_id,
+                            message.text().unwrap_or("<empty message>"),
+                        );
                     }
                 }
                 Ok(false)
