@@ -3,6 +3,7 @@ pub use crate::api::chat::{
     CreateEmotePackRequest, DeleteEmoteFromPackRequest, DeleteEmotePackRequest,
     DequipEmotePackRequest, GetEmotePackEmotesRequest, GetEmotePacksRequest,
 };
+use crate::client::api::rest::FileId;
 
 use super::*;
 
@@ -50,7 +51,7 @@ client_api! {
 #[derive(Debug, Clone, new)]
 pub struct AddEmoteToPack {
     pack_id: u64,
-    image_id: Hmc,
+    image_id: FileId,
     name: String,
 }
 
@@ -66,7 +67,7 @@ client_api! {
 #[derive(Debug, Clone, new)]
 pub struct DeleteEmoteFromPack {
     pack_id: u64,
-    image_id: Hmc,
+    image_id: FileId,
 }
 
 client_api! {

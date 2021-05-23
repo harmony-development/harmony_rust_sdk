@@ -34,6 +34,16 @@ impl FileId {
     }
 }
 
+impl From<FileId> for String {
+    fn from(o: FileId) -> String {
+        match o {
+            FileId::Hmc(hmc) => hmc.into(),
+            FileId::Id(id) => id,
+            FileId::External(url) => url.into(),
+        }
+    }
+}
+
 /// Error that maybe produced while parsing a string as a [`FileId`].
 #[derive(Debug, Clone, Display)]
 #[display(fmt = "Specified string is not a valid FileId.")]

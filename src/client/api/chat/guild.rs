@@ -4,6 +4,7 @@ pub use crate::api::chat::{
     JoinGuildRequest, KickUserRequest, LeaveGuildRequest, PreviewGuildRequest,
     RemoveGuildFromGuildListRequest, UnbanUserRequest, UpdateGuildInformationRequest,
 };
+use crate::client::api::rest::FileId;
 
 use super::{harmonytypes::Metadata, *};
 
@@ -33,14 +34,14 @@ client_api! {
 pub struct CreateGuild {
     guild_name: String,
     #[new(default)]
-    picture_url: Option<Hmc>,
+    picture_url: Option<FileId>,
     #[new(default)]
     metadata: Option<Metadata>,
 }
 
 impl CreateGuild {
     /// Set the picture HMC for this new guild.
-    pub fn picture(mut self, picture: impl Into<Hmc>) -> Self {
+    pub fn picture(mut self, picture: impl Into<FileId>) -> Self {
         self.picture_url = Some(picture.into());
         self
     }
@@ -115,7 +116,7 @@ pub struct UpdateGuildInformation {
     #[new(default)]
     new_guild_name: String,
     #[new(default)]
-    new_guild_picture: Option<Hmc>,
+    new_guild_picture: Option<FileId>,
     #[new(default)]
     metadata: Option<Metadata>,
     #[new(default)]
@@ -135,7 +136,7 @@ impl UpdateGuildInformation {
     }
 
     /// Set the new picture of this guild.
-    pub fn new_guild_picture(mut self, guild_picture: impl Into<Option<Hmc>>) -> Self {
+    pub fn new_guild_picture(mut self, guild_picture: impl Into<Option<FileId>>) -> Self {
         self.new_guild_picture = guild_picture.into();
         self.update_guild_picture = true;
         self

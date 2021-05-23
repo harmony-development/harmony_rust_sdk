@@ -1,6 +1,7 @@
 pub use crate::api::chat::{
     GetUserBulkRequest, GetUserMetadataRequest, GetUserRequest, ProfileUpdateRequest,
 };
+use crate::client::api::rest::FileId;
 
 use super::{harmonytypes::UserStatus, *};
 
@@ -51,7 +52,7 @@ client_api! {
 pub struct ProfileUpdate {
     new_username: String,
     new_status: UserStatus,
-    new_avatar: Option<Hmc>,
+    new_avatar: Option<FileId>,
     is_bot: bool,
     update_username: bool,
     update_status: bool,
@@ -75,7 +76,7 @@ impl ProfileUpdate {
     }
 
     /// Set the new avatar of this user.
-    pub fn new_avatar(mut self, avatar: impl Into<Option<Hmc>>) -> Self {
+    pub fn new_avatar(mut self, avatar: impl Into<Option<FileId>>) -> Self {
         self.new_avatar = avatar.into();
         self.update_avatar = true;
         self
