@@ -8,9 +8,10 @@ use super::*;
 
 /// Convenience type to create a valid [`GetPermissionsRequest`].
 #[into_request("GetPermissionsRequest")]
-#[derive(Debug, Clone, new)]
+#[derive(Debug, Clone, new, SelfBuilder)]
 pub struct GetPermissions {
     guild_id: u64,
+    #[new(default)]
     channel_id: u64,
     role_id: u64,
 }
@@ -27,6 +28,7 @@ client_api! {
 #[derive(Debug, Clone, new, SelfBuilder)]
 pub struct QueryPermissions {
     guild_id: u64,
+    #[new(default)]
     channel_id: u64,
     check_for: String,
     #[new(default)]
@@ -45,6 +47,7 @@ client_api! {
 #[derive(Debug, Clone, SelfBuilder, new)]
 pub struct SetPermissions {
     guild_id: u64,
+    #[new(default)]
     channel_id: u64,
     role_id: u64,
     #[new(default)]
