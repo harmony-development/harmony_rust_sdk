@@ -101,62 +101,68 @@ async fn main() -> ClientResult<()> {
         .unwrap();
     info!("In guild: {}", guild_id);
 
-    // Subscribe to guild events
-    let mut socket = client
-        .subscribe_events(vec![EventSource::Guild(guild_id)])
-        .await?;
-
     let start = std::time::Instant::now();
 
-    // Poll events
-    loop {
-        if DID_CTRLC.load(Ordering::Relaxed) {
-            break;
-        }
-        if let Some(Ok(event::Event::SentMessage(sent_message))) = socket.get_event().await {
-            if let Some(message) = sent_message.message {
-                let text_content = message.text().unwrap_or("<empty message>");
-                info!("got message: {}", text_content);
-                if let Some(mut parts) = text_content
-                    .strip_prefix("r!")
-                    .map(|c| c.split_whitespace())
-                {
-                    if let Some(cmd) = parts.next() {
-                        let reply = match cmd {
-                            "ping" => {
-                                let created_at = {
-                                    let tmp = message.created_at.unwrap_or_default();
-                                    Duration::new(tmp.seconds as u64, tmp.nanos as u32)
-                                };
-                                let arrive_duration =
-                                    (UNIX_EPOCH.elapsed().unwrap() - created_at).as_secs_f32();
+    client
+        .event_loop(
+            vec![EventSource::Guild(guild_id)],
+            move |client, event| async move {
+                if DID_CTRLC.load(Ordering::Relaxed) {
+                    return Ok(true);
+                }
+                if let event::Event::SentMessage(sent_message) = event {
+                    if let Some(message) = sent_message.message {
+                        let text_content = message.text().unwrap_or("<empty message>");
+                        info!("got message: {}", text_content);
+                        if let Some(mut parts) = text_content
+                            .strip_prefix("r!")
+                            .map(|c| c.split_whitespace())
+                        {
+                            if let Some(cmd) = parts.next() {
+                                let reply = match cmd {
+                                    "ping" => {
+                                        let created_at = {
+                                            let tmp = message.created_at.unwrap_or_default();
+                                            Duration::new(tmp.seconds as u64, tmp.nanos as u32)
+                                        };
+                                        let arrive_duration = (UNIX_EPOCH.elapsed().unwrap()
+                                            - created_at)
+                                            .as_secs_f32();
 
-                                format!("Pong! Took {} secs.", arrive_duration)
-                            }
-                            "hello" => {
-                                let user_profile =
-                                    profile::get_user(&client, UserId::new(message.author_id))
+                                        format!("Pong! Took {} secs.", arrive_duration)
+                                    }
+                                    "hello" => {
+                                        let user_profile = profile::get_user(
+                                            &client,
+                                            UserId::new(message.author_id),
+                                        )
                                         .await?;
 
-                                format!("Hello, {}!", user_profile.user_name)
+                                        format!("Hello, {}!", user_profile.user_name)
+                                    }
+                                    "uptime" => {
+                                        format!(
+                                            "Been running for {} seconds.",
+                                            start.elapsed().as_secs()
+                                        )
+                                    }
+                                    _ => "No such command.".to_string(),
+                                };
+                                message::send_message(
+                                    &client,
+                                    SendMessage::new(guild_id, message.channel_id)
+                                        .in_reply_to(message.message_id)
+                                        .text(reply),
+                                )
+                                .await?;
                             }
-                            "uptime" => {
-                                format!("Been running for {} seconds.", start.elapsed().as_secs())
-                            }
-                            _ => "No such command.".to_string(),
-                        };
-                        message::send_message(
-                            &client,
-                            SendMessage::new(guild_id, message.channel_id)
-                                .in_reply_to(message.message_id)
-                                .text(reply),
-                        )
-                        .await?;
+                        }
                     }
                 }
-            }
-        }
-    }
+                Ok(false)
+            },
+        )
+        .await?;
 
     // Change our bots status back to offline
     profile::profile_update(

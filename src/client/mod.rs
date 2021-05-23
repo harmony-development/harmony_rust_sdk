@@ -17,6 +17,7 @@ pub mod exports {
 use api::ClientRequest;
 use api::{auth::*, chat::EventSource, Hmc, HmcFromStrError};
 use error::*;
+use futures::Future;
 
 use std::sync::Arc;
 #[cfg(not(feature = "parking_lot"))]
@@ -166,6 +167,35 @@ impl Client {
         Ok(Self {
             data: Arc::new(data),
         })
+    }
+
+    /// Consumes self and starts an event loop with the given handler.
+    ///
+    /// All socket errors will be logged with tracing. If the handler
+    /// function returns `Ok(true)` or `Err(err)`, the function will
+    /// return, so if you don't want it to return, return `Ok(false)`.
+    pub async fn event_loop<'a, Fut, Hndlr>(
+        &'a self,
+        subs: Vec<EventSource>,
+        handler: Hndlr,
+    ) -> Result<(), ClientError>
+    where
+        Fut: Future<Output = ClientResult<bool>> + 'a,
+        Hndlr: Fn(&'a Client, crate::api::chat::event::Event) -> Fut,
+    {
+        let mut sock = self.subscribe_events(subs).await?;
+        loop {
+            if let Some(res) = sock.get_event().await {
+                match res {
+                    Ok(event) => {
+                        if handler(&self, event).await? {
+                            return Ok(());
+                        }
+                    }
+                    Err(err) => tracing::error!("{}", err),
+                }
+            }
+        }
     }
 
     async fn chat_lock(&self) -> async_mutex::MutexGuard<'_, ChatService> {

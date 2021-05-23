@@ -101,36 +101,36 @@ async fn main() -> ClientResult<()> {
     // Our bot's user id
     let self_id = client.auth_status().session().unwrap().user_id;
 
-    // Subscribe to guild events
-    let mut socket = client
-        .subscribe_events(vec![EventSource::Guild(guild_id)])
-        .await?;
-
-    // Poll events
-    loop {
-        if DID_CTRLC.load(Ordering::Relaxed) {
-            break;
-        }
-        if let Some(Ok(event::Event::SentMessage(sent_message))) = socket.get_event().await {
-            if let Some(message) = sent_message.message {
-                // Dont sent message if we sent it
-                if message.author_id != self_id {
-                    info!("Echoing message: {}", message.message_id);
-
-                    let mut send_message = SendMessage::new(guild_id, message.channel_id)
-                        .in_reply_to(message.in_reply_to)
-                        .overrides(message.overrides)
-                        .metadata(message.metadata);
-
-                    if let Some(content) = message.content {
-                        send_message = send_message.content(content);
-                    }
-
-                    message::send_message(&client, send_message).await?;
+    client
+        .event_loop(
+            vec![EventSource::Guild(guild_id)],
+            move |client, event| async move {
+                if DID_CTRLC.load(Ordering::Relaxed) {
+                    return Ok(true);
                 }
-            }
-        }
-    }
+                if let event::Event::SentMessage(sent_message) = event {
+                    if let Some(message) = sent_message.message {
+                        // Dont sent message if we sent it
+                        if message.author_id != self_id {
+                            info!("Echoing message: {}", message.message_id);
+
+                            let mut send_message = SendMessage::new(guild_id, message.channel_id)
+                                .in_reply_to(message.in_reply_to)
+                                .overrides(message.overrides)
+                                .metadata(message.metadata);
+
+                            if let Some(content) = message.content {
+                                send_message = send_message.content(content);
+                            }
+
+                            message::send_message(&client, send_message).await?;
+                        }
+                    }
+                }
+                Ok(false)
+            },
+        )
+        .await?;
 
     // Change our bots status back to offline
     profile::profile_update(

@@ -98,20 +98,17 @@ async fn main() -> ClientResult<()> {
         .unwrap();
     info!("In guild: {}", guild_id);
 
-    // Subscribe to guild events
-    let mut socket = client
-        .subscribe_events(vec![EventSource::Guild(guild_id)])
-        .await?;
-
-    // Poll events
-    loop {
-        if DID_CTRLC.load(Ordering::Relaxed) {
-            break;
-        }
-        if let Some(Ok(event::Event::SentMessage(sent_message))) = socket.get_event().await {
-            if let Some(message) = sent_message.message {
-                info!("Received new message: {:?}", message);
-                println!(
+    client
+        .event_loop(
+            vec![EventSource::Guild(guild_id)],
+            move |_client, event| async move {
+                if DID_CTRLC.load(Ordering::Relaxed) {
+                    return Ok(true);
+                }
+                if let event::Event::SentMessage(sent_message) = event {
+                    if let Some(message) = sent_message.message {
+                        info!("Received new message: {:?}", message);
+                        println!(
                     "Received new message with ID {}, from guild {} in channel {} sent by {}:\n{}",
                     message.message_id,
                     message.guild_id,
@@ -119,9 +116,12 @@ async fn main() -> ClientResult<()> {
                     message.author_id,
                     message.text().unwrap_or("<empty message>"),
                 );
-            }
-        }
-    }
+                    }
+                }
+                Ok(false)
+            },
+        )
+        .await?;
 
     // Change our bots status back to offline
     profile::profile_update(
