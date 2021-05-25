@@ -126,10 +126,15 @@ client_api! {
     service: auth,
 }
 
-/*client_api! {
-    /// Stream steps sent from the server.
-    response: tonic::Streaming<AuthStep>,
-    request: StreamStepsRequest,
-    api_fn: stream_steps,
-    service: auth,
-}*/
+/// Stream steps sent from the server.
+pub async fn stream_steps(
+    client: &Client,
+    request: impl Into<StreamStepsRequest>,
+) -> ClientResult<hrpc::client::socket::ReadSocket<StreamStepsRequest, AuthStep>> {
+    use hrpc::IntoRequest;
+
+    let req = request.into().into_request();
+    let response = client.auth_lock().await.stream_steps(req).await;
+    tracing::debug!("Received response: {:?}", response);
+    response.map_err(Into::into)
+}

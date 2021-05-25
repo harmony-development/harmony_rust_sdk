@@ -377,7 +377,7 @@ impl Client {
         }
     }
 
-    /*/// Begin an authentication steps stream for the current authentication session.
+    /// Begin an authentication steps stream for the current authentication session.
     ///
     /// # Example
     /// ```no_run
@@ -391,17 +391,14 @@ impl Client {
     /// # Ok(())
     /// # }
     /// ```
-    pub async fn auth_stream(
-        &self,
-    ) -> ClientResult<impl Stream<Item = ClientResult<AuthStep>> + Send + Sync> {
+    pub async fn auth_stream(&self) -> ClientResult<AuthSocket> {
         if let AuthStatus::InProgress(auth_id) = self.auth_status() {
-            api::auth::stream_steps(self, AuthId::new(auth_id))
-                .await
-                .map(|stream| stream.map_err(Into::into))
+            let inner = api::auth::stream_steps(self, AuthId::new(auth_id)).await?;
+            Ok(AuthSocket { inner })
         } else {
             Err(ClientError::NoAuthId)
         }
-    }*/
+    }
 
     /// Subscribe to events coming from specified event sources.
     ///
@@ -432,7 +429,7 @@ impl Client {
 }
 
 /// Event subscription socket.
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct EventsSocket {
     inner: hrpc::client::socket::Socket<
         crate::api::chat::StreamEventsRequest,
@@ -456,5 +453,22 @@ impl EventsSocket {
             .send_message(source.into())
             .await
             .map_err(Into::into)
+    }
+}
+
+/// Auth steps subscription socket.
+#[derive(Debug, Clone)]
+pub struct AuthSocket {
+    inner: hrpc::client::socket::ReadSocket<
+        crate::api::auth::StreamStepsRequest,
+        crate::api::auth::AuthStep,
+    >,
+}
+
+impl AuthSocket {
+    /// Get an auth step.
+    pub async fn get_step(&mut self) -> Option<ClientResult<crate::api::auth::AuthStep>> {
+        let res = self.inner.get_message().await?;
+        Some(res.map_err(Into::into))
     }
 }
