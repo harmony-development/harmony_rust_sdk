@@ -57,6 +57,10 @@ async fn main() -> ClientResult<()> {
     assert_eq!(client.auth_status().is_authenticated(), true);
     info!("Logged in");
 
+    info!("Testing check logged in...");
+    auth::check_logged_in(&client, ()).await?;
+    info!("Logged in");
+
     info!("Testing profile update...");
     profile::profile_update(
         &client,

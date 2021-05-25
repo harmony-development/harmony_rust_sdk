@@ -126,6 +126,13 @@ client_api! {
     service: auth,
 }
 
+client_api! {
+    /// Check if logged in to server.
+    request: (),
+    api_fn: check_logged_in,
+    service: auth,
+}
+
 /// Stream steps sent from the server.
 pub async fn stream_steps(
     client: &Client,
