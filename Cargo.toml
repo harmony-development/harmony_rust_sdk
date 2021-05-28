@@ -105,6 +105,3 @@ library = true
 
 [workspace.metadata.nix]
 systems = ["x86_64-linux"]
-env.PROTOC = "protoc"
-buildInputs = ["protobuf"]
-nativeBuildInputs = ["binutils"]
