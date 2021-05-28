@@ -1,3 +1,3 @@
 (function() {var implementors = {};
-implementors["harmony_rust_sdk"] = [{"text":"impl TryFrom&lt;Url&gt; for Hmc","synthetic":false,"types":[]}];
+implementors["harmony_rust_sdk"] = [{"text":"impl <a class=\"trait\" href=\"https://doc.rust-lang.org/nightly/core/convert/trait.TryFrom.html\" title=\"trait core::convert::TryFrom\">TryFrom</a>&lt;<a class=\"struct\" href=\"https://docs.rs/url/2.2.2/url/struct.Url.html\" title=\"struct url::Url\">Url</a>&gt; for <a class=\"struct\" href=\"harmony_rust_sdk/client/api/struct.Hmc.html\" title=\"struct harmony_rust_sdk::client::api::Hmc\">Hmc</a>","synthetic":false,"types":["harmony_rust_sdk::api::Hmc"]}];
 if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()

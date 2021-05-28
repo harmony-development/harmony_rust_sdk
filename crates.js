@@ -1,0 +1,1 @@
+window.ALL_CRATES = ["harmony_rust_sdk"];
