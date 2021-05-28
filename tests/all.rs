@@ -15,7 +15,7 @@ use rest::FileId;
 use tracing::info;
 
 const EMAIL: &str = "rust_sdk_test@example.com";
-const PASSWORD: &str = env!("TESTER_PASSWORD");
+const PASSWORD: Option<&str> = option_env!("TESTER_PASSWORD");
 
 const TEST_SERVER: &str = "https://chat.harmonyapp.io:2289";
 const TEST_SERVER_NAME_RES: &str = "https://chat.harmonyapp.io";
@@ -52,7 +52,10 @@ async fn main() -> ClientResult<()> {
         .next_auth_step(AuthStepResponse::login_choice())
         .await?;
     client
-        .next_auth_step(AuthStepResponse::login_form(EMAIL, PASSWORD))
+        .next_auth_step(AuthStepResponse::login_form(
+            EMAIL,
+            PASSWORD.expect("no tester password?"),
+        ))
         .await?;
     assert_eq!(client.auth_status().is_authenticated(), true);
     info!("Logged in");
