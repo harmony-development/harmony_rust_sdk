@@ -19,8 +19,8 @@ const PASSWORD: &str = "123456789Ab";
 
 const TEST_SERVER: &str = "https://chat.harmonyapp.io:2289";
 const TEST_SERVER_NAME_RES: &str = "https://chat.harmonyapp.io";
-const TEST_GUILD: u64 = 2699074975217745925;
-const TEST_CHANNEL: u64 = 2700365654061481989;
+const TEST_GUILD: u64 = 2721655472527507461;
+const TEST_CHANNEL: u64 = 2721655472527572997;
 
 const FILE_DATA: &str = "They're waiting for you Gordon, in the test chamber.";
 const FILENAME: &str = "test_chamber.txt";
@@ -69,15 +69,15 @@ async fn main() -> ClientResult<()> {
     .await?;
     info!("Updated profile");
 
-    let response = guild::preview_guild(&client, invite::InviteId::new("harmony").unwrap()).await?;
+    /*let response = guild::preview_guild(&client, invite::InviteId::new("harmony").unwrap()).await?;
     info!("Preview guild response: {:?}", response);
-    assert_eq!(response.name.as_str(), "Harmony Development");
+    assert_eq!(response.name.as_str(), "Harmony Development");*/
 
     let response = guild::get_guild_list(&client, GetGuildListRequest {}).await?;
     info!("Get guild list response: {:?}", response);
 
-    // let response = permissions::get_guild_roles(&client, TEST_GUILD).await?;
-    // info!("Get guild roles response: {:?}", response);
+    let response = permissions::get_guild_roles(&client, GuildId::new(TEST_GUILD)).await?;
+    info!("Get guild roles response: {:?}", response);
 
     let members_response = guild::get_guild_members(&client, GuildId::new(TEST_GUILD)).await?;
     info!("Get guild members response: {:?}", members_response);
@@ -94,8 +94,8 @@ async fn main() -> ClientResult<()> {
     .await?;
     info!("Get user response: {:?}", response);
 
-    let response = profile::get_user_bulk(&client, members_response.members).await?;
-    info!("Get user bulk response: {:?}", response);
+    /*let response = profile::get_user_bulk(&client, members_response.members).await?;
+    info!("Get user bulk response: {:?}", response);*/
 
     let response = emote::get_emote_packs(&client, GetEmotePacksRequest {}).await?;
     info!("Get emote packs response: {:?}", response);
