@@ -1,9 +1,9 @@
 use harmony_rust_sdk::{
-    api::chat::{GetEmotePacksRequest, GetGuildListRequest},
+    api::chat::{GetEmotePacksRequest, GetGuildListRequest, Place},
     client::{
         api::{
             auth::*,
-            chat::{channel::*, message::*, profile::*, *},
+            chat::{channel::*, guild::CreateGuild, message::*, profile::*, *},
             *,
         },
         error::*,
@@ -14,13 +14,13 @@ use hrpc::url::Url;
 use rest::FileId;
 use tracing::info;
 
-const EMAIL: &str = "rust_sdk_test@example.org";
-const PASSWORD: &str = "123456789Ab";
+const EMAIL: &str = "rust_sdk_test@example.com";
+const PASSWORD: &str = env!("TESTER_PASSWORD");
 
 const TEST_SERVER: &str = "https://chat.harmonyapp.io:2289";
 const TEST_SERVER_NAME_RES: &str = "https://chat.harmonyapp.io";
-const TEST_GUILD: u64 = 2721655472527507461;
-const TEST_CHANNEL: u64 = 2721655472527572997;
+const TEST_GUILD: u64 = 2721664628324040709;
+const TEST_CHANNEL: u64 = 2721664628324106245;
 
 const FILE_DATA: &str = "They're waiting for you Gordon, in the test chamber.";
 const FILENAME: &str = "test_chamber.txt";
@@ -73,19 +73,24 @@ async fn main() -> ClientResult<()> {
     info!("Preview guild response: {:?}", response);
     assert_eq!(response.name.as_str(), "Harmony Development");*/
 
+    info!("Testing get guild list");
     let response = guild::get_guild_list(&client, GetGuildListRequest {}).await?;
     info!("Get guild list response: {:?}", response);
+    assert_eq!(response.guilds.len(), 1);
 
+    info!("Testing get guild roles");
     let response = permissions::get_guild_roles(&client, GuildId::new(TEST_GUILD)).await?;
     info!("Get guild roles response: {:?}", response);
 
-    let members_response = guild::get_guild_members(&client, GuildId::new(TEST_GUILD)).await?;
-    info!("Get guild members response: {:?}", members_response);
+    info!("Testing get guild members");
+    let response = guild::get_guild_members(&client, GuildId::new(TEST_GUILD)).await?;
+    info!("Get guild members response: {:?}", response);
+    assert_eq!(response.members.len(), 1);
 
     let response = profile::get_user(
         &client,
         UserId::new(
-            *members_response
+            *response
                 .members
                 .first()
                 .expect("expected at least one user in guild"),
@@ -208,6 +213,45 @@ async fn main() -> ClientResult<()> {
     let external_file =
         rest::download(&client, FileId::External(EXTERNAL_URL.parse().unwrap())).await?;
     let _ = external_file.bytes().await?;
+
+    info!("Testing get guild channels");
+    let response = channel::get_guild_channels(&client, GuildId::new(TEST_GUILD)).await?;
+    info!("Get guild channels response: {:?}", response);
+    assert_eq!(response.channels.len(), 1);
+
+    info!("Testing create channel");
+    let response = channel::create_channel(
+        &client,
+        CreateChannel::new(
+            TEST_GUILD,
+            "test".to_string(),
+            Place::Bottom {
+                after: TEST_CHANNEL,
+            },
+        ),
+    )
+    .await?;
+    info!("Create channel response: {:?}", response);
+    let channels = channel::get_guild_channels(&client, GuildId::new(TEST_GUILD))
+        .await?
+        .channels;
+    assert_eq!(channels.len(), 2);
+
+    info!("Testing delete channel");
+    channel::delete_channel(&client, DeleteChannel::new(TEST_GUILD, response.channel_id)).await?;
+    info!("Delete channel successful");
+    let channels = channel::get_guild_channels(&client, GuildId::new(TEST_GUILD))
+        .await?
+        .channels;
+    assert_eq!(channels.len(), 1);
+
+    info!("Testing create guild");
+    let response = guild::create_guild(&client, CreateGuild::new("test".to_string())).await?;
+    info!("Create guild response: {:?}", response);
+
+    info!("Testing delete guild");
+    guild::delete_guild(&client, GuildId::new(response.guild_id)).await?;
+    info!("Delete guild successful");
 
     profile::profile_update(
         &client,
