@@ -454,6 +454,11 @@ impl EventsSocket {
             .await
             .map_err(Into::into)
     }
+
+    /// Close this socket.
+    pub async fn close(self) -> ClientResult<()> {
+        self.inner.close().await.map_err(Into::into)
+    }
 }
 
 /// Auth steps subscription socket.
@@ -470,5 +475,10 @@ impl AuthSocket {
     pub async fn get_step(&mut self) -> Option<ClientResult<crate::api::auth::AuthStep>> {
         let res = self.inner.get_message().await?;
         Some(res.map_err(Into::into))
+    }
+
+    /// Close this socket.
+    pub async fn close(self) -> ClientResult<()> {
+        self.inner.close().await.map_err(Into::into)
     }
 }
