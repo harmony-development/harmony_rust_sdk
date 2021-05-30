@@ -511,11 +511,11 @@
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;parking_lot&quot;</span>))]</span>
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">sync</span>::{<span class="ident">Mutex</span>, <span class="ident">MutexGuard</span>};
 
-<span class="kw">use</span> <span class="ident">async_mutex</span>::<span class="ident">Mutex</span> <span class="kw">as</span> <span class="ident">AsyncMutex</span>;
 <span class="kw">use</span> <span class="ident">hrpc</span>::<span class="ident">url</span>::<span class="ident">Url</span>;
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;parking_lot&quot;</span>)]</span>
 <span class="kw">use</span> <span class="ident">parking_lot</span>::{<span class="ident">Mutex</span>, <span class="ident">MutexGuard</span>};
 <span class="kw">use</span> <span class="ident">reqwest</span>::<span class="ident">Client</span> <span class="kw">as</span> <span class="ident">HttpClient</span>;
+<span class="kw">use</span> <span class="ident">tokio</span>::<span class="ident">sync</span>::<span class="ident">Mutex</span> <span class="kw">as</span> <span class="ident">AsyncMutex</span>;
 
 <span class="kw">type</span> <span class="ident">AuthService</span> <span class="op">=</span> <span class="kw">crate</span>::<span class="ident">api</span>::<span class="ident">auth</span>::<span class="ident">auth_service_client</span>::<span class="ident">AuthServiceClient</span>;
 <span class="kw">type</span> <span class="ident">ChatService</span> <span class="op">=</span> <span class="kw">crate</span>::<span class="ident">api</span>::<span class="ident">chat</span>::<span class="ident">chat_service_client</span>::<span class="ident">ChatServiceClient</span>;
@@ -686,15 +686,15 @@
         }
     }
 
-    <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">chat_lock</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">async_mutex</span>::<span class="ident">MutexGuard</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">ChatService</span><span class="op">&gt;</span> {
+    <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">chat_lock</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">tokio</span>::<span class="ident">sync</span>::<span class="ident">MutexGuard</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">ChatService</span><span class="op">&gt;</span> {
         <span class="self">self</span>.<span class="ident">data</span>.<span class="ident">chat</span>.<span class="ident">lock</span>().<span class="kw">await</span>
     }
 
-    <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">auth_lock</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">async_mutex</span>::<span class="ident">MutexGuard</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">AuthService</span><span class="op">&gt;</span> {
+    <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">auth_lock</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">tokio</span>::<span class="ident">sync</span>::<span class="ident">MutexGuard</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">AuthService</span><span class="op">&gt;</span> {
         <span class="self">self</span>.<span class="ident">data</span>.<span class="ident">auth</span>.<span class="ident">lock</span>().<span class="kw">await</span>
     }
 
-    <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">mediaproxy_lock</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">async_mutex</span>::<span class="ident">MutexGuard</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">MediaProxyService</span><span class="op">&gt;</span> {
+    <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">mediaproxy_lock</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">tokio</span>::<span class="ident">sync</span>::<span class="ident">MutexGuard</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">MediaProxyService</span><span class="op">&gt;</span> {
         <span class="self">self</span>.<span class="ident">data</span>.<span class="ident">mediaproxy</span>.<span class="ident">lock</span>().<span class="kw">await</span>
     }
 
