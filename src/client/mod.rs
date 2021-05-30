@@ -23,11 +23,11 @@ use std::sync::Arc;
 #[cfg(not(feature = "parking_lot"))]
 use std::sync::{Mutex, MutexGuard};
 
-use async_mutex::Mutex as AsyncMutex;
 use hrpc::url::Url;
 #[cfg(feature = "parking_lot")]
 use parking_lot::{Mutex, MutexGuard};
 use reqwest::Client as HttpClient;
+use tokio::sync::Mutex as AsyncMutex;
 
 type AuthService = crate::api::auth::auth_service_client::AuthServiceClient;
 type ChatService = crate::api::chat::chat_service_client::ChatServiceClient;
@@ -198,15 +198,15 @@ impl Client {
         }
     }
 
-    async fn chat_lock(&self) -> async_mutex::MutexGuard<'_, ChatService> {
+    async fn chat_lock(&self) -> tokio::sync::MutexGuard<'_, ChatService> {
         self.data.chat.lock().await
     }
 
-    async fn auth_lock(&self) -> async_mutex::MutexGuard<'_, AuthService> {
+    async fn auth_lock(&self) -> tokio::sync::MutexGuard<'_, AuthService> {
         self.data.auth.lock().await
     }
 
-    async fn mediaproxy_lock(&self) -> async_mutex::MutexGuard<'_, MediaProxyService> {
+    async fn mediaproxy_lock(&self) -> tokio::sync::MutexGuard<'_, MediaProxyService> {
         self.data.mediaproxy.lock().await
     }
 
