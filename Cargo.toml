@@ -43,7 +43,7 @@ http = "0.2"
 parking_lot = { version = "0.11", optional = true }
 
 [build-dependencies]
-hrpc-build = { version = "0.6", default-features = false, features = ["rustfmt"] }
+hrpc-build = { version = "0.6", default-features = false, features = ["rustfmt", "boxed"] }
 
 [features]
 default = [
