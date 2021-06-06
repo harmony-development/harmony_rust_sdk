@@ -80,12 +80,16 @@ jobs:
       run: cargo build --all-targets --all-features --verbose
 
     - name: Build default features
+      if: ${{ matrix.rust == '1.52.1' }}
       run: RUST_LOG=debug cargo test --verbose
     - name: Build client feature
+      if: ${{ matrix.rust == '1.52.1' }}
       run: RUST_LOG=debug cargo test --features client --verbose
     - name: Build client request_method features
+      if: ${{ matrix.rust == '1.52.1' }}
       run: RUST_LOG=debug cargo test --features client,request_method --verbose
     - name: Build all features
+      if: ${{ matrix.rust == '1.52.1' }}
       run: RUST_LOG=debug cargo test --all-features --verbose
 
     - name: Doc
