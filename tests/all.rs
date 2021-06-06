@@ -13,7 +13,7 @@ use harmony_rust_sdk::{
 use hrpc::url::Url;
 use rest::FileId;
 use tokio::time::Instant;
-use tracing::{info, info_span, log::error, Instrument};
+use tracing::{error, info, info_span, Instrument};
 use tracing_subscriber::EnvFilter;
 
 const EMAIL: &str = "rust_sdk_test@example.com";
