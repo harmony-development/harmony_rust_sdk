@@ -24,6 +24,7 @@ use harmony_rust_sdk::{
 };
 
 use tracing::info;
+use tracing_subscriber::EnvFilter;
 
 const EMAIL: &str = "rust_sdk_test@example.org";
 const USERNAME: &str = "rust_sdk_test";
@@ -37,7 +38,11 @@ static DID_CTRLC: AtomicBool = AtomicBool::new(false);
 #[tokio::main(flavor = "current_thread")]
 async fn main() -> ClientResult<()> {
     // Init logging
-    env_logger::init();
+    tracing_subscriber::fmt()
+        .with_env_filter(
+            EnvFilter::try_from_default_env().unwrap_or_else(|_| EnvFilter::from("info")),
+        )
+        .init();
 
     ctrlc::set_handler(|| {
         DID_CTRLC.store(true, Ordering::Relaxed);
