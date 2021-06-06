@@ -13,8 +13,10 @@ use harmony_rust_sdk::{
 use hrpc::url::Url;
 use rest::FileId;
 use tokio::time::Instant;
-use tracing::{error, info, info_span, Instrument};
-use tracing_subscriber::EnvFilter;
+use tracing::{error, info, info_span, Instrument, Level};
+use tracing_subscriber::{prelude::*, util::SubscriberInitExt, EnvFilter};
+
+const RUNNING_IN_GH: bool = option_env!("CI").is_some();
 
 const EMAIL: &str = "rust_sdk_test@example.com";
 const PASSWORD: Option<&str> = option_env!("TESTER_PASSWORD");
@@ -53,11 +55,17 @@ struct TestData {
 
 #[tokio::test(flavor = "current_thread")]
 async fn main() -> ClientResult<()> {
-    tracing_subscriber::fmt()
-        .with_env_filter(
-            EnvFilter::try_from_default_env().unwrap_or_else(|_| EnvFilter::from("info")),
-        )
-        .init();
+    let filter = EnvFilter::try_from_default_env().unwrap_or_else(|_| EnvFilter::from("info"));
+    let logger = tracing_subscriber::fmt::layer();
+
+    let reg = tracing_subscriber::registry().with(filter).with(logger);
+
+    if RUNNING_IN_GH {
+        reg.with(tracing_subscriber::fmt::layer().event_format(GithubActionsFormatter))
+            .init()
+    } else {
+        reg.init()
+    }
 
     let ins = Instant::now();
     let l = tests(LEGATO_DATA).instrument(info_span!("legato")).await;
@@ -446,4 +454,46 @@ macro_rules! check {
             error!("check unsuccessful:\n{:?} != {:?}", $res, $res2);
         }
     };
+}
+
+use std::fmt;
+use tracing::{Event, Subscriber};
+use tracing_subscriber::fmt::{FmtContext, FormatEvent, FormatFields};
+use tracing_subscriber::registry::LookupSpan;
+
+struct GithubActionsFormatter;
+
+impl<S, N> FormatEvent<S, N> for GithubActionsFormatter
+where
+    S: Subscriber + for<'a> LookupSpan<'a>,
+    N: for<'a> FormatFields<'a> + 'static,
+{
+    fn format_event(
+        &self,
+        ctx: &FmtContext<'_, S, N>,
+        writer: &mut dyn fmt::Write,
+        event: &Event<'_>,
+    ) -> fmt::Result {
+        let level = event.metadata().level();
+
+        if let Some(lvl) = level
+            .eq(&Level::WARN)
+            .then(|| "warning")
+            .or_else(|| level.eq(&Level::ERROR).then(|| "error"))
+        {
+            write!(writer, "::{}::", lvl)?;
+
+            // Write spans and fields of each span
+            ctx.visit_spans(|span| {
+                write!(writer, "{}:", span.name())?;
+                Ok(())
+            })?;
+
+            ctx.field_format().format_fields(writer, event)?;
+
+            writeln!(writer)
+        } else {
+            write!(writer, "")
+        }
+    }
 }
