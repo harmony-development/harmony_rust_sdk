@@ -148,13 +148,23 @@ pub async fn download_extract_file(
     let resp = download(client, file_id).await?;
 
     let (name, mimetype, kind) = extract_file_info_from_download_response(resp.headers())
+        .map(|(name, mimetype, kind)| {
+            (
+                name.to_owned(),
+                mimetype
+                    .to_str()
+                    .map(ToOwned::to_owned)
+                    .map_err(|_| ClientError::unexpected("Content-Type is not ASCII")),
+                kind,
+            )
+        })
         .map_err(ClientError::unexpected)?;
 
     let data = resp.bytes().await?;
 
     Ok(DownloadedFile {
         data,
-        mimetype,
+        mimetype: mimetype?,
         kind,
         name,
     })

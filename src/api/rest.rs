@@ -4,6 +4,7 @@ use super::Hmc;
 use derive_more::{Display, From, Into, IntoIterator};
 use derive_new::new;
 use hrpc::url::Url;
+use http::HeaderValue;
 
 /// Kind of the file downloaded.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
@@ -93,15 +94,12 @@ impl From<Hmc> for FileId {
     }
 }
 
-pub fn extract_file_info_from_download_response(
-    headers: &http::HeaderMap,
-) -> Result<(String, String, FileKind), &str> {
+pub fn extract_file_info_from_download_response<'a>(
+    headers: &'a http::HeaderMap,
+) -> Result<(&'a str, &'a HeaderValue, FileKind), &'static str> {
     let mimetype = headers
         .get("Content-Type")
-        .ok_or("server did not respond with `Content-Type` header")?
-        .to_str()
-        .map_err(|_| "server responded with non ASCII content type")?
-        .to_owned();
+        .ok_or("server did not respond with `Content-Type` header")?;
 
     let mut split = headers
         .get("Content-Disposition")
@@ -124,8 +122,7 @@ pub fn extract_file_info_from_download_response(
         .split('=')
         .nth(1)
         .ok_or(NO_NAME)?
-        .trim_matches('"')
-        .to_owned();
+        .trim_matches('"');
 
     Ok((name, mimetype, kind))
 }
