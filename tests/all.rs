@@ -40,9 +40,9 @@ const LEGATO_DATA: TestData = TestData {
 const SCHERZO_DATA: TestData = TestData {
     server: "https://scherzo.harmonyapp.io:2289",
     name_res: "https://scherzo.harmonyapp.io",
-    guild: 14020561916903590835,
-    channel: 11160135478183838055,
-    file_id: "LbjwspGlMmtqCLf5z472HdPcHzWAiKEl3jOCsCNagdZVxCHYt7DSdwmACSoURLSg",
+    guild: 14928244621415946452,
+    channel: 12072360276461434284,
+    file_id: "ZcohODPRpHGcjeUqY5Qxr3UP0n9svxf0D0pjFExfJ0RILwdmNx4HwxGul63rnRUE",
 };
 
 struct TestData {
@@ -276,7 +276,7 @@ async fn tests(data: TestData) -> u16 {
 
                     test! {
                         "fetch link metadata",
-                        mediaproxy::can_instant_view(&client, INSTANT_VIEW_URL.parse::<Url>().unwrap()),
+                        mediaproxy::fetch_link_metadata(&client, INSTANT_VIEW_URL.parse::<Url>().unwrap()),
                         |response| {
                             tests_complete += 1;
                         }

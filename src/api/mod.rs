@@ -26,12 +26,7 @@ pub mod auth {
 
 /// Common types used in other services.
 #[cfg(feature = "gen_harmonytypes")]
-pub mod harmonytypes {
-    pub mod v1 {
-        hrpc::include_proto!("protocol.harmonytypes.v1");
-    }
-    pub use v1::*;
-}
+pub mod harmonytypes;
 
 /// Media proxy service API.
 #[cfg(feature = "gen_mediaproxy")]
