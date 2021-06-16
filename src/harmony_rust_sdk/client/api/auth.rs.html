@@ -148,6 +148,7 @@
 <span id="145">145</span>
 <span id="146">146</span>
 <span id="147">147</span>
+<span id="148">148</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="kw">pub</span> <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">api</span>::<span class="ident">auth</span>::{
     <span class="ident">auth_step</span>, <span class="ident">next_step_request</span>, <span class="ident">AuthStep</span>, <span class="ident">NextStepRequest</span>, <span class="ident">Session</span>, <span class="ident">StepBackRequest</span>,
@@ -292,7 +293,8 @@
     <span class="kw">use</span> <span class="ident">hrpc</span>::<span class="ident">IntoRequest</span>;
 
     <span class="kw">let</span> <span class="ident">req</span> <span class="op">=</span> <span class="ident">request</span>.<span class="ident">into</span>().<span class="ident">into_request</span>();
-    <span class="kw">let</span> <span class="ident">response</span> <span class="op">=</span> <span class="ident">client</span>.<span class="ident">auth_lock</span>().<span class="kw">await</span>.<span class="ident">stream_steps</span>(<span class="ident">req</span>).<span class="kw">await</span>;
+    <span class="kw">let</span> <span class="ident">response</span> <span class="op">=</span> <span class="ident">client</span>.<span class="ident">auth</span>().<span class="kw">await</span>.<span class="ident">stream_steps</span>(<span class="ident">req</span>).<span class="kw">await</span>;
+    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">debug_assertions</span>)]</span>
     <span class="ident">tracing</span>::<span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;Received response: {:?}&quot;</span>, <span class="ident">response</span>);
     <span class="ident">response</span>.<span class="ident">map_err</span>(<span class="ident">Into</span>::<span class="ident">into</span>)
 }

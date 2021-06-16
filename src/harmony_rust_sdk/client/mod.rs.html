@@ -485,6 +485,16 @@
 <span id="482">482</span>
 <span id="483">483</span>
 <span id="484">484</span>
+<span id="485">485</span>
+<span id="486">486</span>
+<span id="487">487</span>
+<span id="488">488</span>
+<span id="489">489</span>
+<span id="490">490</span>
+<span id="491">491</span>
+<span id="492">492</span>
+<span id="493">493</span>
+<span id="494">494</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! Rust client implementation for Harmony, powered by [`hrpc`].</span>
 <span class="doccomment">//!</span>
@@ -497,22 +507,15 @@
 
 <span class="doccomment">/// Some crates exported for user convenience.</span>
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">exports</span> {
-    <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">futures</span>;
     <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">reqwest</span>;
 }
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;request_method&quot;</span>)]</span>
-<span class="kw">use</span> <span class="ident">api</span>::<span class="ident">ClientRequest</span>;
 <span class="kw">use</span> <span class="ident">api</span>::{<span class="ident">auth</span>::<span class="kw-2">*</span>, <span class="ident">chat</span>::<span class="ident">EventSource</span>, <span class="ident">Hmc</span>, <span class="ident">HmcFromStrError</span>};
 <span class="kw">use</span> <span class="ident">error</span>::<span class="kw-2">*</span>;
-<span class="kw">use</span> <span class="ident">futures</span>::<span class="ident">Future</span>;
 
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">sync</span>::<span class="ident">Arc</span>;
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;parking_lot&quot;</span>))]</span>
-<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">sync</span>::{<span class="ident">Mutex</span>, <span class="ident">MutexGuard</span>};
 
-<span class="kw">use</span> <span class="ident">hrpc</span>::<span class="ident">url</span>::<span class="ident">Url</span>;
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;parking_lot&quot;</span>)]</span>
+<span class="kw">use</span> <span class="ident">hrpc</span>::{<span class="ident">bytes</span>::<span class="ident">Bytes</span>, <span class="ident">url</span>::<span class="ident">Url</span>};
 <span class="kw">use</span> <span class="ident">parking_lot</span>::{<span class="ident">Mutex</span>, <span class="ident">MutexGuard</span>};
 <span class="kw">use</span> <span class="ident">reqwest</span>::<span class="ident">Client</span> <span class="kw">as</span> <span class="ident">HttpClient</span>;
 <span class="kw">use</span> <span class="ident">tokio</span>::<span class="ident">sync</span>::<span class="ident">Mutex</span> <span class="kw">as</span> <span class="ident">AsyncMutex</span>;
@@ -566,6 +569,7 @@
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>)]</span>
 <span class="kw">struct</span> <span class="ident">ClientData</span> {
     <span class="ident">homeserver_url</span>: <span class="ident">Url</span>,
+    <span class="ident">token_bytes</span>: <span class="ident">Mutex</span><span class="op">&lt;</span><span class="ident">Bytes</span><span class="op">&gt;</span>,
     <span class="ident">auth_status</span>: <span class="ident">Mutex</span><span class="op">&lt;</span><span class="ident">AuthStatus</span><span class="op">&gt;</span>,
     <span class="ident">chat</span>: <span class="ident">AsyncMutex</span><span class="op">&lt;</span><span class="ident">ChatService</span><span class="op">&gt;</span>,
     <span class="ident">auth</span>: <span class="ident">AsyncMutex</span><span class="op">&lt;</span><span class="ident">AuthService</span><span class="op">&gt;</span>,
@@ -633,6 +637,7 @@
             <span class="ident">homeserver_url</span>.<span class="ident">set_port</span>(<span class="prelude-val">Some</span>(<span class="number">2289</span>)).<span class="ident">unwrap</span>();
         }
 
+        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">debug_assertions</span>)]</span>
         <span class="ident">tracing</span>::<span class="macro">debug</span><span class="macro">!</span>(
             <span class="string">&quot;Using homeserver URL {} with session {:?} to create a `Client`&quot;</span>,
             <span class="ident">homeserver_url</span>,
@@ -643,9 +648,13 @@
         <span class="kw">let</span> <span class="ident">chat</span> <span class="op">=</span> <span class="ident">ChatService</span>::<span class="ident">new</span>(<span class="ident">http</span>.<span class="ident">clone</span>(), <span class="ident">homeserver_url</span>.<span class="ident">clone</span>())<span class="question-mark">?</span>;
         <span class="kw">let</span> <span class="ident">mediaproxy</span> <span class="op">=</span> <span class="ident">MediaProxyService</span>::<span class="ident">new</span>(<span class="ident">http</span>.<span class="ident">clone</span>(), <span class="ident">homeserver_url</span>.<span class="ident">clone</span>())<span class="question-mark">?</span>;
 
+        <span class="kw">let</span> <span class="ident">session</span> <span class="op">=</span> <span class="ident">session</span>.<span class="ident">map_or</span>(<span class="ident">AuthStatus</span>::<span class="prelude-val">None</span>, <span class="ident">AuthStatus</span>::<span class="ident">Complete</span>);
         <span class="kw">let</span> <span class="ident">data</span> <span class="op">=</span> <span class="ident">ClientData</span> {
             <span class="ident">homeserver_url</span>,
-            <span class="ident">auth_status</span>: <span class="ident">Mutex</span>::<span class="ident">new</span>(<span class="ident">session</span>.<span class="ident">map_or</span>(<span class="ident">AuthStatus</span>::<span class="prelude-val">None</span>, <span class="ident">AuthStatus</span>::<span class="ident">Complete</span>)),
+            <span class="ident">token_bytes</span>: <span class="ident">Mutex</span>::<span class="ident">new</span>(<span class="ident">session</span>.<span class="ident">session</span>().<span class="ident">map_or_else</span>(<span class="ident">Bytes</span>::<span class="ident">new</span>, <span class="op">|</span><span class="ident">s</span><span class="op">|</span> {
+                <span class="ident">Bytes</span>::<span class="ident">copy_from_slice</span>(<span class="ident">s</span>.<span class="ident">session_token</span>.<span class="ident">as_bytes</span>())
+            })),
+            <span class="ident">auth_status</span>: <span class="ident">Mutex</span>::<span class="ident">new</span>(<span class="ident">session</span>),
             <span class="ident">chat</span>: <span class="ident">AsyncMutex</span>::<span class="ident">new</span>(<span class="ident">chat</span>),
             <span class="ident">auth</span>: <span class="ident">AsyncMutex</span>::<span class="ident">new</span>(<span class="ident">auth</span>),
             <span class="ident">mediaproxy</span>: <span class="ident">AsyncMutex</span>::<span class="ident">new</span>(<span class="ident">mediaproxy</span>),
@@ -668,7 +677,7 @@
         <span class="ident">handler</span>: <span class="ident">Hndlr</span>,
     ) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">ClientError</span><span class="op">&gt;</span>
     <span class="kw">where</span>
-        <span class="ident">Fut</span>: <span class="ident">Future</span><span class="op">&lt;</span><span class="ident">Output</span> <span class="op">=</span> <span class="ident">ClientResult</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="op">+</span> <span class="lifetime">&#39;a</span>,
+        <span class="ident">Fut</span>: <span class="ident">std</span>::<span class="ident">future</span>::<span class="ident">Future</span><span class="op">&lt;</span><span class="ident">Output</span> <span class="op">=</span> <span class="ident">ClientResult</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="op">+</span> <span class="lifetime">&#39;a</span>,
         <span class="ident">Hndlr</span>: <span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Client</span>, <span class="kw">crate</span>::<span class="ident">api</span>::<span class="ident">chat</span>::<span class="ident">event</span>::<span class="ident">Event</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Fut</span>,
     {
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">sock</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">subscribe_events</span>(<span class="ident">subs</span>).<span class="kw">await</span><span class="question-mark">?</span>;
@@ -686,53 +695,62 @@
         }
     }
 
-    <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">chat_lock</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">tokio</span>::<span class="ident">sync</span>::<span class="ident">MutexGuard</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">ChatService</span><span class="op">&gt;</span> {
+    <span class="attribute">#[<span class="ident">inline</span>(<span class="ident">always</span>)]</span>
+    <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">chat</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">tokio</span>::<span class="ident">sync</span>::<span class="ident">MutexGuard</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">ChatService</span><span class="op">&gt;</span> {
         <span class="self">self</span>.<span class="ident">data</span>.<span class="ident">chat</span>.<span class="ident">lock</span>().<span class="kw">await</span>
     }
 
-    <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">auth_lock</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">tokio</span>::<span class="ident">sync</span>::<span class="ident">MutexGuard</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">AuthService</span><span class="op">&gt;</span> {
+    <span class="attribute">#[<span class="ident">inline</span>(<span class="ident">always</span>)]</span>
+    <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">auth</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">tokio</span>::<span class="ident">sync</span>::<span class="ident">MutexGuard</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">AuthService</span><span class="op">&gt;</span> {
         <span class="self">self</span>.<span class="ident">data</span>.<span class="ident">auth</span>.<span class="ident">lock</span>().<span class="kw">await</span>
     }
 
-    <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">mediaproxy_lock</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">tokio</span>::<span class="ident">sync</span>::<span class="ident">MutexGuard</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">MediaProxyService</span><span class="op">&gt;</span> {
+    <span class="attribute">#[<span class="ident">inline</span>(<span class="ident">always</span>)]</span>
+    <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">mediaproxy</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">tokio</span>::<span class="ident">sync</span>::<span class="ident">MutexGuard</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">MediaProxyService</span><span class="op">&gt;</span> {
         <span class="self">self</span>.<span class="ident">data</span>.<span class="ident">mediaproxy</span>.<span class="ident">lock</span>().<span class="kw">await</span>
     }
 
+    <span class="attribute">#[<span class="ident">inline</span>(<span class="ident">always</span>)]</span>
     <span class="kw">fn</span> <span class="ident">auth_status_lock</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">MutexGuard</span><span class="op">&lt;</span><span class="ident">AuthStatus</span><span class="op">&gt;</span> {
-        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;parking_lot&quot;</span>))]</span>
-        <span class="kw">return</span> <span class="self">self</span>
-            .<span class="ident">data</span>
-            .<span class="ident">auth_status</span>
-            .<span class="ident">lock</span>()
-            .<span class="ident">expect</span>(<span class="string">&quot;auth status mutex was poisoned&quot;</span>);
-        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;parking_lot&quot;</span>)]</span>
         <span class="self">self</span>.<span class="ident">data</span>.<span class="ident">auth_status</span>.<span class="ident">lock</span>()
     }
 
-    <span class="doccomment">/// Send a request.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// # Example</span>
-    <span class="doccomment">/// ```no_run</span>
-    <span class="doccomment">/// # use harmony_rust_sdk::client::{*, api::{harmonytypes::UserStatus, chat::profile::{ProfileUpdateRequest, ProfileUpdate}}};</span>
-    <span class="doccomment">/// # #[tokio::main(flavor = &quot;current_thread&quot;)]</span>
-    <span class="doccomment">/// # async fn main() -&gt; error::ClientResult&lt;()&gt; {</span>
-    <span class="doccomment">/// # let client = Client::new(&quot;chat.harmonyapp.io:2289&quot;.parse().unwrap(), None).await?;</span>
-    <span class="doccomment">/// client</span>
-    <span class="doccomment">///  .request::&lt;ProfileUpdateRequest, _, _&gt;(</span>
-    <span class="doccomment">///    ProfileUpdate::default()</span>
-    <span class="doccomment">///        .new_status(UserStatus::OnlineUnspecified)</span>
-    <span class="doccomment">///        .new_is_bot(true),</span>
-    <span class="doccomment">///   )</span>
-    <span class="doccomment">///   .await?;</span>
-    <span class="doccomment">/// # Ok(())</span>
-    <span class="doccomment">/// # }</span>
-    <span class="doccomment">/// ```</span>
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;request_method&quot;</span>)]</span>
-    <span class="kw">pub</span> <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">request</span><span class="op">&lt;</span><span class="ident">Req</span>: <span class="ident">ClientRequest</span><span class="op">&lt;</span><span class="ident">Resp</span><span class="op">&gt;</span>, <span class="ident">Resp</span>, <span class="ident">IntoReq</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">Req</span><span class="op">&gt;</span><span class="op">&gt;</span>(
-        <span class="kw-2">&amp;</span><span class="self">self</span>,
+    <span class="attribute">#[<span class="ident">inline</span>(<span class="ident">always</span>)]</span>
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">generic_api_fn</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">Resp</span>, <span class="ident">Req</span>, <span class="ident">IntoReq</span>, <span class="ident">Handler</span>, <span class="ident">HnldrOut</span><span class="op">&gt;</span>(
+        <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="self">self</span>,
+        <span class="ident">handler</span>: <span class="ident">Handler</span>,
         <span class="ident">request</span>: <span class="ident">IntoReq</span>,
-    ) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">ClientResult</span><span class="op">&lt;</span><span class="ident">Resp</span><span class="op">&gt;</span> {
-        <span class="ident">request</span>.<span class="ident">into</span>().<span class="ident">request</span>(<span class="self">self</span>).<span class="kw">await</span>
+    ) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">ClientResult</span><span class="op">&lt;</span><span class="ident">Resp</span><span class="op">&gt;</span>
+    <span class="kw">where</span>
+        <span class="ident">Req</span>: <span class="ident">std</span>::<span class="ident">fmt</span>::<span class="ident">Debug</span>,
+        <span class="ident">Resp</span>: <span class="ident">std</span>::<span class="ident">fmt</span>::<span class="ident">Debug</span>,
+        <span class="ident">IntoReq</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">Req</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">std</span>::<span class="ident">fmt</span>::<span class="ident">Debug</span>,
+        <span class="ident">Handler</span>: <span class="ident">FnOnce</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Client</span>, <span class="ident">hrpc</span>::<span class="ident">Request</span><span class="op">&lt;</span><span class="ident">Req</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">HnldrOut</span>,
+        <span class="ident">HnldrOut</span>: <span class="ident">std</span>::<span class="ident">future</span>::<span class="ident">Future</span><span class="op">&lt;</span><span class="ident">Output</span> <span class="op">=</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Resp</span>, <span class="ident">InternalClientError</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="op">+</span> <span class="lifetime">&#39;a</span>,
+    {
+        <span class="kw">use</span> <span class="ident">hrpc</span>::<span class="ident">IntoRequest</span>;
+
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">request</span> <span class="op">=</span> <span class="ident">request</span>.<span class="ident">into</span>().<span class="ident">into_request</span>();
+        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">data</span>.<span class="ident">auth_status</span>.<span class="ident">lock</span>().<span class="ident">is_authenticated</span>() {
+            <span class="ident">request</span> <span class="op">=</span> <span class="ident">request</span>.<span class="ident">header</span>(
+                <span class="ident">http</span>::<span class="ident">header</span>::<span class="ident">AUTHORIZATION</span>,
+                <span class="comment">// This is safe on the assumption that servers will never send session tokens</span>
+                <span class="comment">// with invalid-byte(s). If they do, they aren&#39;t respecting the protocol</span>
+                <span class="kw">unsafe</span> {
+                    <span class="ident">http</span>::<span class="ident">HeaderValue</span>::<span class="ident">from_maybe_shared_unchecked</span>(
+                        <span class="self">self</span>.<span class="ident">data</span>.<span class="ident">token_bytes</span>.<span class="ident">lock</span>().<span class="ident">clone</span>(),
+                    )
+                },
+            );
+        }
+
+        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">debug_assertions</span>)]</span>
+        <span class="ident">tracing</span>::<span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;Sending request: {:?}&quot;</span>, <span class="ident">request</span>);
+        <span class="kw">let</span> <span class="ident">response</span> <span class="op">=</span> <span class="ident">handler</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">request</span>).<span class="kw">await</span>;
+        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">debug_assertions</span>)]</span>
+        <span class="ident">tracing</span>::<span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;Received response: {:?}&quot;</span>, <span class="ident">response</span>);
+
+        <span class="ident">response</span>.<span class="ident">map_err</span>(<span class="ident">Into</span>::<span class="ident">into</span>)
     }
 
     <span class="doccomment">/// Get the current auth status.</span>
@@ -831,6 +849,8 @@
             <span class="kw">let</span> <span class="ident">step</span> <span class="op">=</span> <span class="ident">api</span>::<span class="ident">auth</span>::<span class="ident">next_step</span>(<span class="self">self</span>, <span class="ident">AuthResponse</span>::<span class="ident">new</span>(<span class="ident">auth_id</span>, <span class="ident">response</span>)).<span class="kw">await</span><span class="question-mark">?</span>;
 
             <span class="prelude-val">Ok</span>(<span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">auth_step</span>::<span class="ident">Step</span>::<span class="ident">Session</span>(<span class="ident">session</span>)) <span class="op">=</span> <span class="ident">step</span>.<span class="ident">step</span> {
+                <span class="kw-2">*</span><span class="self">self</span>.<span class="ident">data</span>.<span class="ident">token_bytes</span>.<span class="ident">lock</span>() <span class="op">=</span>
+                    <span class="ident">Bytes</span>::<span class="ident">copy_from_slice</span>(<span class="ident">session</span>.<span class="ident">session_token</span>.<span class="ident">as_bytes</span>());
                 <span class="kw-2">*</span><span class="self">self</span>.<span class="ident">auth_status_lock</span>() <span class="op">=</span> <span class="ident">AuthStatus</span>::<span class="ident">Complete</span>(<span class="ident">session</span>);
                 <span class="prelude-val">None</span>
             } <span class="kw">else</span> {
