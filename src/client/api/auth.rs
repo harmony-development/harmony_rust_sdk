@@ -141,7 +141,7 @@ pub async fn stream_steps(
     use hrpc::IntoRequest;
 
     let req = request.into().into_request();
-    let response = client.auth_lock().await.stream_steps(req).await;
+    let response = client.auth().await.stream_steps(req).await;
     tracing::debug!("Received response: {:?}", response);
     response.map_err(Into::into)
 }

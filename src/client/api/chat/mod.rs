@@ -128,7 +128,7 @@ pub async fn stream_events(
             session_token.parse().unwrap(),
         );
     }
-    let response = client.chat_lock().await.stream_events(req).await;
+    let response = client.chat().await.stream_events(req).await;
     tracing::debug!("Received response: {:?}", response);
     response.map_err(Into::into)
 }

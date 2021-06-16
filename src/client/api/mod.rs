@@ -12,17 +12,11 @@ pub use crate::api::{harmonytypes, Hmc, HmcFromStrError, HmcParseError};
 
 use crate::client::{Client, ClientResult};
 
-#[cfg(feature = "request_method")]
-use async_trait::async_trait;
+use std::fmt::Debug;
+
 use derive_more::{Display, From, Into};
 use derive_new::new;
 use harmony_derive::{into_request, SelfBuilder};
-
-#[cfg(feature = "request_method")]
-#[async_trait]
-pub trait ClientRequest<Resp> {
-    async fn request(self, client: &Client) -> ClientResult<Resp>;
-}
 
 /// This is NOT a part of the public API and should NOT be used.
 #[macro_export]
@@ -36,35 +30,13 @@ macro_rules! client_api {
         service: $service:ident,
     } => {
         $(#[$meta])*
-        pub async fn $api_fn<
-            Req: ::std::convert::Into<$req> + ::std::fmt::Debug,
-        >(client: &$crate::client::Client, request: Req) -> $crate::client::ClientResult<$resp> {
-            use hrpc::IntoRequest;
+        pub async fn $api_fn<Req: Into<$req> + Debug>(client: &Client, request: Req) -> ClientResult<$resp> {
+            use tracing::Instrument;
 
-            tracing::debug!("Sending request: {:?}", request);
-            let mut request = request.into().into_request();
-            if let Some(session_token) = client.auth_status().session().map(|s| &s.session_token) {
-                request = request.header("Authorization".parse().unwrap(), session_token.parse().unwrap());
-            }
-
-            paste::paste! {
-                let response = client
-                    .[<$service _lock>]()
-                    .await
-                    .$api_fn (request)
-                    .await;
-            }
-            tracing::debug!("Received response: {:?}", response);
-
-            response.map_err(::std::convert::Into::into)
-        }
-
-        #[cfg(feature = "request_method")]
-        #[async_trait]
-        impl $crate::client::api::ClientRequest<$resp> for $req {
-            async fn request(self, client: &$crate::client::Client) -> $crate::client::ClientResult<$resp> {
-                $api_fn(client, self).await
-            }
+            client
+                .generic_api_fn(|c, r| async move { c.$service().await.$api_fn(r).await }, request)
+                .instrument(tracing::debug_span!(stringify!($req)))
+                .await
         }
     };
     {

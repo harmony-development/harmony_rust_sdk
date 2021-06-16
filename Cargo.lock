@@ -414,7 +414,6 @@ name = "harmony_rust_sdk"
 version = "0.6.0"
 dependencies = [
  "assert2",
- "async-trait",
  "ctrlc",
  "derive-new",
  "derive_more",

@@ -451,7 +451,7 @@ macro_rules! test {
 macro_rules! check {
     ($res:expr, $res2:expr) => {
         if $res != $res2 {
-            error!("check unsuccessful:\n{:?} != {:?}", $res, $res2);
+            error!("check unsuccessful: {:?} != {:?}", $res, $res2);
         }
     };
 }

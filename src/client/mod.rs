@@ -12,17 +12,12 @@ pub mod exports {
     pub use reqwest;
 }
 
-#[cfg(feature = "request_method")]
-use api::ClientRequest;
 use api::{auth::*, chat::EventSource, Hmc, HmcFromStrError};
 use error::*;
 
 use std::sync::Arc;
-#[cfg(not(feature = "parking_lot"))]
-use std::sync::{Mutex, MutexGuard};
 
-use hrpc::url::Url;
-#[cfg(feature = "parking_lot")]
+use hrpc::{bytes::Bytes, url::Url};
 use parking_lot::{Mutex, MutexGuard};
 use reqwest::Client as HttpClient;
 use tokio::sync::Mutex as AsyncMutex;
@@ -76,6 +71,7 @@ impl AuthStatus {
 #[derive(Debug)]
 struct ClientData {
     homeserver_url: Url,
+    token_bytes: Mutex<Bytes>,
     auth_status: Mutex<AuthStatus>,
     chat: AsyncMutex<ChatService>,
     auth: AsyncMutex<AuthService>,
@@ -153,9 +149,13 @@ impl Client {
         let chat = ChatService::new(http.clone(), homeserver_url.clone())?;
         let mediaproxy = MediaProxyService::new(http.clone(), homeserver_url.clone())?;
 
+        let session = session.map_or(AuthStatus::None, AuthStatus::Complete);
         let data = ClientData {
             homeserver_url,
-            auth_status: Mutex::new(session.map_or(AuthStatus::None, AuthStatus::Complete)),
+            token_bytes: Mutex::new(session.session().map_or_else(Bytes::new, |s| {
+                Bytes::copy_from_slice(s.session_token.as_bytes())
+            })),
+            auth_status: Mutex::new(session),
             chat: AsyncMutex::new(chat),
             auth: AsyncMutex::new(auth),
             mediaproxy: AsyncMutex::new(mediaproxy),
@@ -196,53 +196,60 @@ impl Client {
         }
     }
 
-    async fn chat_lock(&self) -> tokio::sync::MutexGuard<'_, ChatService> {
+    #[inline(always)]
+    async fn chat(&self) -> tokio::sync::MutexGuard<'_, ChatService> {
         self.data.chat.lock().await
     }
 
-    async fn auth_lock(&self) -> tokio::sync::MutexGuard<'_, AuthService> {
+    #[inline(always)]
+    async fn auth(&self) -> tokio::sync::MutexGuard<'_, AuthService> {
         self.data.auth.lock().await
     }
 
-    async fn mediaproxy_lock(&self) -> tokio::sync::MutexGuard<'_, MediaProxyService> {
+    #[inline(always)]
+    async fn mediaproxy(&self) -> tokio::sync::MutexGuard<'_, MediaProxyService> {
         self.data.mediaproxy.lock().await
     }
 
+    #[inline(always)]
     fn auth_status_lock(&self) -> MutexGuard<AuthStatus> {
-        #[cfg(not(feature = "parking_lot"))]
-        return self
-            .data
-            .auth_status
-            .lock()
-            .expect("auth status mutex was poisoned");
-        #[cfg(feature = "parking_lot")]
         self.data.auth_status.lock()
     }
 
-    /// Send a request.
-    ///
-    /// # Example
-    /// ```no_run
-    /// # use harmony_rust_sdk::client::{*, api::{harmonytypes::UserStatus, chat::profile::{ProfileUpdateRequest, ProfileUpdate}}};
-    /// # #[tokio::main(flavor = "current_thread")]
-    /// # async fn main() -> error::ClientResult<()> {
-    /// # let client = Client::new("chat.harmonyapp.io:2289".parse().unwrap(), None).await?;
-    /// client
-    ///  .request::<ProfileUpdateRequest, _, _>(
-    ///    ProfileUpdate::default()
-    ///        .new_status(UserStatus::OnlineUnspecified)
-    ///        .new_is_bot(true),
-    ///   )
-    ///   .await?;
-    /// # Ok(())
-    /// # }
-    /// ```
-    #[cfg(feature = "request_method")]
-    pub async fn request<Req: ClientRequest<Resp>, Resp, IntoReq: Into<Req>>(
-        &self,
+    #[inline(always)]
+    pub(crate) async fn generic_api_fn<'a, Resp, Req, IntoReq, Handler, HnldrOut>(
+        &'a self,
+        handler: Handler,
         request: IntoReq,
-    ) -> ClientResult<Resp> {
-        request.into().request(self).await
+    ) -> ClientResult<Resp>
+    where
+        Req: std::fmt::Debug,
+        Resp: std::fmt::Debug,
+        IntoReq: Into<Req> + std::fmt::Debug,
+        Handler: FnOnce(&'a Client, hrpc::Request<Req>) -> HnldrOut,
+        HnldrOut: std::future::Future<Output = Result<Resp, InternalClientError>> + 'a,
+    {
+        use hrpc::IntoRequest;
+
+        let mut request = request.into().into_request();
+        if self.data.auth_status.lock().is_authenticated() {
+            request = request.header(
+                http::header::AUTHORIZATION,
+                // This is safe on the assumption that servers will never send session tokens
+                // with invalid-byte(s). If they do, they aren't respecting the protocol
+                unsafe {
+                    http::HeaderValue::from_maybe_shared_unchecked(
+                        self.data.token_bytes.lock().clone(),
+                    )
+                },
+            );
+        }
+
+        tracing::debug!("Sending request: {:?}", request);
+        let response = handler(&self, request).await;
+        tracing::debug!("Received response: {:?}", response);
+
+        response.map_err(Into::into)
     }
 
     /// Get the current auth status.
@@ -341,6 +348,8 @@ impl Client {
             let step = api::auth::next_step(self, AuthResponse::new(auth_id, response)).await?;
 
             Ok(if let Some(auth_step::Step::Session(session)) = step.step {
+                *self.data.token_bytes.lock() =
+                    Bytes::copy_from_slice(session.session_token.as_bytes());
                 *self.auth_status_lock() = AuthStatus::Complete(session);
                 None
             } else {
