@@ -1,5 +1,5 @@
 use super::*;
-use crate::client::{error::ClientError, AuthStatus};
+use crate::client::error::ClientError;
 
 use prost::bytes::Bytes;
 use reqwest::{multipart::*, Response};
@@ -17,11 +17,9 @@ pub async fn upload(
     content_type: String,
     data: Vec<u8>,
 ) -> ClientResult<Response> {
-    let session_token = if let AuthStatus::Complete(session) = client.auth_status() {
-        session.session_token
-    } else {
+    if !client.data.auth_status.lock().is_authenticated() {
         return Err(ClientError::Unauthenticated);
-    };
+    }
 
     // This unwrap is safe, since our client's homeserver url is valid, and the path we create is also checked at compile time.
     let uri = client
@@ -36,7 +34,11 @@ pub async fn upload(
         .http
         .post(uri.to_string().as_str())
         .multipart(form)
-        .header("Authorization", session_token)
+        .header(http::header::AUTHORIZATION, unsafe {
+            // This is safe on the assumption that servers will never send session tokens
+            // with invalid-byte(s). If they do, they aren't respecting the protocol
+            http::HeaderValue::from_maybe_shared_unchecked(client.data.token_bytes.lock().clone())
+        })
         .query(&[("filename", &filename), ("contentType", &content_type)])
         .build()?;
     #[cfg(debug_assertions)]

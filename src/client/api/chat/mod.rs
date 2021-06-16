@@ -122,10 +122,16 @@ pub async fn stream_events(
     use hrpc::IntoRequest;
 
     let mut req = ().into_request();
-    if let Some(session_token) = client.auth_status().session().map(|s| &s.session_token) {
+    if client.data.auth_status.lock().is_authenticated() {
         req = req.header(
-            "Authorization".parse().unwrap(),
-            session_token.parse().unwrap(),
+            http::header::AUTHORIZATION,
+            // This is safe on the assumption that servers will never send session tokens
+            // with invalid-byte(s). If they do, they aren't respecting the protocol
+            unsafe {
+                http::HeaderValue::from_maybe_shared_unchecked(
+                    client.data.token_bytes.lock().clone(),
+                )
+            },
         );
     }
     let response = client.chat().await.stream_events(req).await;
