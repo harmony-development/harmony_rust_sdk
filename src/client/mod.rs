@@ -9,7 +9,6 @@ pub mod error;
 
 /// Some crates exported for user convenience.
 pub mod exports {
-    pub use futures;
     pub use reqwest;
 }
 
@@ -17,7 +16,6 @@ pub mod exports {
 use api::ClientRequest;
 use api::{auth::*, chat::EventSource, Hmc, HmcFromStrError};
 use error::*;
-use futures::Future;
 
 use std::sync::Arc;
 #[cfg(not(feature = "parking_lot"))]
@@ -180,7 +178,7 @@ impl Client {
         handler: Hndlr,
     ) -> Result<(), ClientError>
     where
-        Fut: Future<Output = ClientResult<bool>> + 'a,
+        Fut: std::future::Future<Output = ClientResult<bool>> + 'a,
         Hndlr: Fn(&'a Client, crate::api::chat::event::Event) -> Fut,
     {
         let mut sock = self.subscribe_events(subs).await?;
