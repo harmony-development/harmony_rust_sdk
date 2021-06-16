@@ -35,7 +35,7 @@ tracing = { version = "0.1", optional = true }
 paste = { version = "1.0", optional = true }
 futures = { version = "0.3", optional = true }
 serde = { version = "1.0", features = ["derive"], optional = true }
-tokio = { version = "1.6", features = ["sync"], optional = true }
+tokio = { version = "1.7", features = ["sync"], optional = true }
 
 urlencoding = { version = "1.1", optional = true }
 http = "0.2"
@@ -79,7 +79,7 @@ gen_voice = []
 gen_harmonytypes = []
 
 [dev-dependencies]
-tokio = { version = "1.6.0", features = ["rt", "macros", "fs"] }
+tokio = { version = "1.7.0", features = ["rt", "macros", "fs"] }
 tracing-subscriber = "0.2"
 ctrlc = "3.1.8"
 assert2 = "0.3.5"
