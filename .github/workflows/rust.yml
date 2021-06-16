@@ -56,13 +56,6 @@ jobs:
         args: --all-targets --features client
         name: "clippy(${{ matrix.rust }}): default + client"
 
-    - name: Clippy default + client + request_method features
-      uses: actions-rs/clippy-check@v1
-      with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-        args: --all-targets --features client,request_method
-        name: "clippy(${{ matrix.rust }}): default + client + request_method"
-
     - name: Clippy all features
       uses: actions-rs/clippy-check@v1
       with:
