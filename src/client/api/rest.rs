@@ -39,9 +39,11 @@ pub async fn upload(
         .header("Authorization", session_token)
         .query(&[("filename", &filename), ("contentType", &content_type)])
         .build()?;
+    #[cfg(debug_assertions)]
     tracing::debug!("Sending HTTP request: {:?}", request);
 
     let response = client.data.http.execute(request).await?;
+    #[cfg(debug_assertions)]
     tracing::debug!("Got HTTP response: {:?}", response);
 
     response.error_for_status().map_err(Into::into)
@@ -79,9 +81,11 @@ pub async fn download(client: &Client, file_id: impl Into<FileId>) -> ClientResu
     };
 
     let request = client.data.http.get(uri.to_string().as_str()).build()?;
+    #[cfg(debug_assertions)]
     tracing::debug!("Sending HTTP request: {:?}", request);
 
     let response = client.data.http.execute(request).await?;
+    #[cfg(debug_assertions)]
     tracing::debug!("Got HTTP response: {:?}", response);
 
     response.error_for_status().map_err(Into::into)

@@ -129,6 +129,7 @@ pub async fn stream_events(
         );
     }
     let response = client.chat().await.stream_events(req).await;
+    #[cfg(debug_assertions)]
     tracing::debug!("Received response: {:?}", response);
     response.map_err(Into::into)
 }

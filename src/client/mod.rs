@@ -139,6 +139,7 @@ impl Client {
             homeserver_url.set_port(Some(2289)).unwrap();
         }
 
+        #[cfg(debug_assertions)]
         tracing::debug!(
             "Using homeserver URL {} with session {:?} to create a `Client`",
             homeserver_url,
@@ -245,8 +246,10 @@ impl Client {
             );
         }
 
+        #[cfg(debug_assertions)]
         tracing::debug!("Sending request: {:?}", request);
         let response = handler(&self, request).await;
+        #[cfg(debug_assertions)]
         tracing::debug!("Received response: {:?}", response);
 
         response.map_err(Into::into)
