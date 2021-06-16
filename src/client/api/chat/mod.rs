@@ -1,7 +1,7 @@
 use super::*;
 use crate::{api::chat::*, client_api};
 
-use hrpc::url::Url;
+use hrpc::{client::socket::Socket, url::Url};
 
 /// Describes where to subscribe for events.
 #[derive(Debug, Clone, Copy)]
@@ -116,9 +116,7 @@ client_api! {
 /// Stream events from the server.
 ///
 /// This endpoint requires authentication.
-pub async fn stream_events(
-    client: &Client,
-) -> ClientResult<hrpc::client::socket::Socket<StreamEventsRequest, Event>> {
+pub async fn stream_events(client: &Client) -> ClientResult<Socket<StreamEventsRequest, Event>> {
     use hrpc::IntoRequest;
 
     let mut req = ().into_request();

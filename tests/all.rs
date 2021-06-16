@@ -76,12 +76,12 @@ async fn main() -> ClientResult<()> {
     let st = ins.elapsed();
 
     info!(
-        "Legato: {} out of 34 tests successful, completed in {} secs",
+        "Legato: {} out of 35 tests successful, completed in {} secs",
         l,
         lt.as_secs_f64()
     );
     info!(
-        "Scherzo: {} out of 34 tests successful, completed in {} secs",
+        "Scherzo: {} out of 35 tests successful, completed in {} secs",
         s,
         st.as_secs_f64()
     );
@@ -135,6 +135,14 @@ async fn tests(data: TestData) -> u16 {
                         auth::check_logged_in(&client, ()),
                         |_a| {
                             info!("Logged in");
+                            tests_complete += 1;
+                        }
+                    }
+
+                    test! {
+                        "stream events",
+                        chat::stream_events(&client),
+                        |_a| {
                             tests_complete += 1;
                         }
                     }
