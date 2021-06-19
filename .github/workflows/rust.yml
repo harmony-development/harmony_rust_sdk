@@ -63,23 +63,23 @@ jobs:
         args: --all-targets --all-features
         name: "clippy(${{ matrix.rust }}): all"
 
-    - name: Build all features
-      if: ${{ matrix.rust == '1.52.1' }}
+    - name: Test all features
+      if: ${{ matrix.rust == '1.53.0' }}
       run: RUST_LOG=debug cargo test --all-features --verbose
 
     - name: Doc
-      if: ${{ matrix.rust == '1.52.1' }}
+      if: ${{ matrix.rust == '1.53.0' }}
       run: cargo doc --no-deps --all-features --verbose
 
     - name: Finalize documentation
-      if: ${{ matrix.rust == '1.52.1' }}
+      if: ${{ matrix.rust == '1.53.0' }}
       run: |
         CRATE_NAME=$(echo '${{ github.repository }}' | tr '[:upper:]' '[:lower:]' | cut -f2 -d"/")
         echo "<meta http-equiv=\"refresh\" content=\"0; url=${CRATE_NAME/-/_}\">" > target/doc/index.html
         touch target/doc/.nojekyll
 
     - name: Publish docs
-      if: ${{ github.event_name == 'push' && matrix.rust == '1.52.1' }}
+      if: ${{ github.event_name == 'push' && matrix.rust == '1.53.0' }}
       uses: peaceiris/actions-gh-pages@v3
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
