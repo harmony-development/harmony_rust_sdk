@@ -3,7 +3,14 @@ use harmony_rust_sdk::{
     client::{
         api::{
             auth::*,
-            chat::{channel::*, guild::CreateGuild, message::*, profile::*, *},
+            chat::{
+                channel::*,
+                guild::{CreateGuild, UpdateGuildInformation},
+                message::*,
+                permissions::{QueryPermissions, QueryPermissionsSelfBuilder},
+                profile::*,
+                *,
+            },
             *,
         },
         error::*,
@@ -11,6 +18,7 @@ use harmony_rust_sdk::{
     },
 };
 use hrpc::url::Url;
+use rand::prelude::*;
 use rest::FileId;
 use tokio::time::Instant;
 use tracing::{error, info, info_span, Instrument, Level};
@@ -76,12 +84,12 @@ async fn main() -> ClientResult<()> {
     let st = ins.elapsed();
 
     info!(
-        "Legato: {} out of 35 tests successful, completed in {} secs",
+        "Legato: {} out of 41 tests successful, completed in {} secs",
         l,
         lt.as_secs_f64()
     );
     info!(
-        "Scherzo: {} out of 35 tests successful, completed in {} secs",
+        "Scherzo: {} out of 41 tests successful, completed in {} secs",
         s,
         st.as_secs_f64()
     );
@@ -162,7 +170,6 @@ async fn tests(data: TestData) -> u16 {
                         "preview guild",
                         guild::preview_guild(&client, invite::InviteId::new("harmony").unwrap()),
                         |response| {
-                            check!(response.name.as_str(), "Harmony Development");
                             tests_complete += 1;
                         }
                     }
@@ -245,7 +252,7 @@ async fn tests(data: TestData) -> u16 {
                     let current_time = std::time::UNIX_EPOCH.elapsed().unwrap().as_secs();
                     let msg = format!("test at {}", current_time);
                     test! {
-                        "test message",
+                        "send message",
                         message::send_message(
                             &client,
                             SendMessage::new(data.guild, data.channel).text(&msg),
@@ -262,6 +269,42 @@ async fn tests(data: TestData) -> u16 {
                             let our_msg = response.messages.first().unwrap();
                             check!(our_msg.text(), Some(msg.as_str()));
                             tests_complete += 1;
+
+
+                            let new_content = rand::thread_rng()
+                                .sample_iter(rand::distributions::Alphanumeric)
+                                .take(16)
+                                .map(|c| c as char)
+                                .collect::<String>();
+
+                            test! {
+                                "edit message",
+                                message::update_message_text(
+                                    &client,
+                                    UpdateMessageTextRequest {
+                                        guild_id: data.guild,
+                                        channel_id: data.channel,
+                                        message_id: our_msg.message_id,
+                                        new_content: new_content.clone(),
+                                    },
+                                ),
+                                |response| {
+                                    tests_complete += 1;
+
+                                    test! {
+                                        "compare get message",
+                                        message::get_message(&client, GetMessageRequest {
+                                            guild_id: data.guild,
+                                            channel_id: data.channel,
+                                            message_id: our_msg.message_id,
+                                        }),
+                                        |response| {
+                                            check!(response.message.as_ref().unwrap().text(), Some(new_content.as_str()));
+                                            tests_complete += 1;
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
 
@@ -395,6 +438,39 @@ async fn tests(data: TestData) -> u16 {
                     }
 
                     test! {
+                        "get guild information",
+                        guild::get_guild(&client, GuildId::new(data.guild)),
+                        |response| {
+                            tests_complete += 1;
+                        }
+                    }
+
+                    let new_name = rand::thread_rng()
+                        .sample_iter(rand::distributions::Alphanumeric)
+                        .take(16)
+                        .map(|c| c as char)
+                        .collect::<String>();
+
+                    test! {
+                        "update guild information",
+                        guild::update_guild_information(
+                            &client,
+                            UpdateGuildInformation::new(data.guild).new_guild_name(new_name.clone())
+                        ),
+                        |response| {
+                            tests_complete += 1;
+                            test! {
+                                "compare new info",
+                                guild::get_guild(&client, GuildId::new(data.guild)),
+                                |response| {
+                                    check!(response.guild_name, new_name);
+                                    tests_complete += 1;
+                                }
+                            }
+                        }
+                    }
+
+                    test! {
                         "create guild",
                         guild::create_guild(&client, CreateGuild::new("test".to_string())),
                         |response| {
@@ -406,6 +482,18 @@ async fn tests(data: TestData) -> u16 {
                                     tests_complete += 1;
                                 }
                             }
+                        }
+                    }
+
+                    test! {
+                        "query has permission",
+                        permissions::query_has_permission(
+                            &client,
+                            QueryPermissions::new(data.guild, "messages.send".to_string()).channel_id(data.channel),
+                        ),
+                        |response| {
+                            check!(response.ok, true);
+                            tests_complete += 1;
                         }
                     }
 

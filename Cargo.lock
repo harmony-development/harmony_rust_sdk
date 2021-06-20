@@ -392,6 +392,7 @@ dependencies = [
  "paste",
  "prost",
  "prost-types",
+ "rand 0.8.4",
  "reqwest",
  "serde",
  "tokio",
