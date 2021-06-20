@@ -25,7 +25,7 @@ const FILE_DATA: &str = "They're waiting for you Gordon, in the test chamber.";
 const FILENAME: &str = "test_chamber.txt";
 const CONTENT_TYPE: &str = "text/plain";
 const EXTERNAL_URL: &str =
-    "https://cdn.discordapp.com/avatars/363103389992747019/34ee306c324137ffdef785b1537672cd.jpg";
+    "https://cdn.discordapp.com/attachments/855956335689728010/855957272039260210/32b13e7ff8cb6b271db2c51aa9d6bcfb94250c7a8554c3e91fc1a9b64607ee9e.png";
 
 const INSTANT_VIEW_URL: &str = "https://duckduckgo.com/";
 
@@ -40,9 +40,9 @@ const LEGATO_DATA: TestData = TestData {
 const SCHERZO_DATA: TestData = TestData {
     server: "https://scherzo.harmonyapp.io:2289",
     name_res: "https://scherzo.harmonyapp.io",
-    guild: 14928244621415946452,
-    channel: 12072360276461434284,
-    file_id: "ZcohODPRpHGcjeUqY5Qxr3UP0n9svxf0D0pjFExfJ0RILwdmNx4HwxGul63rnRUE",
+    guild: 9496763902128586438,
+    channel: 6751423531778516907,
+    file_id: "agfR1jmjclto9OoGwmlNvM95jBLxMi0zTiu5ilTaj095Cap2QFX2OlQyfB66iG2W",
 };
 
 struct TestData {
@@ -269,7 +269,6 @@ async fn tests(data: TestData) -> u16 {
                         "instant view",
                         mediaproxy::instant_view(&client, INSTANT_VIEW_URL.parse::<Url>().unwrap()),
                         |response| {
-                            check!(response.metadata.as_ref().unwrap().url, INSTANT_VIEW_URL);
                             tests_complete += 1;
                         }
                     }
@@ -343,12 +342,11 @@ async fn tests(data: TestData) -> u16 {
                         rest::download(&client, FileId::External(EXTERNAL_URL.parse().unwrap())),
                         |response| {
                             tests_complete += 1;
-                            test! {
-                                "external file bytes",
-                                response.bytes(),
-                                |response| {
-                                    tests_complete += 1;
-                                }
+                            if response.bytes().await.is_err() {
+                                tracing::error!("failed to download external file bytes");
+                            } else {
+                                tracing::info!("successfully downloaded external file bytes");
+                                tests_complete += 1;
                             }
                         }
                     }
