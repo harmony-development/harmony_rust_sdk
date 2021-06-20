@@ -189,6 +189,12 @@ impl From<Hmc> for String {
     }
 }
 
+impl From<Hmc> for Url {
+    fn from(hmc: Hmc) -> Self {
+        hmc.inner
+    }
+}
+
 impl FromStr for Hmc {
     type Err = HmcFromStrError;
 
