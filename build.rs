@@ -31,6 +31,9 @@ fn main() {
     #[cfg(feature = "gen_voice")]
     protos.push("voice/v1/voice.proto");
 
+    #[cfg(feature = "gen_sync")]
+    protos.push("sync/v1/sync.proto");
+
     let protocol_path =
         std::env::var("HARMONY_PROTOCOL_PATH").unwrap_or_else(|_| "protocol".to_string());
     builder.compile(&protos, &[protocol_path.as_str()]).expect(

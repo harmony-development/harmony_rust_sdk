@@ -49,6 +49,7 @@ default = [
 	"gen_mediaproxy",
 	"gen_voice",
 	"gen_harmonytypes",
+	"gen_sync",
 ]
 client = [
 	"gen_chat",
@@ -72,6 +73,7 @@ gen_auth = []
 gen_mediaproxy = ["gen_harmonytypes"]
 gen_voice = []
 gen_harmonytypes = []
+gen_sync = []
 
 [dev-dependencies]
 tokio = { version = "1.7.0", features = ["rt", "macros", "fs"] }

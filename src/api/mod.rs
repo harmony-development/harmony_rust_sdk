@@ -46,6 +46,15 @@ pub mod voice {
     pub use v1::*;
 }
 
+/// Sync service API.
+#[cfg(feature = "gen_sync")]
+pub mod sync {
+    pub mod v1 {
+        hrpc::include_proto!("protocol.sync.v1");
+    }
+    pub use v1::*;
+}
+
 /// Some crates re-exported for user convenience.
 pub mod exports {
     pub use hrpc;

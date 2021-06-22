@@ -1,8 +1,8 @@
 pub use crate::api::chat::{
-    get_guild_list_response, AddGuildToGuildListRequest, BanUserRequest, CreateGuildRequest,
-    DeleteGuildRequest, GetGuildListRequest, GetGuildMembersRequest, GetGuildRequest,
-    JoinGuildRequest, KickUserRequest, LeaveGuildRequest, PreviewGuildRequest,
-    RemoveGuildFromGuildListRequest, UnbanUserRequest, UpdateGuildInformationRequest,
+    get_guild_list_response, BanUserRequest, CreateGuildRequest, DeleteGuildRequest,
+    GetGuildListRequest, GetGuildMembersRequest, GetGuildRequest, JoinGuildRequest,
+    KickUserRequest, LeaveGuildRequest, PreviewGuildRequest, UnbanUserRequest,
+    UpdateGuildInformationRequest,
 };
 use crate::client::api::rest::FileId;
 
@@ -67,45 +67,6 @@ client_api! {
     /// Create a new guild.
     action: CreateGuild,
     api_fn: create_guild,
-    service: chat,
-}
-
-/// Convenience type to create a valid [`AddGuildToGuildListRequest`] and [`RemoveGuildFromGuildListRequest`].
-#[derive(Debug, Clone, new)]
-pub struct GuildList {
-    guild_id: u64,
-    homeserver: Url,
-}
-
-impl From<GuildList> for AddGuildToGuildListRequest {
-    fn from(o: GuildList) -> Self {
-        Self {
-            guild_id: o.guild_id,
-            homeserver: o.homeserver.to_string(),
-        }
-    }
-}
-
-client_api! {
-    /// Add a guild to the guild list.
-    action: AddGuildToGuildList,
-    api_fn: add_guild_to_guild_list,
-    service: chat,
-}
-
-impl From<GuildList> for RemoveGuildFromGuildListRequest {
-    fn from(o: GuildList) -> Self {
-        Self {
-            guild_id: o.guild_id,
-            homeserver: o.homeserver.to_string(),
-        }
-    }
-}
-
-client_api! {
-    /// Remove a guild from the guild list.
-    action: RemoveGuildFromGuildList,
-    api_fn: remove_guild_from_guild_list,
     service: chat,
 }
 

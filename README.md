@@ -36,6 +36,7 @@ Currently implements a lightweight client and a client API (powered by [hrpc](ht
   - (Default) Enable the `gen_voice` feature to generate voice service code.
   - (Default) Enable the `gen_mediaproxy` feature to generate media proxy service code.
   - (Default) Enable the `gen_harmonytypes` feature to generate common Harmony types.
+  - (Default) Enable the `gen_sync` feature to generate sync service code.
 
 ## MSRV
 Minimum Supported Rust Version: previous stable.

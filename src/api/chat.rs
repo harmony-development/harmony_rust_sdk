@@ -7,6 +7,37 @@ pub mod v1 {
 }
 pub use v1::*;
 
+/// Describes where to subscribe for events.
+#[derive(Debug, Clone, Copy, Hash, PartialEq, Eq)]
+pub enum EventSource {
+    /// Subscription for a guild's events.
+    Guild(u64),
+    /// Subscription to homeserver events.
+    Homeserver,
+    /// Subscription to action events.
+    Action,
+}
+
+impl From<EventSource> for StreamEventsRequest {
+    fn from(o: EventSource) -> StreamEventsRequest {
+        StreamEventsRequest {
+            request: Some(match o {
+                EventSource::Guild(id) => stream_events_request::Request::SubscribeToGuild(
+                    stream_events_request::SubscribeToGuild { guild_id: id },
+                ),
+                EventSource::Homeserver => {
+                    stream_events_request::Request::SubscribeToHomeserverEvents(
+                        stream_events_request::SubscribeToHomeserverEvents {},
+                    )
+                }
+                EventSource::Action => stream_events_request::Request::SubscribeToActions(
+                    stream_events_request::SubscribeToActions {},
+                ),
+            }),
+        }
+    }
+}
+
 /// Describes a place in a list.
 #[derive(Debug, Clone, Copy, Eq, PartialEq)]
 pub enum Place {

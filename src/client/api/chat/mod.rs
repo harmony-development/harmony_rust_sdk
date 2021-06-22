@@ -1,38 +1,9 @@
 use super::*;
 use crate::{api::chat::*, client_api};
 
-use hrpc::{client::socket::Socket, url::Url};
+use hrpc::client::socket::Socket;
 
-/// Describes where to subscribe for events.
-#[derive(Debug, Clone, Copy)]
-pub enum EventSource {
-    /// Subscription for a guild's events.
-    Guild(u64),
-    /// Subscription to homeserver events.
-    Homeserver,
-    /// Subscription to action events.
-    Action,
-}
-
-impl From<EventSource> for StreamEventsRequest {
-    fn from(o: EventSource) -> StreamEventsRequest {
-        StreamEventsRequest {
-            request: Some(match o {
-                EventSource::Guild(id) => stream_events_request::Request::SubscribeToGuild(
-                    stream_events_request::SubscribeToGuild { guild_id: id },
-                ),
-                EventSource::Homeserver => {
-                    stream_events_request::Request::SubscribeToHomeserverEvents(
-                        stream_events_request::SubscribeToHomeserverEvents {},
-                    )
-                }
-                EventSource::Action => stream_events_request::Request::SubscribeToActions(
-                    stream_events_request::SubscribeToActions {},
-                ),
-            }),
-        }
-    }
-}
+pub use crate::api::chat::EventSource;
 
 /// A message location. This type can be used as multiple requests.
 #[into_request("GetMessageRequest", "DeleteMessageRequest")]
