@@ -111,71 +111,13 @@
 <span id="108">108</span>
 <span id="109">109</span>
 <span id="110">110</span>
-<span id="111">111</span>
-<span id="112">112</span>
-<span id="113">113</span>
-<span id="114">114</span>
-<span id="115">115</span>
-<span id="116">116</span>
-<span id="117">117</span>
-<span id="118">118</span>
-<span id="119">119</span>
-<span id="120">120</span>
-<span id="121">121</span>
-<span id="122">122</span>
-<span id="123">123</span>
-<span id="124">124</span>
-<span id="125">125</span>
-<span id="126">126</span>
-<span id="127">127</span>
-<span id="128">128</span>
-<span id="129">129</span>
-<span id="130">130</span>
-<span id="131">131</span>
-<span id="132">132</span>
-<span id="133">133</span>
-<span id="134">134</span>
-<span id="135">135</span>
-<span id="136">136</span>
-<span id="137">137</span>
-<span id="138">138</span>
-<span id="139">139</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
 <span class="kw">use</span> <span class="kw">crate</span>::{<span class="ident">api::chat</span>::<span class="kw-2">*</span>, <span class="ident">client_api</span>};
 
-<span class="kw">use</span> <span class="ident">hrpc</span>::{<span class="ident">client::socket::Socket</span>, <span class="ident">url::Url</span>};
+<span class="kw">use</span> <span class="ident">hrpc::client::socket::Socket</span>;
 
-<span class="doccomment">/// Describes where to subscribe for events.</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">Copy</span>)]</span>
-<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">EventSource</span> {
-    <span class="doccomment">/// Subscription for a guild&#39;s events.</span>
-    <span class="ident">Guild</span>(<span class="ident">u64</span>),
-    <span class="doccomment">/// Subscription to homeserver events.</span>
-    <span class="ident">Homeserver</span>,
-    <span class="doccomment">/// Subscription to action events.</span>
-    <span class="ident">Action</span>,
-}
-
-<span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">EventSource</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">StreamEventsRequest</span> {
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">o</span>: <span class="ident">EventSource</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">StreamEventsRequest</span> {
-        <span class="ident">StreamEventsRequest</span> {
-            <span class="ident">request</span>: <span class="prelude-val">Some</span>(<span class="kw">match</span> <span class="ident">o</span> {
-                <span class="ident">EventSource::Guild</span>(<span class="ident">id</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">stream_events_request::Request::SubscribeToGuild</span>(
-                    <span class="ident">stream_events_request::SubscribeToGuild</span> { <span class="ident">guild_id</span>: <span class="ident">id</span> },
-                ),
-                <span class="ident">EventSource::Homeserver</span> <span class="op">=</span><span class="op">&gt;</span> {
-                    <span class="ident">stream_events_request::Request::SubscribeToHomeserverEvents</span>(
-                        <span class="ident">stream_events_request::SubscribeToHomeserverEvents</span> {},
-                    )
-                }
-                <span class="ident">EventSource::Action</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">stream_events_request::Request::SubscribeToActions</span>(
-                    <span class="ident">stream_events_request::SubscribeToActions</span> {},
-                ),
-            }),
-        }
-    }
-}
+<span class="kw">pub</span> <span class="kw">use</span> <span class="kw">crate</span><span class="ident">::api::chat::EventSource</span>;
 
 <span class="doccomment">/// A message location. This type can be used as multiple requests.</span>
 <span class="attribute">#[<span class="ident">into_request</span>(<span class="string">&quot;GetMessageRequest&quot;</span>, <span class="string">&quot;DeleteMessageRequest&quot;</span>)]</span>

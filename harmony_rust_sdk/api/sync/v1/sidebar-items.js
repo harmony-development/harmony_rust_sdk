@@ -1,0 +1,1 @@
+initSidebarItems({"mod":[["event","Nested message and enum types in `Event`."],["postbox_service_client","Generated client implementations."],["postbox_service_server","Generated server implementations."]],"struct":[["Ack","Acknowledgement of an event pulled using Pull."],["Event",""],["PostEventRequest",""],["Syn","A synchronisation message pulled using Pull."]]});

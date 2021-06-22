@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["PostboxServiceServer","Postbox"]],"trait":[["PostboxService","Generated trait containing hRPC methods that should be implemented for use with PostboxServiceServer."]]});

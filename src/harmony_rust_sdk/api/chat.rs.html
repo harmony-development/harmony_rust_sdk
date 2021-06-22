@@ -156,6 +156,37 @@
 <span id="153">153</span>
 <span id="154">154</span>
 <span id="155">155</span>
+<span id="156">156</span>
+<span id="157">157</span>
+<span id="158">158</span>
+<span id="159">159</span>
+<span id="160">160</span>
+<span id="161">161</span>
+<span id="162">162</span>
+<span id="163">163</span>
+<span id="164">164</span>
+<span id="165">165</span>
+<span id="166">166</span>
+<span id="167">167</span>
+<span id="168">168</span>
+<span id="169">169</span>
+<span id="170">170</span>
+<span id="171">171</span>
+<span id="172">172</span>
+<span id="173">173</span>
+<span id="174">174</span>
+<span id="175">175</span>
+<span id="176">176</span>
+<span id="177">177</span>
+<span id="178">178</span>
+<span id="179">179</span>
+<span id="180">180</span>
+<span id="181">181</span>
+<span id="182">182</span>
+<span id="183">183</span>
+<span id="184">184</span>
+<span id="185">185</span>
+<span id="186">186</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="kw">use</span> <span class="ident">harmony_derive::into_request</span>;
 <span class="kw">use</span> <span class="ident">std::fmt</span>::{<span class="self">self</span>, <span class="ident">Display</span>, <span class="ident">Formatter</span>};
@@ -165,6 +196,37 @@
     <span class="macro">hrpc::include_proto!</span>(<span class="string">&quot;protocol.chat.v1&quot;</span>);
 }
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">v1</span>::<span class="kw-2">*</span>;
+
+<span class="doccomment">/// Describes where to subscribe for events.</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">Copy</span>, <span class="ident">Hash</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>)]</span>
+<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">EventSource</span> {
+    <span class="doccomment">/// Subscription for a guild&#39;s events.</span>
+    <span class="ident">Guild</span>(<span class="ident">u64</span>),
+    <span class="doccomment">/// Subscription to homeserver events.</span>
+    <span class="ident">Homeserver</span>,
+    <span class="doccomment">/// Subscription to action events.</span>
+    <span class="ident">Action</span>,
+}
+
+<span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">EventSource</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">StreamEventsRequest</span> {
+    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">o</span>: <span class="ident">EventSource</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">StreamEventsRequest</span> {
+        <span class="ident">StreamEventsRequest</span> {
+            <span class="ident">request</span>: <span class="prelude-val">Some</span>(<span class="kw">match</span> <span class="ident">o</span> {
+                <span class="ident">EventSource::Guild</span>(<span class="ident">id</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">stream_events_request::Request::SubscribeToGuild</span>(
+                    <span class="ident">stream_events_request::SubscribeToGuild</span> { <span class="ident">guild_id</span>: <span class="ident">id</span> },
+                ),
+                <span class="ident">EventSource::Homeserver</span> <span class="op">=</span><span class="op">&gt;</span> {
+                    <span class="ident">stream_events_request::Request::SubscribeToHomeserverEvents</span>(
+                        <span class="ident">stream_events_request::SubscribeToHomeserverEvents</span> {},
+                    )
+                }
+                <span class="ident">EventSource::Action</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">stream_events_request::Request::SubscribeToActions</span>(
+                    <span class="ident">stream_events_request::SubscribeToActions</span> {},
+                ),
+            }),
+        }
+    }
+}
 
 <span class="doccomment">/// Describes a place in a list.</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">Copy</span>, <span class="ident">Eq</span>, <span class="ident">PartialEq</span>)]</span>
