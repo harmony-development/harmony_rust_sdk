@@ -392,7 +392,6 @@ dependencies = [
  "paste",
  "prost",
  "prost-types",
- "rand 0.8.4",
  "reqwest",
  "serde",
  "tokio",
@@ -452,9 +451,9 @@ dependencies = [
 
 [[package]]
 name = "hrpc"
-version = "0.10.0"
+version = "0.10.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e3c026de5588e79c3130f217bbd46fbb6e5242b95bb9fde105e0e87a122e9010"
+checksum = "c36b24ae3661e96ea82763d03d24355d82b7fc00fc2430bfd51090ee2fb0293a"
 dependencies = [
  "ahash",
  "async-trait",
