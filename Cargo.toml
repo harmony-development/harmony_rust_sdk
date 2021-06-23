@@ -80,10 +80,6 @@ tokio = { version = "1.7", features = ["rt", "macros", "fs"] }
 tracing-subscriber = "0.2"
 ctrlc = "3.1.8"
 
-[[test]]
-name = "all"
-required-features = ["client"]
-
 [[example]]
 name = "echo_bot"
 required-features = ["client"]
