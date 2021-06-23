@@ -72,14 +72,14 @@ jobs:
       run: cargo doc --no-deps --all-features --verbose
 
     - name: Finalize documentation
-      if: ${{ matrix.rust == '1.53.0' }}
+      if: ${{ github.ref == 'refs/heads/master' && matrix.rust == '1.53.0' }}
       run: |
         CRATE_NAME=$(echo '${{ github.repository }}' | tr '[:upper:]' '[:lower:]' | cut -f2 -d"/")
         echo "<meta http-equiv=\"refresh\" content=\"0; url=${CRATE_NAME/-/_}\">" > target/doc/index.html
         touch target/doc/.nojekyll
 
     - name: Publish docs
-      if: ${{ github.ref == 'ref/head/master' && matrix.rust == '1.53.0' }}
+      if: ${{ github.ref == 'refs/heads/master' && matrix.rust == '1.53.0' }}
       uses: peaceiris/actions-gh-pages@v3
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
@@ -87,7 +87,7 @@ jobs:
         publish_branch: gh-pages
 
     - name: Trigger integration testing
-      if: ${{ github.ref == 'ref/head/master' && matrix.rust == '1.53.0' }}
+      if: ${{ github.ref == 'refs/heads/master' && matrix.rust == '1.53.0' }}
       uses: peter-evans/repository-dispatch@v1
       with:
         token: ${{ secrets.INTEGRATION_TEST_PAT }}
