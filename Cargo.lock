@@ -380,7 +380,7 @@ dependencies = [
 
 [[package]]
 name = "harmony_rust_sdk"
-version = "0.6.0"
+version = "0.6.1"
 dependencies = [
  "ctrlc",
  "derive-new",
