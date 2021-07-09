@@ -18,7 +18,7 @@ members = ["harmony_derive"]
 all-features = true
 
 [dependencies]
-prost = "0.7"
+prost = "0.8"
 prost-types = "0.7"
 derive-new = "0.5"
 derive_more = "0.99"
