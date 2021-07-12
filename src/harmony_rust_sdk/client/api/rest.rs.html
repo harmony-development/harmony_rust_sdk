@@ -250,7 +250,7 @@
     <span class="kw">let</span> <span class="ident">request</span> <span class="op">=</span> <span class="ident">client</span>
         .<span class="ident">data</span>
         .<span class="ident">http</span>
-        .<span class="ident">post</span>(<span class="ident">uri</span>.<span class="ident">to_string</span>().<span class="ident">as_str</span>())
+        .<span class="ident">post</span>(<span class="ident">uri</span>.<span class="ident">as_str</span>())
         .<span class="ident">multipart</span>(<span class="ident">form</span>)
         .<span class="ident">header</span>(<span class="ident">http::header::AUTHORIZATION</span>, <span class="kw">unsafe</span> {
             <span class="comment">// This is safe on the assumption that servers will never send session tokens</span>
@@ -296,11 +296,11 @@
             .<span class="ident">homeserver_url</span>()
             .<span class="ident">join</span>(<span class="ident">ENDPOINT</span>)
             .<span class="ident">unwrap</span>()
-            .<span class="ident">join</span>(<span class="kw-2">&amp;</span><span class="ident">urlencoding::encode</span>(<span class="kw-2">&amp;</span><span class="ident">uri</span>.<span class="ident">to_string</span>()))
+            .<span class="ident">join</span>(<span class="ident">urlencoding::encode</span>(<span class="ident">uri</span>.<span class="ident">as_str</span>()).<span class="ident">as_ref</span>())
             .<span class="ident">unwrap</span>(),
     };
 
-    <span class="kw">let</span> <span class="ident">request</span> <span class="op">=</span> <span class="ident">client</span>.<span class="ident">data</span>.<span class="ident">http</span>.<span class="ident">get</span>(<span class="ident">uri</span>.<span class="ident">to_string</span>().<span class="ident">as_str</span>()).<span class="ident">build</span>()<span class="question-mark">?</span>;
+    <span class="kw">let</span> <span class="ident">request</span> <span class="op">=</span> <span class="ident">client</span>.<span class="ident">data</span>.<span class="ident">http</span>.<span class="ident">get</span>(<span class="ident">uri</span>.<span class="ident">as_str</span>()).<span class="ident">build</span>()<span class="question-mark">?</span>;
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">debug_assertions</span>)]</span>
     <span class="macro">tracing::debug!</span>(<span class="string">&quot;Sending HTTP request: {:?}&quot;</span>, <span class="ident">request</span>);
 
