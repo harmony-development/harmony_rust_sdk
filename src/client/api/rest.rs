@@ -32,7 +32,7 @@ pub async fn upload(
     let request = client
         .data
         .http
-        .post(uri.to_string().as_str())
+        .post(uri.as_str())
         .multipart(form)
         .header(http::header::AUTHORIZATION, unsafe {
             // This is safe on the assumption that servers will never send session tokens
@@ -78,11 +78,11 @@ pub async fn download(client: &Client, file_id: impl Into<FileId>) -> ClientResu
             .homeserver_url()
             .join(ENDPOINT)
             .unwrap()
-            .join(&urlencoding::encode(&uri.to_string()))
+            .join(urlencoding::encode(uri.as_str()).as_ref())
             .unwrap(),
     };
 
-    let request = client.data.http.get(uri.to_string().as_str()).build()?;
+    let request = client.data.http.get(uri.as_str()).build()?;
     #[cfg(debug_assertions)]
     tracing::debug!("Sending HTTP request: {:?}", request);
 
