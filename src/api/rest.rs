@@ -5,6 +5,7 @@ use derive_more::{Display, From, Into, IntoIterator};
 use derive_new::new;
 use hrpc::url::Url;
 use http::HeaderValue;
+use serde::{Deserialize, Serialize};
 
 /// Kind of the file downloaded.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
@@ -125,4 +126,21 @@ pub fn extract_file_info_from_download_response<'a>(
         .trim_matches('"');
 
     Ok((name, mimetype, kind))
+}
+
+/// Struct that implements `serde` `Deserialize` / `Serialize` and can be used for
+/// the [`/_harmony/about`](https://github.com/harmony-development/protocol/blob/main/rest/rest.md#get-_harmonyabout) endpoint. 
+#[derive(Debug, Clone, Hash, PartialEq, Eq, Deserialize, Serialize)]
+pub struct About {
+    /// the Harmony server software being hosted.
+    #[serde(rename = "serverName")]
+    pub server_name: String,
+    /// the version of said Harmony server software.
+    pub version: String,
+    /// A description of why / who this server is hosted for.
+    #[serde(rename = "aboutServer")]
+    pub about_server: String,
+    /// "message of the day", can be used to put maintenance information.
+    #[serde(rename = "messageOfTheDay")]
+    pub message_of_the_day: String,
 }
