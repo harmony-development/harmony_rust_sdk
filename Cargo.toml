@@ -32,7 +32,7 @@ reqwest = { version = "0.11", default-features = false, features = [
 ], optional = true }
 tracing = { version = "0.1", optional = true }
 paste = { version = "1.0", optional = true }
-serde = { version = "1.0", features = ["derive"], optional = true }
+serde = { version = "1.0", features = ["derive"] }
 tokio = { version = "1.9", features = ["sync", "parking_lot"], optional = true }
 
 urlencoding = { version = "2.1", optional = true }
@@ -59,7 +59,6 @@ client = [
 	"gen_harmonytypes",
 	"gen_client",
 	"reqwest",
-	"serde",
 	"tokio",
 	"paste",
 	"tracing",
