@@ -279,7 +279,7 @@
 }
 
 <span class="doccomment">/// Struct that implements `serde` `Deserialize` / `Serialize` and can be used for</span>
-<span class="doccomment">/// the [`/_harmony/about`](https://github.com/harmony-development/protocol/blob/main/rest/rest.md#get-_harmonyabout) endpoint. </span>
+<span class="doccomment">/// the [`/_harmony/about`](https://github.com/harmony-development/protocol/blob/main/rest/rest.md#get-_harmonyabout) endpoint.</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">Hash</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>, <span class="ident">Deserialize</span>, <span class="ident">Serialize</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">About</span> {
     <span class="doccomment">/// the Harmony server software being hosted.</span>
@@ -293,6 +293,7 @@
     <span class="doccomment">/// &quot;message of the day&quot;, can be used to put maintenance information.</span>
     <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">rename</span> <span class="op">=</span> <span class="string">&quot;messageOfTheDay&quot;</span>)]</span>
     <span class="kw">pub</span> <span class="ident">message_of_the_day</span>: <span class="ident">String</span>,
-}</pre></div>
+}
+</pre></div>
 </section><section id="search" class="content hidden"></section><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="harmony_rust_sdk" data-search-index-js="../../../search-index.js" data-search-js="../../../search.js"></div>
     <script src="../../../main.js"></script><script src="../../../source-script.js"></script><script src="../../../source-files.js"></script></body></html>

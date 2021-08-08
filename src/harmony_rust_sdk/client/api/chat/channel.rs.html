@@ -206,8 +206,8 @@
         <span class="ident">CreateChannelRequest</span> {
             <span class="ident">guild_id</span>: <span class="ident">o</span>.<span class="ident">guild_id</span>,
             <span class="ident">channel_name</span>: <span class="ident">o</span>.<span class="ident">channel_name</span>,
-            <span class="ident">previous_id</span>: <span class="ident">o</span>.<span class="ident">channel_place</span>.<span class="ident">previous</span>(),
-            <span class="ident">next_id</span>: <span class="ident">o</span>.<span class="ident">channel_place</span>.<span class="ident">next</span>(),
+            <span class="ident">previous_id</span>: <span class="ident">o</span>.<span class="ident">channel_place</span>.<span class="ident">before</span>().<span class="ident">unwrap_or</span>(<span class="number">0</span>),
+            <span class="ident">next_id</span>: <span class="ident">o</span>.<span class="ident">channel_place</span>.<span class="ident">after</span>().<span class="ident">unwrap_or</span>(<span class="number">0</span>),
             <span class="ident">metadata</span>: <span class="ident">o</span>.<span class="ident">metadata</span>,
             <span class="ident">is_category</span>: <span class="ident">o</span>.<span class="ident">is_category</span>,
         }
@@ -288,8 +288,8 @@
         <span class="ident">UpdateChannelOrderRequest</span> {
             <span class="ident">guild_id</span>: <span class="ident">o</span>.<span class="ident">guild_id</span>,
             <span class="ident">channel_id</span>: <span class="ident">o</span>.<span class="ident">channel_id</span>,
-            <span class="ident">previous_id</span>: <span class="ident">o</span>.<span class="ident">new_channel_place</span>.<span class="ident">previous</span>(),
-            <span class="ident">next_id</span>: <span class="ident">o</span>.<span class="ident">new_channel_place</span>.<span class="ident">next</span>(),
+            <span class="ident">previous_id</span>: <span class="ident">o</span>.<span class="ident">new_channel_place</span>.<span class="ident">before</span>().<span class="ident">unwrap_or</span>(<span class="number">0</span>),
+            <span class="ident">next_id</span>: <span class="ident">o</span>.<span class="ident">new_channel_place</span>.<span class="ident">after</span>().<span class="ident">unwrap_or</span>(<span class="number">0</span>),
         }
     }
 }

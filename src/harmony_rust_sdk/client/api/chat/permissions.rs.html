@@ -364,8 +364,8 @@
         <span class="ident">MoveRoleRequest</span> {
             <span class="ident">guild_id</span>: <span class="ident">o</span>.<span class="ident">guild_id</span>,
             <span class="ident">role_id</span>: <span class="ident">o</span>.<span class="ident">role_id</span>,
-            <span class="ident">before_id</span>: <span class="ident">o</span>.<span class="ident">new_role_place</span>.<span class="ident">next</span>(),
-            <span class="ident">after_id</span>: <span class="ident">o</span>.<span class="ident">new_role_place</span>.<span class="ident">previous</span>(),
+            <span class="ident">before_id</span>: <span class="ident">o</span>.<span class="ident">new_role_place</span>.<span class="ident">before</span>().<span class="ident">unwrap_or</span>(<span class="number">0</span>),
+            <span class="ident">after_id</span>: <span class="ident">o</span>.<span class="ident">new_role_place</span>.<span class="ident">after</span>().<span class="ident">unwrap_or</span>(<span class="number">0</span>),
         }
     }
 }

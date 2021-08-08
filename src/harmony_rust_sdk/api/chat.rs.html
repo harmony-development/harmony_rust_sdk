@@ -246,8 +246,8 @@
     <span class="doccomment">/// ```</span>
     <span class="doccomment">/// # use harmony_rust_sdk::api::chat::Place;</span>
     <span class="doccomment">/// let place = Place::between(2, 3);</span>
-    <span class="doccomment">/// assert_eq!(place.next(), 2);</span>
-    <span class="doccomment">/// assert_eq!(place.previous(), 3);</span>
+    <span class="doccomment">/// assert_eq!(place.after(), Some(3));</span>
+    <span class="doccomment">/// assert_eq!(place.before(), Some(2));</span>
     <span class="doccomment">/// ```</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">between</span>(<span class="ident">before</span>: <span class="ident">u64</span>, <span class="ident">after</span>: <span class="ident">u64</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
         <span class="self">Self</span><span class="ident">::Between</span> { <span class="ident">after</span>, <span class="ident">before</span> }
@@ -259,8 +259,8 @@
     <span class="doccomment">/// ```</span>
     <span class="doccomment">/// # use harmony_rust_sdk::api::chat::Place;</span>
     <span class="doccomment">/// let place = Place::top(1);</span>
-    <span class="doccomment">/// assert_eq!(place.next(), 1);</span>
-    <span class="doccomment">/// assert_eq!(place.previous(), 0);</span>
+    <span class="doccomment">/// assert_eq!(place.after(), None);</span>
+    <span class="doccomment">/// assert_eq!(place.before(), Some(1));</span>
     <span class="doccomment">/// ```</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">top</span>(<span class="ident">before</span>: <span class="ident">u64</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
         <span class="self">Self</span><span class="ident">::Top</span> { <span class="ident">before</span> }
@@ -272,8 +272,8 @@
     <span class="doccomment">/// ```</span>
     <span class="doccomment">/// # use harmony_rust_sdk::api::chat::Place;</span>
     <span class="doccomment">/// let place = Place::bottom(1);</span>
-    <span class="doccomment">/// assert_eq!(place.next(), 0);</span>
-    <span class="doccomment">/// assert_eq!(place.previous(), 1);</span>
+    <span class="doccomment">/// assert_eq!(place.after(), Some(1));</span>
+    <span class="doccomment">/// assert_eq!(place.before(), None);</span>
     <span class="doccomment">/// ```</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">bottom</span>(<span class="ident">after</span>: <span class="ident">u64</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
         <span class="self">Self</span><span class="ident">::Bottom</span> { <span class="ident">after</span> }
@@ -284,14 +284,14 @@
     <span class="doccomment">/// # Example</span>
     <span class="doccomment">/// ```</span>
     <span class="doccomment">/// # use harmony_rust_sdk::api::chat::Place;</span>
-    <span class="doccomment">/// let place = Place::top(1);</span>
-    <span class="doccomment">/// assert_eq!(place.next(), 1);</span>
+    <span class="doccomment">/// let place = Place::bottom(1);</span>
+    <span class="doccomment">/// assert_eq!(place.after(), Some(1));</span>
     <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">next</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">u64</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">after</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u64</span><span class="op">&gt;</span> {
         <span class="kw">match</span> <span class="self">self</span> {
-            <span class="ident">Place::Top</span> { <span class="ident">before</span> } <span class="op">=</span><span class="op">&gt;</span> <span class="kw-2">*</span><span class="ident">before</span>,
-            <span class="ident">Place::Between</span> { <span class="ident">before</span>, <span class="ident">after</span>: <span class="kw">_</span> } <span class="op">=</span><span class="op">&gt;</span> <span class="kw-2">*</span><span class="ident">before</span>,
-            <span class="ident">Place::Bottom</span> { <span class="ident">after</span>: <span class="kw">_</span> } <span class="op">=</span><span class="op">&gt;</span> <span class="number">0</span>,
+            <span class="ident">Place::Top</span> { <span class="ident">before</span>: <span class="kw">_</span> } <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">None</span>,
+            <span class="ident">Place::Between</span> { <span class="ident">before</span>: <span class="kw">_</span>, <span class="ident">after</span> } <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">Some</span>(<span class="kw-2">*</span><span class="ident">after</span>),
+            <span class="ident">Place::Bottom</span> { <span class="ident">after</span> } <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">Some</span>(<span class="kw-2">*</span><span class="ident">after</span>),
         }
     }
 
@@ -300,14 +300,14 @@
     <span class="doccomment">/// # Example</span>
     <span class="doccomment">/// ```</span>
     <span class="doccomment">/// # use harmony_rust_sdk::api::chat::Place;</span>
-    <span class="doccomment">/// let place = Place::bottom(1);</span>
-    <span class="doccomment">/// assert_eq!(place.previous(), 1);</span>
+    <span class="doccomment">/// let place = Place::top(1);</span>
+    <span class="doccomment">/// assert_eq!(place.before(), Some(1));</span>
     <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">previous</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">u64</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">before</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u64</span><span class="op">&gt;</span> {
         <span class="kw">match</span> <span class="self">self</span> {
-            <span class="ident">Place::Top</span> { <span class="ident">before</span>: <span class="kw">_</span> } <span class="op">=</span><span class="op">&gt;</span> <span class="number">0</span>,
-            <span class="ident">Place::Between</span> { <span class="ident">before</span>: <span class="kw">_</span>, <span class="ident">after</span> } <span class="op">=</span><span class="op">&gt;</span> <span class="kw-2">*</span><span class="ident">after</span>,
-            <span class="ident">Place::Bottom</span> { <span class="ident">after</span> } <span class="op">=</span><span class="op">&gt;</span> <span class="kw-2">*</span><span class="ident">after</span>,
+            <span class="ident">Place::Top</span> { <span class="ident">before</span> } <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">Some</span>(<span class="kw-2">*</span><span class="ident">before</span>),
+            <span class="ident">Place::Between</span> { <span class="ident">before</span>, <span class="ident">after</span>: <span class="kw">_</span> } <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">Some</span>(<span class="kw-2">*</span><span class="ident">before</span>),
+            <span class="ident">Place::Bottom</span> { <span class="ident">after</span>: <span class="kw">_</span> } <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">None</span>,
         }
     }
 }
