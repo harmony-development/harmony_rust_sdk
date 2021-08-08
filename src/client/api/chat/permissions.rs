@@ -156,8 +156,8 @@ impl From<MoveRole> for MoveRoleRequest {
         MoveRoleRequest {
             guild_id: o.guild_id,
             role_id: o.role_id,
-            before_id: o.new_role_place.next(),
-            after_id: o.new_role_place.previous(),
+            before_id: o.new_role_place.before().unwrap_or(0),
+            after_id: o.new_role_place.after().unwrap_or(0),
         }
     }
 }

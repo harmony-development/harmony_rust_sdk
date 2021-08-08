@@ -53,8 +53,8 @@ impl From<CreateChannel> for CreateChannelRequest {
         CreateChannelRequest {
             guild_id: o.guild_id,
             channel_name: o.channel_name,
-            previous_id: o.channel_place.previous(),
-            next_id: o.channel_place.next(),
+            previous_id: o.channel_place.before().unwrap_or(0),
+            next_id: o.channel_place.after().unwrap_or(0),
             metadata: o.metadata,
             is_category: o.is_category,
         }
@@ -135,8 +135,8 @@ impl From<UpdateChannelOrder> for UpdateChannelOrderRequest {
         UpdateChannelOrderRequest {
             guild_id: o.guild_id,
             channel_id: o.channel_id,
-            previous_id: o.new_channel_place.previous(),
-            next_id: o.new_channel_place.next(),
+            previous_id: o.new_channel_place.before().unwrap_or(0),
+            next_id: o.new_channel_place.after().unwrap_or(0),
         }
     }
 }

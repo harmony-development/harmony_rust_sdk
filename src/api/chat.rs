@@ -56,8 +56,8 @@ impl Place {
     /// ```
     /// # use harmony_rust_sdk::api::chat::Place;
     /// let place = Place::between(2, 3);
-    /// assert_eq!(place.next(), 2);
-    /// assert_eq!(place.previous(), 3);
+    /// assert_eq!(place.after(), Some(3));
+    /// assert_eq!(place.before(), Some(2));
     /// ```
     pub fn between(before: u64, after: u64) -> Self {
         Self::Between { after, before }
@@ -69,8 +69,8 @@ impl Place {
     /// ```
     /// # use harmony_rust_sdk::api::chat::Place;
     /// let place = Place::top(1);
-    /// assert_eq!(place.next(), 1);
-    /// assert_eq!(place.previous(), 0);
+    /// assert_eq!(place.after(), None);
+    /// assert_eq!(place.before(), Some(1));
     /// ```
     pub fn top(before: u64) -> Self {
         Self::Top { before }
@@ -82,8 +82,8 @@ impl Place {
     /// ```
     /// # use harmony_rust_sdk::api::chat::Place;
     /// let place = Place::bottom(1);
-    /// assert_eq!(place.next(), 0);
-    /// assert_eq!(place.previous(), 1);
+    /// assert_eq!(place.after(), Some(1));
+    /// assert_eq!(place.before(), None);
     /// ```
     pub fn bottom(after: u64) -> Self {
         Self::Bottom { after }
@@ -94,14 +94,14 @@ impl Place {
     /// # Example
     /// ```
     /// # use harmony_rust_sdk::api::chat::Place;
-    /// let place = Place::top(1);
-    /// assert_eq!(place.next(), 1);
+    /// let place = Place::bottom(1);
+    /// assert_eq!(place.after(), Some(1));
     /// ```
-    pub fn next(&self) -> u64 {
+    pub fn after(&self) -> Option<u64> {
         match self {
-            Place::Top { before } => *before,
-            Place::Between { before, after: _ } => *before,
-            Place::Bottom { after: _ } => 0,
+            Place::Top { before: _ } => None,
+            Place::Between { before: _, after } => Some(*after),
+            Place::Bottom { after } => Some(*after),
         }
     }
 
@@ -110,14 +110,14 @@ impl Place {
     /// # Example
     /// ```
     /// # use harmony_rust_sdk::api::chat::Place;
-    /// let place = Place::bottom(1);
-    /// assert_eq!(place.previous(), 1);
+    /// let place = Place::top(1);
+    /// assert_eq!(place.before(), Some(1));
     /// ```
-    pub fn previous(&self) -> u64 {
+    pub fn before(&self) -> Option<u64> {
         match self {
-            Place::Top { before: _ } => 0,
-            Place::Between { before: _, after } => *after,
-            Place::Bottom { after } => *after,
+            Place::Top { before } => Some(*before),
+            Place::Between { before, after: _ } => Some(*before),
+            Place::Bottom { after: _ } => None,
         }
     }
 }
