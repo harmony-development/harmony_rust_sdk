@@ -2,6 +2,7 @@ pub use crate::api::chat::{
     permission, AddGuildRoleRequest, DeleteGuildRoleRequest, GetGuildRolesRequest,
     GetPermissionsRequest, GetUserRolesRequest, ManageUserRolesRequest, ModifyGuildRoleRequest,
     MoveRoleRequest, Permission, PermissionList, QueryPermissionsRequest, SetPermissionsRequest,
+    BatchQueryPermissionsRequest,
 };
 
 use super::*;
@@ -39,6 +40,13 @@ client_api! {
     /// Query if a local user (or specified user) has a permission.
     action: QueryPermissions,
     api_fn: query_has_permission,
+    service: chat,
+}
+
+client_api! {
+    /// Batch query has permission requests.
+    action: BatchQueryPermissions,
+    api_fn: batch_query_has_permission,
     service: chat,
 }
 
