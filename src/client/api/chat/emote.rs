@@ -90,3 +90,10 @@ client_api! {
     api_fn: dequip_emote_pack,
     service: chat,
 }
+
+client_api! {
+    /// Equip an emote pack.
+    request: EquipEmotePackRequest,
+    api_fn: equip_emote_pack,
+    service: chat,
+}
