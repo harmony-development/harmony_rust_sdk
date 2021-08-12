@@ -1,8 +1,8 @@
 pub use crate::api::chat::{
-    permission, AddGuildRoleRequest, DeleteGuildRoleRequest, GetGuildRolesRequest,
-    GetPermissionsRequest, GetUserRolesRequest, ManageUserRolesRequest, ModifyGuildRoleRequest,
-    MoveRoleRequest, Permission, PermissionList, QueryPermissionsRequest, SetPermissionsRequest,
-    BatchQueryPermissionsRequest,
+    permission, AddGuildRoleRequest, BatchQueryPermissionsRequest, DeleteGuildRoleRequest,
+    GetGuildRolesRequest, GetPermissionsRequest, GetUserRolesRequest, ManageUserRolesRequest,
+    ModifyGuildRoleRequest, MoveRoleRequest, Permission, PermissionList, QueryPermissionsRequest,
+    SetPermissionsRequest,
 };
 
 use super::*;

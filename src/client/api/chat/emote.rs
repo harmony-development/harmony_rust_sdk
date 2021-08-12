@@ -1,7 +1,7 @@
 pub use crate::api::chat::{
-    get_emote_pack_emotes_response, get_emote_packs_response, AddEmoteToPackRequest,
-    CreateEmotePackRequest, DeleteEmoteFromPackRequest, DeleteEmotePackRequest,
-    DequipEmotePackRequest, GetEmotePackEmotesRequest, GetEmotePacksRequest,
+    AddEmoteToPackRequest, CreateEmotePackRequest, DeleteEmoteFromPackRequest,
+    DeleteEmotePackRequest, DequipEmotePackRequest, GetEmotePackEmotesRequest,
+    GetEmotePacksRequest,
 };
 use crate::client::api::rest::FileId;
 
