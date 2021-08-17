@@ -138,7 +138,7 @@ async fn main() -> ClientResult<()> {
                                     }
                                     "hello" => {
                                         let user_profile = profile::get_user(
-                                            &client,
+                                            client,
                                             UserId::new(message.author_id),
                                         )
                                         .await?;
@@ -154,7 +154,7 @@ async fn main() -> ClientResult<()> {
                                     _ => "No such command.".to_string(),
                                 };
                                 message::send_message(
-                                    &client,
+                                    client,
                                     SendMessage::new(guild_id, message.channel_id)
                                         .in_reply_to(message.message_id)
                                         .text(reply),

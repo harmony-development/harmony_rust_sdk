@@ -187,7 +187,7 @@ impl Client {
             if let Some(res) = sock.get_event().await {
                 match res {
                     Ok(event) => {
-                        if handler(&self, event).await? {
+                        if handler(self, event).await? {
                             return Ok(());
                         }
                     }
@@ -248,7 +248,7 @@ impl Client {
 
         #[cfg(debug_assertions)]
         tracing::debug!("Sending request: {:?}", request);
-        let response = handler(&self, request).await;
+        let response = handler(self, request).await;
         #[cfg(debug_assertions)]
         tracing::debug!("Received response: {:?}", response);
 

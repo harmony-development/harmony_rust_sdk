@@ -128,7 +128,7 @@ async fn main() -> ClientResult<()> {
                                 send_message = send_message.content(content);
                             }
 
-                            message::send_message(&client, send_message).await?;
+                            message::send_message(client, send_message).await?;
                         }
                     }
                 }
