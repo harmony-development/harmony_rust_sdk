@@ -150,11 +150,15 @@
 <span id="147">147</span>
 <span id="148">148</span>
 <span id="149">149</span>
+<span id="150">150</span>
+<span id="151">151</span>
+<span id="152">152</span>
+<span id="153">153</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="kw">pub</span> <span class="kw">use</span> <span class="kw">crate</span><span class="ident">::api::chat</span>::{
-    <span class="ident">get_guild_channels_response</span>, <span class="ident">CreateChannelRequest</span>, <span class="ident">DeleteChannelRequest</span>,
-    <span class="ident">GetChannelMessagesRequest</span>, <span class="ident">GetGuildChannelsRequest</span>, <span class="ident">UpdateChannelInformationRequest</span>,
-    <span class="ident">UpdateChannelOrderRequest</span>,
+    <span class="ident">get_channel_messages_request::Direction</span>, <span class="ident">get_guild_channels_response</span>, <span class="ident">CreateChannelRequest</span>,
+    <span class="ident">DeleteChannelRequest</span>, <span class="ident">GetChannelMessagesRequest</span>, <span class="ident">GetGuildChannelsRequest</span>,
+    <span class="ident">UpdateChannelInformationRequest</span>, <span class="ident">UpdateChannelOrderRequest</span>,
 };
 
 <span class="kw">use</span> <span class="kw">super</span>::{<span class="ident">harmonytypes::Metadata</span>, <span class="kw-2">*</span>};
@@ -178,7 +182,11 @@
     <span class="ident">guild_id</span>: <span class="ident">u64</span>,
     <span class="ident">channel_id</span>: <span class="ident">u64</span>,
     <span class="attribute">#[<span class="ident">new</span>(<span class="ident">default</span>)]</span>
-    <span class="ident">before_message</span>: <span class="ident">u64</span>,
+    <span class="ident">message_id</span>: <span class="ident">u64</span>,
+    <span class="attribute">#[<span class="ident">new</span>(<span class="ident">default</span>)]</span>
+    <span class="ident">direction</span>: <span class="ident">Direction</span>,
+    <span class="attribute">#[<span class="ident">new</span>(<span class="ident">default</span>)]</span>
+    <span class="ident">count</span>: <span class="ident">u32</span>,
 }
 
 <span class="macro">client_api!</span> {

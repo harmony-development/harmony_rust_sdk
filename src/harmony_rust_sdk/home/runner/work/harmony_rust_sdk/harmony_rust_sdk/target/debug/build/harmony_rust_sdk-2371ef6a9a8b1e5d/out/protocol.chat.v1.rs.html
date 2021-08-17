@@ -1034,6 +1034,34 @@
 <span id="1031">1031</span>
 <span id="1032">1032</span>
 <span id="1033">1033</span>
+<span id="1034">1034</span>
+<span id="1035">1035</span>
+<span id="1036">1036</span>
+<span id="1037">1037</span>
+<span id="1038">1038</span>
+<span id="1039">1039</span>
+<span id="1040">1040</span>
+<span id="1041">1041</span>
+<span id="1042">1042</span>
+<span id="1043">1043</span>
+<span id="1044">1044</span>
+<span id="1045">1045</span>
+<span id="1046">1046</span>
+<span id="1047">1047</span>
+<span id="1048">1048</span>
+<span id="1049">1049</span>
+<span id="1050">1050</span>
+<span id="1051">1051</span>
+<span id="1052">1052</span>
+<span id="1053">1053</span>
+<span id="1054">1054</span>
+<span id="1055">1055</span>
+<span id="1056">1056</span>
+<span id="1057">1057</span>
+<span id="1058">1058</span>
+<span id="1059">1059</span>
+<span id="1060">1060</span>
+<span id="1061">1061</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">GetUserRequest</span> {
@@ -1366,8 +1394,36 @@
     <span class="kw">pub</span> <span class="ident">guild_id</span>: <span class="ident">u64</span>,
     <span class="attribute">#[<span class="ident">prost</span>(<span class="ident">uint64</span>, <span class="ident">tag</span><span class="op">=</span><span class="string">&quot;2&quot;</span>)]</span>
     <span class="kw">pub</span> <span class="ident">channel_id</span>: <span class="ident">u64</span>,
+    <span class="doccomment">/// The ID of the message that will be used as an &quot;anchor&quot; point to figure out</span>
+    <span class="doccomment">/// where to get the messages.</span>
     <span class="attribute">#[<span class="ident">prost</span>(<span class="ident">uint64</span>, <span class="ident">tag</span><span class="op">=</span><span class="string">&quot;3&quot;</span>)]</span>
-    <span class="kw">pub</span> <span class="ident">before_message</span>: <span class="ident">u64</span>,
+    <span class="kw">pub</span> <span class="ident">message_id</span>: <span class="ident">u64</span>,
+    <span class="doccomment">/// On which direction to get the messages.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// - By default, it is &quot;before&quot;, which means you will get messages before the `message_id` message.</span>
+    <span class="doccomment">/// - If it is &quot;around&quot;, you will get the messages around the `message_id` message.</span>
+    <span class="doccomment">/// This will include the `message_id` message itself, as the middle item of the list returned.</span>
+    <span class="doccomment">/// - If it is &quot;after&quot;, you will get the messages after the `message_id` message.</span>
+    <span class="attribute">#[<span class="ident">prost</span>(<span class="ident">enumeration</span><span class="op">=</span><span class="string">&quot;get_channel_messages_request::Direction&quot;</span>, <span class="ident">tag</span><span class="op">=</span><span class="string">&quot;4&quot;</span>)]</span>
+    <span class="kw">pub</span> <span class="ident">direction</span>: <span class="ident">i32</span>,
+    <span class="doccomment">/// How many messages to get.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// - If `0`, a recommended message count to return is 25. If the direction is &quot;around&quot;, the recommended value is 12.</span>
+    <span class="doccomment">/// - If the direction to get the messages is &quot;around&quot;, this count will not be the *total* count</span>
+    <span class="doccomment">/// of messages to return, but instead the count of messages to return *for each direction*, before and after.</span>
+    <span class="doccomment">/// - Servers should enforce their own maximum limit, and clamp this value to the limit.</span>
+    <span class="attribute">#[<span class="ident">prost</span>(<span class="ident">uint32</span>, <span class="ident">tag</span><span class="op">=</span><span class="string">&quot;5&quot;</span>)]</span>
+    <span class="kw">pub</span> <span class="ident">count</span>: <span class="ident">u32</span>,
+}
+<span class="doccomment">/// Nested message and enum types in `GetChannelMessagesRequest`.</span>
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">get_channel_messages_request</span> {
+    <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Copy</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>, <span class="ident">Hash</span>, <span class="ident">PartialOrd</span>, <span class="ident">Ord</span>, <span class="ident">::prost::Enumeration</span>)]</span>
+    <span class="attribute">#[<span class="ident">repr</span>(<span class="ident">i32</span>)]</span>
+    <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">Direction</span> {
+        <span class="ident">Before</span> <span class="op">=</span> <span class="number">0</span>,
+        <span class="ident">Around</span> <span class="op">=</span> <span class="number">1</span>,
+        <span class="ident">After</span> <span class="op">=</span> <span class="number">2</span>,
+    }
 }
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">GetChannelMessagesResponse</span> {
@@ -1672,9 +1728,9 @@
     <span class="kw">pub</span> <span class="ident">guild_id</span>: <span class="ident">u64</span>,
     <span class="attribute">#[<span class="ident">prost</span>(<span class="ident">uint64</span>, <span class="ident">tag</span><span class="op">=</span><span class="string">&quot;2&quot;</span>)]</span>
     <span class="kw">pub</span> <span class="ident">user_id</span>: <span class="ident">u64</span>,
-    <span class="attribute">#[<span class="ident">prost</span>(<span class="ident">uint64</span>, <span class="ident">repeated</span>, <span class="ident">packed</span><span class="op">=</span><span class="string">&quot;false&quot;</span>, <span class="ident">tag</span><span class="op">=</span><span class="string">&quot;3&quot;</span>)]</span>
+    <span class="attribute">#[<span class="ident">prost</span>(<span class="ident">uint64</span>, <span class="ident">repeated</span>, <span class="ident">tag</span><span class="op">=</span><span class="string">&quot;3&quot;</span>)]</span>
     <span class="kw">pub</span> <span class="ident">give_role_ids</span>: <span class="ident">::prost::alloc::vec::Vec</span><span class="op">&lt;</span><span class="ident">u64</span><span class="op">&gt;</span>,
-    <span class="attribute">#[<span class="ident">prost</span>(<span class="ident">uint64</span>, <span class="ident">repeated</span>, <span class="ident">packed</span><span class="op">=</span><span class="string">&quot;false&quot;</span>, <span class="ident">tag</span><span class="op">=</span><span class="string">&quot;4&quot;</span>)]</span>
+    <span class="attribute">#[<span class="ident">prost</span>(<span class="ident">uint64</span>, <span class="ident">repeated</span>, <span class="ident">tag</span><span class="op">=</span><span class="string">&quot;4&quot;</span>)]</span>
     <span class="kw">pub</span> <span class="ident">take_role_ids</span>: <span class="ident">::prost::alloc::vec::Vec</span><span class="op">&lt;</span><span class="ident">u64</span><span class="op">&gt;</span>,
 }
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
@@ -1686,7 +1742,7 @@
 }
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">GetUserRolesResponse</span> {
-    <span class="attribute">#[<span class="ident">prost</span>(<span class="ident">uint64</span>, <span class="ident">repeated</span>, <span class="ident">packed</span><span class="op">=</span><span class="string">&quot;false&quot;</span>, <span class="ident">tag</span><span class="op">=</span><span class="string">&quot;1&quot;</span>)]</span>
+    <span class="attribute">#[<span class="ident">prost</span>(<span class="ident">uint64</span>, <span class="ident">repeated</span>, <span class="ident">tag</span><span class="op">=</span><span class="string">&quot;1&quot;</span>)]</span>
     <span class="kw">pub</span> <span class="ident">roles</span>: <span class="ident">::prost::alloc::vec::Vec</span><span class="op">&lt;</span><span class="ident">u64</span><span class="op">&gt;</span>,
 }
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
