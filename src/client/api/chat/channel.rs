@@ -1,7 +1,7 @@
 pub use crate::api::chat::{
-    get_guild_channels_response, CreateChannelRequest, DeleteChannelRequest,
-    GetChannelMessagesRequest, GetGuildChannelsRequest, UpdateChannelInformationRequest,
-    UpdateChannelOrderRequest,
+    get_channel_messages_request::Direction, get_guild_channels_response, CreateChannelRequest,
+    DeleteChannelRequest, GetChannelMessagesRequest, GetGuildChannelsRequest,
+    UpdateChannelInformationRequest, UpdateChannelOrderRequest,
 };
 
 use super::{harmonytypes::Metadata, *};
@@ -25,7 +25,11 @@ pub struct GetChannelMessages {
     guild_id: u64,
     channel_id: u64,
     #[new(default)]
-    before_message: u64,
+    message_id: u64,
+    #[new(default)]
+    direction: Direction,
+    #[new(default)]
+    count: u32,
 }
 
 client_api! {
