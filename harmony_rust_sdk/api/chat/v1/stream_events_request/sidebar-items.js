@@ -1,1 +1,1 @@
-initSidebarItems({"enum":[["Request",""]],"struct":[["SubscribeToActions",""],["SubscribeToGuild",""],["SubscribeToHomeserverEvents",""]]});
+initSidebarItems({"enum":[["Request","Describes which event source to subscribe to."]],"struct":[["SubscribeToActions","Event source for actions’ events."],["SubscribeToGuild","Event source for guilds’ events."],["SubscribeToHomeserverEvents","Event source for homeserver events."]]});

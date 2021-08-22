@@ -1,1 +1,1 @@
-initSidebarItems({"struct":[["ChatServiceClient",""]]});
+initSidebarItems({"struct":[["ChatServiceClient","The core of Harmony’s chat operations."]]});

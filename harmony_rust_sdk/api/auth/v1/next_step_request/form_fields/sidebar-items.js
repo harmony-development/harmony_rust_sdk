@@ -1,1 +1,1 @@
-initSidebarItems({"enum":[["Field",""]]});
+initSidebarItems({"enum":[["Field","field: the data for a form field"]]});

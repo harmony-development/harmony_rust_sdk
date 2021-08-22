@@ -12,13 +12,26 @@ A step in the authentication process
 Contains a variety of different types of views
 It is recommended to have a fallback_url specified
 For non-trivial authentication procedures (such as captchas)</p>
-</td></tr><tr class="module-item"><td><a class="struct" href="struct.BeginAuthResponse.html" title="harmony_rust_sdk::api::auth::v1::BeginAuthResponse struct">BeginAuthResponse</a></td><td class="docblock-short"></td></tr><tr class="module-item"><td><a class="struct" href="struct.FederateReply.html" title="harmony_rust_sdk::api::auth::v1::FederateReply struct">FederateReply</a></td><td class="docblock-short"></td></tr><tr class="module-item"><td><a class="struct" href="struct.FederateRequest.html" title="harmony_rust_sdk::api::auth::v1::FederateRequest struct">FederateRequest</a></td><td class="docblock-short"><p>Connection</p>
-</td></tr><tr class="module-item"><td><a class="struct" href="struct.KeyReply.html" title="harmony_rust_sdk::api::auth::v1::KeyReply struct">KeyReply</a></td><td class="docblock-short"><p><code>key</code> is the bytes of the public key.</p>
-</td></tr><tr class="module-item"><td><a class="struct" href="struct.LoginFederatedRequest.html" title="harmony_rust_sdk::api::auth::v1::LoginFederatedRequest struct">LoginFederatedRequest</a></td><td class="docblock-short"></td></tr><tr class="module-item"><td><a class="struct" href="struct.NextStepRequest.html" title="harmony_rust_sdk::api::auth::v1::NextStepRequest struct">NextStepRequest</a></td><td class="docblock-short"><p>NextStepRequest
+</td></tr><tr class="module-item"><td><a class="struct" href="struct.BeginAuthResponse.html" title="harmony_rust_sdk::api::auth::v1::BeginAuthResponse struct">BeginAuthResponse</a></td><td class="docblock-short"><p>BeginAuthResponse
+The return type of BeginAuth, containing the
+auth_id that will be used for the authentication
+section</p>
+</td></tr><tr class="module-item"><td><a class="struct" href="struct.FederateReply.html" title="harmony_rust_sdk::api::auth::v1::FederateReply struct">FederateReply</a></td><td class="docblock-short"><p>The reply to a successful federation request,
+containing the token you need to present to the
+foreign server.</p>
+</td></tr><tr class="module-item"><td><a class="struct" href="struct.FederateRequest.html" title="harmony_rust_sdk::api::auth::v1::FederateRequest struct">FederateRequest</a></td><td class="docblock-short"><p>The request to federate with a foreign server.</p>
+</td></tr><tr class="module-item"><td><a class="struct" href="struct.KeyReply.html" title="harmony_rust_sdk::api::auth::v1::KeyReply struct">KeyReply</a></td><td class="docblock-short"><p>Contains a key’s bytes.</p>
+</td></tr><tr class="module-item"><td><a class="struct" href="struct.LoginFederatedRequest.html" title="harmony_rust_sdk::api::auth::v1::LoginFederatedRequest struct">LoginFederatedRequest</a></td><td class="docblock-short"><p>Log into a foreignserver using a token
+from your homeserver, obtained through a FederateRequest</p>
+</td></tr><tr class="module-item"><td><a class="struct" href="struct.NextStepRequest.html" title="harmony_rust_sdk::api::auth::v1::NextStepRequest struct">NextStepRequest</a></td><td class="docblock-short"><p>NextStepRequest
 contains the client’s response to the server’s challenge
 This needs to be called first with no arguments to
 receive the first step</p>
-</td></tr><tr class="module-item"><td><a class="struct" href="struct.Session.html" title="harmony_rust_sdk::api::auth::v1::Session struct">Session</a></td><td class="docblock-short"></td></tr><tr class="module-item"><td><a class="struct" href="struct.StepBackRequest.html" title="harmony_rust_sdk::api::auth::v1::StepBackRequest struct">StepBackRequest</a></td><td class="docblock-short"><p>StepBackRequest
+</td></tr><tr class="module-item"><td><a class="struct" href="struct.Session.html" title="harmony_rust_sdk::api::auth::v1::Session struct">Session</a></td><td class="docblock-short"><p>Session
+Session contains the information for a new session;
+the user_id you logged in as and the session_token
+which should be passed to authorisation</p>
+</td></tr><tr class="module-item"><td><a class="struct" href="struct.StepBackRequest.html" title="harmony_rust_sdk::api::auth::v1::StepBackRequest struct">StepBackRequest</a></td><td class="docblock-short"><p>StepBackRequest
 A request to go back 1 step</p>
 </td></tr><tr class="module-item"><td><a class="struct" href="struct.StreamStepsRequest.html" title="harmony_rust_sdk::api::auth::v1::StreamStepsRequest struct">StreamStepsRequest</a></td><td class="docblock-short"><p>StreamStepsRequest
 Required to be initiated by all authenticating clients

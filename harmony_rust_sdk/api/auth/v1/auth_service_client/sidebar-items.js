@@ -1,1 +1,1 @@
-initSidebarItems({"struct":[["AuthServiceClient",""]]});
+initSidebarItems({"struct":[["AuthServiceClient","The service containing authorization/entication methods"]]});
