@@ -4,6 +4,12 @@ use std::fmt::{self, Display, Formatter};
 pub mod v1 {
     #![allow(clippy::unit_arg)]
     hrpc::include_proto!("protocol.chat.v1");
+
+    /// All chat permissions.
+    pub mod all_permissions {
+        #![allow(clippy::unit_arg)]
+        hrpc::include_proto!("permissions");
+    }
 }
 pub use v1::*;
 

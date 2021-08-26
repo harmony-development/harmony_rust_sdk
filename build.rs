@@ -62,6 +62,7 @@ fn main() {
             "EditedMessage(Box<MessageUpdated>),",
         );
         std::fs::write(&chat_gen_path, patched_chat_gen).expect("Failed to read from chat service generated code, are you sure you have correct permissions?");
+        write_permissions_rs(&out_dir);
     }
 
     #[cfg(feature = "gen_harmonytypes")]
@@ -74,4 +75,42 @@ fn main() {
         );
         std::fs::write(&type_gen_path, patched_type_gen).expect("Failed to read from chat service generated code, are you sure you have correct permissions?");
     }
+}
+
+fn write_permissions_rs(out_dir: &std::path::Path) {
+    use regex::Regex;
+    use walkdir::WalkDir;
+
+    let r = Regex::new(r#"option \(harmonytypes.v1.metadata\).requires_permission_node[ \n]+=[ \n]+"(?P<perm>.+)";"#).unwrap();
+
+    let mut perms = String::new();
+
+    let files = WalkDir::new("protocol")
+        .follow_links(true)
+        .into_iter()
+        .filter_map(|e| e.ok());
+
+    for entry in files {
+        let f_name = entry.file_name().to_string_lossy();
+
+        if f_name.ends_with(".proto") {
+            let text = std::fs::read_to_string(entry.path()).unwrap();
+            for m in r.captures_iter(&text).flat_map(|c| c.name("perm")) {
+                let perm = m.as_str();
+                let const_name = perm
+                    .replace(|c| ['.', '-'].contains(&c), "_")
+                    .to_uppercase();
+                let perm_const = format!(
+                    "/// `{}` permission\npub const {}: &str = \"{}\";\n",
+                    perm, const_name, perm
+                );
+                if !perms.contains(&perm_const) {
+                    perms.push_str(&perm_const);
+                }
+            }
+        }
+    }
+
+    let perms_path = out_dir.join("permissions.rs");
+    std::fs::write(perms_path, perms).unwrap();
 }
