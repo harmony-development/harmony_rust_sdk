@@ -187,6 +187,12 @@
 <span id="184">184</span>
 <span id="185">185</span>
 <span id="186">186</span>
+<span id="187">187</span>
+<span id="188">188</span>
+<span id="189">189</span>
+<span id="190">190</span>
+<span id="191">191</span>
+<span id="192">192</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="kw">use</span> <span class="ident">harmony_derive::into_request</span>;
 <span class="kw">use</span> <span class="ident">std::fmt</span>::{<span class="self">self</span>, <span class="ident">Display</span>, <span class="ident">Formatter</span>};
@@ -194,6 +200,12 @@
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">v1</span> {
     <span class="attribute">#![<span class="ident">allow</span>(<span class="ident">clippy::unit_arg</span>)]</span>
     <span class="macro">hrpc::include_proto!</span>(<span class="string">&quot;protocol.chat.v1&quot;</span>);
+
+    <span class="doccomment">/// All chat permissions.</span>
+    <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">all_permissions</span> {
+        <span class="attribute">#![<span class="ident">allow</span>(<span class="ident">clippy::unit_arg</span>)]</span>
+        <span class="macro">hrpc::include_proto!</span>(<span class="string">&quot;permissions&quot;</span>);
+    }
 }
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">v1</span>::<span class="kw-2">*</span>;
 
