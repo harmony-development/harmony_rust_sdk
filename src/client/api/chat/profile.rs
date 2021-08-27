@@ -5,46 +5,11 @@ use crate::client::api::rest::FileId;
 
 use super::{harmonytypes::UserStatus, *};
 
-client_api! {
-    /// Get a user's profile.
-    action: GetUser,
-    api_fn: get_user,
-    service: chat,
-}
-
-client_api! {
-    /// Get given users' profile.
-    action: GetUserBulk,
-    api_fn: get_user_bulk,
-    service: chat,
-}
-
-impl From<Vec<u64>> for GetUserBulkRequest {
-    fn from(ids: Vec<u64>) -> Self {
-        Self { user_ids: ids }
-    }
-}
-
-impl From<Vec<UserId>> for GetUserBulkRequest {
-    fn from(ids: Vec<UserId>) -> Self {
-        Self {
-            user_ids: ids.into_iter().map(Into::into).collect(),
-        }
-    }
-}
-
 /// Convenience type to create a valid [`GetUserMetadataRequest`].
 #[into_request("GetUserMetadataRequest")]
 #[derive(Debug, Clone, new)]
 pub struct AppId {
     app_id: String,
-}
-
-client_api! {
-    /// Get a user's metadata.
-    action: GetUserMetadata,
-    api_fn: get_user_metadata,
-    service: chat,
 }
 
 /// Convenience type to create a valid [`ProfileUpdateRequest`].
@@ -105,9 +70,4 @@ impl From<ProfileUpdate> for ProfileUpdateRequest {
     }
 }
 
-client_api! {
-    /// Update local user's profile.
-    request: ProfileUpdateRequest,
-    api_fn: profile_update,
-    service: chat,
-}
+impl_into_req!(ProfileUpdate);

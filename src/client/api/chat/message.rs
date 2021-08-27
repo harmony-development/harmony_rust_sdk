@@ -43,23 +43,9 @@ impl MessageExt for Message {
     }
 }
 
-client_api! {
-    /// Get a message.
-    action: GetMessage,
-    api_fn: get_message,
-    service: chat,
-}
-
-client_api! {
-    /// Delete a message.
-    request: DeleteMessageRequest,
-    api_fn: delete_message,
-    service: chat,
-}
-
 /// Convenience type to create a valid [`SendMessageRequest`].
 #[into_request("SendMessageRequest")]
-#[derive(new, Debug, Clone, SelfBuilder)]
+#[derive(new, Debug, Clone, builder)]
 pub struct SendMessage {
     guild_id: u64,
     channel_id: u64,
@@ -98,18 +84,4 @@ impl SendMessage {
         }));
         self
     }
-}
-
-client_api! {
-    /// Send a message.
-    action: SendMessage,
-    api_fn: send_message,
-    service: chat,
-}
-
-client_api! {
-    /// Update a message.
-    request: UpdateMessageTextRequest,
-    api_fn: update_message_text,
-    service: chat,
 }

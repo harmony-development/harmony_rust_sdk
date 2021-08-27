@@ -1,9 +1,8 @@
+use super::*;
+
 pub use crate::api::mediaproxy::{
     FetchLinkMetadataRequest, FetchLinkMetadataResponse, InstantViewRequest, SiteMetadata,
 };
-
-use super::*;
-use crate::{api::mediaproxy::*, client_api};
 
 use hrpc::url::Url;
 
@@ -19,24 +18,14 @@ impl From<Url> for InstantViewRequest {
     }
 }
 
-client_api! {
-    /// Request an Instant View from the server.
-    action: InstantView,
-    api_fn: instant_view,
-    service: mediaproxy,
+impl IntoRequest<InstantViewRequest> for Url {
+    fn into_request(self) -> Request<InstantViewRequest> {
+        InstantViewRequest::from(self).into_request()
+    }
 }
 
-client_api! {
-    /// Request a link's (site) metadata from the server.
-    action: FetchLinkMetadata,
-    api_fn: fetch_link_metadata,
-    service: mediaproxy,
-}
-
-client_api! {
-    /// Ask the server if it can provide an Instant View for a specified URL.
-    response: CanInstantViewResponse,
-    request: InstantViewRequest,
-    api_fn: can_instant_view,
-    service: mediaproxy,
+impl IntoRequest<FetchLinkMetadataRequest> for Url {
+    fn into_request(self) -> Request<FetchLinkMetadataRequest> {
+        FetchLinkMetadataRequest::from(self).into_request()
+    }
 }

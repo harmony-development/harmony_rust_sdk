@@ -6,13 +6,7 @@ use harmony_rust_sdk::{
     client::{
         api::{
             auth::AuthStepResponse,
-            chat::{
-                guild,
-                invite::InviteId,
-                message::MessageExt,
-                profile::{self, ProfileUpdate},
-                EventSource,
-            },
+            chat::{invite::InviteId, message::MessageExt, profile::ProfileUpdate, EventSource},
             harmonytypes::UserStatus,
         },
         error::ClientResult,
@@ -77,17 +71,22 @@ async fn main() -> ClientResult<()> {
     }
 
     // Change our bots status to online and make sure its marked as a bot
-    profile::profile_update(
-        &client,
-        ProfileUpdate::default()
-            .new_status(UserStatus::OnlineUnspecified)
-            .new_is_bot(true),
-    )
-    .await?;
+    client
+        .chat()
+        .await
+        .profile_update(
+            ProfileUpdate::default()
+                .new_status(UserStatus::OnlineUnspecified)
+                .new_is_bot(true),
+        )
+        .await?;
 
     // Join the guild if invite is specified
     let guild_id = if let Ok(invite) = guild_invite {
-        guild::join_guild(&client, InviteId::new(invite).unwrap())
+        client
+            .chat()
+            .await
+            .join_guild(InviteId::new(invite).unwrap())
             .await?
             .guild_id
     } else {
@@ -129,11 +128,11 @@ async fn main() -> ClientResult<()> {
         .await?;
 
     // Change our bots status back to offline
-    profile::profile_update(
-        &client,
-        ProfileUpdate::default().new_status(UserStatus::Offline),
-    )
-    .await?;
+    client
+        .chat()
+        .await
+        .profile_update(ProfileUpdate::default().new_status(UserStatus::Offline))
+        .await?;
 
     Ok(())
 }

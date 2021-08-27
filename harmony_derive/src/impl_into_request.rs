@@ -44,7 +44,8 @@ fn impl_into_req(input: &DeriveInput, req: Ident) -> TokenStream2 {
             .iter()
             .map(|field| field.ident.as_ref().expect("No ident")),
         _ => panic!("Not a struct"),
-    };
+    }
+    .collect::<Vec<_>>();
     let name = &input.ident;
     quote! {
         impl ::std::convert::From<#name> for #req {
@@ -52,6 +53,14 @@ fn impl_into_req(input: &DeriveInput, req: Ident) -> TokenStream2 {
                 #req {
                     #(#fields: o.#fields.into(),)*
                 }
+            }
+        }
+
+        impl ::hrpc::IntoRequest<#req> for #name {
+            fn into_request(self) -> ::hrpc::Request<#req> {
+                (#req {
+                    #(#fields: self.#fields.into(),)*
+                }).into_request()
             }
         }
     }

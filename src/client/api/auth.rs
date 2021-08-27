@@ -4,10 +4,7 @@ pub use crate::api::auth::{
 };
 
 use super::*;
-use crate::{
-    api::auth::{next_step_request::form_fields::Field, *},
-    client_api,
-};
+use crate::api::auth::next_step_request::form_fields::Field;
 
 /// A response to an [`AuthStep`].
 #[derive(Debug, Clone)]
@@ -87,28 +84,12 @@ impl From<AuthStepResponse> for Option<next_step_request::Step> {
     }
 }
 
-client_api! {
-    /// Starts an authentication session.
-    response: BeginAuthResponse,
-    request: (),
-    api_fn: begin_auth,
-    service: auth,
-}
-
 /// Convenience type to create a valid [`NextStepRequest`].
 #[into_request("NextStepRequest")]
 #[derive(Debug, Clone, new)]
 pub struct AuthResponse {
     auth_id: String,
     step: AuthStepResponse,
-}
-
-client_api! {
-    /// Requests the next step of an authentication session from the homeserver.
-    response: AuthStep,
-    request: NextStepRequest,
-    api_fn: next_step,
-    service: auth,
 }
 
 /// Wrapper around an auth ID which can be used as multiple requests.
@@ -118,28 +99,11 @@ pub struct AuthId {
     auth_id: String,
 }
 
-client_api! {
-    /// Steps back in an authentication session.
-    response: AuthStep,
-    request: StepBackRequest,
-    api_fn: step_back,
-    service: auth,
-}
-
-client_api! {
-    /// Check if logged in to server.
-    request: (),
-    api_fn: check_logged_in,
-    service: auth,
-}
-
 /// Stream steps sent from the server.
 pub async fn stream_steps(
     client: &Client,
     request: impl Into<StreamStepsRequest>,
 ) -> ClientResult<hrpc::client::socket::ReadSocket<StreamStepsRequest, AuthStep>> {
-    use hrpc::IntoRequest;
-
     let req = request.into().into_request();
     let response = client.auth().await.stream_steps(req).await;
     #[cfg(debug_assertions)]

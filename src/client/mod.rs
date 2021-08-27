@@ -71,8 +71,7 @@ impl AuthStatus {
 #[derive(Debug)]
 struct ClientData {
     homeserver_url: Url,
-    token_bytes: Mutex<Bytes>,
-    auth_status: Mutex<AuthStatus>,
+    auth_status: Arc<Mutex<(AuthStatus, Bytes)>>,
     chat: AsyncMutex<ChatService>,
     auth: AsyncMutex<AuthService>,
     mediaproxy: AsyncMutex<MediaProxyService>,
@@ -146,17 +145,36 @@ impl Client {
             session
         );
 
-        let auth = AuthService::new(http.clone(), homeserver_url.clone())?;
-        let chat = ChatService::new(http.clone(), homeserver_url.clone())?;
-        let mediaproxy = MediaProxyService::new(http.clone(), homeserver_url.clone())?;
-
         let session = session.map_or(AuthStatus::None, AuthStatus::Complete);
+        let token_bytes = session.session().map_or_else(Bytes::new, |s| {
+            Bytes::copy_from_slice(s.session_token.as_bytes())
+        });
+        let auth_status = Arc::new(Mutex::new((session, token_bytes)));
+
+        let modify_with = Arc::new({
+            let auth_status = auth_status.clone();
+            Box::new(move |header_map: &mut http::HeaderMap| {
+                let guard = auth_status.lock();
+                if guard.0.is_authenticated() {
+                    header_map.insert(
+                        http::header::AUTHORIZATION,
+                        // This is safe on the assumption that servers will never send session tokens
+                        // with invalid-byte(s). If they do, they aren't respecting the protocol
+                        unsafe { http::HeaderValue::from_maybe_shared_unchecked(guard.1.clone()) },
+                    );
+                }
+            })
+        });
+        let inner = hrpc::client::Client::new(http.clone(), homeserver_url.clone())?
+            .modify_request_headers_with(modify_with);
+
+        let auth = AuthService::new_inner(inner.clone());
+        let chat = ChatService::new_inner(inner.clone());
+        let mediaproxy = MediaProxyService::new_inner(inner);
+
         let data = ClientData {
             homeserver_url,
-            token_bytes: Mutex::new(session.session().map_or_else(Bytes::new, |s| {
-                Bytes::copy_from_slice(s.session_token.as_bytes())
-            })),
-            auth_status: Mutex::new(session),
+            auth_status,
             chat: AsyncMutex::new(chat),
             auth: AsyncMutex::new(auth),
             mediaproxy: AsyncMutex::new(mediaproxy),
@@ -198,61 +216,23 @@ impl Client {
     }
 
     #[inline(always)]
-    async fn chat(&self) -> tokio::sync::MutexGuard<'_, ChatService> {
+    pub async fn chat(&self) -> tokio::sync::MutexGuard<'_, ChatService> {
         self.data.chat.lock().await
     }
 
     #[inline(always)]
-    async fn auth(&self) -> tokio::sync::MutexGuard<'_, AuthService> {
+    pub async fn auth(&self) -> tokio::sync::MutexGuard<'_, AuthService> {
         self.data.auth.lock().await
     }
 
     #[inline(always)]
-    async fn mediaproxy(&self) -> tokio::sync::MutexGuard<'_, MediaProxyService> {
+    pub async fn mediaproxy(&self) -> tokio::sync::MutexGuard<'_, MediaProxyService> {
         self.data.mediaproxy.lock().await
     }
 
     #[inline(always)]
-    fn auth_status_lock(&self) -> MutexGuard<AuthStatus> {
+    fn auth_status_lock(&self) -> MutexGuard<(AuthStatus, Bytes)> {
         self.data.auth_status.lock()
-    }
-
-    #[inline(always)]
-    pub(crate) async fn generic_api_fn<'a, Resp, Req, IntoReq, Handler, HnldrOut>(
-        &'a self,
-        handler: Handler,
-        request: IntoReq,
-    ) -> ClientResult<Resp>
-    where
-        Req: std::fmt::Debug,
-        Resp: std::fmt::Debug,
-        IntoReq: Into<Req> + std::fmt::Debug,
-        Handler: FnOnce(&'a Client, hrpc::Request<Req>) -> HnldrOut,
-        HnldrOut: std::future::Future<Output = Result<Resp, InternalClientError>> + 'a,
-    {
-        use hrpc::IntoRequest;
-
-        let mut request = request.into().into_request();
-        if self.data.auth_status.lock().is_authenticated() {
-            request = request.header(
-                http::header::AUTHORIZATION,
-                // This is safe on the assumption that servers will never send session tokens
-                // with invalid-byte(s). If they do, they aren't respecting the protocol
-                unsafe {
-                    http::HeaderValue::from_maybe_shared_unchecked(
-                        self.data.token_bytes.lock().clone(),
-                    )
-                },
-            );
-        }
-
-        #[cfg(debug_assertions)]
-        tracing::debug!("Sending request: {:?}", request);
-        let response = handler(self, request).await;
-        #[cfg(debug_assertions)]
-        tracing::debug!("Received response: {:?}", response);
-
-        response.map_err(Into::into)
     }
 
     /// Get the current auth status.
@@ -268,7 +248,7 @@ impl Client {
     /// # }
     /// ```
     pub fn auth_status(&self) -> AuthStatus {
-        self.auth_status_lock().clone()
+        self.auth_status_lock().0.clone()
     }
 
     /// Get the stored homeserver URL.
@@ -321,8 +301,8 @@ impl Client {
     /// # }
     /// ```
     pub async fn begin_auth(&self) -> ClientResult<()> {
-        let auth_id = api::auth::begin_auth(self, ()).await?.auth_id;
-        *self.auth_status_lock() = AuthStatus::InProgress(auth_id);
+        let auth_id = self.auth().await.begin_auth(()).await?.auth_id;
+        self.auth_status_lock().0 = AuthStatus::InProgress(auth_id);
         Ok(())
     }
 
@@ -348,12 +328,15 @@ impl Client {
         response: AuthStepResponse,
     ) -> ClientResult<Option<AuthStep>> {
         if let AuthStatus::InProgress(auth_id) = self.auth_status() {
-            let step = api::auth::next_step(self, AuthResponse::new(auth_id, response)).await?;
+            let step = self
+                .auth()
+                .await
+                .next_step(AuthResponse::new(auth_id, response))
+                .await?;
 
             Ok(if let Some(auth_step::Step::Session(session)) = step.step {
-                *self.data.token_bytes.lock() =
-                    Bytes::copy_from_slice(session.session_token.as_bytes());
-                *self.auth_status_lock() = AuthStatus::Complete(session);
+                let token_bytes = Bytes::copy_from_slice(session.session_token.as_bytes());
+                *self.auth_status_lock() = (AuthStatus::Complete(session), token_bytes);
                 None
             } else {
                 Some(step)
@@ -381,7 +364,7 @@ impl Client {
     /// ```
     pub async fn prev_auth_step(&self) -> ClientResult<AuthStep> {
         if let AuthStatus::InProgress(auth_id) = self.auth_status() {
-            api::auth::step_back(self, AuthId::new(auth_id)).await
+            Ok(self.auth().await.step_back(AuthId::new(auth_id)).await?)
         } else {
             Err(ClientError::NoAuthId)
         }

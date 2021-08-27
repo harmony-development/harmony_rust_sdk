@@ -8,49 +8,16 @@ use crate::client::api::rest::FileId;
 
 use super::{harmonytypes::Metadata, *};
 
-client_api! {
-    /// Get guild list for local user.
-    action: GetGuildList,
-    api_fn: get_guild_list,
-    service: chat,
-}
-
-client_api! {
-    /// Get guild data of a guild.
-    action: GetGuild,
-    api_fn: get_guild,
-    service: chat,
-}
-
-client_api! {
-    /// Get a list of all users in a guild.
-    action: GetGuildMembers,
-    api_fn: get_guild_members,
-    service: chat,
-}
-
 /// Convenience type to create a valid [`CreateGuildRequest`].
-#[derive(Debug, Clone, new)]
+#[derive(Debug, Clone, new, builder)]
 pub struct CreateGuild {
     guild_name: String,
+    #[builder(setter(strip_option))]
     #[new(default)]
     picture_url: Option<FileId>,
+    #[builder(setter(strip_option))]
     #[new(default)]
     metadata: Option<Metadata>,
-}
-
-impl CreateGuild {
-    /// Set the picture HMC for this new guild.
-    pub fn picture(mut self, picture: impl Into<FileId>) -> Self {
-        self.picture_url = Some(picture.into());
-        self
-    }
-
-    /// Set the metadata for this new guild.
-    pub fn metadata(mut self, metadata: impl Into<Metadata>) -> Self {
-        self.metadata = Some(metadata.into());
-        self
-    }
 }
 
 impl From<CreateGuild> for CreateGuildRequest {
@@ -63,12 +30,7 @@ impl From<CreateGuild> for CreateGuildRequest {
     }
 }
 
-client_api! {
-    /// Create a new guild.
-    action: CreateGuild,
-    api_fn: create_guild,
-    service: chat,
-}
+impl_into_req!(CreateGuild);
 
 /// Convenience type to create a valid [`UpdateGuildInformationRequest`].
 #[derive(Debug, Clone, new)]
@@ -125,58 +87,4 @@ impl From<UpdateGuildInformation> for UpdateGuildInformationRequest {
     }
 }
 
-client_api! {
-    /// Update a guild's information.
-    request: UpdateGuildInformationRequest,
-    api_fn: update_guild_information,
-    service: chat,
-}
-
-client_api! {
-    /// Delete a guild.
-    request: DeleteGuildRequest,
-    api_fn: delete_guild,
-    service: chat,
-}
-
-client_api! {
-    /// Join a guild, using the specified invite id.
-    action: JoinGuild,
-    api_fn: join_guild,
-    service: chat,
-}
-
-client_api! {
-    /// Leave a guild.
-    request: LeaveGuildRequest,
-    api_fn: leave_guild,
-    service: chat,
-}
-
-client_api! {
-    /// Preview a guild.
-    action: PreviewGuild,
-    api_fn: preview_guild,
-    service: chat,
-}
-
-client_api! {
-    /// Ban a user.
-    request: BanUserRequest,
-    api_fn: ban_user,
-    service: chat,
-}
-
-client_api! {
-    /// Kick a user.
-    request: KickUserRequest,
-    api_fn: kick_user,
-    service: chat,
-}
-
-client_api! {
-    /// Unban a user.
-    request: UnbanUserRequest,
-    api_fn: unban_user,
-    service: chat,
-}
+impl_into_req!(UpdateGuildInformation);

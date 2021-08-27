@@ -17,9 +17,13 @@ pub async fn upload(
     content_type: String,
     data: Vec<u8>,
 ) -> ClientResult<Response> {
-    if !client.data.auth_status.lock().is_authenticated() {
+    let guard = client.auth_status_lock();
+    let token_bytes = if !guard.0.is_authenticated() {
         return Err(ClientError::Unauthenticated);
-    }
+    } else {
+        guard.1.clone()
+    };
+    drop(guard);
 
     // This unwrap is safe, since our client's homeserver url is valid, and the path we create is also checked at compile time.
     let uri = client
@@ -37,7 +41,7 @@ pub async fn upload(
         .header(http::header::AUTHORIZATION, unsafe {
             // This is safe on the assumption that servers will never send session tokens
             // with invalid-byte(s). If they do, they aren't respecting the protocol
-            http::HeaderValue::from_maybe_shared_unchecked(client.data.token_bytes.lock().clone())
+            http::HeaderValue::from_maybe_shared_unchecked(token_bytes)
         })
         .query(&[("filename", &filename), ("contentType", &content_type)])
         .build()?;

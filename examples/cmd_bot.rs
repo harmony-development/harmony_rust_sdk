@@ -10,10 +10,9 @@ use harmony_rust_sdk::{
         api::{
             auth::AuthStepResponse,
             chat::{
-                guild,
                 invite::InviteId,
-                message::{self, MessageExt, SendMessage, SendMessageSelfBuilder},
-                profile::{self, ProfileUpdate},
+                message::{MessageExt, SendMessage, SendMessageSelfBuilder},
+                profile::ProfileUpdate,
                 EventSource, UserId,
             },
             harmonytypes::UserStatus,
@@ -80,17 +79,22 @@ async fn main() -> ClientResult<()> {
     }
 
     // Change our bots status to online and make sure its marked as a bot
-    profile::profile_update(
-        &client,
-        ProfileUpdate::default()
-            .new_status(UserStatus::OnlineUnspecified)
-            .new_is_bot(true),
-    )
-    .await?;
+    client
+        .chat()
+        .await
+        .profile_update(
+            ProfileUpdate::default()
+                .new_status(UserStatus::OnlineUnspecified)
+                .new_is_bot(true),
+        )
+        .await?;
 
     // Join the guild if invite is specified
     let guild_id = if let Ok(invite) = guild_invite {
-        guild::join_guild(&client, InviteId::new(invite).unwrap())
+        client
+            .chat()
+            .await
+            .join_guild(InviteId::new(invite).unwrap())
             .await?
             .guild_id
     } else {
@@ -137,11 +141,11 @@ async fn main() -> ClientResult<()> {
                                         format!("Pong! Took {} secs.", arrive_duration)
                                     }
                                     "hello" => {
-                                        let user_profile = profile::get_user(
-                                            client,
-                                            UserId::new(message.author_id),
-                                        )
-                                        .await?;
+                                        let user_profile = client
+                                            .chat()
+                                            .await
+                                            .get_user(UserId::new(message.author_id))
+                                            .await?;
 
                                         format!("Hello, {}!", user_profile.user_name)
                                     }
@@ -153,13 +157,15 @@ async fn main() -> ClientResult<()> {
                                     }
                                     _ => "No such command.".to_string(),
                                 };
-                                message::send_message(
-                                    client,
-                                    SendMessage::new(guild_id, message.channel_id)
-                                        .in_reply_to(message.message_id)
-                                        .text(reply),
-                                )
-                                .await?;
+                                client
+                                    .chat()
+                                    .await
+                                    .send_message(
+                                        SendMessage::new(guild_id, message.channel_id)
+                                            .in_reply_to(message.message_id)
+                                            .text(reply),
+                                    )
+                                    .await?;
                             }
                         }
                     }
@@ -170,11 +176,11 @@ async fn main() -> ClientResult<()> {
         .await?;
 
     // Change our bots status back to offline
-    profile::profile_update(
-        &client,
-        ProfileUpdate::default().new_status(UserStatus::Offline),
-    )
-    .await?;
+    client
+        .chat()
+        .await
+        .profile_update(ProfileUpdate::default().new_status(UserStatus::Offline))
+        .await?;
 
     Ok(())
 }

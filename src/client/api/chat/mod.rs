@@ -1,5 +1,5 @@
 use super::*;
-use crate::{api::chat::*, client_api};
+use crate::api::chat::*;
 
 use hrpc::client::socket::Socket;
 
@@ -62,13 +62,6 @@ pub struct TriggerAction {
     action_data: String,
 }
 
-client_api! {
-    /// Triggers the specified action.
-    request: TriggerActionRequest,
-    api_fn: trigger_action,
-    service: chat,
-}
-
 /// Convenience type to create a valid [`TypingRequest`].
 #[into_request("TypingRequest")]
 #[derive(Debug, Clone, Copy, new)]
@@ -77,32 +70,21 @@ pub struct Typing {
     channel_id: u64,
 }
 
-client_api! {
-    /// Notifies the server that the local user is typing.
-    request: TypingRequest,
-    api_fn: typing,
-    service: chat,
-}
-
 /// Stream events from the server.
 ///
 /// This endpoint requires authentication.
 pub async fn stream_events(client: &Client) -> ClientResult<Socket<StreamEventsRequest, Event>> {
-    use hrpc::IntoRequest;
-
     let mut req = ().into_request();
-    if client.data.auth_status.lock().is_authenticated() {
+    let guard = client.auth_status_lock();
+    if guard.0.is_authenticated() {
         req = req.header(
             http::header::AUTHORIZATION,
             // This is safe on the assumption that servers will never send session tokens
             // with invalid-byte(s). If they do, they aren't respecting the protocol
-            unsafe {
-                http::HeaderValue::from_maybe_shared_unchecked(
-                    client.data.token_bytes.lock().clone(),
-                )
-            },
+            unsafe { http::HeaderValue::from_maybe_shared_unchecked(guard.1.clone()) },
         );
     }
+    drop(guard);
     let response = client.chat().await.stream_events(req).await;
     #[cfg(debug_assertions)]
     tracing::debug!("Received response: {:?}", response);

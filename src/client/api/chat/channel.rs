@@ -6,13 +6,6 @@ pub use crate::api::chat::{
 
 use super::{harmonytypes::Metadata, *};
 
-client_api! {
-    /// Get channels all channels (that you have permission to view) in a guild.
-    action: GetGuildChannels,
-    api_fn: get_guild_channels,
-    service: chat,
-}
-
 /// Convenience type to create a valid [`GetChannelMessagesRequest`].
 ///
 /// If `before_message_id` is not specified, it will default to `0`, which
@@ -20,7 +13,7 @@ client_api! {
 ///
 /// Note that the number of messages returned may be limited by servers.
 #[into_request("GetChannelMessagesRequest")]
-#[derive(Debug, new, Clone, SelfBuilder)]
+#[derive(Debug, new, Clone, builder)]
 pub struct GetChannelMessages {
     guild_id: u64,
     channel_id: u64,
@@ -32,15 +25,8 @@ pub struct GetChannelMessages {
     count: u32,
 }
 
-client_api! {
-    /// Get messages before a message in a channel of a guild.
-    action: GetChannelMessages,
-    api_fn: get_channel_messages,
-    service: chat,
-}
-
 /// Convenience type to create a valid [`CreateChannelRequest`].
-#[derive(Debug, new, Clone, SelfBuilder)]
+#[derive(Debug, new, Clone, builder)]
 pub struct CreateChannel {
     guild_id: u64,
     channel_name: String,
@@ -65,12 +51,7 @@ impl From<CreateChannel> for CreateChannelRequest {
     }
 }
 
-client_api! {
-    /// Create a channel.
-    action: CreateChannel,
-    api_fn: create_channel,
-    service: chat,
-}
+impl_into_req!(CreateChannel);
 
 /// Convenience type to create a valid [`DeleteChannelRequest`].
 #[into_request("DeleteChannelRequest")]
@@ -78,13 +59,6 @@ client_api! {
 pub struct DeleteChannel {
     guild_id: u64,
     channel_id: u64,
-}
-
-client_api! {
-    /// Delete a channel.
-    request: DeleteChannelRequest,
-    api_fn: delete_channel,
-    service: chat,
 }
 
 /// Convenience type to create a valid [`UpdateChannelInformationRequest`].
@@ -119,13 +93,6 @@ impl UpdateChannelInformation {
     }
 }
 
-client_api! {
-    /// Update a channel's information.
-    request: UpdateChannelInformationRequest,
-    api_fn: update_channel_information,
-    service: chat,
-}
-
 /// Convenience type to create a valid [`UpdateChannelOrderRequest`].
 #[derive(Debug, Clone, new)]
 pub struct UpdateChannelOrder {
@@ -145,9 +112,4 @@ impl From<UpdateChannelOrder> for UpdateChannelOrderRequest {
     }
 }
 
-client_api! {
-    /// Update a channel's place in the channel list.
-    request: UpdateChannelOrderRequest,
-    api_fn: update_channel_order,
-    service: chat,
-}
+impl_into_req!(UpdateChannelOrder);
