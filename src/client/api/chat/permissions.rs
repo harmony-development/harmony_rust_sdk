@@ -65,6 +65,7 @@ pub struct DeleteGuildRole {
 #[derive(Debug, Clone, new, builder)]
 pub struct ModifyGuildRole {
     guild_id: u64,
+    role_id: u64,
     #[builder(setter(strip_option))]
     #[new(default)]
     new_name: Option<String>,
