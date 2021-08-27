@@ -386,7 +386,7 @@ impl Client {
     /// ```
     pub async fn auth_stream(&self) -> ClientResult<AuthSocket> {
         if let AuthStatus::InProgress(auth_id) = self.auth_status() {
-            let inner = api::auth::stream_steps(self, AuthId::new(auth_id)).await?;
+            let inner = self.auth().await.stream_steps(AuthId::new(auth_id)).await?;
             Ok(AuthSocket { inner })
         } else {
             Err(ClientError::NoAuthId)
@@ -411,7 +411,7 @@ impl Client {
         &self,
         subscriptions: Vec<EventSource>,
     ) -> ClientResult<EventsSocket> {
-        let inner = api::chat::stream_events(self).await?;
+        let inner = self.chat().await.stream_events(()).await?;
         let mut socket = EventsSocket { inner };
         for source in subscriptions {
             socket.add_source(source).await?;

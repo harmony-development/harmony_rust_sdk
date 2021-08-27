@@ -1,8 +1,6 @@
 use super::*;
 use crate::api::chat::*;
 
-use hrpc::client::socket::Socket;
-
 pub use crate::api::chat::EventSource;
 
 /// A message location. This type can be used as multiple requests.
@@ -68,25 +66,4 @@ pub struct TriggerAction {
 pub struct Typing {
     guild_id: u64,
     channel_id: u64,
-}
-
-/// Stream events from the server.
-///
-/// This endpoint requires authentication.
-pub async fn stream_events(client: &Client) -> ClientResult<Socket<StreamEventsRequest, Event>> {
-    let mut req = ().into_request();
-    let guard = client.auth_status_lock();
-    if guard.0.is_authenticated() {
-        req = req.header(
-            http::header::AUTHORIZATION,
-            // This is safe on the assumption that servers will never send session tokens
-            // with invalid-byte(s). If they do, they aren't respecting the protocol
-            unsafe { http::HeaderValue::from_maybe_shared_unchecked(guard.1.clone()) },
-        );
-    }
-    drop(guard);
-    let response = client.chat().await.stream_events(req).await;
-    #[cfg(debug_assertions)]
-    tracing::debug!("Received response: {:?}", response);
-    response.map_err(Into::into)
 }
