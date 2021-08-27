@@ -1,1 +1,1 @@
-initSidebarItems({"enum":[["AuthStepResponse","A response to an [`AuthStep`]."]],"fn":[["stream_steps","Stream steps sent from the server."]],"struct":[["AuthId","Wrapper around an auth ID which can be used as multiple requests."],["AuthResponse","Convenience type to create a valid [`NextStepRequest`]."]]});
+initSidebarItems({"enum":[["AuthStepResponse","A response to an [`AuthStep`]."]],"struct":[["AuthId","Wrapper around an auth ID which can be used as multiple requests."],["AuthResponse","Convenience type to create a valid [`NextStepRequest`]."]]});
