@@ -6,7 +6,12 @@ use harmony_rust_sdk::{
     client::{
         api::{
             auth::AuthStepResponse,
-            chat::{invite::InviteId, message::MessageExt, profile::ProfileUpdate, EventSource},
+            chat::{
+                invite::InviteId,
+                message::MessageExt,
+                profile::{ProfileUpdate, ProfileUpdateSelfBuilder},
+                EventSource,
+            },
             harmonytypes::UserStatus,
         },
         error::ClientResult,

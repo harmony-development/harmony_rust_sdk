@@ -12,7 +12,7 @@ use harmony_rust_sdk::{
             chat::{
                 invite::InviteId,
                 message::{MessageExt, SendMessage, SendMessageSelfBuilder},
-                profile::ProfileUpdate,
+                profile::{ProfileUpdate, ProfileUpdateSelfBuilder},
                 EventSource, UserId,
             },
             harmonytypes::UserStatus,

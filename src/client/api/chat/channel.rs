@@ -26,32 +26,18 @@ pub struct GetChannelMessages {
 }
 
 /// Convenience type to create a valid [`CreateChannelRequest`].
+#[into_request("CreateChannelRequest")]
 #[derive(Debug, new, Clone, builder)]
 pub struct CreateChannel {
     guild_id: u64,
     channel_name: String,
-    channel_place: Place,
+    position: Place,
     #[new(default)]
     #[builder(setter(strip_option))]
     metadata: Option<Metadata>,
     #[new(default)]
     is_category: bool,
 }
-
-impl From<CreateChannel> for CreateChannelRequest {
-    fn from(o: CreateChannel) -> CreateChannelRequest {
-        CreateChannelRequest {
-            guild_id: o.guild_id,
-            channel_name: o.channel_name,
-            previous_id: o.channel_place.before().unwrap_or(0),
-            next_id: o.channel_place.after().unwrap_or(0),
-            metadata: o.metadata,
-            is_category: o.is_category,
-        }
-    }
-}
-
-impl_into_req!(CreateChannel);
 
 /// Convenience type to create a valid [`DeleteChannelRequest`].
 #[into_request("DeleteChannelRequest")]
@@ -62,54 +48,36 @@ pub struct DeleteChannel {
 }
 
 /// Convenience type to create a valid [`UpdateChannelInformationRequest`].
-#[into_request("UpdateChannelInformationRequest")]
-#[derive(Debug, Clone, new)]
+#[derive(Debug, Clone, new, builder)]
 pub struct UpdateChannelInformation {
     guild_id: u64,
     channel_id: u64,
     #[new(default)]
-    name: String,
+    #[builder(setter(strip_option))]
+    new_name: Option<String>,
+    #[builder(setter(strip_option))]
     #[new(default)]
-    metadata: Option<Metadata>,
-    #[new(default)]
-    update_name: bool,
-    #[new(default)]
-    update_metadata: bool,
+    new_metadata: Option<Option<Metadata>>,
 }
 
-impl UpdateChannelInformation {
-    /// Set new name for this channel.
-    pub fn new_channel_name(mut self, channel_name: impl Into<String>) -> Self {
-        self.name = channel_name.into();
-        self.update_name = true;
-        self
-    }
-
-    /// Set new metadata for this channel.
-    pub fn new_metadata(mut self, metadata: impl Into<Option<Metadata>>) -> Self {
-        self.metadata = metadata.into();
-        self.update_metadata = true;
-        self
-    }
-}
-
-/// Convenience type to create a valid [`UpdateChannelOrderRequest`].
-#[derive(Debug, Clone, new)]
-pub struct UpdateChannelOrder {
-    guild_id: u64,
-    channel_id: u64,
-    new_channel_place: Place,
-}
-
-impl From<UpdateChannelOrder> for UpdateChannelOrderRequest {
-    fn from(o: UpdateChannelOrder) -> UpdateChannelOrderRequest {
-        UpdateChannelOrderRequest {
-            guild_id: o.guild_id,
-            channel_id: o.channel_id,
-            previous_id: o.new_channel_place.before().unwrap_or(0),
-            next_id: o.new_channel_place.after().unwrap_or(0),
+impl From<UpdateChannelInformation> for UpdateChannelInformationRequest {
+    fn from(u: UpdateChannelInformation) -> Self {
+        Self {
+            guild_id: u.guild_id,
+            channel_id: u.channel_id,
+            new_name: u.new_name,
+            new_metadata: u.new_metadata.map(Option::unwrap_or_default),
         }
     }
 }
 
-impl_into_req!(UpdateChannelOrder);
+impl_into_req!(UpdateChannelInformation);
+
+/// Convenience type to create a valid [`UpdateChannelOrderRequest`].
+#[into_request("UpdateChannelOrderRequest")]
+#[derive(Debug, Clone, new)]
+pub struct UpdateChannelOrder {
+    guild_id: u64,
+    channel_id: u64,
+    new_position: Place,
+}

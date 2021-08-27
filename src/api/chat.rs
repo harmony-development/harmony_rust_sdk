@@ -1,3 +1,4 @@
+use super::harmonytypes::{item_position, ItemPosition};
 use harmony_derive::into_request;
 use std::fmt::{self, Display, Formatter};
 
@@ -53,6 +54,55 @@ pub enum Place {
     Between { after: u64, before: u64 },
     /// Bottom of the list.
     Bottom { after: u64 },
+}
+
+impl From<ItemPosition> for Place {
+    fn from(pos: ItemPosition) -> Self {
+        use item_position::Position;
+
+        match pos
+            .position
+            .unwrap_or(Position::Between(item_position::Between {
+                next_id: 0,
+                previous_id: 0,
+            })) {
+            Position::Top(top) => Place::Top {
+                before: top.next_id,
+            },
+            Position::Between(between) => Place::Between {
+                after: between.previous_id,
+                before: between.next_id,
+            },
+            Position::Bottom(bottom) => Place::Bottom {
+                after: bottom.previous_id,
+            },
+        }
+    }
+}
+
+impl From<Place> for ItemPosition {
+    fn from(place: Place) -> Self {
+        use item_position::*;
+
+        let pos = match place {
+            Place::Top { before } => Position::Top(Top { next_id: before }),
+            Place::Between { after, before } => Position::Between(Between {
+                previous_id: after,
+                next_id: before,
+            }),
+            Place::Bottom { after } => Position::Bottom(Bottom { previous_id: after }),
+        };
+
+        ItemPosition {
+            position: Some(pos),
+        }
+    }
+}
+
+impl From<Place> for Option<ItemPosition> {
+    fn from(p: Place) -> Self {
+        Some(p.into())
+    }
 }
 
 impl Place {
@@ -166,6 +216,24 @@ impl From<InviteId> for String {
 impl Display for InviteId {
     fn fmt(&self, fmt: &mut Formatter) -> fmt::Result {
         write!(fmt, "{}", self.invite_id)
+    }
+}
+
+/// Functions for working with color in Harmony API.
+pub mod color {
+    pub fn encode_rgb(color: [u8; 3]) -> i32 {
+        let mut c = color[0] as i32;
+        c = (c << 8) + color[1] as i32;
+        c = (c << 8) + color[2] as i32;
+        c as i32
+    }
+
+    pub fn decode_rgb(color: i32) -> [u8; 3] {
+        [
+            ((color >> 16) & 255) as u8,
+            ((color >> 8) & 255) as u8,
+            (color & 255) as u8,
+        ]
     }
 }
 

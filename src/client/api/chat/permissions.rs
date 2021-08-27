@@ -66,37 +66,27 @@ pub struct DeleteGuildRole {
 pub struct ModifyGuildRole {
     guild_id: u64,
     #[builder(setter(strip_option))]
-    role: Option<Role>,
     #[new(default)]
-    modify_name: bool,
+    new_name: Option<String>,
+    #[builder(setter(strip_option))]
     #[new(default)]
-    modify_color: bool,
+    new_color: Option<i32>,
+    #[builder(setter(strip_option))]
     #[new(default)]
-    modify_hoist: bool,
+    new_hoist: Option<bool>,
+    #[builder(setter(strip_option))]
     #[new(default)]
-    modify_pingable: bool,
+    new_pingable: Option<bool>,
 }
 
 /// Convenience type to create a valid [`MoveRoleRequest`].
+#[into_request("MoveRoleRequest")]
 #[derive(Debug, Clone, new)]
 pub struct MoveRole {
     guild_id: u64,
     role_id: u64,
-    new_role_place: Place,
+    new_position: Place,
 }
-
-impl From<MoveRole> for MoveRoleRequest {
-    fn from(o: MoveRole) -> MoveRoleRequest {
-        MoveRoleRequest {
-            guild_id: o.guild_id,
-            role_id: o.role_id,
-            before_id: o.new_role_place.before().unwrap_or(0),
-            after_id: o.new_role_place.after().unwrap_or(0),
-        }
-    }
-}
-
-impl_into_req!(MoveRole);
 
 /// Convenience type to create a valid [`ManageUserRolesRequest`].
 #[into_request("ManageUserRolesRequest")]
