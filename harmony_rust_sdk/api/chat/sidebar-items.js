@@ -1,1 +1,1 @@
-initSidebarItems({"enum":[["EventSource","Describes where to subscribe for events."],["Place","Describes a place in a list."]],"mod":[["v1",""]],"struct":[["InviteId","An invite ID."]]});
+initSidebarItems({"enum":[["EventSource","Describes where to subscribe for events."],["Place","Describes a place in a list."]],"mod":[["color","Functions for working with color in Harmony API."],["v1",""]],"struct":[["InviteId","An invite ID."]]});

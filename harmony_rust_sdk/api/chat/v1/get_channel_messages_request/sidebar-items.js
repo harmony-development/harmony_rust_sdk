@@ -1,1 +1,1 @@
-initSidebarItems({"enum":[["Direction",""]]});
+initSidebarItems({"enum":[["Direction","The direction relative to the `message_id` message to get messages from."]]});

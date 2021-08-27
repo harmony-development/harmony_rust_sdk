@@ -46,34 +46,6 @@
 <span id="43">43</span>
 <span id="44">44</span>
 <span id="45">45</span>
-<span id="46">46</span>
-<span id="47">47</span>
-<span id="48">48</span>
-<span id="49">49</span>
-<span id="50">50</span>
-<span id="51">51</span>
-<span id="52">52</span>
-<span id="53">53</span>
-<span id="54">54</span>
-<span id="55">55</span>
-<span id="56">56</span>
-<span id="57">57</span>
-<span id="58">58</span>
-<span id="59">59</span>
-<span id="60">60</span>
-<span id="61">61</span>
-<span id="62">62</span>
-<span id="63">63</span>
-<span id="64">64</span>
-<span id="65">65</span>
-<span id="66">66</span>
-<span id="67">67</span>
-<span id="68">68</span>
-<span id="69">69</span>
-<span id="70">70</span>
-<span id="71">71</span>
-<span id="72">72</span>
-<span id="73">73</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="kw">pub</span> <span class="kw">use</span> <span class="kw">crate</span><span class="ident">::api::chat</span>::{
     <span class="ident">GetUserBulkRequest</span>, <span class="ident">GetUserMetadataRequest</span>, <span class="ident">GetUserRequest</span>, <span class="ident">ProfileUpdateRequest</span>,
@@ -90,59 +62,31 @@
 }
 
 <span class="doccomment">/// Convenience type to create a valid [`ProfileUpdateRequest`].</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">Default</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">new</span>, <span class="ident">builder</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ProfileUpdate</span> {
-    <span class="ident">new_username</span>: <span class="ident">String</span>,
-    <span class="ident">new_status</span>: <span class="ident">UserStatus</span>,
-    <span class="ident">new_avatar</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">FileId</span><span class="op">&gt;</span>,
-    <span class="ident">is_bot</span>: <span class="ident">bool</span>,
-    <span class="ident">update_username</span>: <span class="ident">bool</span>,
-    <span class="ident">update_status</span>: <span class="ident">bool</span>,
-    <span class="ident">update_avatar</span>: <span class="ident">bool</span>,
-    <span class="ident">update_is_bot</span>: <span class="ident">bool</span>,
-}
-
-<span class="kw">impl</span> <span class="ident">ProfileUpdate</span> {
-    <span class="doccomment">/// Set the new username of this user.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new_username</span>(<span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">username</span>: <span class="kw">impl</span> <span class="ident">std::fmt::Display</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
-        <span class="self">self</span>.<span class="ident">new_username</span> <span class="op">=</span> <span class="ident">username</span>.<span class="ident">to_string</span>();
-        <span class="self">self</span>.<span class="ident">update_username</span> <span class="op">=</span> <span class="bool-val">true</span>;
-        <span class="self">self</span>
-    }
-
-    <span class="doccomment">/// Set the new status of this user.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new_status</span>(<span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">status</span>: <span class="kw">impl</span> <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">UserStatus</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
-        <span class="self">self</span>.<span class="ident">new_status</span> <span class="op">=</span> <span class="ident">status</span>.<span class="ident">into</span>();
-        <span class="self">self</span>.<span class="ident">update_status</span> <span class="op">=</span> <span class="bool-val">true</span>;
-        <span class="self">self</span>
-    }
-
-    <span class="doccomment">/// Set the new avatar of this user.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new_avatar</span>(<span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">avatar</span>: <span class="kw">impl</span> <span class="ident">Into</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">FileId</span><span class="op">&gt;</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
-        <span class="self">self</span>.<span class="ident">new_avatar</span> <span class="op">=</span> <span class="ident">avatar</span>.<span class="ident">into</span>();
-        <span class="self">self</span>.<span class="ident">update_avatar</span> <span class="op">=</span> <span class="bool-val">true</span>;
-        <span class="self">self</span>
-    }
-
-    <span class="doccomment">/// Set the new bot marker of this user.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new_is_bot</span>(<span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">is_bot</span>: <span class="kw">impl</span> <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
-        <span class="self">self</span>.<span class="ident">is_bot</span> <span class="op">=</span> <span class="ident">is_bot</span>.<span class="ident">into</span>();
-        <span class="self">self</span>.<span class="ident">update_is_bot</span> <span class="op">=</span> <span class="bool-val">true</span>;
-        <span class="self">self</span>
-    }
+    <span class="attribute">#[<span class="ident">builder</span>(<span class="ident">setter</span>(<span class="ident">strip_option</span>))]</span>
+    <span class="attribute">#[<span class="ident">new</span>(<span class="ident">default</span>)]</span>
+    <span class="ident">new_username</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
+    <span class="attribute">#[<span class="ident">builder</span>(<span class="ident">setter</span>(<span class="ident">strip_option</span>))]</span>
+    <span class="attribute">#[<span class="ident">new</span>(<span class="ident">default</span>)]</span>
+    <span class="ident">new_status</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">UserStatus</span><span class="op">&gt;</span>,
+    <span class="attribute">#[<span class="ident">builder</span>(<span class="ident">setter</span>(<span class="ident">strip_option</span>))]</span>
+    <span class="attribute">#[<span class="ident">new</span>(<span class="ident">default</span>)]</span>
+    <span class="ident">new_avatar</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">FileId</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+    <span class="attribute">#[<span class="ident">builder</span>(<span class="ident">setter</span>(<span class="ident">strip_option</span>))]</span>
+    <span class="attribute">#[<span class="ident">new</span>(<span class="ident">default</span>)]</span>
+    <span class="ident">new_is_bot</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>,
 }
 
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">ProfileUpdate</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ProfileUpdateRequest</span> {
     <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">o</span>: <span class="ident">ProfileUpdate</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
         <span class="self">Self</span> {
             <span class="ident">new_username</span>: <span class="ident">o</span>.<span class="ident">new_username</span>,
-            <span class="ident">new_status</span>: <span class="ident">o</span>.<span class="ident">new_status</span>.<span class="ident">into</span>(),
-            <span class="ident">new_avatar</span>: <span class="ident">o</span>.<span class="ident">new_avatar</span>.<span class="ident">map_or_else</span>(<span class="ident">String::default</span>, <span class="ident">Into::into</span>),
-            <span class="ident">is_bot</span>: <span class="ident">o</span>.<span class="ident">is_bot</span>,
-            <span class="ident">update_username</span>: <span class="ident">o</span>.<span class="ident">update_username</span>,
-            <span class="ident">update_status</span>: <span class="ident">o</span>.<span class="ident">update_status</span>,
-            <span class="ident">update_avatar</span>: <span class="ident">o</span>.<span class="ident">update_avatar</span>,
-            <span class="ident">update_is_bot</span>: <span class="ident">o</span>.<span class="ident">update_is_bot</span>,
+            <span class="ident">new_status</span>: <span class="ident">o</span>.<span class="ident">new_status</span>.<span class="ident">map</span>(<span class="ident">UserStatus::into</span>),
+            <span class="ident">new_avatar</span>: <span class="ident">o</span>
+                .<span class="ident">new_avatar</span>
+                .<span class="ident">map</span>(<span class="op">|</span><span class="ident">a</span><span class="op">|</span> <span class="ident">a</span>.<span class="ident">map_or_else</span>(<span class="ident">String::new</span>, <span class="ident">FileId::into</span>)),
+            <span class="ident">new_is_bot</span>: <span class="ident">o</span>.<span class="ident">new_is_bot</span>,
         }
     }
 }
