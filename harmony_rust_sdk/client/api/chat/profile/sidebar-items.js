@@ -1,1 +1,1 @@
-initSidebarItems({"fn":[["get_user","Get a user’s profile."],["get_user_bulk","Get given users’ profile."],["get_user_metadata","Get a user’s metadata."],["profile_update","Update local user’s profile."]],"struct":[["AppId","Convenience type to create a valid [`GetUserMetadataRequest`]."],["ProfileUpdate","Convenience type to create a valid [`ProfileUpdateRequest`]."]]});
+initSidebarItems({"struct":[["AppId","Convenience type to create a valid [`GetUserMetadataRequest`]."],["ProfileUpdate","Convenience type to create a valid [`ProfileUpdateRequest`]."]]});

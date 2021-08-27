@@ -215,6 +215,10 @@
 <span id="212">212</span>
 <span id="213">213</span>
 <span id="214">214</span>
+<span id="215">215</span>
+<span id="216">216</span>
+<span id="217">217</span>
+<span id="218">218</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
 <span class="kw">use</span> <span class="kw">crate</span><span class="ident">::client::error::ClientError</span>;
@@ -235,9 +239,13 @@
     <span class="ident">content_type</span>: <span class="ident">String</span>,
     <span class="ident">data</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>,
 ) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">ClientResult</span><span class="op">&lt;</span><span class="ident">Response</span><span class="op">&gt;</span> {
-    <span class="kw">if</span> <span class="op">!</span><span class="ident">client</span>.<span class="ident">data</span>.<span class="ident">auth_status</span>.<span class="ident">lock</span>().<span class="ident">is_authenticated</span>() {
+    <span class="kw">let</span> <span class="ident">guard</span> <span class="op">=</span> <span class="ident">client</span>.<span class="ident">auth_status_lock</span>();
+    <span class="kw">let</span> <span class="ident">token_bytes</span> <span class="op">=</span> <span class="kw">if</span> <span class="op">!</span><span class="ident">guard</span>.<span class="number">0</span>.<span class="ident">is_authenticated</span>() {
         <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">ClientError::Unauthenticated</span>);
-    }
+    } <span class="kw">else</span> {
+        <span class="ident">guard</span>.<span class="number">1</span>.<span class="ident">clone</span>()
+    };
+    <span class="ident">drop</span>(<span class="ident">guard</span>);
 
     <span class="comment">// This unwrap is safe, since our client&#39;s homeserver url is valid, and the path we create is also checked at compile time.</span>
     <span class="kw">let</span> <span class="ident">uri</span> <span class="op">=</span> <span class="ident">client</span>
@@ -255,7 +263,7 @@
         .<span class="ident">header</span>(<span class="ident">http::header::AUTHORIZATION</span>, <span class="kw">unsafe</span> {
             <span class="comment">// This is safe on the assumption that servers will never send session tokens</span>
             <span class="comment">// with invalid-byte(s). If they do, they aren&#39;t respecting the protocol</span>
-            <span class="ident">http::HeaderValue::from_maybe_shared_unchecked</span>(<span class="ident">client</span>.<span class="ident">data</span>.<span class="ident">token_bytes</span>.<span class="ident">lock</span>().<span class="ident">clone</span>())
+            <span class="ident">http::HeaderValue::from_maybe_shared_unchecked</span>(<span class="ident">token_bytes</span>)
         })
         .<span class="ident">query</span>(<span class="kw-2">&amp;</span>[(<span class="string">&quot;filename&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">filename</span>), (<span class="string">&quot;contentType&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">content_type</span>)])
         .<span class="ident">build</span>()<span class="question-mark">?</span>;

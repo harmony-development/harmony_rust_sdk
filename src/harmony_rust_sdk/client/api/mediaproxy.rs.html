@@ -32,24 +32,12 @@
 <span id="29">29</span>
 <span id="30">30</span>
 <span id="31">31</span>
-<span id="32">32</span>
-<span id="33">33</span>
-<span id="34">34</span>
-<span id="35">35</span>
-<span id="36">36</span>
-<span id="37">37</span>
-<span id="38">38</span>
-<span id="39">39</span>
-<span id="40">40</span>
-<span id="41">41</span>
-<span id="42">42</span>
 </pre><div class="example-wrap"><pre class="rust ">
+<span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
+
 <span class="kw">pub</span> <span class="kw">use</span> <span class="kw">crate</span><span class="ident">::api::mediaproxy</span>::{
     <span class="ident">FetchLinkMetadataRequest</span>, <span class="ident">FetchLinkMetadataResponse</span>, <span class="ident">InstantViewRequest</span>, <span class="ident">SiteMetadata</span>,
 };
-
-<span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
-<span class="kw">use</span> <span class="kw">crate</span>::{<span class="ident">api::mediaproxy</span>::<span class="kw-2">*</span>, <span class="ident">client_api</span>};
 
 <span class="kw">use</span> <span class="ident">hrpc::url::Url</span>;
 
@@ -65,26 +53,16 @@
     }
 }
 
-<span class="macro">client_api!</span> {
-    <span class="doccomment">/// Request an Instant View from the server.</span>
-    <span class="ident">action</span>: <span class="ident">InstantView</span>,
-    <span class="ident">api_fn</span>: <span class="ident">instant_view</span>,
-    <span class="ident">service</span>: <span class="ident">mediaproxy</span>,
+<span class="kw">impl</span> <span class="ident">IntoRequest</span><span class="op">&lt;</span><span class="ident">InstantViewRequest</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Url</span> {
+    <span class="kw">fn</span> <span class="ident">into_request</span>(<span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Request</span><span class="op">&lt;</span><span class="ident">InstantViewRequest</span><span class="op">&gt;</span> {
+        <span class="ident">InstantViewRequest::from</span>(<span class="self">self</span>).<span class="ident">into_request</span>()
+    }
 }
 
-<span class="macro">client_api!</span> {
-    <span class="doccomment">/// Request a link&#39;s (site) metadata from the server.</span>
-    <span class="ident">action</span>: <span class="ident">FetchLinkMetadata</span>,
-    <span class="ident">api_fn</span>: <span class="ident">fetch_link_metadata</span>,
-    <span class="ident">service</span>: <span class="ident">mediaproxy</span>,
-}
-
-<span class="macro">client_api!</span> {
-    <span class="doccomment">/// Ask the server if it can provide an Instant View for a specified URL.</span>
-    <span class="ident">response</span>: <span class="ident">CanInstantViewResponse</span>,
-    <span class="ident">request</span>: <span class="ident">InstantViewRequest</span>,
-    <span class="ident">api_fn</span>: <span class="ident">can_instant_view</span>,
-    <span class="ident">service</span>: <span class="ident">mediaproxy</span>,
+<span class="kw">impl</span> <span class="ident">IntoRequest</span><span class="op">&lt;</span><span class="ident">FetchLinkMetadataRequest</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Url</span> {
+    <span class="kw">fn</span> <span class="ident">into_request</span>(<span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Request</span><span class="op">&lt;</span><span class="ident">FetchLinkMetadataRequest</span><span class="op">&gt;</span> {
+        <span class="ident">FetchLinkMetadataRequest::from</span>(<span class="self">self</span>).<span class="ident">into_request</span>()
+    }
 }
 </pre></div>
 </section><section id="search" class="content hidden"></section><div id="rustdoc-vars" data-root-path="../../../../" data-current-crate="harmony_rust_sdk" data-search-index-js="../../../../search-index.js" data-search-js="../../../../search.js"></div>

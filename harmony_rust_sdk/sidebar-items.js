@@ -1,1 +1,1 @@
-initSidebarItems({"mod":[["api","Harmony protocol API."],["client","Rust client implementation for Harmony, powered by [`hrpc`]."]]});
+initSidebarItems({"macro":[["impl_into_req",""]],"mod":[["api","Harmony protocol API."],["client","Rust client implementation for Harmony, powered by [`hrpc`]."]]});
