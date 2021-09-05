@@ -2,10 +2,16 @@
 pub mod auth;
 /// Chat service client API.
 pub mod chat;
+/// Emote client API.
+pub mod emote;
 /// Media proxy service client API.
 pub mod mediaproxy;
+/// Profile client API.
+pub mod profile;
 /// REST client API.
 pub mod rest;
+/// Batch client API.
+pub mod batch {}
 
 #[doc(inline)]
 pub use crate::api::{harmonytypes, Hmc, HmcFromStrError, HmcParseError};

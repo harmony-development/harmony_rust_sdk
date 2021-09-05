@@ -1,6 +1,5 @@
 pub use crate::api::chat::{
-    get_guild_invites_response, CreateInviteRequest, DeleteInviteRequest, GetGuildInvitesRequest,
-    InviteId,
+    CreateInviteRequest, DeleteInviteRequest, GetGuildInvitesRequest, InviteId,
 };
 
 use super::*;
@@ -10,7 +9,7 @@ use super::*;
 #[derive(Debug, Clone, new)]
 pub struct CreateInvite {
     name: InviteId,
-    possible_uses: i32,
+    possible_uses: u32,
     guild_id: u64,
 }
 

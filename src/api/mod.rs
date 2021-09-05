@@ -55,6 +55,19 @@ pub mod sync {
     pub use v1::*;
 }
 
+/// Profile service API.
+#[cfg(feature = "gen_profile")]
+pub mod profile;
+
+/// Emote service API.
+#[cfg(feature = "gen_emote")]
+pub mod emote {
+    pub mod v1 {
+        hrpc::include_proto!("protocol.emote.v1");
+    }
+    pub use v1::*;
+}
+
 /// Some crates re-exported for user convenience.
 pub mod exports {
     pub use hrpc;

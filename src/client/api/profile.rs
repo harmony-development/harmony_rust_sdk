@@ -1,20 +1,21 @@
-pub use crate::api::chat::{
-    GetUserBulkRequest, GetUserMetadataRequest, GetUserRequest, ProfileUpdateRequest,
+pub use crate::api::profile::{
+    GetAppDataRequest, GetProfileRequest, UpdateProfileRequest, UserStatus,
 };
+
 use crate::client::api::rest::FileId;
 
-use super::{harmonytypes::UserStatus, *};
+use super::*;
 
-/// Convenience type to create a valid [`GetUserMetadataRequest`].
-#[into_request("GetUserMetadataRequest")]
+/// Convenience type to create a valid [`GetAppDataRequest`].
+#[into_request("GetAppDataRequest")]
 #[derive(Debug, Clone, new)]
 pub struct AppId {
     app_id: String,
 }
 
-/// Convenience type to create a valid [`ProfileUpdateRequest`].
+/// Convenience type to create a valid [`UpdateProfileRequest`].
 #[derive(Debug, Clone, Default, new, builder)]
-pub struct ProfileUpdate {
+pub struct UpdateProfile {
     #[builder(setter(strip_option))]
     #[new(default)]
     new_username: Option<String>,
@@ -29,12 +30,12 @@ pub struct ProfileUpdate {
     new_is_bot: Option<bool>,
 }
 
-impl From<ProfileUpdate> for ProfileUpdateRequest {
-    fn from(o: ProfileUpdate) -> Self {
+impl From<UpdateProfile> for UpdateProfileRequest {
+    fn from(o: UpdateProfile) -> Self {
         Self {
-            new_username: o.new_username,
-            new_status: o.new_status.map(UserStatus::into),
-            new_avatar: o
+            new_user_name: o.new_username,
+            new_user_status: o.new_status.map(UserStatus::into),
+            new_user_avatar: o
                 .new_avatar
                 .map(|a| a.map_or_else(String::new, FileId::into)),
             new_is_bot: o.new_is_bot,
@@ -42,4 +43,4 @@ impl From<ProfileUpdate> for ProfileUpdateRequest {
     }
 }
 
-impl_into_req!(ProfileUpdate);
+impl_into_req!(UpdateProfile);

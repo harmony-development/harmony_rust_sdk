@@ -1,8 +1,7 @@
 pub use crate::api::chat::{
-    permission, AddGuildRoleRequest, BatchQueryPermissionsRequest, DeleteGuildRoleRequest,
-    GetGuildRolesRequest, GetPermissionsRequest, GetUserRolesRequest, ManageUserRolesRequest,
-    ModifyGuildRoleRequest, MoveRoleRequest, Permission, PermissionList, QueryPermissionsRequest,
-    SetPermissionsRequest,
+    AddGuildRoleRequest, DeleteGuildRoleRequest, GetGuildRolesRequest, GetPermissionsRequest,
+    GetUserRolesRequest, ManageUserRolesRequest, ModifyGuildRoleRequest, MoveRoleRequest,
+    Permission, QueryHasPermissionRequest, SetPermissionsRequest,
 };
 
 use super::*;
@@ -17,8 +16,8 @@ pub struct GetPermissions {
     role_id: u64,
 }
 
-/// Convenience type to create a valid [`QueryPermissionsRequest`].
-#[into_request("QueryPermissionsRequest")]
+/// Convenience type to create a valid [`QueryHasPermissionRequest`].
+#[into_request("QueryHasPermissionRequest")]
 #[derive(Debug, Clone, new, builder)]
 pub struct QueryPermissions {
     guild_id: u64,
@@ -38,8 +37,7 @@ pub struct SetPermissions {
     channel_id: u64,
     role_id: u64,
     #[new(default)]
-    #[builder(setter(strip_option))]
-    perms: Option<PermissionList>,
+    perms_to_give: Vec<Permission>,
 }
 
 /// Convenience type to create a valid [`AddGuildRoleRequest`].
@@ -47,8 +45,13 @@ pub struct SetPermissions {
 #[derive(Debug, Clone, builder, new)]
 pub struct AddGuildRole {
     guild_id: u64,
-    #[builder(setter(strip_option))]
-    role: Role,
+    name: String,
+    #[new(default)]
+    color: i32,
+    #[new(default)]
+    hoist: bool,
+    #[new(default)]
+    pingable: bool,
 }
 
 /// Convenience type to create a valid [`DeleteGuildRoleRequest`].

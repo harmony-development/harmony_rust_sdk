@@ -19,11 +19,9 @@ fn main() {
             "chat/v1/chat.proto",
             "chat/v1/messages.proto",
             "chat/v1/channels.proto",
-            "chat/v1/emotes.proto",
             "chat/v1/guilds.proto",
             "chat/v1/permissions.proto",
-            "chat/v1/profile.proto",
-            "chat/v1/streaming.proto",
+            "chat/v1/stream.proto",
         ];
         protos.append(&mut chat_protos);
     }
@@ -33,6 +31,15 @@ fn main() {
 
     #[cfg(feature = "gen_sync")]
     protos.push("sync/v1/sync.proto");
+
+    #[cfg(feature = "gen_batch")]
+    protos.push("batch/v1/batch.proto");
+
+    #[cfg(feature = "gen_profile")]
+    protos.push("profile/v1/profile.proto");
+
+    #[cfg(feature = "gen_emote")]
+    protos.push("emote/v1/emote.proto");
 
     let protocol_path =
         std::env::var("HARMONY_PROTOCOL_PATH").unwrap_or_else(|_| "protocol".to_string());
@@ -61,19 +68,12 @@ fn main() {
             "EditedMessage(MessageUpdated),",
             "EditedMessage(Box<MessageUpdated>),",
         );
+        patched_chat_gen = patched_chat_gen.replace(
+            "pub embed: ::core::option::Option<super::Embed>,",
+            "pub embed: ::core::option::Option<Box<super::Embed>>,",
+        );
         std::fs::write(&chat_gen_path, patched_chat_gen).expect("Failed to read from chat service generated code, are you sure you have correct permissions?");
         write_permissions_rs(&out_dir);
-    }
-
-    #[cfg(feature = "gen_harmonytypes")]
-    {
-        let type_gen_path = out_dir.join("protocol.harmonytypes.v1.rs");
-        let type_gen = std::fs::read_to_string(&type_gen_path).expect("Failed to read from chat service generated code, are you sure you have correct permissions?");
-        let patched_type_gen = type_gen.replace(
-            "pub embeds: ::core::option::Option<Embed>,",
-            "pub embeds: ::core::option::Option<Box<Embed>>,",
-        );
-        std::fs::write(&type_gen_path, patched_type_gen).expect("Failed to read from chat service generated code, are you sure you have correct permissions?");
     }
 }
 

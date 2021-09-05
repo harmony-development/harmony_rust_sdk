@@ -12,10 +12,11 @@ pub mod exports {
     pub use reqwest;
 }
 
+use crate::api::auth::{BeginAuthRequest, NextStepResponse, StepBackResponse};
 use api::{auth::*, chat::EventSource, Hmc, HmcFromStrError};
 use error::*;
 
-use std::sync::Arc;
+use std::{convert::TryFrom, sync::Arc};
 
 use hrpc::{bytes::Bytes, url::Url};
 use parking_lot::{Mutex, MutexGuard};
@@ -26,6 +27,8 @@ type AuthService = crate::api::auth::auth_service_client::AuthServiceClient;
 type ChatService = crate::api::chat::chat_service_client::ChatServiceClient;
 type MediaProxyService =
     crate::api::mediaproxy::media_proxy_service_client::MediaProxyServiceClient;
+type ProfileService = crate::api::profile::profile_service_client::ProfileServiceClient;
+type EmoteService = crate::api::emote::emote_service_client::EmoteServiceClient;
 
 /// Represents an authentication state in which a [`Client`] can be.
 #[derive(Debug, Clone)]
@@ -75,6 +78,8 @@ struct ClientData {
     chat: AsyncMutex<ChatService>,
     auth: AsyncMutex<AuthService>,
     mediaproxy: AsyncMutex<MediaProxyService>,
+    profile: AsyncMutex<ProfileService>,
+    emote: AsyncMutex<EmoteService>,
     http: HttpClient,
 }
 
@@ -170,7 +175,9 @@ impl Client {
 
         let auth = AuthService::new_inner(inner.clone());
         let chat = ChatService::new_inner(inner.clone());
-        let mediaproxy = MediaProxyService::new_inner(inner);
+        let mediaproxy = MediaProxyService::new_inner(inner.clone());
+        let profile = ProfileService::new_inner(inner.clone());
+        let emote = EmoteService::new_inner(inner);
 
         let data = ClientData {
             homeserver_url,
@@ -178,6 +185,8 @@ impl Client {
             chat: AsyncMutex::new(chat),
             auth: AsyncMutex::new(auth),
             mediaproxy: AsyncMutex::new(mediaproxy),
+            profile: AsyncMutex::new(profile),
+            emote: AsyncMutex::new(emote),
             http,
         };
 
@@ -198,7 +207,7 @@ impl Client {
     ) -> Result<(), ClientError>
     where
         Fut: std::future::Future<Output = ClientResult<bool>> + 'a,
-        Hndlr: Fn(&'a Client, crate::api::chat::event::Event) -> Fut,
+        Hndlr: Fn(&'a Client, crate::api::chat::Event) -> Fut,
     {
         let mut sock = self.subscribe_events(subs).await?;
         loop {
@@ -216,18 +225,33 @@ impl Client {
     }
 
     #[inline(always)]
+    /// Get a mutex guard to the chat service.
     pub async fn chat(&self) -> tokio::sync::MutexGuard<'_, ChatService> {
         self.data.chat.lock().await
     }
 
     #[inline(always)]
+    /// Get a mutex guard to the auth service.
     pub async fn auth(&self) -> tokio::sync::MutexGuard<'_, AuthService> {
         self.data.auth.lock().await
     }
 
     #[inline(always)]
+    /// Get a mutex guard to the mediaproxy service.
     pub async fn mediaproxy(&self) -> tokio::sync::MutexGuard<'_, MediaProxyService> {
         self.data.mediaproxy.lock().await
+    }
+
+    #[inline(always)]
+    /// Get a mutex guard to the profile service.
+    pub async fn profile(&self) -> tokio::sync::MutexGuard<'_, ProfileService> {
+        self.data.profile.lock().await
+    }
+
+    #[inline(always)]
+    /// Get a mutex guard to the emote service.
+    pub async fn emote(&self) -> tokio::sync::MutexGuard<'_, EmoteService> {
+        self.data.emote.lock().await
     }
 
     #[inline(always)]
@@ -301,7 +325,12 @@ impl Client {
     /// # }
     /// ```
     pub async fn begin_auth(&self) -> ClientResult<()> {
-        let auth_id = self.auth().await.begin_auth(()).await?.auth_id;
+        let auth_id = self
+            .auth()
+            .await
+            .begin_auth(BeginAuthRequest {})
+            .await?
+            .auth_id;
         self.auth_status_lock().0 = AuthStatus::InProgress(auth_id);
         Ok(())
     }
@@ -326,7 +355,7 @@ impl Client {
     pub async fn next_auth_step(
         &self,
         response: AuthStepResponse,
-    ) -> ClientResult<Option<AuthStep>> {
+    ) -> ClientResult<Option<NextStepResponse>> {
         if let AuthStatus::InProgress(auth_id) = self.auth_status() {
             let step = self
                 .auth()
@@ -334,13 +363,19 @@ impl Client {
                 .next_step(AuthResponse::new(auth_id, response))
                 .await?;
 
-            Ok(if let Some(auth_step::Step::Session(session)) = step.step {
-                let token_bytes = Bytes::copy_from_slice(session.session_token.as_bytes());
-                *self.auth_status_lock() = (AuthStatus::Complete(session), token_bytes);
-                None
-            } else {
-                Some(step)
-            })
+            Ok(
+                if let Some(AuthStep {
+                    step: Some(auth_step::Step::Session(session)),
+                    ..
+                }) = step.step
+                {
+                    let token_bytes = Bytes::copy_from_slice(session.session_token.as_bytes());
+                    *self.auth_status_lock() = (AuthStatus::Complete(session), token_bytes);
+                    None
+                } else {
+                    Some(step)
+                },
+            )
         } else {
             Err(ClientError::NoAuthId)
         }
@@ -362,7 +397,7 @@ impl Client {
     /// # Ok(())
     /// # }
     /// ```
-    pub async fn prev_auth_step(&self) -> ClientResult<AuthStep> {
+    pub async fn prev_auth_step(&self) -> ClientResult<StepBackResponse> {
         if let AuthStatus::InProgress(auth_id) = self.auth_status() {
             Ok(self.auth().await.step_back(AuthId::new(auth_id)).await?)
         } else {
@@ -426,16 +461,16 @@ impl Client {
 pub struct EventsSocket {
     inner: hrpc::client::socket::Socket<
         crate::api::chat::StreamEventsRequest,
-        crate::api::chat::Event,
+        crate::api::chat::StreamEventsResponse,
     >,
 }
 
 impl EventsSocket {
     /// Get an event.
-    pub async fn get_event(&mut self) -> Option<ClientResult<crate::api::chat::event::Event>> {
+    pub async fn get_event(&mut self) -> Option<ClientResult<crate::api::chat::Event>> {
         let res = self.inner.get_message().await?;
         match res {
-            Ok(ev) => ev.event.map(Ok),
+            Ok(ev) => crate::api::chat::Event::try_from(ev).ok().map(Ok),
             Err(err) => Some(Err(err.into())),
         }
     }
@@ -459,7 +494,7 @@ impl EventsSocket {
 pub struct AuthSocket {
     inner: hrpc::client::socket::ReadSocket<
         crate::api::auth::StreamStepsRequest,
-        crate::api::auth::AuthStep,
+        crate::api::auth::StreamStepsResponse,
     >,
 }
 
@@ -467,7 +502,10 @@ impl AuthSocket {
     /// Get an auth step.
     pub async fn get_step(&mut self) -> Option<ClientResult<crate::api::auth::AuthStep>> {
         let res = self.inner.get_message().await?;
-        Some(res.map_err(Into::into))
+        match res {
+            Ok(resp) => resp.step.map(Ok),
+            Err(err) => Some(Err(err.into())),
+        }
     }
 
     /// Close this socket.

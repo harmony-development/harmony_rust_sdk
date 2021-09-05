@@ -5,17 +5,16 @@ use std::{
 };
 
 use harmony_rust_sdk::{
-    api::chat::event,
+    api::chat::{self, stream_event},
     client::{
         api::{
             auth::AuthStepResponse,
             chat::{
                 invite::InviteId,
                 message::{MessageExt, SendMessage, SendMessageSelfBuilder},
-                profile::{ProfileUpdate, ProfileUpdateSelfBuilder},
                 EventSource, UserId,
             },
-            harmonytypes::UserStatus,
+            profile::{UpdateProfile, UpdateProfileSelfBuilder, UserStatus},
         },
         error::ClientResult,
         Client,
@@ -80,11 +79,11 @@ async fn main() -> ClientResult<()> {
 
     // Change our bots status to online and make sure its marked as a bot
     client
-        .chat()
+        .profile()
         .await
-        .profile_update(
-            ProfileUpdate::default()
-                .new_status(UserStatus::OnlineUnspecified)
+        .update_profile(
+            UpdateProfile::default()
+                .new_status(UserStatus::Online)
                 .new_is_bot(true),
         )
         .await?;
@@ -119,7 +118,7 @@ async fn main() -> ClientResult<()> {
                 if DID_CTRLC.load(Ordering::Relaxed) {
                     return Ok(true);
                 }
-                if let event::Event::SentMessage(sent_message) = event {
+                if let chat::Event::Chat(stream_event::Event::SentMessage(sent_message)) = event {
                     if let Some(message) = sent_message.message {
                         let text_content = message.text().unwrap_or("<empty message>");
                         info!("got message: {}", text_content);
@@ -142,12 +141,18 @@ async fn main() -> ClientResult<()> {
                                     }
                                     "hello" => {
                                         let user_profile = client
-                                            .chat()
+                                            .profile()
                                             .await
-                                            .get_user(UserId::new(message.author_id))
+                                            .get_profile(UserId::new(message.author_id))
                                             .await?;
 
-                                        format!("Hello, {}!", user_profile.user_name)
+                                        format!(
+                                            "Hello, {}!",
+                                            user_profile
+                                                .profile
+                                                .as_ref()
+                                                .map_or("unknown", |p| p.user_name.as_str())
+                                        )
                                     }
                                     "uptime" => {
                                         format!(
@@ -161,8 +166,8 @@ async fn main() -> ClientResult<()> {
                                     .chat()
                                     .await
                                     .send_message(
-                                        SendMessage::new(guild_id, message.channel_id)
-                                            .in_reply_to(message.message_id)
+                                        SendMessage::new(guild_id, sent_message.channel_id)
+                                            .in_reply_to(sent_message.message_id)
                                             .text(reply),
                                     )
                                     .await?;
@@ -177,9 +182,9 @@ async fn main() -> ClientResult<()> {
 
     // Change our bots status back to offline
     client
-        .chat()
+        .profile()
         .await
-        .profile_update(ProfileUpdate::default().new_status(UserStatus::Offline))
+        .update_profile(UpdateProfile::default().new_status(UserStatus::OfflineUnspecified))
         .await?;
 
     Ok(())

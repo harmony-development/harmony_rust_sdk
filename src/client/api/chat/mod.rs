@@ -1,5 +1,5 @@
 use super::*;
-use crate::api::chat::*;
+use crate::api::{chat::*, profile::GetProfileRequest};
 
 pub use crate::api::chat::EventSource;
 
@@ -28,7 +28,7 @@ pub struct GuildId {
 }
 
 /// Wrapper around an user ID which can be used as multiple requests.
-#[into_request("GetUserRequest")]
+#[into_request("GetProfileRequest")]
 #[derive(new, Debug, Clone, Copy, PartialEq, Eq, Into, From)]
 pub struct UserId {
     user_id: u64,
@@ -36,8 +36,6 @@ pub struct UserId {
 
 /// Manage and query channels.
 pub mod channel;
-/// Manage and query emotes and emote packs.
-pub mod emote;
 /// Manage and query guilds.
 pub mod guild;
 /// Manage and query invites.
@@ -46,8 +44,6 @@ pub mod invite;
 pub mod message;
 /// Manage and query user permissions and roles.
 pub mod permissions;
-/// Manage and query user profiles.
-pub mod profile;
 
 /// Convenience type to create a valid [`TriggerActionRequest`].
 #[into_request("TriggerActionRequest")]

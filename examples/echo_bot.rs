@@ -2,17 +2,16 @@
 use std::sync::atomic::{AtomicBool, Ordering};
 
 use harmony_rust_sdk::{
-    api::chat::event,
+    api::chat::{self, stream_event},
     client::{
         api::{
             auth::AuthStepResponse,
             chat::{
                 invite::InviteId,
                 message::{SendMessage, SendMessageSelfBuilder},
-                profile::{ProfileUpdate, ProfileUpdateSelfBuilder},
                 EventSource,
             },
-            harmonytypes::UserStatus,
+            profile::{UpdateProfile, UpdateProfileSelfBuilder, UserStatus},
         },
         error::ClientResult,
         Client,
@@ -77,13 +76,9 @@ async fn main() -> ClientResult<()> {
 
     // Change our bots status to online and make sure its marked as a bot
     client
-        .chat()
+        .profile()
         .await
-        .profile_update(
-            ProfileUpdate::default()
-                .new_status(UserStatus::OnlineUnspecified)
-                .new_is_bot(true),
-        )
+        .update_profile(UpdateProfile::default().new_status(UserStatus::Online))
         .await?;
 
     // Join the guild if invite is specified
@@ -117,17 +112,20 @@ async fn main() -> ClientResult<()> {
                 if DID_CTRLC.load(Ordering::Relaxed) {
                     return Ok(true);
                 }
-                if let event::Event::SentMessage(sent_message) = event {
+                if let chat::Event::Chat(stream_event::Event::SentMessage(sent_message)) = event {
                     if let Some(message) = sent_message.message {
                         // Dont sent message if we sent it
                         if message.author_id != self_id {
-                            info!("Echoing message: {}", message.message_id);
+                            info!("Echoing message: {}", sent_message.message_id);
 
-                            let mut send_message = SendMessage::new(guild_id, message.channel_id)
-                                .in_reply_to(message.in_reply_to)
-                                .overrides(message.overrides)
-                                .metadata(message.metadata);
+                            let mut send_message =
+                                SendMessage::new(guild_id, sent_message.channel_id)
+                                    .overrides(message.overrides)
+                                    .metadata(message.metadata);
 
+                            if let Some(in_reply_to) = message.in_reply_to {
+                                send_message = send_message.in_reply_to(in_reply_to);
+                            }
                             if let Some(content) = message.content {
                                 send_message = send_message.content(content);
                             }
@@ -143,9 +141,9 @@ async fn main() -> ClientResult<()> {
 
     // Change our bots status back to offline
     client
-        .chat()
+        .profile()
         .await
-        .profile_update(ProfileUpdate::default().new_status(UserStatus::Offline))
+        .update_profile(UpdateProfile::default().new_status(UserStatus::OfflineUnspecified))
         .await?;
 
     Ok(())

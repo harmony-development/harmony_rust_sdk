@@ -22,25 +22,25 @@ prost = "0.8"
 prost-types = "0.8"
 derive-new = "0.5"
 derive_more = "0.99"
-hrpc = { version = "0.10", default-features = false }
+hrpc = { version="0.10", default-features=false }
 
-harmony_derive = { version = "0.1.2", path = "harmony_derive", optional = true }
-reqwest = { version = "0.11", default-features = false, features = [
+harmony_derive = { version="0.1.2", path="harmony_derive", optional=true }
+reqwest = { version="0.11", default-features=false, features=[
 	"rustls-tls-native-roots",
 	"json",
 	"multipart",
-], optional = true }
-tracing = { version = "0.1", optional = true }
-paste = { version = "1.0", optional = true }
-serde = { version = "1.0", features = ["derive"] }
-tokio = { version = "1.9", features = ["sync", "parking_lot"], optional = true }
+], optional=true }
+tracing = { version="0.1", optional=true }
+paste = { version="1.0", optional=true }
+serde = { version="1.0", features=["derive"] }
+tokio = { version="1.9", features=["sync", "parking_lot"], optional=true }
 
-urlencoding = { version = "2.1", optional = true }
+urlencoding = { version="2.1", optional=true }
 http = "0.2"
 parking_lot = "0.11"
 
 [build-dependencies]
-hrpc-build = { version = "0.7", default-features = false, features = ["boxed"] }
+hrpc-build = { version="0.7", default-features=false, features=["boxed"] }
 regex = "1"
 walkdir = "2"
 
@@ -52,6 +52,9 @@ default = [
 	"gen_voice",
 	"gen_harmonytypes",
 	"gen_sync",
+	"gen_batch",
+	"gen_profile",
+	"gen_emote",
 ]
 client = [
 	"gen_chat",
@@ -69,15 +72,18 @@ client = [
 gen_client = ["hrpc/client", "hrpc-build/client"]
 gen_server = ["hrpc/server", "hrpc-build/server"]
 
-gen_chat = ["gen_harmonytypes", "harmony_derive"]
+gen_chat = ["gen_harmonytypes", "gen_profile", "gen_emote", "harmony_derive"]
 gen_auth = []
 gen_mediaproxy = ["gen_harmonytypes"]
 gen_voice = []
 gen_harmonytypes = []
 gen_sync = []
+gen_batch = []
+gen_profile = []
+gen_emote = []
 
 [dev-dependencies]
-tokio = { version = "1.9", features = ["rt", "macros", "fs"] }
+tokio = { version="1.9", features=["rt", "macros", "fs"] }
 tracing-subscriber = "0.2"
 ctrlc = "3.1.8"
 

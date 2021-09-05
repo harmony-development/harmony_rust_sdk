@@ -1,6 +1,9 @@
 use super::harmonytypes::{item_position, ItemPosition};
 use harmony_derive::into_request;
-use std::fmt::{self, Display, Formatter};
+use std::{
+    convert::TryFrom,
+    fmt::{self, Display, Formatter},
+};
 
 pub mod v1 {
     #![allow(clippy::unit_arg)]
@@ -13,6 +16,33 @@ pub mod v1 {
     }
 }
 pub use v1::*;
+
+/// A stream event.
+#[derive(Debug, Clone, PartialEq)]
+pub enum Event {
+    Chat(stream_event::Event),
+    Profile(super::profile::stream_event::Event),
+    Emote(super::emote::stream_event::Event),
+}
+
+/// Error returned if the [`StreamEventsResponse`] did not have valid fields.
+pub struct EventFromResponseError;
+
+impl TryFrom<StreamEventsResponse> for Event {
+    type Error = EventFromResponseError;
+
+    fn try_from(value: StreamEventsResponse) -> Result<Self, Self::Error> {
+        value
+            .event
+            .map(|ev| match ev {
+                stream_events_response::Event::Chat(s) => s.event.map(Self::Chat),
+                stream_events_response::Event::Emote(e) => e.event.map(Self::Emote),
+                stream_events_response::Event::Profile(p) => p.event.map(Self::Profile),
+            })
+            .flatten()
+            .ok_or(EventFromResponseError)
+    }
+}
 
 /// Describes where to subscribe for events.
 #[derive(Debug, Clone, Copy, Hash, PartialEq, Eq)]

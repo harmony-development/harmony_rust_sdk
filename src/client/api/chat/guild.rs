@@ -1,8 +1,7 @@
 pub use crate::api::chat::{
-    get_guild_list_response, BanUserRequest, CreateGuildRequest, DeleteGuildRequest,
-    GetGuildListRequest, GetGuildMembersRequest, GetGuildRequest, JoinGuildRequest,
-    KickUserRequest, LeaveGuildRequest, PreviewGuildRequest, UnbanUserRequest,
-    UpdateGuildInformationRequest,
+    BanUserRequest, CreateGuildRequest, DeleteGuildRequest, GetGuildListRequest,
+    GetGuildMembersRequest, GetGuildRequest, JoinGuildRequest, KickUserRequest, LeaveGuildRequest,
+    PreviewGuildRequest, UnbanUserRequest, UpdateGuildInformationRequest,
 };
 use crate::client::api::rest::FileId;
 
@@ -23,8 +22,8 @@ pub struct CreateGuild {
 impl From<CreateGuild> for CreateGuildRequest {
     fn from(o: CreateGuild) -> Self {
         Self {
-            guild_name: o.guild_name,
-            picture_url: o.picture_url.map_or_else(String::default, Into::into),
+            name: o.guild_name,
+            picture: o.picture_url.map_or_else(String::default, Into::into),
             metadata: o.metadata,
         }
     }

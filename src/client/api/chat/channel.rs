@@ -1,7 +1,7 @@
 pub use crate::api::chat::{
-    get_channel_messages_request::Direction, get_guild_channels_response, CreateChannelRequest,
-    DeleteChannelRequest, GetChannelMessagesRequest, GetGuildChannelsRequest,
-    UpdateChannelInformationRequest, UpdateChannelOrderRequest,
+    get_channel_messages_request::Direction, CreateChannelRequest, DeleteChannelRequest,
+    GetChannelMessagesRequest, GetGuildChannelsRequest, UpdateChannelInformationRequest,
+    UpdateChannelOrderRequest,
 };
 
 use super::{harmonytypes::Metadata, *};
@@ -12,7 +12,6 @@ use super::{harmonytypes::Metadata, *};
 /// means the server should return the latest messages.
 ///
 /// Note that the number of messages returned may be limited by servers.
-#[into_request("GetChannelMessagesRequest")]
 #[derive(Debug, new, Clone, builder)]
 pub struct GetChannelMessages {
     guild_id: u64,
@@ -20,10 +19,26 @@ pub struct GetChannelMessages {
     #[new(default)]
     message_id: u64,
     #[new(default)]
-    direction: Direction,
+    #[builder(setter(strip_option))]
+    direction: Option<Direction>,
     #[new(default)]
-    count: u32,
+    #[builder(setter(strip_option))]
+    count: Option<u32>,
 }
+
+impl From<GetChannelMessages> for GetChannelMessagesRequest {
+    fn from(o: GetChannelMessages) -> Self {
+        Self {
+            guild_id: o.guild_id,
+            channel_id: o.channel_id,
+            message_id: o.message_id,
+            direction: o.direction.map(Into::into),
+            count: o.count,
+        }
+    }
+}
+
+impl_into_req!(GetChannelMessages);
 
 /// Convenience type to create a valid [`CreateChannelRequest`].
 #[into_request("CreateChannelRequest")]

@@ -1,14 +1,12 @@
-pub use crate::api::chat::{
-    DeleteMessageRequest, GetMessageRequest, SendMessageRequest, UpdateMessageTextRequest,
+pub use crate::api::{
+    chat::{
+        content::{AttachmentContent, EmbedContent, PhotoContent, TextContent},
+        DeleteMessageRequest, GetMessageRequest, SendMessageRequest, UpdateMessageTextRequest,
+    },
+    harmonytypes::{format as text_format, Format as TextFormat, FormattedText},
 };
 
-use super::{
-    harmonytypes::{
-        content, Attachment, Content, ContentEmbed, ContentFiles, ContentText, Embed, Message,
-        Metadata, Override,
-    },
-    *,
-};
+use super::{harmonytypes::Metadata, *};
 
 /// Trait that implements convenience methods for [`Message`] type.
 pub trait MessageExt {
@@ -23,21 +21,21 @@ pub trait MessageExt {
 impl MessageExt for Message {
     fn text(&self) -> Option<&str> {
         match self.content.as_ref()?.content.as_ref()? {
-            content::Content::TextMessage(text) => Some(&text.content),
+            content::Content::TextMessage(text) => text.content.as_ref().map(|f| f.text.as_str()),
             _ => None,
         }
     }
 
     fn embeds(&self) -> Option<&Embed> {
         match self.content.as_ref()?.content.as_ref()? {
-            content::Content::EmbedMessage(embeds) => embeds.embeds.as_deref(),
+            content::Content::EmbedMessage(embeds) => embeds.embed.as_deref(),
             _ => None,
         }
     }
 
     fn files(&self) -> Option<&[Attachment]> {
         match self.content.as_ref()?.content.as_ref()? {
-            content::Content::FilesMessage(files) => Some(&files.attachments),
+            content::Content::AttachmentMessage(files) => Some(&files.files),
             _ => None,
         }
     }
@@ -65,22 +63,25 @@ pub struct SendMessage {
 
 impl SendMessage {
     pub fn text(mut self, text: impl std::fmt::Display) -> Self {
-        self.content.content = Some(content::Content::TextMessage(ContentText {
-            content: text.to_string(),
+        self.content.content = Some(content::Content::TextMessage(TextContent {
+            content: Some(FormattedText {
+                text: text.to_string(),
+                format: Vec::new(),
+            }),
         }));
         self
     }
 
     pub fn files(mut self, files: impl Into<Vec<Attachment>>) -> Self {
-        self.content.content = Some(content::Content::FilesMessage(ContentFiles {
-            attachments: files.into(),
+        self.content.content = Some(content::Content::AttachmentMessage(AttachmentContent {
+            files: files.into(),
         }));
         self
     }
 
     pub fn embed(mut self, embed: impl Into<Embed>) -> Self {
-        self.content.content = Some(content::Content::EmbedMessage(ContentEmbed {
-            embeds: Some(Box::new(embed.into())),
+        self.content.content = Some(content::Content::EmbedMessage(EmbedContent {
+            embed: Some(Box::new(embed.into())),
         }));
         self
     }
