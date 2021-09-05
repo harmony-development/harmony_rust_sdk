@@ -1,0 +1,1 @@
+initSidebarItems({"enum":[["Presentation","Type representing how to present an embed field."]]});

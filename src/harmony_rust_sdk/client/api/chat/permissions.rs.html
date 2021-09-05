@@ -111,12 +111,14 @@
 <span id="108">108</span>
 <span id="109">109</span>
 <span id="110">110</span>
+<span id="111">111</span>
+<span id="112">112</span>
+<span id="113">113</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="kw">pub</span> <span class="kw">use</span> <span class="kw">crate</span><span class="ident">::api::chat</span>::{
-    <span class="ident">permission</span>, <span class="ident">AddGuildRoleRequest</span>, <span class="ident">BatchQueryPermissionsRequest</span>, <span class="ident">DeleteGuildRoleRequest</span>,
-    <span class="ident">GetGuildRolesRequest</span>, <span class="ident">GetPermissionsRequest</span>, <span class="ident">GetUserRolesRequest</span>, <span class="ident">ManageUserRolesRequest</span>,
-    <span class="ident">ModifyGuildRoleRequest</span>, <span class="ident">MoveRoleRequest</span>, <span class="ident">Permission</span>, <span class="ident">PermissionList</span>, <span class="ident">QueryPermissionsRequest</span>,
-    <span class="ident">SetPermissionsRequest</span>,
+    <span class="ident">AddGuildRoleRequest</span>, <span class="ident">DeleteGuildRoleRequest</span>, <span class="ident">GetGuildRolesRequest</span>, <span class="ident">GetPermissionsRequest</span>,
+    <span class="ident">GetUserRolesRequest</span>, <span class="ident">ManageUserRolesRequest</span>, <span class="ident">ModifyGuildRoleRequest</span>, <span class="ident">MoveRoleRequest</span>,
+    <span class="ident">Permission</span>, <span class="ident">QueryHasPermissionRequest</span>, <span class="ident">SetPermissionsRequest</span>,
 };
 
 <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
@@ -131,8 +133,8 @@
     <span class="ident">role_id</span>: <span class="ident">u64</span>,
 }
 
-<span class="doccomment">/// Convenience type to create a valid [`QueryPermissionsRequest`].</span>
-<span class="attribute">#[<span class="ident">into_request</span>(<span class="string">&quot;QueryPermissionsRequest&quot;</span>)]</span>
+<span class="doccomment">/// Convenience type to create a valid [`QueryHasPermissionRequest`].</span>
+<span class="attribute">#[<span class="ident">into_request</span>(<span class="string">&quot;QueryHasPermissionRequest&quot;</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">new</span>, <span class="ident">builder</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">QueryPermissions</span> {
     <span class="ident">guild_id</span>: <span class="ident">u64</span>,
@@ -152,8 +154,7 @@
     <span class="ident">channel_id</span>: <span class="ident">u64</span>,
     <span class="ident">role_id</span>: <span class="ident">u64</span>,
     <span class="attribute">#[<span class="ident">new</span>(<span class="ident">default</span>)]</span>
-    <span class="attribute">#[<span class="ident">builder</span>(<span class="ident">setter</span>(<span class="ident">strip_option</span>))]</span>
-    <span class="ident">perms</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">PermissionList</span><span class="op">&gt;</span>,
+    <span class="ident">perms_to_give</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Permission</span><span class="op">&gt;</span>,
 }
 
 <span class="doccomment">/// Convenience type to create a valid [`AddGuildRoleRequest`].</span>
@@ -161,8 +162,13 @@
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">builder</span>, <span class="ident">new</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">AddGuildRole</span> {
     <span class="ident">guild_id</span>: <span class="ident">u64</span>,
-    <span class="attribute">#[<span class="ident">builder</span>(<span class="ident">setter</span>(<span class="ident">strip_option</span>))]</span>
-    <span class="ident">role</span>: <span class="ident">Role</span>,
+    <span class="ident">name</span>: <span class="ident">String</span>,
+    <span class="attribute">#[<span class="ident">new</span>(<span class="ident">default</span>)]</span>
+    <span class="ident">color</span>: <span class="ident">i32</span>,
+    <span class="attribute">#[<span class="ident">new</span>(<span class="ident">default</span>)]</span>
+    <span class="ident">hoist</span>: <span class="ident">bool</span>,
+    <span class="attribute">#[<span class="ident">new</span>(<span class="ident">default</span>)]</span>
+    <span class="ident">pingable</span>: <span class="ident">bool</span>,
 }
 
 <span class="doccomment">/// Convenience type to create a valid [`DeleteGuildRoleRequest`].</span>

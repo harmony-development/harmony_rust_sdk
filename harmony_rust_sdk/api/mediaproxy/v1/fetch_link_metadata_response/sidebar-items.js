@@ -1,1 +1,1 @@
-initSidebarItems({"enum":[["Data",""]]});
+initSidebarItems({"enum":[["Data","Data of the metadata."]]});

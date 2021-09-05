@@ -1,1 +1,1 @@
-initSidebarItems({"struct":[["MediaProxyServiceClient",""]]});
+initSidebarItems({"struct":[["MediaProxyServiceClient","Harmony service for fetching metadata and generating instant view for URLs."]]});

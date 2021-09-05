@@ -1,1 +1,1 @@
-initSidebarItems({"enum":[["Event",""]]});
+initSidebarItems({"enum":[["Event","The event kind of this signal."]]});

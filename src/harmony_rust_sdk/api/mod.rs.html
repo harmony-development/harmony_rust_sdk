@@ -276,6 +276,19 @@
 <span id="273">273</span>
 <span id="274">274</span>
 <span id="275">275</span>
+<span id="276">276</span>
+<span id="277">277</span>
+<span id="278">278</span>
+<span id="279">279</span>
+<span id="280">280</span>
+<span id="281">281</span>
+<span id="282">282</span>
+<span id="283">283</span>
+<span id="284">284</span>
+<span id="285">285</span>
+<span id="286">286</span>
+<span id="287">287</span>
+<span id="288">288</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="kw">use</span> <span class="ident">std</span>::{
     <span class="ident">convert::TryFrom</span>,
@@ -330,6 +343,19 @@
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">sync</span> {
     <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">v1</span> {
         <span class="macro">hrpc::include_proto!</span>(<span class="string">&quot;protocol.sync.v1&quot;</span>);
+    }
+    <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">v1</span>::<span class="kw-2">*</span>;
+}
+
+<span class="doccomment">/// Profile service API.</span>
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;gen_profile&quot;</span>)]</span>
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">profile</span>;
+
+<span class="doccomment">/// Emote service API.</span>
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;gen_emote&quot;</span>)]</span>
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">emote</span> {
+    <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">v1</span> {
+        <span class="macro">hrpc::include_proto!</span>(<span class="string">&quot;protocol.emote.v1&quot;</span>);
     }
     <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">v1</span>::<span class="kw-2">*</span>;
 }

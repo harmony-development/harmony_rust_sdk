@@ -1,1 +1,1 @@
-initSidebarItems({"enum":[["Kind",""]],"struct":[["UserAddedToGuild",""],["UserRemovedFromGuild",""]]});
+initSidebarItems({"enum":[["Kind","The kind and data of this event."]],"struct":[["UserAddedToGuild","Event sent when a user is added to a guild."],["UserRemovedFromGuild","Event sent when a user is removed from a guild."]]});

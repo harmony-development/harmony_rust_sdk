@@ -1,1 +1,1 @@
-initSidebarItems({"struct":[["VoiceServiceClient",""]]});
+initSidebarItems({"struct":[["VoiceServiceClient","Harmony service for facilitating voice operations using WebRTC."]]});

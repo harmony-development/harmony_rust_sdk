@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["EmoteServiceServer","Harmony’s Emote service manages the emotes and emote packs."]],"trait":[["EmoteService","Generated trait containing hRPC methods that should be implemented for use with EmoteServiceServer."]]});

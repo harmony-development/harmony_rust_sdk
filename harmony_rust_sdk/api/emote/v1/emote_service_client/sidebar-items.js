@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["EmoteServiceClient","Harmony’s Emote service manages the emotes and emote packs."]]});

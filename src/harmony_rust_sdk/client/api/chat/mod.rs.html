@@ -66,13 +66,9 @@
 <span id="63">63</span>
 <span id="64">64</span>
 <span id="65">65</span>
-<span id="66">66</span>
-<span id="67">67</span>
-<span id="68">68</span>
-<span id="69">69</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
-<span class="kw">use</span> <span class="kw">crate</span><span class="ident">::api::chat</span>::<span class="kw-2">*</span>;
+<span class="kw">use</span> <span class="kw">crate</span><span class="ident">::api</span>::{<span class="ident">chat</span>::<span class="kw-2">*</span>, <span class="ident">profile::GetProfileRequest</span>};
 
 <span class="kw">pub</span> <span class="kw">use</span> <span class="kw">crate</span><span class="ident">::api::chat::EventSource</span>;
 
@@ -101,7 +97,7 @@
 }
 
 <span class="doccomment">/// Wrapper around an user ID which can be used as multiple requests.</span>
-<span class="attribute">#[<span class="ident">into_request</span>(<span class="string">&quot;GetUserRequest&quot;</span>)]</span>
+<span class="attribute">#[<span class="ident">into_request</span>(<span class="string">&quot;GetProfileRequest&quot;</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">new</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">Copy</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>, <span class="ident">Into</span>, <span class="ident">From</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">UserId</span> {
     <span class="ident">user_id</span>: <span class="ident">u64</span>,
@@ -109,8 +105,6 @@
 
 <span class="doccomment">/// Manage and query channels.</span>
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">channel</span>;
-<span class="doccomment">/// Manage and query emotes and emote packs.</span>
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">emote</span>;
 <span class="doccomment">/// Manage and query guilds.</span>
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">guild</span>;
 <span class="doccomment">/// Manage and query invites.</span>
@@ -119,8 +113,6 @@
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">message</span>;
 <span class="doccomment">/// Manage and query user permissions and roles.</span>
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">permissions</span>;
-<span class="doccomment">/// Manage and query user profiles.</span>
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">profile</span>;
 
 <span class="doccomment">/// Convenience type to create a valid [`TriggerActionRequest`].</span>
 <span class="attribute">#[<span class="ident">into_request</span>(<span class="string">&quot;TriggerActionRequest&quot;</span>)]</span>

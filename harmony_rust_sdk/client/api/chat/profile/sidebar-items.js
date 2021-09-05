@@ -1,1 +1,0 @@
-initSidebarItems({"struct":[["AppId","Convenience type to create a valid [`GetUserMetadataRequest`]."],["ProfileUpdate","Convenience type to create a valid [`ProfileUpdateRequest`]."]],"trait":[["ProfileUpdateSelfBuilder","Builder trait for #name."]]});

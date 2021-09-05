@@ -63,13 +63,11 @@
 <span id="60">60</span>
 <span id="61">61</span>
 <span id="62">62</span>
-<span id="63">63</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="kw">pub</span> <span class="kw">use</span> <span class="kw">crate</span><span class="ident">::api::chat</span>::{
-    <span class="ident">get_guild_list_response</span>, <span class="ident">BanUserRequest</span>, <span class="ident">CreateGuildRequest</span>, <span class="ident">DeleteGuildRequest</span>,
-    <span class="ident">GetGuildListRequest</span>, <span class="ident">GetGuildMembersRequest</span>, <span class="ident">GetGuildRequest</span>, <span class="ident">JoinGuildRequest</span>,
-    <span class="ident">KickUserRequest</span>, <span class="ident">LeaveGuildRequest</span>, <span class="ident">PreviewGuildRequest</span>, <span class="ident">UnbanUserRequest</span>,
-    <span class="ident">UpdateGuildInformationRequest</span>,
+    <span class="ident">BanUserRequest</span>, <span class="ident">CreateGuildRequest</span>, <span class="ident">DeleteGuildRequest</span>, <span class="ident">GetGuildListRequest</span>,
+    <span class="ident">GetGuildMembersRequest</span>, <span class="ident">GetGuildRequest</span>, <span class="ident">JoinGuildRequest</span>, <span class="ident">KickUserRequest</span>, <span class="ident">LeaveGuildRequest</span>,
+    <span class="ident">PreviewGuildRequest</span>, <span class="ident">UnbanUserRequest</span>, <span class="ident">UpdateGuildInformationRequest</span>,
 };
 <span class="kw">use</span> <span class="kw">crate</span><span class="ident">::client::api::rest::FileId</span>;
 
@@ -90,8 +88,8 @@
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">CreateGuild</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">CreateGuildRequest</span> {
     <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">o</span>: <span class="ident">CreateGuild</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
         <span class="self">Self</span> {
-            <span class="ident">guild_name</span>: <span class="ident">o</span>.<span class="ident">guild_name</span>,
-            <span class="ident">picture_url</span>: <span class="ident">o</span>.<span class="ident">picture_url</span>.<span class="ident">map_or_else</span>(<span class="ident">String::default</span>, <span class="ident">Into::into</span>),
+            <span class="ident">name</span>: <span class="ident">o</span>.<span class="ident">guild_name</span>,
+            <span class="ident">picture</span>: <span class="ident">o</span>.<span class="ident">picture_url</span>.<span class="ident">map_or_else</span>(<span class="ident">String::default</span>, <span class="ident">Into::into</span>),
             <span class="ident">metadata</span>: <span class="ident">o</span>.<span class="ident">metadata</span>,
         }
     }

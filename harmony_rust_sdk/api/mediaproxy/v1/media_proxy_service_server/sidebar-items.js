@@ -1,1 +1,1 @@
-initSidebarItems({"struct":[["MediaProxyServiceServer",""]],"trait":[["MediaProxyService","Generated trait containing hRPC methods that should be implemented for use with MediaProxyServiceServer."]]});
+initSidebarItems({"struct":[["MediaProxyServiceServer","Harmony service for fetching metadata and generating instant view for URLs."]],"trait":[["MediaProxyService","Generated trait containing hRPC methods that should be implemented for use with MediaProxyServiceServer."]]});

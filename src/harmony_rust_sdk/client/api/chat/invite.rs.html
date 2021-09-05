@@ -23,11 +23,9 @@
 <span id="20">20</span>
 <span id="21">21</span>
 <span id="22">22</span>
-<span id="23">23</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="kw">pub</span> <span class="kw">use</span> <span class="kw">crate</span><span class="ident">::api::chat</span>::{
-    <span class="ident">get_guild_invites_response</span>, <span class="ident">CreateInviteRequest</span>, <span class="ident">DeleteInviteRequest</span>, <span class="ident">GetGuildInvitesRequest</span>,
-    <span class="ident">InviteId</span>,
+    <span class="ident">CreateInviteRequest</span>, <span class="ident">DeleteInviteRequest</span>, <span class="ident">GetGuildInvitesRequest</span>, <span class="ident">InviteId</span>,
 };
 
 <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
@@ -37,7 +35,7 @@
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">new</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">CreateInvite</span> {
     <span class="ident">name</span>: <span class="ident">InviteId</span>,
-    <span class="ident">possible_uses</span>: <span class="ident">i32</span>,
+    <span class="ident">possible_uses</span>: <span class="ident">u32</span>,
     <span class="ident">guild_id</span>: <span class="ident">u64</span>,
 }
 

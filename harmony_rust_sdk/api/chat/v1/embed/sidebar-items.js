@@ -1,0 +1,1 @@
+initSidebarItems({"mod":[["embed_field","Nested message and enum types in `EmbedField`."]],"struct":[["EmbedField","Object representing an embed field."],["EmbedHeading","Object representing an embed heading."]]});
