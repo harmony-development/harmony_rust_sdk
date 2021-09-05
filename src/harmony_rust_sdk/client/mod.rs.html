@@ -516,6 +516,10 @@
 <span id="513">513</span>
 <span id="514">514</span>
 <span id="515">515</span>
+<span id="516">516</span>
+<span id="517">517</span>
+<span id="518">518</span>
+<span id="519">519</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! Rust client implementation for Harmony, powered by [`hrpc`].</span>
 <span class="doccomment">//!</span>
@@ -989,7 +993,11 @@
     <span class="kw">pub</span> <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">get_event</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ClientResult</span><span class="op">&lt;</span><span class="kw">crate</span><span class="ident">::api::chat::Event</span><span class="op">&gt;</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">get_message</span>().<span class="kw">await</span><span class="question-mark">?</span>;
         <span class="kw">match</span> <span class="ident">res</span> {
-            <span class="prelude-val">Ok</span>(<span class="ident">ev</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="kw">crate</span><span class="ident">::api::chat::Event::try_from</span>(<span class="ident">ev</span>).<span class="ident">ok</span>().<span class="ident">map</span>(<span class="prelude-val">Ok</span>),
+            <span class="prelude-val">Ok</span>(<span class="ident">resp</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">resp</span>
+                .<span class="ident">event</span>
+                .<span class="ident">map</span>(<span class="op">|</span><span class="ident">a</span><span class="op">|</span> <span class="kw">crate</span><span class="ident">::api::chat::Event::try_from</span>(<span class="ident">a</span>).<span class="ident">ok</span>())
+                .<span class="ident">flatten</span>()
+                .<span class="ident">map</span>(<span class="prelude-val">Ok</span>),
             <span class="prelude-val">Err</span>(<span class="ident">err</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">Some</span>(<span class="prelude-val">Err</span>(<span class="ident">err</span>.<span class="ident">into</span>())),
         }
     }
