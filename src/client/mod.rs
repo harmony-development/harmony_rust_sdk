@@ -470,7 +470,11 @@ impl EventsSocket {
     pub async fn get_event(&mut self) -> Option<ClientResult<crate::api::chat::Event>> {
         let res = self.inner.get_message().await?;
         match res {
-            Ok(ev) => crate::api::chat::Event::try_from(ev).ok().map(Ok),
+            Ok(resp) => resp
+                .event
+                .map(|a| crate::api::chat::Event::try_from(a).ok())
+                .flatten()
+                .map(Ok),
             Err(err) => Some(Err(err.into())),
         }
     }

@@ -28,19 +28,32 @@ pub enum Event {
 /// Error returned if the [`StreamEventsResponse`] did not have valid fields.
 pub struct EventFromResponseError;
 
-impl TryFrom<StreamEventsResponse> for Event {
+impl TryFrom<stream_events_response::Event> for Event {
     type Error = EventFromResponseError;
 
-    fn try_from(value: StreamEventsResponse) -> Result<Self, Self::Error> {
-        value
-            .event
-            .map(|ev| match ev {
-                stream_events_response::Event::Chat(s) => s.event.map(Self::Chat),
-                stream_events_response::Event::Emote(e) => e.event.map(Self::Emote),
-                stream_events_response::Event::Profile(p) => p.event.map(Self::Profile),
-            })
-            .flatten()
-            .ok_or(EventFromResponseError)
+    fn try_from(value: stream_events_response::Event) -> Result<Self, Self::Error> {
+        (match value {
+            stream_events_response::Event::Chat(s) => s.event.map(Self::Chat),
+            stream_events_response::Event::Emote(e) => e.event.map(Self::Emote),
+            stream_events_response::Event::Profile(p) => p.event.map(Self::Profile),
+        })
+        .ok_or(EventFromResponseError)
+    }
+}
+
+impl From<Event> for stream_events_response::Event {
+    fn from(ev: Event) -> Self {
+        match ev {
+            Event::Chat(ev) => stream_events_response::Event::Chat(StreamEvent { event: Some(ev) }),
+            Event::Emote(ev) => {
+                stream_events_response::Event::Emote(super::emote::StreamEvent { event: Some(ev) })
+            }
+            Event::Profile(ev) => {
+                stream_events_response::Event::Profile(super::profile::StreamEvent {
+                    event: Some(ev),
+                })
+            }
+        }
     }
 }
 
