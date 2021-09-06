@@ -3127,8 +3127,8 @@
         <span class="attribute">#[<span class="ident">prost</span>(<span class="ident">message</span>, <span class="ident">optional</span>, <span class="ident">tag</span><span class="op">=</span><span class="string">&quot;4&quot;</span>)]</span>
         <span class="kw">pub</span> <span class="ident">edited_at</span>: <span class="ident">::core::option::Option</span><span class="op">&lt;</span><span class="ident">::prost_types::Timestamp</span><span class="op">&gt;</span>,
         <span class="doccomment">/// New message content.</span>
-        <span class="attribute">#[<span class="ident">prost</span>(<span class="ident">string</span>, <span class="ident">tag</span><span class="op">=</span><span class="string">&quot;5&quot;</span>)]</span>
-        <span class="kw">pub</span> <span class="ident">new_content</span>: <span class="ident">::prost::alloc::string::String</span>,
+        <span class="attribute">#[<span class="ident">prost</span>(<span class="ident">message</span>, <span class="ident">optional</span>, <span class="ident">tag</span><span class="op">=</span><span class="string">&quot;5&quot;</span>)]</span>
+        <span class="kw">pub</span> <span class="ident">new_content</span>: <span class="ident">::core::option::Option</span><span class="op">&lt;</span><span class="kw">super</span>::<span class="kw">super</span>::<span class="kw">super</span><span class="ident">::harmonytypes::v1::FormattedText</span><span class="op">&gt;</span>,
     }
     <span class="doccomment">/// Event sent when a message is deleted.</span>
     <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
