@@ -3096,8 +3096,8 @@
     <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
     <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">MessageSent</span> {
         <span class="doccomment">/// ID that is sent by your client it can use to confirm that the message is sent.</span>
-        <span class="attribute">#[<span class="ident">prost</span>(<span class="ident">uint64</span>, <span class="ident">tag</span><span class="op">=</span><span class="string">&quot;1&quot;</span>)]</span>
-        <span class="kw">pub</span> <span class="ident">echo_id</span>: <span class="ident">u64</span>,
+        <span class="attribute">#[<span class="ident">prost</span>(<span class="ident">uint64</span>, <span class="ident">optional</span>, <span class="ident">tag</span><span class="op">=</span><span class="string">&quot;1&quot;</span>)]</span>
+        <span class="kw">pub</span> <span class="ident">echo_id</span>: <span class="ident">::core::option::Option</span><span class="op">&lt;</span><span class="ident">u64</span><span class="op">&gt;</span>,
         <span class="doccomment">/// Guild ID of the guild where this event happened.</span>
         <span class="attribute">#[<span class="ident">prost</span>(<span class="ident">uint64</span>, <span class="ident">tag</span><span class="op">=</span><span class="string">&quot;2&quot;</span>)]</span>
         <span class="kw">pub</span> <span class="ident">guild_id</span>: <span class="ident">u64</span>,
