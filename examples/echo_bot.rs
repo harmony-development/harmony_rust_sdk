@@ -6,12 +6,8 @@ use harmony_rust_sdk::{
     client::{
         api::{
             auth::AuthStepResponse,
-            chat::{
-                invite::InviteId,
-                message::{SendMessage, SendMessageSelfBuilder},
-                EventSource,
-            },
-            profile::{UpdateProfile, UpdateProfileSelfBuilder, UserStatus},
+            chat::{invite::InviteId, message::SendMessage, EventSource},
+            profile::{UpdateProfile, UserStatus},
         },
         error::ClientResult,
         Client,
@@ -78,7 +74,7 @@ async fn main() -> ClientResult<()> {
     client
         .profile()
         .await
-        .update_profile(UpdateProfile::default().new_status(UserStatus::Online))
+        .update_profile(UpdateProfile::default().with_new_status(UserStatus::Online))
         .await?;
 
     // Join the guild if invite is specified
@@ -120,14 +116,14 @@ async fn main() -> ClientResult<()> {
 
                             let mut send_message =
                                 SendMessage::new(guild_id, sent_message.channel_id)
-                                    .overrides(message.overrides)
-                                    .metadata(message.metadata);
+                                    .with_overrides(message.overrides)
+                                    .with_metadata(message.metadata);
 
                             if let Some(in_reply_to) = message.in_reply_to {
-                                send_message = send_message.in_reply_to(in_reply_to);
+                                send_message = send_message.with_in_reply_to(in_reply_to);
                             }
                             if let Some(content) = message.content {
-                                send_message = send_message.content(content);
+                                send_message = send_message.with_content(content);
                             }
 
                             client.chat().await.send_message(send_message).await?;
@@ -143,7 +139,7 @@ async fn main() -> ClientResult<()> {
     client
         .profile()
         .await
-        .update_profile(UpdateProfile::default().new_status(UserStatus::OfflineUnspecified))
+        .update_profile(UpdateProfile::default().with_new_status(UserStatus::OfflineUnspecified))
         .await?;
 
     Ok(())

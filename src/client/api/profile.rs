@@ -2,7 +2,7 @@ pub use crate::api::profile::{
     GetAppDataRequest, GetProfileRequest, UpdateProfileRequest, UserStatus,
 };
 
-use crate::client::api::rest::FileId;
+use crate::{api::profile::*, client::api::rest::FileId};
 
 use super::*;
 
@@ -14,7 +14,8 @@ pub struct AppId {
 }
 
 /// Convenience type to create a valid [`UpdateProfileRequest`].
-#[derive(Debug, Clone, Default, new, builder)]
+#[impl_call_action(profile)]
+#[derive(Debug, Clone, Default, new, self_builder)]
 pub struct UpdateProfile {
     #[builder(setter(strip_option))]
     #[new(default)]

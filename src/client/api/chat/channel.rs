@@ -12,7 +12,8 @@ use super::{harmonytypes::Metadata, *};
 /// means the server should return the latest messages.
 ///
 /// Note that the number of messages returned may be limited by servers.
-#[derive(Debug, new, Clone, builder)]
+#[impl_call_action(chat)]
+#[derive(Debug, new, Clone, self_builder)]
 pub struct GetChannelMessages {
     guild_id: u64,
     channel_id: u64,
@@ -41,8 +42,9 @@ impl From<GetChannelMessages> for GetChannelMessagesRequest {
 impl_into_req_from!(GetChannelMessages);
 
 /// Convenience type to create a valid [`CreateChannelRequest`].
+#[impl_call_action(chat)]
 #[into_request("CreateChannelRequest")]
-#[derive(Debug, new, Clone, builder)]
+#[derive(Debug, new, Clone, self_builder)]
 pub struct CreateChannel {
     guild_id: u64,
     channel_name: String,
@@ -55,6 +57,7 @@ pub struct CreateChannel {
 }
 
 /// Convenience type to create a valid [`DeleteChannelRequest`].
+#[impl_call_action(chat)]
 #[into_request("DeleteChannelRequest")]
 #[derive(Debug, Clone, new)]
 pub struct DeleteChannel {
@@ -63,7 +66,8 @@ pub struct DeleteChannel {
 }
 
 /// Convenience type to create a valid [`UpdateChannelInformationRequest`].
-#[derive(Debug, Clone, new, builder)]
+#[impl_call_action(chat)]
+#[derive(Debug, Clone, new, self_builder)]
 pub struct UpdateChannelInformation {
     guild_id: u64,
     channel_id: u64,
@@ -89,6 +93,7 @@ impl From<UpdateChannelInformation> for UpdateChannelInformationRequest {
 impl_into_req_from!(UpdateChannelInformation);
 
 /// Convenience type to create a valid [`UpdateChannelOrderRequest`].
+#[impl_call_action(chat)]
 #[into_request("UpdateChannelOrderRequest")]
 #[derive(Debug, Clone, new)]
 pub struct UpdateChannelOrder {

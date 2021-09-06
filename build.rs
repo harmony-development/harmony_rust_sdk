@@ -41,6 +41,40 @@ fn main() {
     #[cfg(feature = "gen_emote")]
     protos.push("emote/v1/emote.proto");
 
+    builder = builder.type_attribute(
+        ".",
+        "#[derive(derive_new::new, harmony_derive::self_builder)]",
+    );
+    #[cfg(feature = "client")]
+    {
+        builder = builder.type_attribute(
+            ".protocol.chat.v1",
+            "#[harmony_derive::impl_call_req(chat)]\n#[derive(derive_new::new, harmony_derive::self_builder)]",
+        );
+        builder = builder.type_attribute(
+            ".protocol.auth.v1",
+            "#[harmony_derive::impl_call_req(auth)]\n#[derive(derive_new::new, harmony_derive::self_builder)]",
+        );
+        builder = builder.type_attribute(
+            ".protocol.profile.v1",
+            "#[harmony_derive::impl_call_req(profile)]\n#[derive(derive_new::new, harmony_derive::self_builder)]",
+        );
+        builder = builder.type_attribute(
+            ".protocol.emote.v1",
+            "#[harmony_derive::impl_call_req(emote)]\n#[derive(derive_new::new, harmony_derive::self_builder)]",
+        );
+        builder = builder.type_attribute(
+            ".protocol.mediaproxy.v1",
+            "#[harmony_derive::impl_call_req(mediaproxy)]\n#[derive(derive_new::new, harmony_derive::self_builder)]",
+        );
+    }
+    builder = builder.type_attribute(".protocol.chat.v1.LeaveReason", "");
+    builder = builder.type_attribute(".protocol.profile.v1.UserStatus", "");
+    builder = builder.type_attribute(".protocol.harmonytypes.v1.Format.Color.Kind", "");
+    builder = builder.type_attribute(".protocol.chat.v1.GetChannelMessagesRequest.Direction", "");
+    builder = builder.type_attribute(".protocol.chat.v1.Embed.EmbedField.Presentation", "");
+    builder = builder.type_attribute(".protocol.chat.v1.Action.Type", "");
+
     let protocol_path =
         std::env::var("HARMONY_PROTOCOL_PATH").unwrap_or_else(|_| "protocol".to_string());
     builder.compile(&protos, &[protocol_path.as_str()]).expect(

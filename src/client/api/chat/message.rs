@@ -42,8 +42,9 @@ impl MessageExt for Message {
 }
 
 /// Convenience type to create a valid [`SendMessageRequest`].
+#[impl_call_action(chat)]
 #[into_request("SendMessageRequest")]
-#[derive(new, Debug, Clone, builder)]
+#[derive(new, Debug, Clone, self_builder)]
 pub struct SendMessage {
     guild_id: u64,
     channel_id: u64,

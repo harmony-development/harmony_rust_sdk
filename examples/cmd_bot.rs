@@ -11,10 +11,10 @@ use harmony_rust_sdk::{
             auth::AuthStepResponse,
             chat::{
                 invite::InviteId,
-                message::{MessageExt, SendMessage, SendMessageSelfBuilder},
+                message::{MessageExt, SendMessage},
                 EventSource, UserId,
             },
-            profile::{UpdateProfile, UpdateProfileSelfBuilder, UserStatus},
+            profile::{UpdateProfile, UserStatus},
         },
         error::ClientResult,
         Client,
@@ -83,8 +83,8 @@ async fn main() -> ClientResult<()> {
         .await
         .update_profile(
             UpdateProfile::default()
-                .new_status(UserStatus::Online)
-                .new_is_bot(true),
+                .with_new_status(UserStatus::Online)
+                .with_new_is_bot(true),
         )
         .await?;
 
@@ -163,11 +163,9 @@ async fn main() -> ClientResult<()> {
                                     _ => "No such command.".to_string(),
                                 };
                                 client
-                                    .chat()
-                                    .await
-                                    .send_message(
+                                    .call(
                                         SendMessage::new(guild_id, sent_message.channel_id)
-                                            .in_reply_to(sent_message.message_id)
+                                            .with_in_reply_to(sent_message.message_id)
                                             .text(reply),
                                     )
                                     .await?;
@@ -184,7 +182,7 @@ async fn main() -> ClientResult<()> {
     client
         .profile()
         .await
-        .update_profile(UpdateProfile::default().new_status(UserStatus::OfflineUnspecified))
+        .update_profile(UpdateProfile::default().with_new_status(UserStatus::OfflineUnspecified))
         .await?;
 
     Ok(())

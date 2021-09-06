@@ -22,5 +22,5 @@ use std::fmt::Debug;
 
 use derive_more::{Display, From, Into};
 use derive_new::new;
-use harmony_derive::{builder, impl_into_req_from, into_request};
+use harmony_derive::{impl_call_action, impl_into_req_from, into_request, self_builder};
 use hrpc::{IntoRequest, Request};

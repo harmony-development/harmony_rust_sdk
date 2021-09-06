@@ -254,6 +254,11 @@ impl Client {
         self.data.emote.lock().await
     }
 
+    /// Execute the given request.
+    pub async fn call<Req: CallRequest>(&self, request: Req) -> ClientResult<Req::Response> {
+        request.call_with(self).await
+    }
+
     #[inline(always)]
     fn auth_status_lock(&self) -> MutexGuard<(AuthStatus, Bytes)> {
         self.data.auth_status.lock()
@@ -516,4 +521,13 @@ impl AuthSocket {
     pub async fn close(self) -> ClientResult<()> {
         self.inner.close().await.map_err(Into::into)
     }
+}
+
+/// A trait to facilitate easy request execution.
+#[hrpc::async_trait]
+pub trait CallRequest {
+    type Response;
+
+    /// Execute the request using the provided client.
+    async fn call_with(self, client: &Client) -> ClientResult<Self::Response>;
 }

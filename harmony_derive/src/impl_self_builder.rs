@@ -1,3 +1,5 @@
+use std::str::FromStr;
+
 use proc_macro::TokenStream;
 use proc_macro2::TokenStream as TokenStream2;
 use quote::{format_ident, quote};
@@ -5,16 +7,18 @@ use syn::{
     parse_macro_input, Data, DeriveInput, Field, GenericArgument, Ident, Path, PathArguments, Type,
 };
 
-pub(crate) fn self_builder(input: TokenStream) -> TokenStream {
+pub(crate) fn self_builder(input: TokenStream, for_self: bool) -> TokenStream {
     let input = parse_macro_input!(input as DeriveInput);
 
     let name = &input.ident;
     let trait_name = format_ident!("{}SelfBuilder", name);
     let fields = match &input.data {
         Data::Struct(s) => s.fields.iter().map(FieldInfo::from),
-        _ => panic!("#[self_builder] must be implemented on a struct."),
+        _ => return TokenStream::new(),
     };
-    let impls_signs = fields.flat_map(construct_impl_sign).collect::<Vec<_>>();
+    let impls_signs = fields
+        .flat_map(|f| construct_impl_sign(f, for_self))
+        .collect::<Vec<_>>();
 
     let mut impls = Vec::with_capacity(impls_signs.len());
     let mut signs = Vec::with_capacity(impls_signs.len());
@@ -23,21 +27,32 @@ pub(crate) fn self_builder(input: TokenStream) -> TokenStream {
         signs.push(sign);
     }
 
-    (quote! {
-        /// Builder trait for #name.
-        pub trait #trait_name {
-            #(
-                #signs
-            )*
-        }
+    if for_self {
+        (quote! {
+            impl #name {
+                #(
+                    #impls
+                )*
+            }
+        })
+        .into()
+    } else {
+        (quote! {
+            /// Builder trait for #name.
+            pub trait #trait_name {
+                #(
+                    #signs
+                )*
+            }
 
-        impl #trait_name for #name {
-            #(
-                #impls
-            )*
-        }
-    })
-    .into()
+            impl #trait_name for #name {
+                #(
+                    #impls
+                )*
+            }
+        })
+        .into()
+    }
 }
 
 // TODO: implement method rename `builder(setter(name = "new_something"))`
@@ -69,13 +84,21 @@ impl From<&Field> for FieldInfo {
     }
 }
 
-fn construct_impl_sign(field_info: FieldInfo) -> Option<(TokenStream2, TokenStream2)> {
+fn construct_impl_sign(
+    field_info: FieldInfo,
+    for_self: bool,
+) -> Option<(TokenStream2, TokenStream2)> {
     let FieldInfo {
         name,
         ty,
         strip_option,
         skip_setter,
     } = field_info;
+
+    let method_name = quote::format_ident!("with_{}", name);
+    let vis = for_self
+        .then(|| TokenStream2::from_str("pub").unwrap())
+        .unwrap_or_else(TokenStream2::new);
 
     if !skip_setter {
         let doc_msg = format!("Set the {} field of this struct.", name);
@@ -84,7 +107,7 @@ fn construct_impl_sign(field_info: FieldInfo) -> Option<(TokenStream2, TokenStre
 
             let impll = quote! {
                 #[doc = #doc_msg]
-                fn #name(self, #name: impl Into<#stripped_ty>) -> Self {
+                #vis fn #method_name(self, #name: impl Into<#stripped_ty>) -> Self {
                     let mut new = self;
                     new.#name = Some(#name.into());
                     new
@@ -92,13 +115,13 @@ fn construct_impl_sign(field_info: FieldInfo) -> Option<(TokenStream2, TokenStre
             };
             let sign = quote! {
                 #[doc = #doc_msg]
-                fn #name(self, #name: impl Into<#stripped_ty>) -> Self;
+                fn #method_name(self, #name: impl Into<#stripped_ty>) -> Self;
             };
             (impll, sign)
         } else {
             let impll = quote! {
                 #[doc = #doc_msg]
-                fn #name(self, #name: impl Into<#ty>) -> Self {
+                #vis fn #method_name(self, #name: impl Into<#ty>) -> Self {
                     let mut new = self;
                     new.#name = #name.into();
                     new
@@ -106,7 +129,7 @@ fn construct_impl_sign(field_info: FieldInfo) -> Option<(TokenStream2, TokenStre
             };
             let sign = quote! {
                 #[doc = #doc_msg]
-                fn #name(self, #name: impl Into<#ty>) -> Self;
+                fn #method_name(self, #name: impl Into<#ty>) -> Self;
             };
             (impll, sign)
         })

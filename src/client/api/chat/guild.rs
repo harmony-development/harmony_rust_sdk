@@ -8,7 +8,8 @@ use crate::client::api::rest::FileId;
 use super::{harmonytypes::Metadata, *};
 
 /// Convenience type to create a valid [`CreateGuildRequest`].
-#[derive(Debug, Clone, new, builder)]
+#[impl_call_action(chat)]
+#[derive(Debug, Clone, new, self_builder)]
 pub struct CreateGuild {
     guild_name: String,
     #[builder(setter(strip_option))]
@@ -32,7 +33,8 @@ impl From<CreateGuild> for CreateGuildRequest {
 impl_into_req_from!(CreateGuild);
 
 /// Convenience type to create a valid [`UpdateGuildInformationRequest`].
-#[derive(Debug, Clone, new, builder)]
+#[impl_call_action(chat)]
+#[derive(Debug, Clone, new, self_builder)]
 pub struct UpdateGuildInformation {
     guild_id: u64,
     #[builder(setter(strip_option))]
