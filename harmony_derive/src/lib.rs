@@ -12,3 +12,8 @@ pub fn into_request(args: TokenStream, input: TokenStream) -> TokenStream {
 pub fn self_builder(input: TokenStream) -> TokenStream {
     impl_self_builder::self_builder(input)
 }
+
+#[proc_macro]
+pub fn impl_into_req_from(input: TokenStream) -> TokenStream {
+    impl_into_request::impl_into_req_from(input)
+}

@@ -38,7 +38,7 @@ impl From<GetChannelMessages> for GetChannelMessagesRequest {
     }
 }
 
-impl_into_req!(GetChannelMessages);
+impl_into_req_from!(GetChannelMessages);
 
 /// Convenience type to create a valid [`CreateChannelRequest`].
 #[into_request("CreateChannelRequest")]
@@ -86,7 +86,7 @@ impl From<UpdateChannelInformation> for UpdateChannelInformationRequest {
     }
 }
 
-impl_into_req!(UpdateChannelInformation);
+impl_into_req_from!(UpdateChannelInformation);
 
 /// Convenience type to create a valid [`UpdateChannelOrderRequest`].
 #[into_request("UpdateChannelOrderRequest")]

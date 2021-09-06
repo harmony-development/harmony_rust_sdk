@@ -43,4 +43,4 @@ impl From<UpdateProfile> for UpdateProfileRequest {
     }
 }
 
-impl_into_req!(UpdateProfile);
+impl_into_req_from!(UpdateProfile);

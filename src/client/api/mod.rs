@@ -16,27 +16,11 @@ pub mod batch {}
 #[doc(inline)]
 pub use crate::api::{harmonytypes, Hmc, HmcFromStrError, HmcParseError};
 
-use crate::{
-    client::{Client, ClientResult},
-    impl_into_req,
-};
+use crate::client::{Client, ClientResult};
 
 use std::fmt::Debug;
 
 use derive_more::{Display, From, Into};
 use derive_new::new;
-use harmony_derive::{builder, into_request};
+use harmony_derive::{builder, impl_into_req_from, into_request};
 use hrpc::{IntoRequest, Request};
-
-#[macro_export]
-macro_rules! impl_into_req {
-    ($req:ty) => {
-        paste::paste! {
-            impl IntoRequest<[<$req Request>]> for $req {
-                fn into_request(self) -> Request<[<$req Request>]> {
-                    [<$req Request>]::from(self).into_request()
-                }
-            }
-        }
-    };
-}

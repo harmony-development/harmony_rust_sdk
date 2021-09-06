@@ -1,5 +1,5 @@
 use proc_macro::TokenStream;
-use proc_macro2::TokenStream as TokenStream2;
+use proc_macro2::{Span, TokenStream as TokenStream2};
 use quote::quote;
 use syn::{parse_macro_input, AttributeArgs, Data, DeriveInput, Ident, Lit, NestedMeta};
 
@@ -64,4 +64,17 @@ fn impl_into_req(input: &DeriveInput, req: Ident) -> TokenStream2 {
             }
         }
     }
+}
+
+pub(crate) fn impl_into_req_from(ty: TokenStream) -> TokenStream {
+    let ty = Ident::new(ty.to_string().as_str(), Span::call_site());
+    let req = quote::format_ident!("{}Request", ty);
+    (quote! {
+        impl IntoRequest<#req> for #ty {
+            fn into_request(self) -> Request<#req> {
+                #req ::from(self).into_request()
+            }
+        }
+    })
+    .into()
 }

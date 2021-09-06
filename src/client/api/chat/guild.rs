@@ -29,7 +29,7 @@ impl From<CreateGuild> for CreateGuildRequest {
     }
 }
 
-impl_into_req!(CreateGuild);
+impl_into_req_from!(CreateGuild);
 
 /// Convenience type to create a valid [`UpdateGuildInformationRequest`].
 #[derive(Debug, Clone, new, builder)]
@@ -59,4 +59,4 @@ impl From<UpdateGuildInformation> for UpdateGuildInformationRequest {
     }
 }
 
-impl_into_req!(UpdateGuildInformation);
+impl_into_req_from!(UpdateGuildInformation);
