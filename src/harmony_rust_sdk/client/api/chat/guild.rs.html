@@ -63,6 +63,8 @@
 <span id="60">60</span>
 <span id="61">61</span>
 <span id="62">62</span>
+<span id="63">63</span>
+<span id="64">64</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="kw">pub</span> <span class="kw">use</span> <span class="kw">crate</span><span class="ident">::api::chat</span>::{
     <span class="ident">BanUserRequest</span>, <span class="ident">CreateGuildRequest</span>, <span class="ident">DeleteGuildRequest</span>, <span class="ident">GetGuildListRequest</span>,
@@ -74,7 +76,8 @@
 <span class="kw">use</span> <span class="kw">super</span>::{<span class="ident">harmonytypes::Metadata</span>, <span class="kw-2">*</span>};
 
 <span class="doccomment">/// Convenience type to create a valid [`CreateGuildRequest`].</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">new</span>, <span class="ident">builder</span>)]</span>
+<span class="attribute">#[<span class="ident">impl_call_action</span>(<span class="ident">chat</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">new</span>, <span class="ident">self_builder</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">CreateGuild</span> {
     <span class="ident">guild_name</span>: <span class="ident">String</span>,
     <span class="attribute">#[<span class="ident">builder</span>(<span class="ident">setter</span>(<span class="ident">strip_option</span>))]</span>
@@ -98,7 +101,8 @@
 <span class="macro">impl_into_req_from!</span>(<span class="ident">CreateGuild</span>);
 
 <span class="doccomment">/// Convenience type to create a valid [`UpdateGuildInformationRequest`].</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">new</span>, <span class="ident">builder</span>)]</span>
+<span class="attribute">#[<span class="ident">impl_call_action</span>(<span class="ident">chat</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">new</span>, <span class="ident">self_builder</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">UpdateGuildInformation</span> {
     <span class="ident">guild_id</span>: <span class="ident">u64</span>,
     <span class="attribute">#[<span class="ident">builder</span>(<span class="ident">setter</span>(<span class="ident">strip_option</span>))]</span>

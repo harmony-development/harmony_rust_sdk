@@ -302,8 +302,68 @@
 <span id="299">299</span>
 <span id="300">300</span>
 <span id="301">301</span>
+<span id="302">302</span>
+<span id="303">303</span>
+<span id="304">304</span>
+<span id="305">305</span>
+<span id="306">306</span>
+<span id="307">307</span>
+<span id="308">308</span>
+<span id="309">309</span>
+<span id="310">310</span>
+<span id="311">311</span>
+<span id="312">312</span>
+<span id="313">313</span>
+<span id="314">314</span>
+<span id="315">315</span>
+<span id="316">316</span>
+<span id="317">317</span>
+<span id="318">318</span>
+<span id="319">319</span>
+<span id="320">320</span>
+<span id="321">321</span>
+<span id="322">322</span>
+<span id="323">323</span>
+<span id="324">324</span>
+<span id="325">325</span>
+<span id="326">326</span>
+<span id="327">327</span>
+<span id="328">328</span>
+<span id="329">329</span>
+<span id="330">330</span>
+<span id="331">331</span>
+<span id="332">332</span>
+<span id="333">333</span>
+<span id="334">334</span>
+<span id="335">335</span>
+<span id="336">336</span>
+<span id="337">337</span>
+<span id="338">338</span>
+<span id="339">339</span>
+<span id="340">340</span>
+<span id="341">341</span>
+<span id="342">342</span>
+<span id="343">343</span>
+<span id="344">344</span>
+<span id="345">345</span>
+<span id="346">346</span>
+<span id="347">347</span>
+<span id="348">348</span>
+<span id="349">349</span>
+<span id="350">350</span>
+<span id="351">351</span>
+<span id="352">352</span>
+<span id="353">353</span>
+<span id="354">354</span>
+<span id="355">355</span>
+<span id="356">356</span>
+<span id="357">357</span>
+<span id="358">358</span>
+<span id="359">359</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">/// Used in `BeginAuth` endpoint.</span>
+<span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">auth</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">BeginAuthRequest</span> {
 }
@@ -311,6 +371,8 @@
 <span class="doccomment">/// The return type of BeginAuth, containing the</span>
 <span class="doccomment">/// auth_id that will be used for the authentication</span>
 <span class="doccomment">/// section</span>
+<span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">auth</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">BeginAuthResponse</span> {
     <span class="doccomment">/// auth_id: the ID of this auth session</span>
@@ -321,6 +383,8 @@
 <span class="doccomment">/// Session contains the information for a new session;</span>
 <span class="doccomment">/// the user_id you logged in as and the session_token</span>
 <span class="doccomment">/// which should be passed to authorisation</span>
+<span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">auth</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Session</span> {
     <span class="doccomment">/// user_id: the ID of the user you logged in as</span>
@@ -335,6 +399,8 @@
 <span class="doccomment">/// Contains a variety of different types of views</span>
 <span class="doccomment">/// It is recommended to have a fallback_url specified</span>
 <span class="doccomment">/// For non-trivial authentication procedures (such as captchas)</span>
+<span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">auth</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">AuthStep</span> {
     <span class="doccomment">/// fallback_url: unused</span>
@@ -353,6 +419,8 @@
     <span class="doccomment">/// Choice</span>
     <span class="doccomment">/// A step which allows the user to choose from a range of options</span>
     <span class="doccomment">/// Allows you to show a heading by specifying title</span>
+    <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">auth</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
     <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
     <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Choice</span> {
         <span class="doccomment">/// title: the title of the list of choices</span>
@@ -366,6 +434,8 @@
     <span class="doccomment">/// Form</span>
     <span class="doccomment">/// A step which requires the user to input information</span>
     <span class="doccomment">/// Allows you to show a heading by specifying title</span>
+    <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">auth</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
     <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
     <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Form</span> {
         <span class="doccomment">/// title: the title of this form</span>
@@ -386,6 +456,8 @@
         <span class="doccomment">/// new-password: a field type for new passwords</span>
         <span class="doccomment">/// text: a field type that has to contain text</span>
         <span class="doccomment">/// number: a field type that has to contain a number</span>
+        <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">auth</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
         <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
         <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">FormField</span> {
             <span class="doccomment">/// name: the identifier for the form field</span>
@@ -400,6 +472,8 @@
     <span class="doccomment">/// A step which requires the user to perform an external action</span>
     <span class="doccomment">/// The title and description should explain to the user</span>
     <span class="doccomment">/// what they should do to complete this step</span>
+    <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">auth</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
     <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
     <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Waiting</span> {
         <span class="doccomment">/// title: the title of this waiting screen</span>
@@ -410,6 +484,8 @@
         <span class="kw">pub</span> <span class="ident">description</span>: <span class="ident">::prost::alloc::string::String</span>,
     }
     <span class="doccomment">/// step: the current step</span>
+    <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">auth</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
     <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Oneof</span>)]</span>
     <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">Step</span> {
         <span class="doccomment">/// choice: the user must pick a thing out of a list of options</span>
@@ -430,6 +506,8 @@
 <span class="doccomment">/// contains the client&#39;s response to the server&#39;s challenge</span>
 <span class="doccomment">/// This needs to be called first with no arguments to</span>
 <span class="doccomment">/// receive the first step</span>
+<span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">auth</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">NextStepRequest</span> {
     <span class="doccomment">/// auth_id: the authentication session you want</span>
@@ -443,6 +521,8 @@
 <span class="doccomment">/// Nested message and enum types in `NextStepRequest`.</span>
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">next_step_request</span> {
     <span class="doccomment">/// A simple choice string indicating which option the user chose</span>
+    <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">auth</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
     <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
     <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Choice</span> {
         <span class="doccomment">/// choice: the choice the user picked</span>
@@ -450,6 +530,8 @@
         <span class="kw">pub</span> <span class="ident">choice</span>: <span class="ident">::prost::alloc::string::String</span>,
     }
     <span class="doccomment">/// Form fields can either be bytes, string, or int64.</span>
+    <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">auth</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
     <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
     <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">FormFields</span> {
         <span class="doccomment">/// field: the data for a form field</span>
@@ -459,6 +541,8 @@
     <span class="doccomment">/// Nested message and enum types in `FormFields`.</span>
     <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">form_fields</span> {
         <span class="doccomment">/// field: the data for a form field</span>
+        <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">auth</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
         <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Oneof</span>)]</span>
         <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">Field</span> {
             <span class="doccomment">/// bytes: the form field&#39;s data is a byte array</span>
@@ -473,6 +557,8 @@
         }
     }
     <span class="doccomment">/// An array of form fields, in the same order they came in from the server</span>
+    <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">auth</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
     <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
     <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Form</span> {
         <span class="doccomment">/// fields: the fields the user filled out</span>
@@ -480,6 +566,8 @@
         <span class="kw">pub</span> <span class="ident">fields</span>: <span class="ident">::prost::alloc::vec::Vec</span><span class="op">&lt;</span><span class="ident">FormFields</span><span class="op">&gt;</span>,
     }
     <span class="doccomment">/// step: the user&#39;s response to a step</span>
+    <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">auth</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
     <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Oneof</span>)]</span>
     <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">Step</span> {
         <span class="doccomment">/// choice: the choice the user picked</span>
@@ -491,6 +579,8 @@
     }
 }
 <span class="doccomment">/// Used in `NextStep` endpoint.</span>
+<span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">auth</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">NextStepResponse</span> {
     <span class="doccomment">/// step: the next step in the authentication process</span>
@@ -499,6 +589,8 @@
 }
 <span class="doccomment">/// StepBackRequest</span>
 <span class="doccomment">/// A request to go back 1 step</span>
+<span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">auth</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">StepBackRequest</span> {
     <span class="doccomment">/// auth_id: the authentication session the user</span>
@@ -507,6 +599,8 @@
     <span class="kw">pub</span> <span class="ident">auth_id</span>: <span class="ident">::prost::alloc::string::String</span>,
 }
 <span class="doccomment">/// Used in `StepBack` endpoint.</span>
+<span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">auth</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">StepBackResponse</span> {
     <span class="doccomment">/// step: the previous step in the authentication process</span>
@@ -516,6 +610,8 @@
 <span class="doccomment">/// StreamStepsRequest</span>
 <span class="doccomment">/// Required to be initiated by all authenticating clients</span>
 <span class="doccomment">/// Allows the server to send steps</span>
+<span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">auth</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">StreamStepsRequest</span> {
     <span class="doccomment">/// auth_id: the authorization session</span>
@@ -524,6 +620,8 @@
     <span class="kw">pub</span> <span class="ident">auth_id</span>: <span class="ident">::prost::alloc::string::String</span>,
 }
 <span class="doccomment">/// Used in `StreamSteps` endpoint.</span>
+<span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">auth</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">StreamStepsResponse</span> {
     <span class="doccomment">/// step: the next step in the authentication process</span>
@@ -531,6 +629,8 @@
     <span class="kw">pub</span> <span class="ident">step</span>: <span class="ident">::core::option::Option</span><span class="op">&lt;</span><span class="ident">AuthStep</span><span class="op">&gt;</span>,
 }
 <span class="doccomment">/// The request to federate with a foreign server.</span>
+<span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">auth</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">FederateRequest</span> {
     <span class="doccomment">/// target: the foreign server you want to</span>
@@ -541,6 +641,8 @@
 <span class="doccomment">/// The reply to a successful federation request,</span>
 <span class="doccomment">/// containing the token you need to present to the</span>
 <span class="doccomment">/// foreign server.</span>
+<span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">auth</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">FederateResponse</span> {
     <span class="doccomment">/// A `harmonytypes.v1.Token` whose `data` field is a serialized `TokenData` message.</span>
@@ -549,10 +651,14 @@
     <span class="kw">pub</span> <span class="ident">token</span>: <span class="ident">::core::option::Option</span><span class="op">&lt;</span><span class="kw">super</span>::<span class="kw">super</span><span class="ident">::harmonytypes::v1::Token</span><span class="op">&gt;</span>,
 }
 <span class="doccomment">/// Used in `Key` endpoint.</span>
+<span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">auth</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">KeyRequest</span> {
 }
 <span class="doccomment">/// Contains a key&#39;s bytes.</span>
+<span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">auth</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">KeyResponse</span> {
     <span class="doccomment">/// key: the bytes of the public key.</span>
@@ -561,6 +667,8 @@
 }
 <span class="doccomment">/// Log into a foreignserver using a token</span>
 <span class="doccomment">/// from your homeserver, obtained through a FederateRequest</span>
+<span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">auth</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">LoginFederatedRequest</span> {
     <span class="doccomment">/// A `harmonytypes.v1.Token` whose `data` field is a serialized `TokenData` message.</span>
@@ -572,6 +680,8 @@
     <span class="kw">pub</span> <span class="ident">domain</span>: <span class="ident">::prost::alloc::string::String</span>,
 }
 <span class="doccomment">/// Used in `LoginFederated` endpoint.</span>
+<span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">auth</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">LoginFederatedResponse</span> {
     <span class="doccomment">/// The user&#39;s session.</span>
@@ -580,6 +690,8 @@
 }
 <span class="doccomment">/// Information sent by a client&#39;s homeserver, in a `harmonytypes.v1.Token`.</span>
 <span class="doccomment">/// It will be sent to a foreignserver by the client.</span>
+<span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">auth</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">TokenData</span> {
     <span class="doccomment">/// The client&#39;s user ID on the homeserver.</span>
@@ -596,10 +708,14 @@
     <span class="kw">pub</span> <span class="ident">avatar</span>: <span class="ident">::prost::alloc::string::String</span>,
 }
 <span class="doccomment">/// Used in `CheckLoggedIn` endpoint.</span>
+<span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">auth</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">CheckLoggedInRequest</span> {
 }
 <span class="doccomment">/// Used in `CheckLoggedIn` endpoint.</span>
+<span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">auth</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">CheckLoggedInResponse</span> {
 }

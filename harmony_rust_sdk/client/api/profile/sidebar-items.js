@@ -1,1 +1,1 @@
-initSidebarItems({"struct":[["AppId","Convenience type to create a valid [`GetAppDataRequest`]."],["UpdateProfile","Convenience type to create a valid [`UpdateProfileRequest`]."]],"trait":[["UpdateProfileSelfBuilder","Builder trait for #name."]]});
+initSidebarItems({"struct":[["AppId","Convenience type to create a valid [`GetAppDataRequest`]."],["UpdateProfile","Convenience type to create a valid [`UpdateProfileRequest`]."]]});

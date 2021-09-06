@@ -23,6 +23,8 @@
 <span id="20">20</span>
 <span id="21">21</span>
 <span id="22">22</span>
+<span id="23">23</span>
+<span id="24">24</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="kw">pub</span> <span class="kw">use</span> <span class="kw">crate</span><span class="ident">::api::chat</span>::{
     <span class="ident">CreateInviteRequest</span>, <span class="ident">DeleteInviteRequest</span>, <span class="ident">GetGuildInvitesRequest</span>, <span class="ident">InviteId</span>,
@@ -31,6 +33,7 @@
 <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
 
 <span class="doccomment">/// Convenience type to create a valid [`CreateInviteRequest`].</span>
+<span class="attribute">#[<span class="ident">impl_call_action</span>(<span class="ident">chat</span>)]</span>
 <span class="attribute">#[<span class="ident">into_request</span>(<span class="string">&quot;CreateInviteRequest&quot;</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">new</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">CreateInvite</span> {
@@ -40,6 +43,7 @@
 }
 
 <span class="doccomment">/// Convenience type to create a valid [`DeleteInviteRequest`].</span>
+<span class="attribute">#[<span class="ident">impl_call_action</span>(<span class="ident">chat</span>)]</span>
 <span class="attribute">#[<span class="ident">into_request</span>(<span class="string">&quot;DeleteInviteRequest&quot;</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">new</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">DeleteInvite</span> {
