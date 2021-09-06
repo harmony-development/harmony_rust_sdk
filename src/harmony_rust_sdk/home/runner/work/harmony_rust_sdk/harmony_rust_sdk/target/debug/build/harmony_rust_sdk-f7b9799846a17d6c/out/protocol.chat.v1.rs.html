@@ -2045,6 +2045,17 @@
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">UnbanUserResponse</span> {
 }
+<span class="doccomment">/// A reason for why a user has left a guild.</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Copy</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>, <span class="ident">Hash</span>, <span class="ident">PartialOrd</span>, <span class="ident">Ord</span>, <span class="ident">::prost::Enumeration</span>)]</span>
+<span class="attribute">#[<span class="ident">repr</span>(<span class="ident">i32</span>)]</span>
+<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">LeaveReason</span> {
+    <span class="doccomment">/// The user left the guild willingly.</span>
+    <span class="ident">WillinglyUnspecified</span> <span class="op">=</span> <span class="number">0</span>,
+    <span class="doccomment">/// The user was banned from the guild.</span>
+    <span class="ident">Banned</span> <span class="op">=</span> <span class="number">1</span>,
+    <span class="doccomment">/// The user was kicked from the guild.</span>
+    <span class="ident">Kicked</span> <span class="op">=</span> <span class="number">2</span>,
+}
 <span class="doccomment">/// An object representing a channel, without the ID.</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Channel</span> {
@@ -3246,7 +3257,7 @@
         <span class="attribute">#[<span class="ident">prost</span>(<span class="ident">uint64</span>, <span class="ident">tag</span><span class="op">=</span><span class="string">&quot;2&quot;</span>)]</span>
         <span class="kw">pub</span> <span class="ident">guild_id</span>: <span class="ident">u64</span>,
         <span class="doccomment">/// Why this member left the guild.</span>
-        <span class="attribute">#[<span class="ident">prost</span>(<span class="ident">enumeration</span><span class="op">=</span><span class="string">&quot;LeaveReason&quot;</span>, <span class="ident">tag</span><span class="op">=</span><span class="string">&quot;3&quot;</span>)]</span>
+        <span class="attribute">#[<span class="ident">prost</span>(<span class="ident">enumeration</span><span class="op">=</span><span class="string">&quot;super::LeaveReason&quot;</span>, <span class="ident">tag</span><span class="op">=</span><span class="string">&quot;3&quot;</span>)]</span>
         <span class="kw">pub</span> <span class="ident">leave_reason</span>: <span class="ident">i32</span>,
     }
     <span class="doccomment">/// Event sent when you join a new guild.</span>
@@ -3449,17 +3460,6 @@
         <span class="doccomment">/// Message ID of the message that was unpinned.</span>
         <span class="attribute">#[<span class="ident">prost</span>(<span class="ident">uint64</span>, <span class="ident">tag</span><span class="op">=</span><span class="string">&quot;3&quot;</span>)]</span>
         <span class="kw">pub</span> <span class="ident">message_id</span>: <span class="ident">u64</span>,
-    }
-    <span class="doccomment">/// A reason for why a user has left a guild.</span>
-    <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Copy</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>, <span class="ident">Hash</span>, <span class="ident">PartialOrd</span>, <span class="ident">Ord</span>, <span class="ident">::prost::Enumeration</span>)]</span>
-    <span class="attribute">#[<span class="ident">repr</span>(<span class="ident">i32</span>)]</span>
-    <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">LeaveReason</span> {
-        <span class="doccomment">/// The user left the guild willingly.</span>
-        <span class="ident">WillinglyUnspecified</span> <span class="op">=</span> <span class="number">0</span>,
-        <span class="doccomment">/// The user was banned from the guild.</span>
-        <span class="ident">Banned</span> <span class="op">=</span> <span class="number">1</span>,
-        <span class="doccomment">/// The user was kicked from the guild.</span>
-        <span class="ident">Kicked</span> <span class="op">=</span> <span class="number">2</span>,
     }
     <span class="doccomment">/// Which event to send.</span>
     <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Oneof</span>)]</span>
