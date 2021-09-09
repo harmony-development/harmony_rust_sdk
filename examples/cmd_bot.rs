@@ -10,11 +10,11 @@ use harmony_rust_sdk::{
         api::{
             auth::AuthStepResponse,
             chat::{
-                invite::InviteId,
+                guild::JoinGuildRequest,
                 message::{MessageExt, SendMessage},
-                EventSource, UserId,
+                EventSource,
             },
-            profile::{UpdateProfile, UserStatus},
+            profile::{GetProfileRequest, UpdateProfile, UserStatus},
         },
         error::ClientResult,
         Client,
@@ -79,9 +79,7 @@ async fn main() -> ClientResult<()> {
 
     // Change our bots status to online and make sure its marked as a bot
     client
-        .profile()
-        .await
-        .update_profile(
+        .call(
             UpdateProfile::default()
                 .with_new_status(UserStatus::Online)
                 .with_new_is_bot(true),
@@ -90,12 +88,7 @@ async fn main() -> ClientResult<()> {
 
     // Join the guild if invite is specified
     let guild_id = if let Ok(invite) = guild_invite {
-        client
-            .chat()
-            .await
-            .join_guild(InviteId::new(invite).unwrap())
-            .await?
-            .guild_id
+        client.call(JoinGuildRequest::new(invite)).await?.guild_id
     } else {
         tokio::fs::read_to_string(GUILD_ID_FILE)
             .await
@@ -141,9 +134,7 @@ async fn main() -> ClientResult<()> {
                                     }
                                     "hello" => {
                                         let user_profile = client
-                                            .profile()
-                                            .await
-                                            .get_profile(UserId::new(message.author_id))
+                                            .call(GetProfileRequest::new(message.author_id))
                                             .await?;
 
                                         format!(
@@ -180,9 +171,7 @@ async fn main() -> ClientResult<()> {
 
     // Change our bots status back to offline
     client
-        .profile()
-        .await
-        .update_profile(UpdateProfile::default().with_new_status(UserStatus::OfflineUnspecified))
+        .call(UpdateProfile::default().with_new_status(UserStatus::OfflineUnspecified))
         .await?;
 
     Ok(())
