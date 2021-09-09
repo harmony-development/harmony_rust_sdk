@@ -286,3 +286,72 @@ mod test {
         }
     }
 }
+
+/// An homeserver identifier containg a domain and a port.
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct HomeserverIdentifier {
+    domain: String,
+    port: u16,
+}
+
+impl HomeserverIdentifier {
+    /// Turn the identifier into the server URL.
+    pub fn to_url(&self) -> Result<Url, HomeserverIdParseError> {
+        let mut url = Url::parse("https://example.net").unwrap();
+        url.set_host(Some(self.domain.as_str()))
+            .map_err(|_| HomeserverIdParseError::Malformed)?;
+        url.set_port(Some(self.port))
+            .map_err(|_| HomeserverIdParseError::Malformed)?;
+        Ok(url)
+    }
+}
+
+/// Error thrown when parsing a homeserver ID from a string.
+#[derive(Debug, PartialEq, Eq)]
+pub enum HomeserverIdParseError {
+    /// Port wasn't a `u16`.
+    InvalidPort,
+    /// Port was missing.
+    MissingPort,
+    /// Domain was missing.
+    MissingDomain,
+    /// Homeserver ID was malformed.
+    Malformed,
+}
+
+impl Display for HomeserverIdParseError {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        let msg = match self {
+            Self::InvalidPort => "port is invalid (not an u16)",
+            Self::MissingPort => "port is missing",
+            Self::MissingDomain => "domain is missing",
+            Self::Malformed => "id is malformed",
+        };
+        f.write_str(msg)
+    }
+}
+
+impl StdError for HomeserverIdParseError {}
+
+impl FromStr for HomeserverIdentifier {
+    type Err = HomeserverIdParseError;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let mut split = s.split(':');
+
+        let domain = split.next().ok_or(HomeserverIdParseError::MissingDomain)?;
+        if hrpc::url::Host::parse(domain).is_err() {
+            return Err(HomeserverIdParseError::Malformed);
+        }
+        let port_raw = split.next().ok_or(HomeserverIdParseError::MissingPort)?;
+
+        let port: u16 = port_raw
+            .parse()
+            .map_err(|_| HomeserverIdParseError::InvalidPort)?;
+
+        Ok(Self {
+            domain: domain.to_string(),
+            port,
+        })
+    }
+}
