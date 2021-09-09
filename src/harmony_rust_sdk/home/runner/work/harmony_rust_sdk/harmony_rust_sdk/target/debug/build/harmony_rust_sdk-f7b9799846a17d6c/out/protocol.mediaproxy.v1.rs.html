@@ -116,7 +116,7 @@
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">/// Object representing the metadata of a website.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">mediaproxy</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">SiteMetadata</span> {
     <span class="doccomment">/// Title of the website.</span>
@@ -140,7 +140,7 @@
 }
 <span class="doccomment">/// Object represeting the metadata of a media.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">mediaproxy</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">MediaMetadata</span> {
     <span class="doccomment">/// Mimetype of the media. </span>
@@ -152,7 +152,7 @@
 }
 <span class="doccomment">/// Used in the `FetchLinkMetadata` endpoint.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">mediaproxy</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">FetchLinkMetadataRequest</span> {
     <span class="doccomment">/// URL to fetch metadata from.</span>
@@ -161,7 +161,7 @@
 }
 <span class="doccomment">/// Used in the `FetchLinkMetadata` endpoint.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">mediaproxy</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">FetchLinkMetadataResponse</span> {
     <span class="doccomment">/// Data of the metadata.</span>
@@ -172,7 +172,7 @@
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">fetch_link_metadata_response</span> {
     <span class="doccomment">/// Data of the metadata.</span>
     <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">mediaproxy</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
     <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Oneof</span>)]</span>
     <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">Data</span> {
         <span class="doccomment">/// Site metadata for the URL.</span>
@@ -185,7 +185,7 @@
 }
 <span class="doccomment">/// Used in the `InstantView` endpoint.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">mediaproxy</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">InstantViewRequest</span> {
     <span class="doccomment">/// URL to get instant view for. </span>
@@ -194,7 +194,7 @@
 }
 <span class="doccomment">/// Used in the `InstantView` endpoint.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">mediaproxy</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">InstantViewResponse</span> {
     <span class="doccomment">/// Site metadata for the URL.</span>
@@ -209,7 +209,7 @@
 }
 <span class="doccomment">/// Used in the `CanInstantView` endpoint.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">mediaproxy</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">CanInstantViewRequest</span> {
     <span class="doccomment">/// URL to query if server can instant view the website. </span>
@@ -218,7 +218,7 @@
 }
 <span class="doccomment">/// Used in the `CanInstantView` endpoint.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">mediaproxy</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">CanInstantViewResponse</span> {
     <span class="doccomment">/// Whether the server generate an instant view for the URL queried.</span>

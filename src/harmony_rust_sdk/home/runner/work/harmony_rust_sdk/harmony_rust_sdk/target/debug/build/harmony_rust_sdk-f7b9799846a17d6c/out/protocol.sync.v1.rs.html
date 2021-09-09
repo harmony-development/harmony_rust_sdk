@@ -90,7 +90,7 @@
 <span id="87">87</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">/// Authentication data that will be sent in a `harmonytypes.v1.Token`.</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">AuthData</span> {
     <span class="doccomment">/// The server name of the server initiating the transaction. For Pull,</span>
@@ -106,7 +106,7 @@
     <span class="kw">pub</span> <span class="ident">time</span>: <span class="ident">u64</span>,
 }
 <span class="doccomment">/// Object representing a postbox event.</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Event</span> {
     <span class="doccomment">/// The kind and data of this event.</span>
@@ -116,7 +116,7 @@
 <span class="doccomment">/// Nested message and enum types in `Event`.</span>
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">event</span> {
     <span class="doccomment">/// Event sent when a user is removed from a guild.</span>
-    <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+    <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
     <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
     <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">UserRemovedFromGuild</span> {
         <span class="doccomment">/// User ID of the user that was removed.</span>
@@ -127,7 +127,7 @@
         <span class="kw">pub</span> <span class="ident">guild_id</span>: <span class="ident">u64</span>,
     }
     <span class="doccomment">/// Event sent when a user is added to a guild.</span>
-    <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+    <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
     <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
     <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">UserAddedToGuild</span> {
         <span class="doccomment">/// User ID of the user that was added.</span>
@@ -138,7 +138,7 @@
         <span class="kw">pub</span> <span class="ident">guild_id</span>: <span class="ident">u64</span>,
     }
     <span class="doccomment">/// The kind and data of this event.</span>
-    <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+    <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
     <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Oneof</span>)]</span>
     <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">Kind</span> {
         <span class="doccomment">/// User removed from a guild.</span>
@@ -150,12 +150,12 @@
     }
 }
 <span class="doccomment">/// Used in `Pull` endpoint.</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">PullRequest</span> {
 }
 <span class="doccomment">/// Used in `Pull` endpoint.</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">PullResponse</span> {
     <span class="doccomment">/// The events that were not processed yet.</span>
@@ -163,7 +163,7 @@
     <span class="kw">pub</span> <span class="ident">event_queue</span>: <span class="ident">::prost::alloc::vec::Vec</span><span class="op">&lt;</span><span class="ident">Event</span><span class="op">&gt;</span>,
 }
 <span class="doccomment">/// Used in `Push` endpoint.</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">PushRequest</span> {
     <span class="doccomment">/// The event to push to the server.</span>
@@ -171,7 +171,7 @@
     <span class="kw">pub</span> <span class="ident">event</span>: <span class="ident">::core::option::Option</span><span class="op">&lt;</span><span class="ident">Event</span><span class="op">&gt;</span>,
 }
 <span class="doccomment">/// Used in `Push` endpoint.</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">PushResponse</span> {
 }

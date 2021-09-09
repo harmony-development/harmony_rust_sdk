@@ -249,7 +249,7 @@
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">/// Data for a single pack of emotes.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">emote</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">EmotePack</span> {
     <span class="doccomment">/// The ID of the pack.</span>
@@ -264,7 +264,7 @@
 }
 <span class="doccomment">/// Data for a single emote.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">emote</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Emote</span> {
     <span class="doccomment">/// The image ID of the emote. This is the ID of the image in the image store</span>
@@ -277,7 +277,7 @@
 }
 <span class="doccomment">/// Used in the `CreateEmotePack` endpoint.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">emote</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">CreateEmotePackRequest</span> {
     <span class="doccomment">/// the name of the pack.</span>
@@ -286,7 +286,7 @@
 }
 <span class="doccomment">/// Used in the `CreateEmotePack` endpoint.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">emote</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">CreateEmotePackResponse</span> {
     <span class="doccomment">/// The ID of the pack.</span>
@@ -295,13 +295,13 @@
 }
 <span class="doccomment">/// Used in the `GetEmotePacks` endpoint.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">emote</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">GetEmotePacksRequest</span> {
 }
 <span class="doccomment">/// Used in the `GetEmotePacks` endpoint.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">emote</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">GetEmotePacksResponse</span> {
     <span class="doccomment">/// The list of emote packs.</span>
@@ -310,7 +310,7 @@
 }
 <span class="doccomment">/// Used in the `GetEmotes` endpoint.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">emote</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">GetEmotePackEmotesRequest</span> {
     <span class="doccomment">/// The ID of the pack.</span>
@@ -319,7 +319,7 @@
 }
 <span class="doccomment">/// Used in the `GetEmotes` endpoint.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">emote</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">GetEmotePackEmotesResponse</span> {
     <span class="doccomment">/// The list of emotes in the pack.</span>
@@ -328,7 +328,7 @@
 }
 <span class="doccomment">/// Used in the `AddEmoteToPack` endpoint.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">emote</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">AddEmoteToPackRequest</span> {
     <span class="doccomment">/// The ID of the pack.</span>
@@ -340,13 +340,13 @@
 }
 <span class="doccomment">/// Used in the `AddEmoteToPack` endpoint.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">emote</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">AddEmoteToPackResponse</span> {
 }
 <span class="doccomment">/// Used in the `DeleteEmoteFromPack` endpoint.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">emote</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">DeleteEmoteFromPackRequest</span> {
     <span class="doccomment">/// The ID of the pack.</span>
@@ -358,13 +358,13 @@
 }
 <span class="doccomment">/// Used in the `DeleteEmoteFromPack` endpoint.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">emote</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">DeleteEmoteFromPackResponse</span> {
 }
 <span class="doccomment">/// Used in the `DeleteEmotePack` endpoint.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">emote</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">DeleteEmotePackRequest</span> {
     <span class="doccomment">/// The ID of the pack.</span>
@@ -373,13 +373,13 @@
 }
 <span class="doccomment">/// Used in the `DeleteEmotePack` endpoint.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">emote</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">DeleteEmotePackResponse</span> {
 }
 <span class="doccomment">/// Used in the `DequipEmotePack` endpoint.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">emote</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">DequipEmotePackRequest</span> {
     <span class="doccomment">/// The ID of the pack.</span>
@@ -388,13 +388,13 @@
 }
 <span class="doccomment">/// Used in the `DequipEmotePack` endpoint.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">emote</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">DequipEmotePackResponse</span> {
 }
 <span class="doccomment">/// Used in the `EquipEmotePack` endpoint.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">emote</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">EquipEmotePackRequest</span> {
     <span class="doccomment">/// The ID of the pack.</span>
@@ -403,7 +403,7 @@
 }
 <span class="doccomment">/// Used in the `EquipEmotePack` endpoint.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">emote</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">EquipEmotePackResponse</span> {
 }
@@ -411,7 +411,7 @@
 <span class="doccomment">///</span>
 <span class="doccomment">/// Should only be sent to users who have the pack equipped.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">emote</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">EmotePackUpdated</span> {
     <span class="doccomment">/// ID of the pack that was updated.</span>
@@ -426,7 +426,7 @@
 <span class="doccomment">/// Should only be sent to users who have the pack equipped.</span>
 <span class="doccomment">/// Should also be sent if a user dequips an emote pack, only to the user that dequipped it.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">emote</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">EmotePackDeleted</span> {
     <span class="doccomment">/// ID of the pack that was deleted.</span>
@@ -437,7 +437,7 @@
 <span class="doccomment">///</span>
 <span class="doccomment">/// Should only be sent to the user who equipped the pack.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">emote</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">EmotePackAdded</span> {
     <span class="doccomment">/// Emote pack that was equipped by the user.</span>
@@ -448,7 +448,7 @@
 <span class="doccomment">///</span>
 <span class="doccomment">/// Should only be sent to users who have the pack equipped.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">emote</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">EmotePackEmotesUpdated</span> {
     <span class="doccomment">/// ID of the pack to update the emotes of.</span>
@@ -463,7 +463,7 @@
 }
 <span class="doccomment">/// Describes an emote service event.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">emote</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">StreamEvent</span> {
     <span class="doccomment">/// The event type.</span>
@@ -474,7 +474,7 @@
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">stream_event</span> {
     <span class="doccomment">/// The event type.</span>
     <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">emote</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
     <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Oneof</span>)]</span>
     <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">Event</span> {
         <span class="doccomment">/// Send the emote pack added event.</span>

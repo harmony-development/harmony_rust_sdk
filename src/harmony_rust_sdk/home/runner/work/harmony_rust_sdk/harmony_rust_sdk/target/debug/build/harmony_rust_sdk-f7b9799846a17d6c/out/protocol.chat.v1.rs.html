@@ -2176,7 +2176,7 @@
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">/// Object representing a guild without the ID part.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Guild</span> {
     <span class="doccomment">/// The name of the guild.</span>
@@ -2194,7 +2194,7 @@
 }
 <span class="doccomment">/// Object representing an invite without the ID part.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Invite</span> {
     <span class="doccomment">/// Possible uses of this invite. A use of `0` means infinite uses.</span>
@@ -2206,7 +2206,7 @@
 }
 <span class="doccomment">/// Invite with ID.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">InviteWithId</span> {
     <span class="doccomment">/// ID of the invite.</span>
@@ -2218,7 +2218,7 @@
 }
 <span class="doccomment">/// Object representing a guild list entry.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">GuildListEntry</span> {
     <span class="doccomment">/// Guild ID of this guild entry.</span>
@@ -2230,7 +2230,7 @@
 }
 <span class="doccomment">/// Request type used in `CreateGuild` RPC. </span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">CreateGuildRequest</span> {
     <span class="doccomment">/// The name of the guild.</span>
@@ -2245,7 +2245,7 @@
 }
 <span class="doccomment">/// Used in the `CreateGuild` endpoint.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">CreateGuildResponse</span> {
     <span class="doccomment">/// Guild ID of the guild that was created.</span>
@@ -2254,7 +2254,7 @@
 }
 <span class="doccomment">/// Used in the `CreateInvite` endpoint.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">CreateInviteRequest</span> {
     <span class="doccomment">/// Guild ID of the guild to create an invite in.</span>
@@ -2271,7 +2271,7 @@
 }
 <span class="doccomment">/// Used in the `CreateInvite` endpoint.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">CreateInviteResponse</span> {
     <span class="doccomment">/// The invite ID of the invite that was created.</span>
@@ -2280,13 +2280,13 @@
 }
 <span class="doccomment">/// Used in the `GetGuildList` endpoint.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">GetGuildListRequest</span> {
 }
 <span class="doccomment">/// Used in the `GetGuildList` endpoint.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">GetGuildListResponse</span> {
     <span class="doccomment">/// Guild list returned by the server.</span>
@@ -2295,7 +2295,7 @@
 }
 <span class="doccomment">/// Used in the `GetGuild` endpoint.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">GetGuildRequest</span> {
     <span class="doccomment">/// Guild ID of the guild to get information about.</span>
@@ -2304,7 +2304,7 @@
 }
 <span class="doccomment">/// Used in the `GetGuild` endpoint.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">GetGuildResponse</span> {
     <span class="doccomment">/// The information of the guild requested.</span>
@@ -2313,7 +2313,7 @@
 }
 <span class="doccomment">/// Used in the `GetGuildInvites` endpoint.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">GetGuildInvitesRequest</span> {
     <span class="doccomment">/// Guild ID of the guild you want to get invites of.</span>
@@ -2322,7 +2322,7 @@
 }
 <span class="doccomment">/// Used in the `GetGuildInvites` endpoint.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">GetGuildInvitesResponse</span> {
     <span class="doccomment">/// The invites of the guild, with IDs.</span>
@@ -2331,7 +2331,7 @@
 }
 <span class="doccomment">/// Used in the `GetGuildMembers` endpoint.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">GetGuildMembersRequest</span> {
     <span class="doccomment">/// Guild ID of the guild you want to get members of.</span>
@@ -2340,7 +2340,7 @@
 }
 <span class="doccomment">/// Used in the `GetGuildMembers` endpoint.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">GetGuildMembersResponse</span> {
     <span class="doccomment">/// User IDs of all the guild members.</span>
@@ -2349,7 +2349,7 @@
 }
 <span class="doccomment">/// Used in the `UpdateGuildInformation` endpoint.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">UpdateGuildInformationRequest</span> {
     <span class="doccomment">/// Guild ID of the guild you want to update the information of.</span>
@@ -2367,13 +2367,13 @@
 }
 <span class="doccomment">/// Used in the `UpdateGuildInformation` endpoint.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">UpdateGuildInformationResponse</span> {
 }
 <span class="doccomment">/// Used in the `DeleteGuild` endpoint.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">DeleteGuildRequest</span> {
     <span class="doccomment">/// Guild ID of the guild you want to delete.</span>
@@ -2382,13 +2382,13 @@
 }
 <span class="doccomment">/// Used in the `DeleteGuild` endpoint.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">DeleteGuildResponse</span> {
 }
 <span class="doccomment">/// Used in the `DeleteInvite` endpoint.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">DeleteInviteRequest</span> {
     <span class="doccomment">/// Guild ID of the guild where the invite is located.</span>
@@ -2400,13 +2400,13 @@
 }
 <span class="doccomment">/// Used in the `DeleteInvite` endpoint.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">DeleteInviteResponse</span> {
 }
 <span class="doccomment">/// Used in the `JoinGuild` endpoint.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">JoinGuildRequest</span> {
     <span class="doccomment">/// Invite ID of the guild you want to join.</span>
@@ -2415,7 +2415,7 @@
 }
 <span class="doccomment">/// Used in the `JoinGuild` endpoint.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">JoinGuildResponse</span> {
     <span class="doccomment">/// Guild ID of the guild you joined.</span>
@@ -2424,7 +2424,7 @@
 }
 <span class="doccomment">/// Used in the `PreviewGuild` endpoint.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">PreviewGuildRequest</span> {
     <span class="doccomment">/// Invite ID of the guild you want to get information from.</span>
@@ -2433,7 +2433,7 @@
 }
 <span class="doccomment">/// Used in the `PreviewGuild` endpoint.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">PreviewGuildResponse</span> {
     <span class="doccomment">/// Name of the guild requested.</span>
@@ -2448,7 +2448,7 @@
 }
 <span class="doccomment">/// Used in the `LeaveGuild` endpoint.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">LeaveGuildRequest</span> {
     <span class="doccomment">/// Guild ID of the guild you want to leave.</span>
@@ -2457,13 +2457,13 @@
 }
 <span class="doccomment">/// Used in the `LeaveGuild` endpoint.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">LeaveGuildResponse</span> {
 }
 <span class="doccomment">/// Used in `BanUser` endpoint.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">BanUserRequest</span> {
     <span class="doccomment">/// The guild ID of the guild to ban the user from.</span>
@@ -2475,13 +2475,13 @@
 }
 <span class="doccomment">/// Used in `BanUser` endpoint.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">BanUserResponse</span> {
 }
 <span class="doccomment">/// Used in `KickUser` endpoint.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">KickUserRequest</span> {
     <span class="doccomment">/// The guild ID of the guild to kick the user from.</span>
@@ -2493,13 +2493,13 @@
 }
 <span class="doccomment">/// Used in `KickUser` endpoint.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">KickUserResponse</span> {
 }
 <span class="doccomment">/// Used in `UnbanUser` endpoint.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">UnbanUserRequest</span> {
     <span class="doccomment">/// The guild ID of the guild to unban the user from.</span>
@@ -2511,13 +2511,13 @@
 }
 <span class="doccomment">/// Used in `UnbanUser` endpoint.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">UnbanUserResponse</span> {
 }
 <span class="doccomment">/// Used in `GetBannedUsers` endpoint.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">GetBannedUsersRequest</span> {
     <span class="doccomment">/// Guild ID to get banned users for.</span>
@@ -2526,7 +2526,7 @@
 }
 <span class="doccomment">/// Used in `GetBannedUsers` endpoint.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">GetBannedUsersResponse</span> {
     <span class="doccomment">/// The user IDs of banned users.</span>
@@ -2547,7 +2547,7 @@
 }
 <span class="doccomment">/// An object representing a channel, without the ID.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Channel</span> {
     <span class="doccomment">/// The name of this channel.</span>
@@ -2562,7 +2562,7 @@
 }
 <span class="doccomment">/// The channel alongside with an ID.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ChannelWithId</span> {
     <span class="doccomment">/// ID of the channel.</span>
@@ -2584,7 +2584,7 @@
 <span class="doccomment">///</span>
 <span class="doccomment">/// Used in the `CreateChannel` endpoint.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">CreateChannelRequest</span> {
     <span class="doccomment">/// Guild ID of the guild to create a channel in.</span>
@@ -2607,7 +2607,7 @@
 }
 <span class="doccomment">/// Used in the `CreateChannel` endpoint. </span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">CreateChannelResponse</span> {
     <span class="doccomment">/// ID of the channel that was created.</span>
@@ -2616,7 +2616,7 @@
 }
 <span class="doccomment">/// Used in the `GetGuildChannels` endpoint.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">GetGuildChannelsRequest</span> {
     <span class="doccomment">/// Guild ID of the guild you want to get channels from.</span>
@@ -2625,7 +2625,7 @@
 }
 <span class="doccomment">/// Used in the `GetGuildChannels` endpoint.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">GetGuildChannelsResponse</span> {
     <span class="doccomment">/// Channels&#39; data and ID the server responded with.</span>
@@ -2634,7 +2634,7 @@
 }
 <span class="doccomment">/// Used in the `UpdateChannelInformation` endpoint.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">UpdateChannelInformationRequest</span> {
     <span class="doccomment">/// Guild ID of the guild where the channel is.</span>
@@ -2652,13 +2652,13 @@
 }
 <span class="doccomment">/// Used in the `UpdateChannelInformation` endpoint.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">UpdateChannelInformationResponse</span> {
 }
 <span class="doccomment">/// Used in the `UpdateChannelOrder` endpoint.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">UpdateChannelOrderRequest</span> {
     <span class="doccomment">/// Guild ID of the guild that has the channel.</span>
@@ -2673,13 +2673,13 @@
 }
 <span class="doccomment">/// Used in the `UpdateChannelOrder` endpoint.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">UpdateChannelOrderResponse</span> {
 }
 <span class="doccomment">/// Request specifiying the order of all channels in a guild at once</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">UpdateAllChannelOrderRequest</span> {
     <span class="doccomment">/// guild_id: the guild to specify the new channel order for</span>
@@ -2691,13 +2691,13 @@
 }
 <span class="doccomment">/// Used in the `UpdateAllChannelOrder` endpoint.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">UpdateAllChannelOrderResponse</span> {
 }
 <span class="doccomment">/// Used in the `DeleteChannel` endpoint.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">DeleteChannelRequest</span> {
     <span class="doccomment">/// Guild ID of the guild that has the channel.</span>
@@ -2709,13 +2709,13 @@
 }
 <span class="doccomment">/// Used in the `DeleteChannel` endpoint.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">DeleteChannelResponse</span> {
 }
 <span class="doccomment">/// Used in `Typing` endpoint.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">TypingRequest</span> {
     <span class="doccomment">/// The guild id of the channel the user is typing in.</span>
@@ -2727,13 +2727,13 @@
 }
 <span class="doccomment">/// Used in `Typing` endpoint.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">TypingResponse</span> {
 }
 <span class="doccomment">/// Overrides provide a way to override the name and avatar of a message.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Override</span> {
     <span class="doccomment">/// the overridden username.</span>
@@ -2750,7 +2750,7 @@
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">r#override</span> {
     <span class="doccomment">/// the reason for overriding username and avatar.</span>
     <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
     <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Oneof</span>)]</span>
     <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">Reason</span> {
         <span class="doccomment">/// a custom reason in case the builtin ones don&#39;t fit</span>
@@ -2772,7 +2772,7 @@
 }
 <span class="doccomment">/// Actions are interactive elements that can exist within an embed.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Action</span> {
     <span class="doccomment">/// Type of the action.</span>
@@ -2789,7 +2789,7 @@
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">action</span> {
     <span class="doccomment">/// A button that users can click on to trigger an action.</span>
     <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
     <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
     <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Button</span> {
         <span class="doccomment">/// The text to show on the button.</span>
@@ -2801,7 +2801,7 @@
     }
     <span class="doccomment">/// A dropdown menu that users can click on to trigger an action.</span>
     <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
     <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
     <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Dropdown</span> {
         <span class="doccomment">/// The text describing the dropdown.</span>
@@ -2813,7 +2813,7 @@
     }
     <span class="doccomment">/// A text input that users can type in to trigger an action.</span>
     <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
     <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
     <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Input</span> {
         <span class="doccomment">/// The label describing the input.</span>
@@ -2838,7 +2838,7 @@
     }
     <span class="doccomment">/// The kind of the action.</span>
     <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
     <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Oneof</span>)]</span>
     <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">Kind</span> {
         <span class="doccomment">/// Button action.</span>
@@ -2854,7 +2854,7 @@
 }
 <span class="doccomment">/// Object representing a message embed.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Embed</span> {
     <span class="doccomment">/// Title of this embed.</span>
@@ -2880,7 +2880,7 @@
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">embed</span> {
     <span class="doccomment">/// Object representing an embed heading.</span>
     <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
     <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
     <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">EmbedHeading</span> {
         <span class="doccomment">/// Text of the heading.</span>
@@ -2898,7 +2898,7 @@
     }
     <span class="doccomment">/// Object representing an embed field.</span>
     <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
     <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
     <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">EmbedField</span> {
         <span class="doccomment">/// Title of this field.</span>
@@ -2941,7 +2941,7 @@
 <span class="doccomment">///</span>
 <span class="doccomment">///The resolution is usually no larger than 64x64.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Minithumbnail</span> {
     <span class="doccomment">/// The width of the minithumbnail</span>
@@ -2967,7 +2967,7 @@
 <span class="doccomment">///Photos are preferably no more than 10MB</span>
 <span class="doccomment">///in size, and servers may compress as necessary.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Photo</span> {
     <span class="doccomment">/// The HMC URL of the photo.</span>
@@ -2994,7 +2994,7 @@
 }
 <span class="doccomment">/// Object representing a generic message attachment.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Attachment</span> {
     <span class="doccomment">/// File ID of this attachment.</span>
@@ -3015,7 +3015,7 @@
 }
 <span class="doccomment">/// Object representing a message&#39;s content.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Content</span> {
     <span class="doccomment">/// Content data.</span>
@@ -3026,7 +3026,7 @@
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">content</span> {
     <span class="doccomment">/// Object representing text content.</span>
     <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
     <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
     <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">TextContent</span> {
         <span class="doccomment">/// Text content.</span>
@@ -3035,7 +3035,7 @@
     }
     <span class="doccomment">/// Object representing embed content.</span>
     <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
     <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
     <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">EmbedContent</span> {
         <span class="doccomment">/// Embed content.</span>
@@ -3044,7 +3044,7 @@
     }
     <span class="doccomment">/// Object representing attachment content.</span>
     <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
     <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
     <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">AttachmentContent</span> {
         <span class="doccomment">/// A list of attachments.</span>
@@ -3053,7 +3053,7 @@
     }
     <span class="doccomment">/// Object representing photo content.</span>
     <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
     <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
     <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">PhotoContent</span> {
         <span class="doccomment">/// A list of photos.</span>
@@ -3062,7 +3062,7 @@
     }
     <span class="doccomment">/// Content data.</span>
     <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
     <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Oneof</span>)]</span>
     <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">Content</span> {
         <span class="doccomment">/// Text content.</span>
@@ -3081,7 +3081,7 @@
 }
 <span class="doccomment">/// Object representing a reaction.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Reaction</span> {
     <span class="doccomment">/// Emote data for this reaction.</span>
@@ -3097,7 +3097,7 @@
 }
 <span class="doccomment">/// Object representing a message without the ID part.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Message</span> {
     <span class="doccomment">/// Metadata of this message.</span>
@@ -3127,7 +3127,7 @@
 }
 <span class="doccomment">/// Object representing a message with it&#39;s ID.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">MessageWithId</span> {
     <span class="doccomment">/// ID of the message.</span>
@@ -3139,7 +3139,7 @@
 }
 <span class="doccomment">/// Used in the `GetChannelMessages` endpoint.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">GetChannelMessagesRequest</span> {
     <span class="doccomment">/// Guild ID of the guild that has the channel.</span>
@@ -3194,7 +3194,7 @@
 }
 <span class="doccomment">/// Used in the `GetChannelMessages` endpoint.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">GetChannelMessagesResponse</span> {
     <span class="doccomment">/// Has reached the top (first message) of the message history.</span>
@@ -3209,7 +3209,7 @@
 }
 <span class="doccomment">/// Used in the `GetMessage` endpoint.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">GetMessageRequest</span> {
     <span class="doccomment">/// Guild ID of the guild where the channel is.</span>
@@ -3224,7 +3224,7 @@
 }
 <span class="doccomment">/// Used in the `GetMessage` endpoint.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">GetMessageResponse</span> {
     <span class="doccomment">/// The message requested.</span>
@@ -3233,7 +3233,7 @@
 }
 <span class="doccomment">/// Used in the `DeleteMessage` endpoint.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">DeleteMessageRequest</span> {
     <span class="doccomment">/// Guild ID of the guild where the channel is.</span>
@@ -3248,13 +3248,13 @@
 }
 <span class="doccomment">/// Used in the `DeleteMessage` endpoint.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">DeleteMessageResponse</span> {
 }
 <span class="doccomment">/// Used in the `TriggerAction` endpoint.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">TriggerActionRequest</span> {
     <span class="doccomment">/// Guild ID of the guild where the channel is.</span>
@@ -3275,13 +3275,13 @@
 }
 <span class="doccomment">/// Used in the `TriggerAction` endpoint.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">TriggerActionResponse</span> {
 }
 <span class="doccomment">/// Used in the `SendMessage` endpoint.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">SendMessageRequest</span> {
     <span class="doccomment">/// Guild ID of the guild where the channel is.</span>
@@ -3309,7 +3309,7 @@
 }
 <span class="doccomment">/// Used in the `SendMessage` endpoint.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">SendMessageResponse</span> {
     <span class="doccomment">/// Message ID of the message sent.</span>
@@ -3318,7 +3318,7 @@
 }
 <span class="doccomment">/// Used in the `UpdateMessageText` endpoint.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">UpdateMessageTextRequest</span> {
     <span class="doccomment">/// Guild ID of the guild where the channel is.</span>
@@ -3336,13 +3336,13 @@
 }
 <span class="doccomment">/// Used in the `UpdateMessageText` endpoint.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">UpdateMessageTextResponse</span> {
 }
 <span class="doccomment">/// Used in the `PinMessage` endpoint.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">PinMessageRequest</span> {
     <span class="doccomment">/// Guild ID of the guild where the channel is.</span>
@@ -3357,13 +3357,13 @@
 }
 <span class="doccomment">/// Used in the `UnpinMessage` endpoint.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">PinMessageResponse</span> {
 }
 <span class="doccomment">/// Used in the `UnpinMessage` endpoint.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">UnpinMessageRequest</span> {
     <span class="doccomment">/// Guild ID of the guild where the channel is.</span>
@@ -3378,13 +3378,13 @@
 }
 <span class="doccomment">/// Used in the `UnpinMessage` endpoint.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">UnpinMessageResponse</span> {
 }
 <span class="doccomment">/// Used in the `GetPinnedMessages` endpoint.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">GetPinnedMessagesRequest</span> {
     <span class="doccomment">/// Guild ID of the guild where the channel is.</span>
@@ -3396,7 +3396,7 @@
 }
 <span class="doccomment">/// Used in the `GetPinnedMessages` endpoint.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">GetPinnedMessagesResponse</span> {
     <span class="doccomment">/// The IDs of the pinned messages.</span>
@@ -3405,7 +3405,7 @@
 }
 <span class="doccomment">/// Used in `AddReaction` endpoint.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">AddReactionRequest</span> {
     <span class="doccomment">/// Guild ID of the guild where the channel is.</span>
@@ -3423,13 +3423,13 @@
 }
 <span class="doccomment">/// Used in `AddReaction` endpoint.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">AddReactionResponse</span> {
 }
 <span class="doccomment">/// Used in `RemoveReaction` endpoint.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">RemoveReactionRequest</span> {
     <span class="doccomment">/// Guild ID of the guild where the channel is.</span>
@@ -3447,13 +3447,13 @@
 }
 <span class="doccomment">/// Used in `RemoveReaction` endpoint.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">RemoveReactionResponse</span> {
 }
 <span class="doccomment">/// Object representing a single permission node.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Permission</span> {
     <span class="doccomment">/// the permission matcher. (example: roles.manage)</span>
@@ -3465,7 +3465,7 @@
 }
 <span class="doccomment">/// Object representing a role without the ID.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Role</span> {
     <span class="doccomment">/// the role name.</span>
@@ -3483,7 +3483,7 @@
 }
 <span class="doccomment">/// Object representing a role with it&#39;s ID.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">RoleWithId</span> {
     <span class="doccomment">/// ID of the role.</span>
@@ -3495,7 +3495,7 @@
 }
 <span class="doccomment">/// Used in the `QueryHasPermission` endpoint.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">QueryHasPermissionRequest</span> {
     <span class="doccomment">/// the guild ID to query permissions for</span>
@@ -3515,7 +3515,7 @@
 }
 <span class="doccomment">/// Used in the `QueryHasPermission` endpoint.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">QueryHasPermissionResponse</span> {
     <span class="doccomment">/// the permissions for the given node.</span>
@@ -3524,7 +3524,7 @@
 }
 <span class="doccomment">/// Used in the `SetPermissions` endpoint.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">SetPermissionsRequest</span> {
     <span class="doccomment">/// the guild ID to set permissions for.</span>
@@ -3546,13 +3546,13 @@
 }
 <span class="doccomment">/// Used in the `SetPermissions` endpoint.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">SetPermissionsResponse</span> {
 }
 <span class="doccomment">/// Used in the `GetPermissions` endpoint.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">GetPermissionsRequest</span> {
     <span class="doccomment">/// the guild ID to get permissions for.</span>
@@ -3568,7 +3568,7 @@
 }
 <span class="doccomment">/// Used in the `GetPermissions` endpoint.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">GetPermissionsResponse</span> {
     <span class="doccomment">/// the permissions list for the given role.</span>
@@ -3577,7 +3577,7 @@
 }
 <span class="doccomment">/// Used in the `MoveRole` endpoint.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">MoveRoleRequest</span> {
     <span class="doccomment">/// the guild ID to move the role in.</span>
@@ -3592,13 +3592,13 @@
 }
 <span class="doccomment">/// Used in the `MoveRole` endpoint.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">MoveRoleResponse</span> {
 }
 <span class="doccomment">/// Used in the `GetGuildRoles` endpoint.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">GetGuildRolesRequest</span> {
     <span class="doccomment">/// the guild ID to get roles for.</span>
@@ -3607,7 +3607,7 @@
 }
 <span class="doccomment">/// Used in the `GetGuildRoles` endpoint.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">GetGuildRolesResponse</span> {
     <span class="doccomment">/// the list of roles in the guild.</span>
@@ -3616,7 +3616,7 @@
 }
 <span class="doccomment">/// Used in the `AddGuildRole` endpoint.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">AddGuildRoleRequest</span> {
     <span class="doccomment">/// the guild ID to add the role to.</span>
@@ -3637,7 +3637,7 @@
 }
 <span class="doccomment">/// Used in the `AddGuildRole` endpoint.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">AddGuildRoleResponse</span> {
     <span class="doccomment">/// the ID of the newly created role.</span>
@@ -3646,7 +3646,7 @@
 }
 <span class="doccomment">/// Used in the `DeleteGuildRole` endpoint.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">DeleteGuildRoleRequest</span> {
     <span class="doccomment">/// the guild ID to delete the role from.</span>
@@ -3658,13 +3658,13 @@
 }
 <span class="doccomment">/// Used in the `DeleteGuildRole` endpoint.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">DeleteGuildRoleResponse</span> {
 }
 <span class="doccomment">/// Used in the `ModifyGuildRole` endpoint.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ModifyGuildRoleRequest</span> {
     <span class="doccomment">/// the ID of the guild where the role is located</span>
@@ -3688,13 +3688,13 @@
 }
 <span class="doccomment">/// Used in the `ModifyGuildRole` endpoint.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ModifyGuildRoleResponse</span> {
 }
 <span class="doccomment">/// Used in the `ManageUserRoles` endpoint.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ManageUserRolesRequest</span> {
     <span class="doccomment">/// the ID of the guild where the user is being managed</span>
@@ -3712,13 +3712,13 @@
 }
 <span class="doccomment">/// Used in the `ManageUserRoles` endpoint.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ManageUserRolesResponse</span> {
 }
 <span class="doccomment">/// Used in the `GetUserRoles` endpoint.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">GetUserRolesRequest</span> {
     <span class="doccomment">/// the ID of the guild where the user is located</span>
@@ -3730,7 +3730,7 @@
 }
 <span class="doccomment">/// Used in the `GetUserRoles` endpoint.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">GetUserRolesResponse</span> {
     <span class="doccomment">/// a list of IDs of the roles the user has</span>
@@ -3739,7 +3739,7 @@
 }
 <span class="doccomment">/// Request type for use in the `StreamEvents` endpoint.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">StreamEventsRequest</span> {
     <span class="doccomment">/// Describes which event source to subscribe to.</span>
@@ -3750,7 +3750,7 @@
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">stream_events_request</span> {
     <span class="doccomment">/// Event source for guilds&#39; events.</span>
     <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
     <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
     <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">SubscribeToGuild</span> {
         <span class="doccomment">/// the guild id to subscribe to</span>
@@ -3759,19 +3759,19 @@
     }
     <span class="doccomment">/// Event source for actions&#39; events.</span>
     <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
     <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
     <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">SubscribeToActions</span> {
     }
     <span class="doccomment">/// Event source for homeserver events.</span>
     <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
     <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
     <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">SubscribeToHomeserverEvents</span> {
     }
     <span class="doccomment">/// Describes which event source to subscribe to.</span>
     <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
     <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Oneof</span>)]</span>
     <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">Request</span> {
         <span class="doccomment">/// Subscribe to the guild event source.</span>
@@ -3787,7 +3787,7 @@
 }
 <span class="doccomment">/// Used in the `StreamEvents` endpoint.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">StreamEventsResponse</span> {
     <span class="doccomment">/// Possible events.</span>
@@ -3798,7 +3798,7 @@
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">stream_events_response</span> {
     <span class="doccomment">/// Possible events.</span>
     <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
     <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Oneof</span>)]</span>
     <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">Event</span> {
         <span class="doccomment">/// A chat event.</span>
@@ -3814,7 +3814,7 @@
 }
 <span class="doccomment">/// Describes an event.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">StreamEvent</span> {
     <span class="doccomment">/// Which event to send.</span>
@@ -3825,7 +3825,7 @@
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">stream_event</span> {
     <span class="doccomment">/// Event sent when a new message is sent.</span>
     <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
     <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
     <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">MessageSent</span> {
         <span class="doccomment">/// ID that is sent by your client it can use to confirm that the message is sent.</span>
@@ -3846,7 +3846,7 @@
     }
     <span class="doccomment">/// Event sent when a message&#39;s text content is updated.</span>
     <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
     <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
     <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">MessageUpdated</span> {
         <span class="doccomment">/// Guild ID of the guild where this event happened.</span>
@@ -3867,7 +3867,7 @@
     }
     <span class="doccomment">/// Event sent when a message is deleted.</span>
     <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
     <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
     <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">MessageDeleted</span> {
         <span class="doccomment">/// Guild ID of the guild where this event happened.</span>
@@ -3882,7 +3882,7 @@
     }
     <span class="doccomment">/// Event sent when a new channel is created.</span>
     <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
     <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
     <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ChannelCreated</span> {
         <span class="doccomment">/// Guild ID of the guild where this event happened.</span>
@@ -3906,7 +3906,7 @@
     }
     <span class="doccomment">/// Event sent when a channel&#39;s information is changed.</span>
     <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
     <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
     <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ChannelUpdated</span> {
         <span class="doccomment">/// Guild ID of the guild where this event happened.</span>
@@ -3924,7 +3924,7 @@
     }
     <span class="doccomment">/// Event sent when a channel&#39;s position in the channel list is changed.</span>
     <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
     <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
     <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ChannelPositionUpdated</span> {
         <span class="doccomment">/// Guild ID of the guild where this event happened.</span>
@@ -3939,7 +3939,7 @@
     }
     <span class="doccomment">/// Event sent when all channels have been reordered</span>
     <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
     <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
     <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ChannelsReordered</span> {
         <span class="doccomment">/// guild_id: the guild whose channels are being reordered</span>
@@ -3951,7 +3951,7 @@
     }
     <span class="doccomment">/// Event sent when a channel is deleted.</span>
     <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
     <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
     <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ChannelDeleted</span> {
         <span class="doccomment">/// Guild ID of the guild where this event happened.</span>
@@ -3963,7 +3963,7 @@
     }
     <span class="doccomment">/// Event sent when a guild&#39;s information is changed.</span>
     <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
     <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
     <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">GuildUpdated</span> {
         <span class="doccomment">/// Guild ID of the guild that was changed.</span>
@@ -3981,7 +3981,7 @@
     }
     <span class="doccomment">/// Event sent when a guild is deleted.</span>
     <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
     <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
     <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">GuildDeleted</span> {
         <span class="doccomment">/// Guild ID of the guild that was deleted.</span>
@@ -3990,7 +3990,7 @@
     }
     <span class="doccomment">/// Event sent a user joins to a guild.</span>
     <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
     <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
     <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">MemberJoined</span> {
         <span class="doccomment">/// Member ID of the member that joined the guild.</span>
@@ -4002,7 +4002,7 @@
     }
     <span class="doccomment">/// Event sent when a member of a guild leaves said guild for whatever reason.</span>
     <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
     <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
     <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">MemberLeft</span> {
         <span class="doccomment">/// User ID of the member that left the guild.</span>
@@ -4017,7 +4017,7 @@
     }
     <span class="doccomment">/// Event sent when you join a new guild.</span>
     <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
     <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
     <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">GuildAddedToList</span> {
         <span class="doccomment">/// Guild ID of the guild where this event happened.</span>
@@ -4029,7 +4029,7 @@
     }
     <span class="doccomment">/// Event sent when you leave a guild.</span>
     <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
     <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
     <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">GuildRemovedFromList</span> {
         <span class="doccomment">/// Guild ID of the guild where this event happened.</span>
@@ -4041,7 +4041,7 @@
     }
     <span class="doccomment">/// Event sent when an action is performed.</span>
     <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
     <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
     <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ActionPerformed</span> {
         <span class="doccomment">/// Guild ID of the guild where this event happened.</span>
@@ -4062,7 +4062,7 @@
     }
     <span class="doccomment">/// Event sent when a role&#39;s position in the role list is changed.</span>
     <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
     <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
     <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">RoleMoved</span> {
         <span class="doccomment">/// Guild ID of the guild where this event happened.</span>
@@ -4077,7 +4077,7 @@
     }
     <span class="doccomment">/// Event sent when a role is deleted.</span>
     <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
     <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
     <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">RoleDeleted</span> {
         <span class="doccomment">/// Guild ID of the guild where this event happened.</span>
@@ -4089,7 +4089,7 @@
     }
     <span class="doccomment">/// Event sent when a role is created.</span>
     <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
     <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
     <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">RoleCreated</span> {
         <span class="doccomment">/// Guild ID of the guild where this event happened.</span>
@@ -4113,7 +4113,7 @@
     }
     <span class="doccomment">/// Event sent when a role&#39;s information is changed.</span>
     <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
     <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
     <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">RoleUpdated</span> {
         <span class="doccomment">/// Guild ID of the guild where this event happened.</span>
@@ -4139,7 +4139,7 @@
     <span class="doccomment">///</span>
     <span class="doccomment">/// This event will only be sent to users with the &quot;guild.manage&quot; permission.</span>
     <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
     <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
     <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">RolePermissionsUpdated</span> {
         <span class="doccomment">/// Guild ID of the guild where this event happened.</span>
@@ -4157,7 +4157,7 @@
     }
     <span class="doccomment">/// Event sent when a user&#39;s roles are changed.</span>
     <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
     <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
     <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">UserRolesUpdated</span> {
         <span class="doccomment">/// Guild ID of the guild where this event happened.</span>
@@ -4172,7 +4172,7 @@
     }
     <span class="doccomment">/// Event sent when a user sends a typing notification in a guild channel.</span>
     <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
     <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
     <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Typing</span> {
         <span class="doccomment">/// User ID of the user that sent the typing notification.</span>
@@ -4190,7 +4190,7 @@
     <span class="doccomment">/// Servers should calculate which users to send this event to when a permission is set.</span>
     <span class="doccomment">/// It should only be sent if a user is subscribed to the guild the permission pertains to.</span>
     <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
     <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
     <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">PermissionUpdated</span> {
         <span class="doccomment">/// Guild ID of the guild where this event happened.</span>
@@ -4211,7 +4211,7 @@
     <span class="doccomment">/// Should only be sent to users who have the &quot;message.view&quot; permission for</span>
     <span class="doccomment">/// the guild channel where the message was pinned.</span>
     <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
     <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
     <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">MessagePinned</span> {
         <span class="doccomment">/// Guild ID of the guild where this event occured.</span>
@@ -4229,7 +4229,7 @@
     <span class="doccomment">/// Should only be sent to users who have the &quot;message.view&quot; permission for</span>
     <span class="doccomment">/// the guild channel where the message was unpinned.</span>
     <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
     <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
     <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">MessageUnpinned</span> {
         <span class="doccomment">/// Guild ID of the guild where this event occured.</span>
@@ -4244,7 +4244,7 @@
     }
     <span class="doccomment">/// Sent when a message&#39;s reaction is changed.</span>
     <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
     <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
     <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ReactionUpdated</span> {
         <span class="doccomment">/// Guild ID of the guild where this event occured.</span>
@@ -4262,7 +4262,7 @@
     }
     <span class="doccomment">/// Which event to send.</span>
     <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
     <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Oneof</span>)]</span>
     <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">Event</span> {
         <span class="doccomment">/// Send the guild added to list event.</span>

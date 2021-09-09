@@ -301,7 +301,7 @@
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">/// Metadata for methods. These are set in individual RPC endpoints and are</span>
 <span class="doccomment">/// typically used by servers.</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">HarmonyMethodMetadata</span> {
     <span class="doccomment">/// whether the method requires authentication.</span>
@@ -315,7 +315,7 @@
     <span class="kw">pub</span> <span class="ident">requires_permission_node</span>: <span class="ident">::prost::alloc::string::String</span>,
 }
 <span class="doccomment">/// Metadata type used by many messages.</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Metadata</span> {
     <span class="doccomment">/// Kind of this metadata.</span>
@@ -326,7 +326,7 @@
     <span class="kw">pub</span> <span class="ident">extension</span>: <span class="ident">::std::collections::HashMap</span><span class="op">&lt;</span><span class="ident">::prost::alloc::string::String</span>, <span class="ident">::prost_types::Any</span><span class="op">&gt;</span>,
 }
 <span class="doccomment">/// Error type that will be returned by servers. </span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Error</span> {
     <span class="doccomment">/// The identifier of this error, can be used as an i18n key.</span>
@@ -340,7 +340,7 @@
     <span class="kw">pub</span> <span class="ident">more_details</span>: <span class="ident">::prost::alloc::vec::Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>,
 }
 <span class="doccomment">/// Token that will be used for authentication.</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Token</span> {
     <span class="doccomment">/// Ed25519 signature of the following serialized protobuf data, signed</span>
@@ -357,7 +357,7 @@
     <span class="kw">pub</span> <span class="ident">data</span>: <span class="ident">::prost::alloc::vec::Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>,
 }
 <span class="doccomment">/// A format for text</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Format</span> {
     <span class="doccomment">/// where the format begins to apply to</span>
@@ -373,32 +373,32 @@
 <span class="doccomment">/// Nested message and enum types in `Format`.</span>
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">format</span> {
     <span class="doccomment">/// Bold text</span>
-    <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+    <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
     <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
     <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Bold</span> {
     }
     <span class="doccomment">/// Italic text</span>
-    <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+    <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
     <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
     <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Italic</span> {
     }
     <span class="doccomment">/// Underlined text</span>
-    <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+    <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
     <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
     <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Underline</span> {
     }
     <span class="doccomment">/// Monospace text</span>
-    <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+    <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
     <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
     <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Monospace</span> {
     }
     <span class="doccomment">/// Superscript text</span>
-    <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+    <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
     <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
     <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Superscript</span> {
     }
     <span class="doccomment">/// Subscript text</span>
-    <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+    <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
     <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
     <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Subscript</span> {
     }
@@ -406,7 +406,7 @@
     <span class="doccomment">/// Clients should ideally not bound the width of codeblock messages,</span>
     <span class="doccomment">/// possibly scrolling the codeblock horizontally separately from the</span>
     <span class="doccomment">/// rest of the message</span>
-    <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+    <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
     <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
     <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">CodeBlock</span> {
         <span class="doccomment">/// programming language of the code block</span>
@@ -414,7 +414,7 @@
         <span class="kw">pub</span> <span class="ident">language</span>: <span class="ident">::prost::alloc::string::String</span>,
     }
     <span class="doccomment">/// Mention of a user (on the current homeserver)</span>
-    <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+    <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
     <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
     <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">UserMention</span> {
         <span class="doccomment">/// user_id of the user being mentioned</span>
@@ -422,7 +422,7 @@
         <span class="kw">pub</span> <span class="ident">user_id</span>: <span class="ident">u64</span>,
     }
     <span class="doccomment">/// Mention of a role (on the current guild)</span>
-    <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+    <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
     <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
     <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">RoleMention</span> {
         <span class="doccomment">/// the role being mentioned</span>
@@ -430,7 +430,7 @@
         <span class="kw">pub</span> <span class="ident">role_id</span>: <span class="ident">u64</span>,
     }
     <span class="doccomment">/// Mention of a channel (on the current guild)</span>
-    <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+    <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
     <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
     <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ChannelMention</span> {
         <span class="doccomment">/// the channel being mentioned</span>
@@ -438,7 +438,7 @@
         <span class="kw">pub</span> <span class="ident">channel_id</span>: <span class="ident">u64</span>,
     }
     <span class="doccomment">/// Mention of a guild</span>
-    <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+    <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
     <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
     <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">GuildMention</span> {
         <span class="doccomment">/// the guild being mentioned</span>
@@ -449,7 +449,7 @@
         <span class="kw">pub</span> <span class="ident">homeserver</span>: <span class="ident">::prost::alloc::string::String</span>,
     }
     <span class="doccomment">/// An emoji</span>
-    <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+    <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
     <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
     <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Emoji</span> {
         <span class="doccomment">/// The HMC URL of the emoji</span>
@@ -460,7 +460,7 @@
         <span class="kw">pub</span> <span class="ident">pack_id</span>: <span class="ident">u64</span>,
     }
     <span class="doccomment">/// Colour modification</span>
-    <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+    <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
     <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
     <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Color</span> {
         <span class="doccomment">/// The kind of colour modification to apply</span>
@@ -489,7 +489,7 @@
         }
     }
     <span class="doccomment">/// the style if format to apply to this text</span>
-    <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+    <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
     <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Oneof</span>)]</span>
     <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">Format</span> {
         <span class="doccomment">/// a text format for bold text</span>
@@ -534,7 +534,7 @@
     }
 }
 <span class="doccomment">/// Formatted text</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">FormattedText</span> {
     <span class="doccomment">/// The textual content of a message</span>
@@ -545,7 +545,7 @@
     <span class="kw">pub</span> <span class="ident">format</span>: <span class="ident">::prost::alloc::vec::Vec</span><span class="op">&lt;</span><span class="ident">Format</span><span class="op">&gt;</span>,
 }
 <span class="doccomment">/// An object representing an item position between two other items.</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ItemPosition</span> {
     <span class="doccomment">/// Position of this item.</span>
@@ -555,7 +555,7 @@
 <span class="doccomment">/// Nested message and enum types in `ItemPosition`.</span>
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">item_position</span> {
     <span class="doccomment">/// An object that represents the top of an ordered list.</span>
-    <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+    <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
     <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
     <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Top</span> {
         <span class="doccomment">/// The ID of the next item.</span>
@@ -563,7 +563,7 @@
         <span class="kw">pub</span> <span class="ident">next_id</span>: <span class="ident">u64</span>,
     }
     <span class="doccomment">/// An object that represents a place between two items in an ordered list.</span>
-    <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+    <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
     <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
     <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Between</span> {
         <span class="doccomment">/// The ID of the previous item.</span>
@@ -574,7 +574,7 @@
         <span class="kw">pub</span> <span class="ident">next_id</span>: <span class="ident">u64</span>,
     }
     <span class="doccomment">/// An object that represents the bottom of an ordered list.</span>
-    <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+    <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
     <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
     <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Bottom</span> {
         <span class="doccomment">/// The ID of the previous item.</span>
@@ -582,7 +582,7 @@
         <span class="kw">pub</span> <span class="ident">previous_id</span>: <span class="ident">u64</span>,
     }
     <span class="doccomment">/// Position of this item.</span>
-    <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+    <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
     <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Oneof</span>)]</span>
     <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">Position</span> {
         <span class="doccomment">/// The item is at the top.</span>

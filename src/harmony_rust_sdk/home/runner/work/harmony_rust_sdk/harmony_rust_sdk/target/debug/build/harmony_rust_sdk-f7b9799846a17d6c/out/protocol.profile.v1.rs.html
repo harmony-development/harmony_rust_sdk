@@ -164,7 +164,7 @@
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">/// Data for a single profile, without the user&#39;s ID.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">profile</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Profile</span> {
     <span class="doccomment">/// the name of the user.</span>
@@ -182,7 +182,7 @@
 }
 <span class="doccomment">/// Used in `GetProfile` endpoint.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">profile</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">GetProfileRequest</span> {
     <span class="doccomment">/// The id of the user to get.</span>
@@ -191,7 +191,7 @@
 }
 <span class="doccomment">/// Used in `GetProfile` endpoint.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">profile</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">GetProfileResponse</span> {
     <span class="doccomment">/// The user&#39;s profile</span>
@@ -200,7 +200,7 @@
 }
 <span class="doccomment">/// Used in `UpdateProfile` endpoint.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">profile</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">UpdateProfileRequest</span> {
     <span class="doccomment">/// new name of the user.</span>
@@ -218,13 +218,13 @@
 }
 <span class="doccomment">/// Used in `UpdateProfile` endpoint.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">profile</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">UpdateProfileResponse</span> {
 }
 <span class="doccomment">/// Used in `GetAppData` endpoint.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">profile</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">GetAppDataRequest</span> {
     <span class="doccomment">/// the app id.</span>
@@ -233,7 +233,7 @@
 }
 <span class="doccomment">/// Used in `GetAppData` endpoint.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">profile</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">GetAppDataResponse</span> {
     <span class="doccomment">/// the app data.</span>
@@ -242,7 +242,7 @@
 }
 <span class="doccomment">/// Used in `SetAppData` endpoint.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">profile</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">SetAppDataRequest</span> {
     <span class="doccomment">/// the app id.</span>
@@ -254,7 +254,7 @@
 }
 <span class="doccomment">/// Used in `SetAppData` endpoint.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">profile</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">SetAppDataResponse</span> {
 }
@@ -281,7 +281,7 @@
 <span class="doccomment">/// Servers should sent this event only to users that can &quot;see&quot; (eg. they are</span>
 <span class="doccomment">/// in the same guild) the user this event was triggered by.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">profile</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ProfileUpdated</span> {
     <span class="doccomment">/// User ID of the user that had it&#39;s profile updated.</span>
@@ -302,7 +302,7 @@
 }
 <span class="doccomment">/// Describes an emote service event.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">profile</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">StreamEvent</span> {
     <span class="doccomment">/// The event type.</span>
@@ -313,7 +313,7 @@
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">stream_event</span> {
     <span class="doccomment">/// The event type.</span>
     <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">profile</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
     <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Oneof</span>)]</span>
     <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">Event</span> {
         <span class="doccomment">/// Send the profile updated event.</span>
