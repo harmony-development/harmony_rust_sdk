@@ -11,12 +11,17 @@ pub fn into_request(args: TokenStream, input: TokenStream) -> TokenStream {
 
 #[proc_macro_derive(builder, attributes(builder))]
 pub fn self_builder(input: TokenStream) -> TokenStream {
-    impl_self_builder::self_builder(input, false)
+    impl_self_builder::self_builder(input, false, false)
 }
 
 #[proc_macro_derive(self_builder, attributes(builder))]
 pub fn self_builder_impl(input: TokenStream) -> TokenStream {
-    impl_self_builder::self_builder(input, true)
+    impl_self_builder::self_builder(input, true, false)
+}
+
+#[proc_macro_derive(self_builder_no_option, attributes(builder))]
+pub fn self_builder_impl_strip_option(input: TokenStream) -> TokenStream {
+    impl_self_builder::self_builder(input, true, true)
 }
 
 #[proc_macro]

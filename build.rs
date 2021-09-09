@@ -43,29 +43,29 @@ fn main() {
 
     builder = builder.type_attribute(
         ".",
-        "#[derive(derive_new::new, harmony_derive::self_builder)]",
+        "#[derive(derive_new::new, harmony_derive::self_builder_no_option)]",
     );
     #[cfg(feature = "client")]
     {
         builder = builder.type_attribute(
             ".protocol.chat.v1",
-            "#[harmony_derive::impl_call_req(chat)]\n#[derive(derive_new::new, harmony_derive::self_builder)]",
+            "#[harmony_derive::impl_call_req(chat)]\n#[derive(derive_new::new, harmony_derive::self_builder_no_option)]",
         );
         builder = builder.type_attribute(
             ".protocol.auth.v1",
-            "#[harmony_derive::impl_call_req(auth)]\n#[derive(derive_new::new, harmony_derive::self_builder)]",
+            "#[harmony_derive::impl_call_req(auth)]\n#[derive(derive_new::new, harmony_derive::self_builder_no_option)]",
         );
         builder = builder.type_attribute(
             ".protocol.profile.v1",
-            "#[harmony_derive::impl_call_req(profile)]\n#[derive(derive_new::new, harmony_derive::self_builder)]",
+            "#[harmony_derive::impl_call_req(profile)]\n#[derive(derive_new::new, harmony_derive::self_builder_no_option)]",
         );
         builder = builder.type_attribute(
             ".protocol.emote.v1",
-            "#[harmony_derive::impl_call_req(emote)]\n#[derive(derive_new::new, harmony_derive::self_builder)]",
+            "#[harmony_derive::impl_call_req(emote)]\n#[derive(derive_new::new, harmony_derive::self_builder_no_option)]",
         );
         builder = builder.type_attribute(
             ".protocol.mediaproxy.v1",
-            "#[harmony_derive::impl_call_req(mediaproxy)]\n#[derive(derive_new::new, harmony_derive::self_builder)]",
+            "#[harmony_derive::impl_call_req(mediaproxy)]\n#[derive(derive_new::new, harmony_derive::self_builder_no_option)]",
         );
     }
     builder = builder.type_attribute(".protocol.chat.v1.LeaveReason", "");
