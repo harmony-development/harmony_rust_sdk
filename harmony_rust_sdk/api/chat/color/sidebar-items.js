@@ -1,1 +1,1 @@
-initSidebarItems({"fn":[["decode_rgb",""],["encode_rgb",""]]});
+initSidebarItems({"fn":[["decode_rgb","Decode an RGB value."],["encode_rgb","Encode an RGB value."]]});

@@ -1,0 +1,1 @@
+initSidebarItems({"fn":[["has_permission","Checks if a permission is allowed in some permission collection."]]});
