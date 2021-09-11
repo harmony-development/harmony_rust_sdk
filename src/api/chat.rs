@@ -280,6 +280,149 @@ pub mod color {
     }
 }
 
+/// Types and functions for working with permissions.
+pub mod permission {
+    use super::Permission;
+
+    /// Checks if a permission is allowed in some permission collection.
+    ///
+    /// Returns `None` if no permissions were matched.
+    pub fn has_permission<'a, I: Iterator<Item = &'a Permission>>(
+        perms: I,
+        query: &str,
+    ) -> Option<bool> {
+        use std::cmp::Ordering;
+
+        let mut matching_perms = perms
+            .filter(|perm| {
+                perm.matches
+                    .split('.')
+                    .zip(query.split('.'))
+                    .all(|(m, c)| m == "*" || c == m)
+            })
+            .collect::<Vec<_>>();
+
+        matching_perms.sort_unstable_by(|p, op| {
+            let get_depth = |perm: &Permission| perm.matches.chars().filter(|c| '.'.eq(c)).count();
+            let ord = get_depth(p).cmp(&get_depth(op));
+
+            if let Ordering::Equal = ord {
+                let p_split = p.matches.split('.');
+                let op_split = op.matches.split('.');
+                match (p_split.last(), op_split.last()) {
+                    (Some(p_last), Some(op_last)) => match (p_last, op_last) {
+                        ("*", _) => Ordering::Less,
+                        (_, "*") => Ordering::Greater,
+                        _ => Ordering::Equal,
+                    },
+                    (None, Some(_)) => Ordering::Less,
+                    (Some(_), None) => Ordering::Greater,
+                    (None, None) => Ordering::Equal,
+                }
+            } else {
+                ord
+            }
+        });
+
+        matching_perms.pop().map(|p| p.ok)
+    }
+
+    #[cfg(test)]
+    mod tests {
+        use super::{has_permission, Permission};
+
+        fn mk_perms<const LEN: usize>(arr: [(&'static str, bool); LEN]) -> Vec<Permission> {
+            std::array::IntoIter::new(arr)
+                .map(|(matches, ok)| Permission {
+                    matches: matches.to_string(),
+                    ok,
+                })
+                .collect()
+        }
+
+        #[test]
+        fn test_perm_compare_equal_allow() {
+            let ok = has_permission(mk_perms([("messages.send", true)]).iter(), "messages.send");
+            assert_eq!(ok, Some(true));
+        }
+
+        #[test]
+        fn test_perm_compare_equal_deny() {
+            let ok = has_permission(mk_perms([("messages.send", false)]).iter(), "messages.send");
+            assert_eq!(ok, Some(false));
+        }
+
+        #[test]
+        fn test_perm_compare_nonequal_allow() {
+            let ok = has_permission(mk_perms([("messages.sendd", true)]).iter(), "messages.send");
+            assert_eq!(ok, None);
+        }
+
+        #[test]
+        fn test_perm_compare_nonequal_deny() {
+            let ok = has_permission(
+                mk_perms([("messages.sendd", false)]).iter(),
+                "messages.send",
+            );
+            assert_eq!(ok, None);
+        }
+
+        #[test]
+        fn test_perm_compare_glob_allow() {
+            let perms = mk_perms([("messages.*", true)]);
+            let ok = has_permission(perms.iter(), "messages.send");
+            assert_eq!(ok, Some(true));
+            let ok = has_permission(perms.iter(), "messages.view");
+            assert_eq!(ok, Some(true));
+        }
+
+        #[test]
+        fn test_perm_compare_glob_deny() {
+            let perms = mk_perms([("messages.*", false)]);
+            let ok = has_permission(perms.iter(), "messages.send");
+            assert_eq!(ok, Some(false));
+            let ok = has_permission(perms.iter(), "messages.view");
+            assert_eq!(ok, Some(false));
+        }
+
+        #[test]
+        fn test_perm_compare_specific_deny() {
+            let perms = mk_perms([("messages.*", true), ("messages.send", false)]);
+            let ok = has_permission(perms.iter(), "messages.send");
+            assert_eq!(ok, Some(false));
+        }
+
+        #[test]
+        fn test_perm_compare_specific_allow() {
+            let perms = mk_perms([("messages.*", false), ("messages.send", true)]);
+            let ok = has_permission(perms.iter(), "messages.send");
+            assert_eq!(ok, Some(true));
+        }
+
+        #[test]
+        fn test_perm_compare_depth_allow() {
+            let perms = mk_perms([
+                ("messages.*", false),
+                ("messages.send", false),
+                ("messages.send.send", true),
+            ]);
+            let ok = has_permission(perms.iter(), "messages.send.send");
+            assert_eq!(ok, Some(true));
+        }
+
+        #[test]
+        fn test_perm_compare_depth_deny() {
+            let perms = mk_perms([
+                ("messages.*", true),
+                ("messages.send", true),
+                ("messages.send.send", false),
+            ]);
+            let ok = has_permission(perms.iter(), "messages.send.send");
+            assert_eq!(ok, Some(false));
+        }
+    }
+}
+
 #[cfg(test)]
 mod test {
     use super::*;
