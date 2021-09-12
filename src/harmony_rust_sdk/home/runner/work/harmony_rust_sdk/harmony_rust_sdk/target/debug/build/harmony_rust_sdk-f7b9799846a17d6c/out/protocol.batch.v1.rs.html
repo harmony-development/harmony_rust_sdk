@@ -48,6 +48,10 @@
 <span id="45">45</span>
 <span id="46">46</span>
 <span id="47">47</span>
+<span id="48">48</span>
+<span id="49">49</span>
+<span id="50">50</span>
+<span id="51">51</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">/// AnyRequest is a generic message supporting any unary request.</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
@@ -61,6 +65,7 @@
     <span class="kw">pub</span> <span class="ident">request</span>: <span class="ident">::prost::alloc::vec::Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>,
 }
 <span class="doccomment">/// Used in `Batch` endpoint.</span>
+<span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">batch</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">BatchRequest</span> {
@@ -69,6 +74,7 @@
     <span class="kw">pub</span> <span class="ident">requests</span>: <span class="ident">::prost::alloc::vec::Vec</span><span class="op">&lt;</span><span class="ident">AnyRequest</span><span class="op">&gt;</span>,
 }
 <span class="doccomment">/// Used in `Batch` endpoint.</span>
+<span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">batch</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">BatchResponse</span> {
@@ -77,6 +83,7 @@
     <span class="kw">pub</span> <span class="ident">responses</span>: <span class="ident">::prost::alloc::vec::Vec</span><span class="op">&lt;</span><span class="ident">::prost::alloc::vec::Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span><span class="op">&gt;</span>,
 }
 <span class="doccomment">/// Used in `BatchSame` endpoint.</span>
+<span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">batch</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">BatchSameRequest</span> {
@@ -88,6 +95,7 @@
     <span class="kw">pub</span> <span class="ident">requests</span>: <span class="ident">::prost::alloc::vec::Vec</span><span class="op">&lt;</span><span class="ident">::prost::alloc::vec::Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span><span class="op">&gt;</span>,
 }
 <span class="doccomment">/// Used in `BatchSame` endpoint.</span>
+<span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">batch</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_new::new</span>, <span class="ident">harmony_derive::self_builder_no_option</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">BatchSameResponse</span> {
