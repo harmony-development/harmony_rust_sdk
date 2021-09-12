@@ -67,6 +67,14 @@ pub mod emote {
     }
     pub use v1::*;
 }
+/// Batch service API.
+#[cfg(feature = "gen_batch")]
+pub mod batch {
+    pub mod v1 {
+        hrpc::include_proto!("protocol.batch.v1");
+    }
+    pub use v1::*;
+}
 
 /// Some crates re-exported for user convenience.
 pub mod exports {
