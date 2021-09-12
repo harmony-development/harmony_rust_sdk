@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["BatchServiceClient","Service to batch requests."]]});
