@@ -29,6 +29,7 @@ type MediaProxyService =
     crate::api::mediaproxy::media_proxy_service_client::MediaProxyServiceClient;
 type ProfileService = crate::api::profile::profile_service_client::ProfileServiceClient;
 type EmoteService = crate::api::emote::emote_service_client::EmoteServiceClient;
+type BatchService = crate::api::batch::batch_service_client::BatchServiceClient;
 
 /// Represents an authentication state in which a [`Client`] can be.
 #[derive(Debug, Clone)]
@@ -80,6 +81,7 @@ struct ClientData {
     mediaproxy: AsyncMutex<MediaProxyService>,
     profile: AsyncMutex<ProfileService>,
     emote: AsyncMutex<EmoteService>,
+    batch: AsyncMutex<BatchService>,
     http: HttpClient,
 }
 
@@ -177,7 +179,8 @@ impl Client {
         let chat = ChatService::new_inner(inner.clone());
         let mediaproxy = MediaProxyService::new_inner(inner.clone());
         let profile = ProfileService::new_inner(inner.clone());
-        let emote = EmoteService::new_inner(inner);
+        let emote = EmoteService::new_inner(inner.clone());
+        let batch = BatchService::new_inner(inner);
 
         let data = ClientData {
             homeserver_url,
@@ -187,6 +190,7 @@ impl Client {
             mediaproxy: AsyncMutex::new(mediaproxy),
             profile: AsyncMutex::new(profile),
             emote: AsyncMutex::new(emote),
+            batch: AsyncMutex::new(batch),
             http,
         };
 
@@ -252,6 +256,12 @@ impl Client {
     /// Get a mutex guard to the emote service.
     pub async fn emote(&self) -> tokio::sync::MutexGuard<'_, EmoteService> {
         self.data.emote.lock().await
+    }
+
+    #[inline(always)]
+    /// Get a mutex guard to the batch service.
+    pub async fn batch(&self) -> tokio::sync::MutexGuard<'_, BatchService> {
+        self.data.batch.lock().await
     }
 
     /// Execute the given request.
