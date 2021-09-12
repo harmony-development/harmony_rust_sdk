@@ -11,10 +11,14 @@ pub(crate) fn impl_call(input: TokenStream) -> TokenStream {
     let req = Ident::new(split.next().unwrap(), Span::call_site());
     let resp = Ident::new(split.next().unwrap(), Span::call_site());
 
+    let endpoint_path = format!("/protocol.{}.v1/{}", service, req.to_string().trim_end_matches("Request"));
+
     (quote! {
         #[hrpc::async_trait]
         impl crate::client::CallRequest for #req {
             type Response = #resp;
+
+            const ENDPOINT_PATH: &'static str = #endpoint_path;
 
             async fn call_with(self, client: &crate::client::Client) -> crate::client::error::ClientResult<Self::Response> {
                 client. #service () .await. #method (self) .await.map_err(Into::into)
