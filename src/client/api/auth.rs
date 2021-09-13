@@ -56,8 +56,8 @@ impl AuthStepResponse {
         password: impl ToString,
     ) -> Self {
         Self::form(vec![
-            Field::String(email.to_string()),
             Field::String(username.to_string()),
+            Field::String(email.to_string()),
             Field::Bytes(password.to_string().into_bytes()),
         ])
     }
