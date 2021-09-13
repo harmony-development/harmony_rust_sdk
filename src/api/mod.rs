@@ -363,3 +363,20 @@ impl FromStr for HomeserverIdentifier {
         })
     }
 }
+
+/// A trait to facilitate easy request execution.
+#[hrpc::async_trait]
+pub trait Endpoint {
+    /// The response type of this endpoint request.
+    type Response;
+
+    /// The endpoint path of this request.
+    const ENDPOINT_PATH: &'static str;
+
+    #[cfg(feature = "client")]
+    /// Execute the request using the provided client.
+    async fn call_with(
+        self,
+        client: &crate::client::Client,
+    ) -> crate::client::error::ClientResult<Self::Response>;
+}

@@ -22,16 +22,24 @@ pub(crate) fn impl_call(input: TokenStream) -> TokenStream {
         req.to_string().trim_end_matches("Request")
     );
 
+    let call_with = if cfg!(feature = "client") {
+        quote! {
+            async fn call_with(self, client: &crate::client::Client) -> crate::client::error::ClientResult<Self::Response> {
+                client. #service () .await. #method (self) .await.map_err(Into::into)
+            }
+        }
+    } else {
+        quote! { }
+    };
+
     (quote! {
         #[hrpc::async_trait]
-        impl crate::client::CallRequest for #req {
+        impl crate::api::Endpoint for #req {
             type Response = #resp;
 
             const ENDPOINT_PATH: &'static str = #endpoint_path;
 
-            async fn call_with(self, client: &crate::client::Client) -> crate::client::error::ClientResult<Self::Response> {
-                client. #service () .await. #method (self) .await.map_err(Into::into)
-            }
+            #call_with
         }
     })
     .into()

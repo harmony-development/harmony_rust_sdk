@@ -8,6 +8,9 @@ homepage = "https://github.com/harmony-development/harmony_rust_sdk"
 repository = "https://github.com/harmony-development/harmony_rust_sdk"
 license = "MIT"
 
+[features]
+client = []
+
 [lib]
 proc-macro = true
 

@@ -68,6 +68,7 @@ client = [
 	"paste",
 	"tracing",
 	"urlencoding",
+	"harmony_derive/client",
 ]
 gen_client = ["hrpc/client", "hrpc-build/client"]
 gen_server = ["hrpc/server", "hrpc-build/server"]

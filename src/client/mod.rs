@@ -12,7 +12,10 @@ pub mod exports {
     pub use reqwest;
 }
 
-use crate::api::auth::{BeginAuthRequest, NextStepResponse, StepBackResponse};
+use crate::api::{
+    auth::{BeginAuthRequest, NextStepResponse, StepBackResponse},
+    Endpoint,
+};
 use api::{auth::*, chat::EventSource, Hmc, HmcFromStrError};
 use error::*;
 
@@ -265,7 +268,7 @@ impl Client {
     }
 
     /// Execute the given request.
-    pub async fn call<Req: CallRequest>(&self, request: Req) -> ClientResult<Req::Response> {
+    pub async fn call<Req: Endpoint>(&self, request: Req) -> ClientResult<Req::Response> {
         request.call_with(self).await
     }
 
@@ -531,17 +534,4 @@ impl AuthSocket {
     pub async fn close(self) -> ClientResult<()> {
         self.inner.close().await.map_err(Into::into)
     }
-}
-
-/// A trait to facilitate easy request execution.
-#[hrpc::async_trait]
-pub trait CallRequest {
-    /// The response type of this endpoint request.
-    type Response;
-
-    /// The endpoint path of this request.
-    const ENDPOINT_PATH: &'static str;
-
-    /// Execute the request using the provided client.
-    async fn call_with(self, client: &Client) -> ClientResult<Self::Response>;
 }
