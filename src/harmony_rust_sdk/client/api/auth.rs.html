@@ -160,8 +160,8 @@
         <span class="ident">password</span>: <span class="kw">impl</span> <span class="ident">ToString</span>,
     ) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
         <span class="self">Self</span><span class="ident">::form</span>(<span class="macro">vec!</span>[
-            <span class="ident">Field::String</span>(<span class="ident">email</span>.<span class="ident">to_string</span>()),
             <span class="ident">Field::String</span>(<span class="ident">username</span>.<span class="ident">to_string</span>()),
+            <span class="ident">Field::String</span>(<span class="ident">email</span>.<span class="ident">to_string</span>()),
             <span class="ident">Field::Bytes</span>(<span class="ident">password</span>.<span class="ident">to_string</span>().<span class="ident">into_bytes</span>()),
         ])
     }
