@@ -10,8 +10,17 @@ pub(crate) fn impl_call(input: TokenStream) -> TokenStream {
     let method = Ident::new(split.next().unwrap(), Span::call_site());
     let req = Ident::new(split.next().unwrap(), Span::call_site());
     let resp = Ident::new(split.next().unwrap(), Span::call_site());
+    let mut temp = service.to_string().chars().collect::<Vec<_>>();
+    temp[0] = temp[0].to_ascii_uppercase();
+    let mut t = temp.into_iter().collect::<String>();
+    t.push_str("Service");
 
-    let endpoint_path = format!("/protocol.{}.v1/{}", service, req.to_string().trim_end_matches("Request"));
+    let endpoint_path = format!(
+        "/protocol.{}.v1.{}/{}",
+        service,
+        t,
+        req.to_string().trim_end_matches("Request")
+    );
 
     (quote! {
         #[hrpc::async_trait]
