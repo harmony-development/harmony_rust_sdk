@@ -366,6 +366,23 @@
 <span id="363">363</span>
 <span id="364">364</span>
 <span id="365">365</span>
+<span id="366">366</span>
+<span id="367">367</span>
+<span id="368">368</span>
+<span id="369">369</span>
+<span id="370">370</span>
+<span id="371">371</span>
+<span id="372">372</span>
+<span id="373">373</span>
+<span id="374">374</span>
+<span id="375">375</span>
+<span id="376">376</span>
+<span id="377">377</span>
+<span id="378">378</span>
+<span id="379">379</span>
+<span id="380">380</span>
+<span id="381">381</span>
+<span id="382">382</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="kw">use</span> <span class="ident">std</span>::{
     <span class="ident">convert::TryFrom</span>,
@@ -731,6 +748,23 @@
             <span class="ident">port</span>,
         })
     }
+}
+
+<span class="doccomment">/// A trait to facilitate easy request execution.</span>
+<span class="attribute">#[<span class="ident">hrpc::async_trait</span>]</span>
+<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">Endpoint</span> {
+    <span class="doccomment">/// The response type of this endpoint request.</span>
+    <span class="kw">type</span> <span class="ident">Response</span>;
+
+    <span class="doccomment">/// The endpoint path of this request.</span>
+    <span class="kw">const</span> <span class="ident">ENDPOINT_PATH</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span>;
+
+    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;client&quot;</span>)]</span>
+    <span class="doccomment">/// Execute the request using the provided client.</span>
+    <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">call_with</span>(
+        <span class="self">self</span>,
+        <span class="ident">client</span>: <span class="kw-2">&amp;</span><span class="kw">crate</span><span class="ident">::client::Client</span>,
+    ) <span class="op">-</span><span class="op">&gt;</span> <span class="kw">crate</span><span class="ident">::client::error::ClientResult</span><span class="op">&lt;</span><span class="self">Self</span><span class="ident">::Response</span><span class="op">&gt;</span>;
 }
 </pre></div>
 </section><section id="search" class="content hidden"></section><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="harmony_rust_sdk" data-search-index-js="../../../search-index.js" data-search-js="../../../search.js"></div>
