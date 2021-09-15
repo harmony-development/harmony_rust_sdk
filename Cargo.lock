@@ -489,9 +489,9 @@ dependencies = [
 
 [[package]]
 name = "hrpc"
-version = "0.10.6"
+version = "0.10.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "85ba3724d47a1b07b2a503f1faaa48c88e34a06000498a8c6e6062cf90c71940"
+checksum = "125273571bb5570404bc85355d0193a6d9f3242ea1f0a3245f8284c715b828cc"
 dependencies = [
  "ahash",
  "async-trait",
@@ -499,6 +499,7 @@ dependencies = [
  "dashmap",
  "futures-util",
  "http",
+ "parking_lot",
  "prost",
  "reqwest",
  "rustls-native-certs",
