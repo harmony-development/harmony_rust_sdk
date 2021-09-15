@@ -41,31 +41,44 @@ fn main() {
     #[cfg(feature = "gen_emote")]
     protos.push("emote/v1/emote.proto");
 
+    let rkyv_derive = if cfg!(feature = "rkyv") {
+        ", rkyv::Archive, rkyv::Serialize, rkyv::Deserialize"
+    } else {
+        ""
+    };
+
     builder = builder.type_attribute(
         ".",
+        format!(
+            "#[derive(derive_new::new, harmony_derive::self_builder_no_option{})]",
+            rkyv_derive
+        ),
+    );
+    builder = builder.type_attribute(
+        ".protocol.batch.v1",
         "#[derive(derive_new::new, harmony_derive::self_builder_no_option)]",
     );
     #[cfg(feature = "client")]
     {
         builder = builder.type_attribute(
             ".protocol.chat.v1",
-            "#[harmony_derive::impl_call_req(chat)]\n#[derive(derive_new::new, harmony_derive::self_builder_no_option)]",
+            format!("#[harmony_derive::impl_call_req(chat)]\n#[derive(derive_new::new, harmony_derive::self_builder_no_option{})]", rkyv_derive),
         );
         builder = builder.type_attribute(
             ".protocol.auth.v1",
-            "#[harmony_derive::impl_call_req(auth)]\n#[derive(derive_new::new, harmony_derive::self_builder_no_option)]",
+            format!("#[harmony_derive::impl_call_req(auth)]\n#[derive(derive_new::new, harmony_derive::self_builder_no_option{})]", rkyv_derive),
         );
         builder = builder.type_attribute(
             ".protocol.profile.v1",
-            "#[harmony_derive::impl_call_req(profile)]\n#[derive(derive_new::new, harmony_derive::self_builder_no_option)]",
+            format!("#[harmony_derive::impl_call_req(profile)]\n#[derive(derive_new::new, harmony_derive::self_builder_no_option{})]", rkyv_derive),
         );
         builder = builder.type_attribute(
             ".protocol.emote.v1",
-            "#[harmony_derive::impl_call_req(emote)]\n#[derive(derive_new::new, harmony_derive::self_builder_no_option)]",
+            format!("#[harmony_derive::impl_call_req(emote)]\n#[derive(derive_new::new, harmony_derive::self_builder_no_option{})]", rkyv_derive),
         );
         builder = builder.type_attribute(
             ".protocol.mediaproxy.v1",
-            "#[harmony_derive::impl_call_req(mediaproxy)]\n#[derive(derive_new::new, harmony_derive::self_builder_no_option)]",
+            format!("#[harmony_derive::impl_call_req(mediaproxy)]\n#[derive(derive_new::new, harmony_derive::self_builder_no_option{})]", rkyv_derive),
         );
         builder = builder.type_attribute(
             ".protocol.batch.v1",
@@ -76,16 +89,32 @@ fn main() {
             "#[derive(derive_new::new, harmony_derive::self_builder_no_option)]",
         );
     }
-    builder = builder.type_attribute(".protocol.chat.v1.LeaveReason", "");
-    builder = builder.type_attribute(".protocol.profile.v1.UserStatus", "");
-    builder = builder.type_attribute(".protocol.harmonytypes.v1.Format.Color.Kind", "");
-    builder = builder.type_attribute(".protocol.chat.v1.GetChannelMessagesRequest.Direction", "");
-    builder = builder.type_attribute(".protocol.chat.v1.Embed.EmbedField.Presentation", "");
-    builder = builder.type_attribute(".protocol.chat.v1.Action.Type", "");
+
+    let rkyv_derive = if cfg!(feature = "rkyv") {
+        "#[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize)]"
+    } else {
+        ""
+    };
+
+    builder = builder.type_attribute(".protocol.chat.v1.LeaveReason", rkyv_derive);
+    builder = builder.type_attribute(".protocol.profile.v1.UserStatus", rkyv_derive);
+    builder = builder.type_attribute(".protocol.harmonytypes.v1.Format.Color.Kind", rkyv_derive);
+    builder = builder.type_attribute(
+        ".protocol.chat.v1.GetChannelMessagesRequest.Direction",
+        rkyv_derive,
+    );
+    builder = builder.type_attribute(
+        ".protocol.chat.v1.Embed.EmbedField.Presentation",
+        rkyv_derive,
+    );
+    builder = builder.type_attribute(".protocol.chat.v1.Action.Type", rkyv_derive);
 
     let protocol_path =
         std::env::var("HARMONY_PROTOCOL_PATH").unwrap_or_else(|_| "protocol".to_string());
-    builder.compile(&protos, &[protocol_path.as_str()]).expect(
+
+    let mut conf = prost_build::Config::new();
+    conf.bytes(&[".protocol.batch.v1"]);
+    builder.compile_with_config(conf, &protos, &[protocol_path.as_str()]).expect(
         "\nProtobuf code generation failed! Are you sure you have `protoc` installed?\nIf so, please also set the PROTOC and PROTOC_INCLUDE as mentioned in the README.\nError",
     );
 

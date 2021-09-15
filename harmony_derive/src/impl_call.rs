@@ -29,7 +29,7 @@ pub(crate) fn impl_call(input: TokenStream) -> TokenStream {
             }
         }
     } else {
-        quote! { }
+        quote! {}
     };
 
     (quote! {

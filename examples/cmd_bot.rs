@@ -122,10 +122,8 @@ async fn main() -> ClientResult<()> {
                             if let Some(cmd) = parts.next() {
                                 let reply = match cmd {
                                     "ping" => {
-                                        let created_at = {
-                                            let tmp = message.created_at.unwrap_or_default();
-                                            Duration::new(tmp.seconds as u64, tmp.nanos as u32)
-                                        };
+                                        let created_at =
+                                            { Duration::from_secs(message.created_at) };
                                         let arrive_duration = (UNIX_EPOCH.elapsed().unwrap()
                                             - created_at)
                                             .as_secs_f32();

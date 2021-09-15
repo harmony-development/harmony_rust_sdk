@@ -38,9 +38,11 @@ tokio = { version="1.9", features=["sync", "parking_lot"], optional=true }
 urlencoding = { version="2.1", optional=true }
 http = "0.2"
 parking_lot = "0.11"
+rkyv = { version="0.7", optional=true }
 
 [build-dependencies]
 hrpc-build = { version="0.7", default-features=false, features=["boxed"] }
+prost-build = "0.8"
 regex = "1"
 walkdir = "2"
 
