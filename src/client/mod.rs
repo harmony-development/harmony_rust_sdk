@@ -218,15 +218,14 @@ impl Client {
     {
         let mut sock = self.subscribe_events(subs).await?;
         loop {
-            if let Some(res) = sock.get_event().await {
-                match res {
-                    Ok(event) => {
-                        if handler(self, event).await? {
-                            return Ok(());
-                        }
+            match sock.get_event().await {
+                Ok(Some(ev)) => {
+                    if handler(self, ev).await? {
+                        return Ok(());
                     }
-                    Err(err) => tracing::error!("{}", err),
                 }
+                Err(err) => tracing::error!("{}", err),
+                _ => std::hint::spin_loop(),
             }
         }
     }
@@ -477,7 +476,7 @@ impl Client {
 /// Event subscription socket.
 #[derive(Debug, Clone)]
 pub struct EventsSocket {
-    inner: hrpc::client::socket::Socket<
+    inner: hrpc::client::Socket<
         crate::api::chat::StreamEventsRequest,
         crate::api::chat::StreamEventsResponse,
     >,
@@ -485,16 +484,12 @@ pub struct EventsSocket {
 
 impl EventsSocket {
     /// Get an event.
-    pub async fn get_event(&mut self) -> Option<ClientResult<crate::api::chat::Event>> {
-        let res = self.inner.get_message().await?;
-        match res {
-            Ok(resp) => resp
-                .event
-                .map(|a| crate::api::chat::Event::try_from(a).ok())
-                .flatten()
-                .map(Ok),
-            Err(err) => Some(Err(err.into())),
-        }
+    pub async fn get_event(&mut self) -> ClientResult<Option<crate::api::chat::Event>> {
+        let resp = self.inner.receive_message().await?;
+        Ok(resp
+            .event
+            .map(|a| crate::api::chat::Event::try_from(a).ok())
+            .flatten())
     }
 
     /// Add a new event source.
@@ -506,15 +501,15 @@ impl EventsSocket {
     }
 
     /// Close this socket.
-    pub async fn close(self) -> ClientResult<()> {
-        self.inner.close().await.map_err(Into::into)
+    pub async fn close(self) {
+        self.inner.close().await
     }
 }
 
 /// Auth steps subscription socket.
 #[derive(Debug, Clone)]
 pub struct AuthSocket {
-    inner: hrpc::client::socket::ReadSocket<
+    inner: hrpc::client::Socket<
         crate::api::auth::StreamStepsRequest,
         crate::api::auth::StreamStepsResponse,
     >,
@@ -522,16 +517,16 @@ pub struct AuthSocket {
 
 impl AuthSocket {
     /// Get an auth step.
-    pub async fn get_step(&mut self) -> Option<ClientResult<crate::api::auth::AuthStep>> {
-        let res = self.inner.get_message().await?;
-        match res {
-            Ok(resp) => resp.step.map(Ok),
-            Err(err) => Some(Err(err.into())),
-        }
+    pub async fn get_step(&mut self) -> ClientResult<Option<crate::api::auth::AuthStep>> {
+        self.inner
+            .receive_message()
+            .await
+            .map(|s| s.step)
+            .map_err(Into::into)
     }
 
     /// Close this socket.
-    pub async fn close(self) -> ClientResult<()> {
-        self.inner.close().await.map_err(Into::into)
+    pub async fn close(self) {
+        self.inner.close().await
     }
 }
