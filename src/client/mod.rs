@@ -279,7 +279,7 @@ impl Client {
     ///
     /// Note that this does not support the convenience types defined in the [`api`] module.
     /// You will need to convert them to the corresponding request type with `Request::from`.
-    pub async fn batch_call<Req, Resp>(
+    pub async fn batch_call<Req>(
         &self,
         requests: Vec<Req>,
     ) -> ClientResult<Vec<<Req as Endpoint>::Response>>
