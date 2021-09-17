@@ -152,7 +152,7 @@ fn write_permissions_rs(out_dir: &std::path::Path) {
     use regex::Regex;
     use walkdir::WalkDir;
 
-    let r = Regex::new(r#"option \(harmonytypes.v1.metadata\).requires_permission_node[ \n]+=[ \n]+"(?P<perm>.+)";"#).unwrap();
+    let r = Regex::new(&format!(r#"option \(harmonytypes.v1.metadata\).requires_permission_node[ {}]+=[ {}]+"(?P<perm>.+)";"#, NEWLINE, NEWLINE)).unwrap();
 
     let mut perms = String::new();
 
@@ -185,3 +185,9 @@ fn write_permissions_rs(out_dir: &std::path::Path) {
     let perms_path = out_dir.join("permissions.rs");
     std::fs::write(perms_path, perms).unwrap();
 }
+
+const NEWLINE: &str = if cfg!(target_os = "windows") {
+    "\r\n"
+} else {
+    "\n"
+};
