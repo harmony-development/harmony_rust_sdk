@@ -21,7 +21,11 @@ use error::*;
 
 use std::{convert::TryFrom, sync::Arc};
 
-use hrpc::{bytes::Bytes, url::Url};
+use hrpc::{
+    bytes::{Bytes, BytesMut},
+    encode_protobuf_message,
+    url::Url,
+};
 use parking_lot::{Mutex, MutexGuard};
 use reqwest::Client as HttpClient;
 use tokio::sync::Mutex as AsyncMutex;
@@ -269,6 +273,37 @@ impl Client {
     /// Execute the given request.
     pub async fn call<Req: Endpoint>(&self, request: Req) -> ClientResult<Req::Response> {
         request.call_with(self).await
+    }
+
+    /// Execute the given requests a batch (same) request.
+    ///
+    /// Note that this does not support the convenience types defined in the [`api`] module.
+    /// You will need to convert them to the corresponding request type with `Request::from`.
+    pub async fn batch_call<Req, Resp>(
+        &self,
+        requests: Vec<Req>,
+    ) -> ClientResult<Vec<<Req as Endpoint>::Response>>
+    where
+        Req: Endpoint + prost::Message,
+        <Req as Endpoint>::Response: prost::Message + Default,
+    {
+        use prost::Message;
+
+        let encoded = requests
+            .into_iter()
+            .map(encode_protobuf_message)
+            .map(BytesMut::freeze);
+        let batch_req = crate::api::batch::BatchSameRequest {
+            endpoint: Req::ENDPOINT_PATH.to_string(),
+            requests: encoded.collect(),
+        };
+        let responses = self.call(batch_req).await?.responses;
+        let mut decoded = Vec::with_capacity(responses.len());
+        for response in responses {
+            let decoded_msg = <Req as Endpoint>::Response::decode(response.as_ref())?;
+            decoded.push(decoded_msg);
+        }
+        Ok(decoded)
     }
 
     #[inline(always)]

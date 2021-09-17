@@ -6,6 +6,7 @@ use std::{
 pub use crate::api::HmcParseError;
 pub use hrpc::client::ClientError as InternalClientError;
 pub use hrpc::url::ParseError as UrlError;
+use prost::DecodeError;
 pub use reqwest::Error as ReqwestError;
 
 /// Result type used by many `Client` methods.
@@ -61,6 +62,12 @@ impl From<UrlError> for ClientError {
 impl From<InternalClientError> for ClientError {
     fn from(e: InternalClientError) -> Self {
         Self::Internal(e)
+    }
+}
+
+impl From<DecodeError> for ClientError {
+    fn from(e: DecodeError) -> Self {
+        Self::Internal(InternalClientError::MessageDecode(e))
     }
 }
 
