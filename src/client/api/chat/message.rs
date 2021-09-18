@@ -51,9 +51,10 @@ pub struct SendMessage {
     #[new(default)]
     content: Content,
     #[new(default)]
-    echo_id: u64,
+    #[builder(setter(strip_option))]
+    echo_id: Option<u64>,
     #[new(default)]
-    in_reply_to: u64,
+    in_reply_to: Option<u64>,
     #[new(default)]
     #[builder(setter(strip_option))]
     overrides: Option<Override>,
