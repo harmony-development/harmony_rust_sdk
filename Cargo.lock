@@ -529,9 +529,9 @@ dependencies = [
 
 [[package]]
 name = "hrpc-build"
-version = "0.8.1"
+version = "0.8.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0d0ff9dcc318689bce114950f55c9a8741c8e772b24dae1426205ab3444503ef"
+checksum = "c571ed118b34522a3d4ed8fc9778d59b70b9c45c5224f11b570885c48e56a15d"
 dependencies = [
  "proc-macro2",
  "prost-build",
