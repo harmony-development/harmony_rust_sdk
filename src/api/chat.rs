@@ -92,11 +92,11 @@ impl From<EventSource> for StreamEventsRequest {
 #[derive(Debug, Clone, Copy, Eq, PartialEq)]
 pub enum Place {
     /// Top of the list.
-    Top { before: u64 },
+    Top,
     /// Between two items in the list.
     Between { after: u64, before: u64 },
     /// Bottom of the list.
-    Bottom { after: u64 },
+    Bottom,
 }
 
 impl From<ItemPosition> for Place {
@@ -105,20 +105,14 @@ impl From<ItemPosition> for Place {
 
         match pos
             .position
-            .unwrap_or(Position::Between(item_position::Between {
-                next_id: 0,
-                previous_id: 0,
-            })) {
-            Position::Top(top) => Place::Top {
-                before: top.next_id,
-            },
+            .unwrap_or(Position::Bottom(item_position::Bottom {}))
+        {
+            Position::Top(_) => Place::Top,
             Position::Between(between) => Place::Between {
                 after: between.previous_id,
                 before: between.next_id,
             },
-            Position::Bottom(bottom) => Place::Bottom {
-                after: bottom.previous_id,
-            },
+            Position::Bottom(_) => Place::Bottom,
         }
     }
 }
@@ -128,12 +122,12 @@ impl From<Place> for ItemPosition {
         use item_position::*;
 
         let pos = match place {
-            Place::Top { before } => Position::Top(Top { next_id: before }),
+            Place::Top {} => Position::Top(Top {}),
             Place::Between { after, before } => Position::Between(Between {
                 previous_id: after,
                 next_id: before,
             }),
-            Place::Bottom { after } => Position::Bottom(Bottom { previous_id: after }),
+            Place::Bottom {} => Position::Bottom(Bottom {}),
         };
 
         ItemPosition {
@@ -171,8 +165,8 @@ impl Place {
     /// assert_eq!(place.after(), None);
     /// assert_eq!(place.before(), Some(1));
     /// ```
-    pub fn top(before: u64) -> Self {
-        Self::Top { before }
+    pub fn top() -> Self {
+        Self::Top {}
     }
 
     /// Create a place at the bottom of a list.
@@ -184,40 +178,8 @@ impl Place {
     /// assert_eq!(place.after(), Some(1));
     /// assert_eq!(place.before(), None);
     /// ```
-    pub fn bottom(after: u64) -> Self {
-        Self::Bottom { after }
-    }
-
-    /// Get next place ID.
-    ///
-    /// # Example
-    /// ```
-    /// # use harmony_rust_sdk::api::chat::Place;
-    /// let place = Place::bottom(1);
-    /// assert_eq!(place.after(), Some(1));
-    /// ```
-    pub fn after(&self) -> Option<u64> {
-        match self {
-            Place::Top { before: _ } => None,
-            Place::Between { before: _, after } => Some(*after),
-            Place::Bottom { after } => Some(*after),
-        }
-    }
-
-    /// Get previous place ID.
-    ///
-    /// # Example
-    /// ```
-    /// # use harmony_rust_sdk::api::chat::Place;
-    /// let place = Place::top(1);
-    /// assert_eq!(place.before(), Some(1));
-    /// ```
-    pub fn before(&self) -> Option<u64> {
-        match self {
-            Place::Top { before } => Some(*before),
-            Place::Between { before, after: _ } => Some(*before),
-            Place::Bottom { after: _ } => None,
-        }
+    pub fn bottom() -> Self {
+        Self::Bottom {}
     }
 }
 

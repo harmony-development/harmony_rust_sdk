@@ -1,7 +1,7 @@
 use super::*;
 use crate::api::{chat::*, profile::GetProfileRequest};
 
-pub use crate::api::chat::EventSource;
+pub use crate::api::chat::{action_payload, ActionPayload, EventSource};
 
 /// A message location. This type can be used as multiple requests.
 #[into_request("GetMessageRequest", "DeleteMessageRequest")]
@@ -52,8 +52,7 @@ pub struct TriggerAction {
     guild_id: u64,
     channel_id: u64,
     message_id: u64,
-    action_id: String,
-    action_data: String,
+    payload: ActionPayload,
 }
 
 /// Convenience type to create a valid [`TypingRequest`].

@@ -1,9 +1,7 @@
-pub use crate::api::{
-    chat::{
-        content::{AttachmentContent, EmbedContent, PhotoContent, TextContent},
-        DeleteMessageRequest, GetMessageRequest, SendMessageRequest, UpdateMessageTextRequest,
-    },
-    harmonytypes::{format as text_format, Format as TextFormat, FormattedText},
+pub use crate::api::chat::{
+    content::{AttachmentContent, EmbedContent, PhotoContent, TextContent},
+    format as text_format, DeleteMessageRequest, Format as TextFormat, FormattedText,
+    GetMessageRequest, SendMessageRequest, UpdateMessageTextRequest,
 };
 
 use super::{harmonytypes::Metadata, *};
@@ -57,7 +55,7 @@ pub struct SendMessage {
     in_reply_to: Option<u64>,
     #[new(default)]
     #[builder(setter(strip_option))]
-    overrides: Option<Override>,
+    overrides: Option<Overrides>,
     #[new(default)]
     #[builder(setter(strip_option))]
     metadata: Option<Metadata>,
