@@ -53,7 +53,7 @@ pub struct CreateChannel {
     #[builder(setter(strip_option))]
     metadata: Option<Metadata>,
     #[new(default)]
-    is_category: bool,
+    kind: ChannelKind,
 }
 
 /// Convenience type to create a valid [`DeleteChannelRequest`].
