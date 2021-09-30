@@ -4,7 +4,10 @@ pub use crate::api::chat::{
     UpdateChannelOrderRequest,
 };
 
-use super::{harmonytypes::Metadata, *};
+use super::{
+    harmonytypes::{ItemPosition, Metadata},
+    *,
+};
 
 /// Convenience type to create a valid [`GetChannelMessagesRequest`].
 ///
@@ -48,7 +51,7 @@ impl_into_req_from!(GetChannelMessages);
 pub struct CreateChannel {
     guild_id: u64,
     channel_name: String,
-    position: Place,
+    position: ItemPosition,
     #[new(default)]
     #[builder(setter(strip_option))]
     metadata: Option<Metadata>,
@@ -99,5 +102,5 @@ impl_into_req_from!(UpdateChannelInformation);
 pub struct UpdateChannelOrder {
     guild_id: u64,
     channel_id: u64,
-    new_position: Place,
+    new_position: ItemPosition,
 }

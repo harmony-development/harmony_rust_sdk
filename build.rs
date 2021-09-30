@@ -102,6 +102,10 @@ fn main() {
     builder = builder.type_attribute(".protocol.profile.v1.UserStatus", rkyv_derive);
     builder = builder.type_attribute(".protocol.harmonytypes.v1.Format.Color.Kind", rkyv_derive);
     builder = builder.type_attribute(
+        ".protocol.harmonytypes.v1.ItemPosition.Position",
+        rkyv_derive,
+    );
+    builder = builder.type_attribute(
         ".protocol.chat.v1.GetChannelMessagesRequest.Direction",
         rkyv_derive,
     );

@@ -1,4 +1,3 @@
-use super::harmonytypes::{item_position, ItemPosition};
 use harmony_derive::into_request;
 use std::{
     convert::TryFrom,
@@ -85,101 +84,6 @@ impl From<EventSource> for StreamEventsRequest {
                 ),
             }),
         }
-    }
-}
-
-/// Describes a place in a list.
-#[derive(Debug, Clone, Copy, Eq, PartialEq)]
-pub enum Place {
-    /// Top of the list.
-    Top,
-    /// Between two items in the list.
-    Between { after: u64, before: u64 },
-    /// Bottom of the list.
-    Bottom,
-}
-
-impl From<ItemPosition> for Place {
-    fn from(pos: ItemPosition) -> Self {
-        use item_position::Position;
-
-        match pos
-            .position
-            .unwrap_or(Position::Bottom(item_position::Bottom {}))
-        {
-            Position::Top(_) => Place::Top,
-            Position::Between(between) => Place::Between {
-                after: between.previous_id,
-                before: between.next_id,
-            },
-            Position::Bottom(_) => Place::Bottom,
-        }
-    }
-}
-
-impl From<Place> for ItemPosition {
-    fn from(place: Place) -> Self {
-        use item_position::*;
-
-        let pos = match place {
-            Place::Top {} => Position::Top(Top {}),
-            Place::Between { after, before } => Position::Between(Between {
-                previous_id: after,
-                next_id: before,
-            }),
-            Place::Bottom {} => Position::Bottom(Bottom {}),
-        };
-
-        ItemPosition {
-            position: Some(pos),
-        }
-    }
-}
-
-impl From<Place> for Option<ItemPosition> {
-    fn from(p: Place) -> Self {
-        Some(p.into())
-    }
-}
-
-impl Place {
-    /// Create a place between two other places.
-    ///
-    /// # Example
-    /// ```
-    /// # use harmony_rust_sdk::api::chat::Place;
-    /// let place = Place::between(2, 3);
-    /// assert_eq!(place.after(), Some(3));
-    /// assert_eq!(place.before(), Some(2));
-    /// ```
-    pub fn between(before: u64, after: u64) -> Self {
-        Self::Between { after, before }
-    }
-
-    /// Create a place at the top of a list.
-    ///
-    /// # Example
-    /// ```
-    /// # use harmony_rust_sdk::api::chat::Place;
-    /// let place = Place::top(1);
-    /// assert_eq!(place.after(), None);
-    /// assert_eq!(place.before(), Some(1));
-    /// ```
-    pub fn top() -> Self {
-        Self::Top {}
-    }
-
-    /// Create a place at the bottom of a list.
-    ///
-    /// # Example
-    /// ```
-    /// # use harmony_rust_sdk::api::chat::Place;
-    /// let place = Place::bottom(1);
-    /// assert_eq!(place.after(), Some(1));
-    /// assert_eq!(place.before(), None);
-    /// ```
-    pub fn bottom() -> Self {
-        Self::Bottom {}
     }
 }
 

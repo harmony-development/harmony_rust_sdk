@@ -4,7 +4,7 @@ pub use crate::api::chat::{
     Permission, QueryHasPermissionRequest, SetPermissionsRequest,
 };
 
-use super::*;
+use super::{harmonytypes::ItemPosition, *};
 
 /// Convenience type to create a valid [`GetPermissionsRequest`].
 #[impl_call_action(chat)]
@@ -96,7 +96,7 @@ pub struct ModifyGuildRole {
 pub struct MoveRole {
     guild_id: u64,
     role_id: u64,
-    new_position: Place,
+    new_position: ItemPosition,
 }
 
 /// Convenience type to create a valid [`ManageUserRolesRequest`].
