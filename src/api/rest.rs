@@ -3,7 +3,7 @@ use std::{convert::TryInto, error::Error as StdError, str::FromStr};
 use super::Hmc;
 use derive_more::{Display, From, Into, IntoIterator};
 use derive_new::new;
-use hrpc::url::Url;
+use hrpc::exports::http::Uri;
 use http::HeaderValue;
 use serde::{Deserialize, Serialize};
 
@@ -22,18 +22,7 @@ pub enum FileId {
     /// A plain ID. When you use this for a request, the `Client`s homeserver will be used.
     Id(String),
     /// An external URL. This MUST be an image according to the protocol.
-    External(Url),
-}
-
-impl FileId {
-    /// Get a string reference to this `FileId`.
-    pub fn as_str(&self) -> &str {
-        match self {
-            FileId::Hmc(hmc) => hmc.as_str(),
-            FileId::Id(id) => id.as_str(),
-            FileId::External(url) => url.as_str(),
-        }
-    }
+    External(Uri),
 }
 
 impl From<FileId> for String {
@@ -41,7 +30,7 @@ impl From<FileId> for String {
         match o {
             FileId::Hmc(hmc) => hmc.into(),
             FileId::Id(id) => id,
-            FileId::External(url) => url.into(),
+            FileId::External(url) => url.to_string(),
         }
     }
 }
@@ -60,17 +49,18 @@ impl FromStr for FileId {
         if s.is_empty() {
             Err(InvalidFileId)
         } else {
-            match s.parse::<Url>() {
+            match s.parse::<Uri>() {
                 Ok(url) => {
                     if let Ok(hmc) = url.clone().try_into() {
                         Ok(FileId::Hmc(hmc))
                     } else if !url.path().trim_start_matches('/').is_empty() {
                         Ok(FileId::External(url))
+                    } else if url.host().is_none() {
+                        Ok(FileId::Id(s.to_owned()))
                     } else {
                         Err(InvalidFileId)
                     }
                 }
-                Err(hrpc::url::ParseError::RelativeUrlWithoutBase) => Ok(FileId::Id(s.to_owned())),
                 _ => Err(InvalidFileId),
             }
         }

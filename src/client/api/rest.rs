@@ -1,6 +1,7 @@
 use super::*;
 use crate::client::error::ClientError;
 
+use http::{uri::PathAndQuery, Uri};
 use prost::bytes::Bytes;
 use reqwest::{multipart::*, Response};
 use serde::Deserialize;
@@ -25,10 +26,7 @@ pub async fn upload(
     };
 
     // This unwrap is safe, since our client's homeserver url is valid, and the path we create is also checked at compile time.
-    let uri = client
-        .homeserver_url()
-        .join("/_harmony/media/upload")
-        .unwrap();
+    let uri = format!("{}/_harmony/media/upload", client.homeserver_url());
 
     let form = Form::new().part("file", Part::bytes(data));
 
@@ -61,6 +59,11 @@ pub async fn upload(
 pub async fn download(client: &Client, file_id: impl Into<FileId>) -> ClientResult<Response> {
     const ENDPOINT: &str = "/_harmony/media/download/";
 
+    let endpoint = {
+        let mut parts = client.homeserver_url().clone().into_parts();
+        parts.path_and_query = Some(PathAndQuery::from_static(ENDPOINT));
+        Uri::from_parts(parts).unwrap().to_string()
+    };
     let uri = match file_id.into() {
         FileId::Hmc(hmc) => format!(
             "https://{}:{}{}{}",
@@ -71,18 +74,12 @@ pub async fn download(client: &Client, file_id: impl Into<FileId>) -> ClientResu
         )
         .parse()
         .unwrap(),
-        FileId::Id(id) => client
-            .homeserver_url()
-            .join(ENDPOINT)
-            .unwrap()
-            .join(&id)
-            .unwrap(),
-        FileId::External(uri) => client
-            .homeserver_url()
-            .join(ENDPOINT)
-            .unwrap()
-            .join(urlencoding::encode(uri.as_str()).as_ref())
-            .unwrap(),
+        FileId::Id(id) => format!("{}/{}", endpoint, id),
+        FileId::External(uri) => format!(
+            "{}/{}",
+            endpoint,
+            urlencoding::encode(uri.to_string().as_str())
+        ),
     };
 
     let request = client.data.http.get(uri.as_str()).build()?;

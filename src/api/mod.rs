@@ -5,7 +5,8 @@ use std::{
     str::FromStr,
 };
 
-use hrpc::url::{ParseError as UrlParseError, Url};
+use hrpc::exports::http::{uri::InvalidUri as UrlParseError, Uri};
+use http::uri::{Parts, Scheme};
 
 /// Rest API common types.
 pub mod rest;
@@ -108,7 +109,7 @@ impl Display for HmcParseError {
 impl StdError for HmcParseError {}
 
 /// Errors that can occur when converting a possibly non-HMC string to a HMC URL.
-#[derive(Debug, Clone)]
+#[derive(Debug)]
 pub enum HmcFromStrError {
     /// Returned if the string isn't a valid URL.
     UrlParse(UrlParseError),
@@ -139,7 +140,7 @@ impl StdError for HmcFromStrError {
 /// An example HMC looks like `hmc://chat.harmonyapp.io/403cb46c-49cf-4ae1-b876-f38eb26accb0`.
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct Hmc {
-    inner: Url,
+    inner: Uri,
 }
 
 impl Hmc {
@@ -179,7 +180,7 @@ impl Hmc {
     /// assert_eq!(hmc.server(), "example.org");
     /// ```
     pub fn server(&self) -> &str {
-        self.inner.host_str().unwrap()
+        self.inner.host().unwrap()
     }
 
     /// Gets the port of this HMC.
@@ -191,19 +192,7 @@ impl Hmc {
     /// assert_eq!(hmc.port(), 2289);
     /// ```
     pub fn port(&self) -> u16 {
-        self.inner.port().unwrap_or(2289)
-    }
-
-    /// Get the HMC URL as a string reference.
-    ///
-    /// # Example
-    /// ```
-    /// # use harmony_rust_sdk::api::Hmc;
-    /// let hmc = Hmc::new("example.org:2289", "403cb46c-49cf-4ae1-b876-f38eb26accb0").unwrap();
-    /// assert_eq!(hmc.as_str(), "hmc://example.org:2289/403cb46c-49cf-4ae1-b876-f38eb26accb0");
-    /// ```
-    pub fn as_str(&self) -> &str {
-        self.inner.as_str()
+        self.inner.port_u16().unwrap_or(2289)
     }
 }
 
@@ -215,13 +204,7 @@ impl Display for Hmc {
 
 impl From<Hmc> for String {
     fn from(hmc: Hmc) -> String {
-        hmc.inner.into()
-    }
-}
-
-impl From<Hmc> for Url {
-    fn from(hmc: Hmc) -> Self {
-        hmc.inner
+        hmc.inner.to_string()
     }
 }
 
@@ -229,16 +212,16 @@ impl FromStr for Hmc {
     type Err = HmcFromStrError;
 
     fn from_str(value: &str) -> Result<Self, Self::Err> {
-        let url: Url = value.parse().map_err(HmcFromStrError::UrlParse)?;
+        let url = value.parse::<Uri>().map_err(HmcFromStrError::UrlParse)?;
 
         Self::try_from(url).map_err(HmcFromStrError::HmcParse)
     }
 }
 
-impl TryFrom<Url> for Hmc {
+impl TryFrom<Uri> for Hmc {
     type Error = HmcParseError;
 
-    fn try_from(value: Url) -> Result<Self, Self::Error> {
+    fn try_from(value: Uri) -> Result<Self, Self::Error> {
         if value.host().is_none() {
             return Err(HmcParseError::NoServer);
         };
@@ -267,13 +250,13 @@ mod test {
 
     #[test]
     fn parse_valid_hmc() {
-        Hmc::try_from(VALID_HMC.parse::<Url>().unwrap()).unwrap();
+        Hmc::try_from(VALID_HMC.parse::<Uri>().unwrap()).unwrap();
     }
 
     #[test]
     #[should_panic(expected = "InvalidId")]
     fn parse_invalid_id_hmc() {
-        if let Err(e) = Hmc::try_from(INVALID_ID_HMC.parse::<Url>().unwrap()) {
+        if let Err(e) = Hmc::try_from(INVALID_ID_HMC.parse::<Uri>().unwrap()) {
             panic!("{:?}", e)
         }
     }
@@ -281,7 +264,7 @@ mod test {
     #[test]
     #[should_panic(expected = "RelativeUrlWithoutBase")]
     fn parse_no_server_hmc() {
-        if let Err(e) = Hmc::try_from(NO_SERVER_HMC.parse::<Url>().unwrap()) {
+        if let Err(e) = Hmc::try_from(NO_SERVER_HMC.parse::<Uri>().unwrap()) {
             panic!("{:?}", e)
         }
     }
@@ -289,7 +272,7 @@ mod test {
     #[test]
     #[should_panic(expected = "NoId")]
     fn parse_no_id_hmc() {
-        if let Err(e) = Hmc::try_from(NO_ID_HMC.parse::<Url>().unwrap()) {
+        if let Err(e) = Hmc::try_from(NO_ID_HMC.parse::<Uri>().unwrap()) {
             panic!("{:?}", e)
         }
     }
@@ -304,13 +287,11 @@ pub struct HomeserverIdentifier {
 
 impl HomeserverIdentifier {
     /// Turn the identifier into the server URL.
-    pub fn to_url(&self) -> Result<Url, HomeserverIdParseError> {
-        let mut url = Url::parse("https://example.net").unwrap();
-        url.set_host(Some(self.domain.as_str()))
-            .map_err(|_| HomeserverIdParseError::Malformed)?;
-        url.set_port(Some(self.port))
-            .map_err(|_| HomeserverIdParseError::Malformed)?;
-        Ok(url)
+    pub fn to_url(&self) -> Uri {
+        let mut parts = Parts::default();
+        parts.scheme = Some(Scheme::from_str("https").unwrap());
+        parts.authority = Some(format!("{}:{}", self.domain, self.port).parse().unwrap());
+        Uri::from_parts(parts).unwrap()
     }
 }
 
@@ -348,7 +329,7 @@ impl FromStr for HomeserverIdentifier {
         let mut split = s.split(':');
 
         let domain = split.next().ok_or(HomeserverIdParseError::MissingDomain)?;
-        if hrpc::url::Host::parse(domain).is_err() {
+        if domain.parse::<http::uri::Authority>().is_err() {
             return Err(HomeserverIdParseError::Malformed);
         }
         let port_raw = split.next().ok_or(HomeserverIdParseError::MissingPort)?;
@@ -365,7 +346,7 @@ impl FromStr for HomeserverIdentifier {
 }
 
 /// A trait to facilitate easy request execution.
-#[hrpc::async_trait]
+#[hrpc::exports::async_trait]
 pub trait Endpoint {
     /// The response type of this endpoint request.
     type Response;

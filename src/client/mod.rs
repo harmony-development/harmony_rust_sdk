@@ -22,9 +22,11 @@ use error::*;
 use std::{convert::TryFrom, sync::Arc};
 
 use hrpc::{
-    bytes::{Bytes, BytesMut},
     encode_protobuf_message,
-    url::Url,
+    exports::{
+        bytes::{Bytes, BytesMut},
+        http::Uri,
+    },
 };
 use parking_lot::{Mutex, MutexGuard};
 use reqwest::Client as HttpClient;
@@ -81,7 +83,7 @@ impl AuthStatus {
 
 #[derive(Debug)]
 struct ClientData {
-    homeserver_url: Url,
+    homeserver_url: Uri,
     auth_status: Arc<Mutex<(AuthStatus, Bytes)>>,
     chat: AsyncMutex<ChatService>,
     auth: AsyncMutex<AuthService>,
@@ -113,10 +115,14 @@ impl Client {
     /// # Ok(())
     /// # }
     /// ```
-    pub async fn new(mut homeserver_url: Url, session: Option<Session>) -> ClientResult<Self> {
+    pub async fn new(mut homeserver_url: Uri, session: Option<Session>) -> ClientResult<Self> {
         // Add the default scheme if not specified
-        if !matches!(homeserver_url.scheme(), "http" | "https") {
-            homeserver_url.set_scheme("https").unwrap();
+        if !matches!(homeserver_url.scheme_str(), Some("http" | "https")) {
+            homeserver_url = {
+                let mut parts = homeserver_url.into_parts();
+                parts.scheme = Some("https".parse().unwrap());
+                Uri::from_parts(parts).unwrap()
+            };
         }
 
         let http = HttpClient::builder().build()?;
@@ -131,7 +137,11 @@ impl Client {
                 server: String,
             }
 
-            let url = homeserver_url.join("/_harmony/server").unwrap();
+            let url = {
+                let mut parts = homeserver_url.clone().into_parts();
+                parts.path_and_query = Some("/_harmony/server".parse().unwrap());
+                Uri::from_parts(parts).unwrap()
+            };
 
             if let Ok(response) = http
                 .get(&url.to_string())
@@ -140,16 +150,22 @@ impl Client {
                 .json::<Server>()
                 .await
             {
-                let host: Url = response.server.parse().unwrap();
+                let host: Uri = response.server.parse().unwrap();
                 homeserver_url = host;
             }
         };
 
         // Add the default port if not specified
         if homeserver_url.port().is_none() {
-            // These unwraps are safe since we use `Url` everywhere and we are sure that our `new_authority` is
-            // indeed a correct authority.
-            homeserver_url.set_port(Some(2289)).unwrap();
+            homeserver_url = {
+                let mut parts = homeserver_url.into_parts();
+                parts.authority = Some(
+                    format!("{}:2289", parts.authority.unwrap().as_str())
+                        .parse()
+                        .unwrap(),
+                );
+                Uri::from_parts(parts).unwrap()
+            }
         }
 
         #[cfg(debug_assertions)]
@@ -179,8 +195,9 @@ impl Client {
                 }
             })
         });
-        let inner = hrpc::client::Client::new(http.clone(), homeserver_url.clone())?
-            .modify_request_headers_with(modify_with);
+
+        let inner = hrpc::client::Client::new(homeserver_url.clone())?
+            .modify_request_headers_with(modify_with.clone());
 
         let auth = AuthService::new_inner(inner.clone());
         let chat = ChatService::new_inner(inner.clone());
@@ -339,7 +356,7 @@ impl Client {
     /// # Ok(())
     /// # }
     /// ```
-    pub fn homeserver_url(&self) -> &Url {
+    pub fn homeserver_url(&self) -> &Uri {
         &self.data.homeserver_url
     }
 
@@ -511,7 +528,7 @@ impl Client {
 /// Event subscription socket.
 #[derive(Debug, Clone)]
 pub struct EventsSocket {
-    inner: hrpc::client::Socket<
+    inner: hrpc::client::socket::Socket<
         crate::api::chat::StreamEventsRequest,
         crate::api::chat::StreamEventsResponse,
     >,
@@ -544,7 +561,7 @@ impl EventsSocket {
 /// Auth steps subscription socket.
 #[derive(Debug, Clone)]
 pub struct AuthSocket {
-    inner: hrpc::client::Socket<
+    inner: hrpc::client::socket::Socket<
         crate::api::auth::StreamStepsRequest,
         crate::api::auth::StreamStepsResponse,
     >,

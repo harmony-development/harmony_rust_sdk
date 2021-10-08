@@ -33,7 +33,7 @@ pub(crate) fn impl_call(input: TokenStream) -> TokenStream {
     };
 
     (quote! {
-        #[hrpc::async_trait]
+        #[hrpc::exports::async_trait]
         impl crate::api::Endpoint for #req {
             type Response = #resp;
 

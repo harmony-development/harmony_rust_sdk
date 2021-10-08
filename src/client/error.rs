@@ -4,8 +4,8 @@ use std::{
 };
 
 pub use crate::api::HmcParseError;
-pub use hrpc::client::ClientError as InternalClientError;
-pub use hrpc::url::ParseError as UrlError;
+pub use hrpc::client::error::ClientError as InternalClientError;
+pub use hrpc::exports::http::uri::InvalidUri as UrlError;
 use prost::DecodeError;
 pub use reqwest::Error as ReqwestError;
 
@@ -67,7 +67,9 @@ impl From<InternalClientError> for ClientError {
 
 impl From<DecodeError> for ClientError {
     fn from(e: DecodeError) -> Self {
-        Self::Internal(InternalClientError::MessageDecode(e))
+        Self::Internal(InternalClientError::MessageDecode(
+            hrpc::DecodeBodyError::InvalidProtoMessage(e),
+        ))
     }
 }
 
