@@ -74,55 +74,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "cdb031dd78e28731d87d56cc8ffef4a8f36ca26c38fe2de700543e627f8a464a"
 
 [[package]]
-name = "axum"
-version = "0.2.8"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8f08f95a202e827209db1491047aa57c18c8adb4c5efcfcfd4a2da4838ee3a72"
-dependencies = [
- "async-trait",
- "base64",
- "bitflags",
- "bytes",
- "futures-util",
- "http",
- "http-body",
- "hyper",
- "pin-project-lite",
- "regex",
- "serde",
- "serde_json",
- "serde_urlencoded",
- "sha-1",
- "sync_wrapper",
- "tokio",
- "tokio-tungstenite",
- "tokio-util",
- "tower",
- "tower-http",
- "tower-layer",
- "tower-service",
-]
-
-[[package]]
-name = "axum-server"
-version = "0.2.5"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6c2ade61ce16acf12d54d275bdb940f80d4e565ccf471d7c8ac739e438531ae4"
-dependencies = [
- "futures-util",
- "http",
- "http-body",
- "hyper",
- "parking_lot",
- "rustls",
- "tokio",
- "tokio-rustls",
- "tower-http",
- "tower-layer",
- "tower-service",
-]
-
-[[package]]
 name = "base64"
 version = "0.13.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -535,24 +486,25 @@ dependencies = [
 
 [[package]]
 name = "hrpc"
-version = "0.12.1"
+version = "0.13.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "36d0d7685160c5517bc413b8752d2f457b639cf1796c2423d4a9ec0d17f5a061"
+checksum = "1a872cc52826795ee09f8256ee809e780e1f00b1021c4a1208cfb2621352b1b0"
 dependencies = [
  "ahash",
  "async-trait",
- "axum",
- "axum-server",
+ "base64",
  "bytes",
  "dashmap",
  "flume",
  "futures-util",
  "http",
+ "http-body",
  "hyper",
  "hyper-rustls",
  "parking_lot",
  "prost",
  "rustls-native-certs",
+ "sha-1",
  "tokio",
  "tokio-rustls",
  "tokio-tungstenite",
@@ -563,9 +515,9 @@ dependencies = [
 
 [[package]]
 name = "hrpc-build"
-version = "0.9.1"
+version = "0.13.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6718fda36934b8ea994cfa655deeaac53547301264940f7ecb400525193a80ed"
+checksum = "1f4fd22781c06ac78b2010213118797c1b5c95df64516d3a6cdc4d4b4d45f219"
 dependencies = [
  "proc-macro2",
  "prost-build",
@@ -1501,12 +1453,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "sync_wrapper"
-version = "0.1.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "20518fe4a4c9acf048008599e464deb21beeae3d3578418951a189c235a7a9a8"
-
-[[package]]
 name = "tempfile"
 version = "3.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1643,11 +1589,8 @@ dependencies = [
  "futures-core",
  "futures-util",
  "pin-project",
- "tokio",
- "tokio-util",
  "tower-layer",
  "tower-service",
- "tracing",
 ]
 
 [[package]]
