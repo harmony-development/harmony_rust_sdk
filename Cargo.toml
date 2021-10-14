@@ -19,7 +19,7 @@ all-features = true
 
 [dependencies]
 prost = "0.8"
-prost-types = "0.8"
+prost-types = "0.9"
 derive-new = "0.5"
 derive_more = "0.99"
 hrpc = { version="0.17", default-features=false }
