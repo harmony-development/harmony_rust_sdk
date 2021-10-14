@@ -42,7 +42,7 @@ rkyv = { version="0.7", optional=true }
 
 [build-dependencies]
 hrpc-build = { version="0.17", default-features=false }
-prost-build = "0.8"
+prost-build = "0.9"
 regex = "1"
 walkdir = "2"
 
