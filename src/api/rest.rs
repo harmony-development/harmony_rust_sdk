@@ -55,13 +55,11 @@ impl FromStr for FileId {
                         Ok(FileId::Hmc(hmc))
                     } else if !url.path().trim_start_matches('/').is_empty() {
                         Ok(FileId::External(url))
-                    } else if url.host().is_none() {
-                        Ok(FileId::Id(s.to_owned()))
                     } else {
-                        Err(InvalidFileId)
+                        Ok(FileId::Id(s.to_owned()))
                     }
                 }
-                _ => Err(InvalidFileId),
+                _ => Ok(FileId::Id(s.to_owned())),
             }
         }
     }
@@ -133,4 +131,41 @@ pub struct About {
     /// "message of the day", can be used to put maintenance information.
     #[serde(rename = "messageOfTheDay")]
     pub message_of_the_day: String,
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::str::FromStr;
+
+    #[test]
+    fn parse_id() {
+        const ID: &str = "654624512343";
+        let file_id = FileId::from_str(ID).expect("file id parse");
+        assert!(matches!(file_id, FileId::Id(_)));
+        assert_eq!(ID.to_string(), file_id.to_string());
+    }
+
+    #[test]
+    fn parse_hmc() {
+        const HMC: &str = "hmc://chat.harmonyapp.io/654624512343";
+        let file_id = FileId::from_str(HMC).expect("file id parse");
+        assert!(matches!(file_id, FileId::Hmc(_)));
+        assert_eq!(HMC.to_string(), file_id.to_string());
+    }
+
+    #[test]
+    fn parse_uri() {
+        const URI: &str = "https://media.discordapp.net/attachments/330412938277945345/801119250269339728/unknown.png";
+        let file_id = FileId::from_str(URI).expect("file id parse");
+        assert!(matches!(file_id, FileId::External(_)));
+        assert_eq!(URI.to_string(), file_id.to_string());
+    }
+
+    #[test]
+    #[should_panic(expected = "InvalidFileId")]
+    fn parse_empty() {
+        const EMPTY: &str = "";
+        FileId::from_str(EMPTY).expect("file id parse");
+    }
 }

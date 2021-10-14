@@ -262,7 +262,7 @@ mod test {
     }
 
     #[test]
-    #[should_panic(expected = "RelativeUrlWithoutBase")]
+    #[should_panic(expected = "NoServer")]
     fn parse_no_server_hmc() {
         if let Err(e) = Hmc::try_from(NO_SERVER_HMC.parse::<Uri>().unwrap()) {
             panic!("{:?}", e)

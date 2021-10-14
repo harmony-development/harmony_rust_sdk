@@ -10,7 +10,7 @@ impl ItemPosition {
     /// ```
     /// # use harmony_rust_sdk::api::harmonytypes::ItemPosition;
     /// let place = ItemPosition::new_after(2);
-    /// assert_eq!(place.after(), Some(3));
+    /// assert_eq!(place.after(), Some(2));
     /// ```
     pub fn new_after(item_id: u64) -> Self {
         Self {
@@ -30,7 +30,7 @@ impl ItemPosition {
     /// ```
     /// # use harmony_rust_sdk::api::harmonytypes::ItemPosition;
     /// let place = ItemPosition::new_before(2);
-    /// assert_eq!(place.after(), Some(3));
+    /// assert_eq!(place.before(), Some(2));
     /// ```
     pub fn new_before(item_id: u64) -> Self {
         Self {
