@@ -28,7 +28,12 @@ pub async fn upload(
     // This unwrap is safe, since our client's homeserver url is valid, and the path we create is also checked at compile time.
     let uri = format!("{}/_harmony/media/upload", client.homeserver_url());
 
-    let form = Form::new().part("file", Part::bytes(data));
+    let form = Form::new().part(
+        "file",
+        Part::bytes(data)
+            .file_name(filename)
+            .mime_str(&content_type)?,
+    );
 
     let request = client
         .data
@@ -40,7 +45,6 @@ pub async fn upload(
             // with invalid-byte(s). If they do, they aren't respecting the protocol
             http::HeaderValue::from_maybe_shared_unchecked(token_bytes)
         })
-        .query(&[("filename", &filename), ("contentType", &content_type)])
         .build()?;
     #[cfg(debug_assertions)]
     tracing::debug!("Sending HTTP request: {:?}", request);
