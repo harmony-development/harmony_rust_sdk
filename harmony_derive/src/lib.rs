@@ -11,17 +11,71 @@ pub fn into_request(args: TokenStream, input: TokenStream) -> TokenStream {
 
 #[proc_macro_derive(builder, attributes(builder))]
 pub fn self_builder(input: TokenStream) -> TokenStream {
-    impl_self_builder::self_builder(input, false, false)
+    let input = syn::parse_macro_input!(input as syn::DeriveInput);
+    impl_self_builder::self_builder(&input, Default::default())
 }
 
 #[proc_macro_derive(self_builder, attributes(builder))]
 pub fn self_builder_impl(input: TokenStream) -> TokenStream {
-    impl_self_builder::self_builder(input, true, false)
+    let input = syn::parse_macro_input!(input as syn::DeriveInput);
+    impl_self_builder::self_builder(
+        &input,
+        impl_self_builder::Config {
+            for_self: true,
+            ..Default::default()
+        },
+    )
+}
+
+// HACK: remove this when prost-build gains "removing" type attrs per match
+#[proc_macro_attribute]
+pub fn self_builder_with_new(_: TokenStream, input: TokenStream) -> TokenStream {
+    let input = syn::parse_macro_input!(input as syn::DeriveInput);
+    let is_disc_enum = {
+        if let syn::Data::Enum(data) = &input.data {
+            data.variants.iter().any(|v| v.discriminant.is_some())
+        } else {
+            false
+        }
+    };
+
+    let self_impl: proc_macro2::TokenStream = impl_self_builder::self_builder(
+        &input,
+        impl_self_builder::Config {
+            for_self: true,
+            ..Default::default()
+        },
+    )
+    .into();
+
+    if is_disc_enum {
+        (quote::quote! {
+            #input
+
+            #self_impl
+        })
+        .into()
+    } else {
+        (quote::quote! {
+            #[derive(derive_new::new)]
+            #input
+
+            #self_impl
+        })
+        .into()
+    }
 }
 
 #[proc_macro_derive(self_builder_no_option, attributes(builder))]
 pub fn self_builder_impl_strip_option(input: TokenStream) -> TokenStream {
-    impl_self_builder::self_builder(input, true, true)
+    let input = syn::parse_macro_input!(input as syn::DeriveInput);
+    impl_self_builder::self_builder(
+        &input,
+        impl_self_builder::Config {
+            for_self: true,
+            strip_option: true,
+        },
+    )
 }
 
 #[proc_macro]

@@ -1,3 +1,15 @@
+const ALL_SERVICES: [&str; 9] = [
+    "chat",
+    "auth",
+    "profile",
+    "emote",
+    "harmonytypes",
+    "voice",
+    "sync",
+    "mediaproxy",
+    "batch",
+];
+
 fn main() {
     #[allow(unused_mut)]
     let mut builder = hrpc_build::configure();
@@ -41,79 +53,31 @@ fn main() {
     #[cfg(feature = "gen_emote")]
     protos.push("emote/v1/emote.proto");
 
-    let rkyv_derive = if cfg!(feature = "rkyv") {
-        ", rkyv::Archive, rkyv::Serialize, rkyv::Deserialize"
-    } else {
-        ""
-    };
-
-    builder = builder.type_attribute(
-        ".",
-        format!(
-            "#[derive(derive_new::new, harmony_derive::self_builder_no_option{})]",
-            rkyv_derive
-        ),
-    );
-    builder = builder.type_attribute(
-        ".protocol.batch.v1",
-        "#[derive(derive_new::new, harmony_derive::self_builder_no_option)]",
-    );
-    #[cfg(feature = "client")]
-    {
-        builder = builder.type_attribute(
-            ".protocol.chat.v1",
-            format!("#[harmony_derive::impl_call_req(chat)]\n#[derive(derive_new::new, harmony_derive::self_builder_no_option{})]", rkyv_derive),
-        );
-        builder = builder.type_attribute(
-            ".protocol.auth.v1",
-            format!("#[harmony_derive::impl_call_req(auth)]\n#[derive(derive_new::new, harmony_derive::self_builder_no_option{})]", rkyv_derive),
-        );
-        builder = builder.type_attribute(
-            ".protocol.profile.v1",
-            format!("#[harmony_derive::impl_call_req(profile)]\n#[derive(derive_new::new, harmony_derive::self_builder_no_option{})]", rkyv_derive),
-        );
-        builder = builder.type_attribute(
-            ".protocol.emote.v1",
-            format!("#[harmony_derive::impl_call_req(emote)]\n#[derive(derive_new::new, harmony_derive::self_builder_no_option{})]", rkyv_derive),
-        );
-        builder = builder.type_attribute(
-            ".protocol.mediaproxy.v1",
-            format!("#[harmony_derive::impl_call_req(mediaproxy)]\n#[derive(derive_new::new, harmony_derive::self_builder_no_option{})]", rkyv_derive),
-        );
-        builder = builder.type_attribute(
-            ".protocol.batch.v1",
-            "#[harmony_derive::impl_call_req(batch)]\n#[derive(derive_new::new, harmony_derive::self_builder_no_option)]",
-        );
-        builder = builder.type_attribute(
-            ".protocol.batch.v1.AnyRequest",
-            "#[derive(derive_new::new, harmony_derive::self_builder_no_option)]",
-        );
+    if cfg!(feature = "client") {
+        let add_impl_call_req = |builder: hrpc_build::Builder, service: &str| {
+            builder.type_attribute(
+                format!(".protocol.{}.v1", service),
+                format!("#[harmony_derive::impl_call_req({})]", service),
+            )
+        };
+        for service in ALL_SERVICES
+            .iter()
+            .filter(|a| !["harmonytypes", "sync"].contains(a))
+        {
+            builder = add_impl_call_req(builder, service);
+        }
     }
 
-    let rkyv_derive = if cfg!(feature = "rkyv") {
-        "#[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize)]"
-    } else {
-        ""
-    };
+    builder = builder.type_attribute(".", "#[harmony_derive::self_builder_with_new]");
 
-    builder = builder.type_attribute(".protocol.chat.v1.Format.Color.Kind", rkyv_derive);
-    builder = builder.type_attribute(".protocol.chat.v1.ChannelKind", rkyv_derive);
-    builder = builder.type_attribute(".protocol.chat.v1.LeaveReason", rkyv_derive);
-    builder = builder.type_attribute(".protocol.profile.v1.UserStatus", rkyv_derive);
-    builder = builder.type_attribute(".protocol.harmonytypes.v1.Format.Color.Kind", rkyv_derive);
-    builder = builder.type_attribute(
-        ".protocol.harmonytypes.v1.ItemPosition.Position",
-        rkyv_derive,
-    );
-    builder = builder.type_attribute(
-        ".protocol.chat.v1.GetChannelMessagesRequest.Direction",
-        rkyv_derive,
-    );
-    builder = builder.type_attribute(
-        ".protocol.chat.v1.Embed.EmbedField.Presentation",
-        rkyv_derive,
-    );
-    builder = builder.type_attribute(".protocol.chat.v1.Action.Type", rkyv_derive);
+    if cfg!(feature = "rkyv") {
+        for service in ALL_SERVICES.iter().filter(|a| "batch".ne(**a)) {
+            builder = builder.type_attribute(
+                format!(".protocol.{}.v1", service),
+                "#[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize)]",
+            );
+        }
+    }
 
     let protocol_path =
         std::env::var("HARMONY_PROTOCOL_PATH").unwrap_or_else(|_| "protocol".to_string());

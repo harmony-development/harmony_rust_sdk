@@ -68,6 +68,11 @@ pub(crate) fn impl_call_req(args: TokenStream, input: TokenStream) -> TokenStrea
     let service: TokenStream2 = args.into();
     let req = input.ident.to_string();
 
+    // HACK: remove this when prost-build gains "removing" type attrs per match
+    if req == "AnyRequest" {
+        return (quote! { #input }).into();
+    }
+
     match req.strip_suffix("Request") {
         Some(action) if req != "Request" && !req.starts_with("Stream") => {
             let method = naive_snake_case(action);

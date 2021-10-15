@@ -3,18 +3,20 @@ use std::str::FromStr;
 use proc_macro::TokenStream;
 use proc_macro2::TokenStream as TokenStream2;
 use quote::{format_ident, quote};
-use syn::{
-    parse_macro_input, Data, DeriveInput, Field, GenericArgument, Ident, Path, PathArguments, Type,
-};
+use syn::{Data, DeriveInput, Field, GenericArgument, Ident, Path, PathArguments, Type};
 
-pub(crate) fn self_builder(input: TokenStream, for_self: bool, strip_option: bool) -> TokenStream {
-    let input = parse_macro_input!(input as DeriveInput);
+#[derive(Default)]
+pub(crate) struct Config {
+    pub(crate) for_self: bool,
+    pub(crate) strip_option: bool,
+}
 
+pub(crate) fn self_builder(input: &DeriveInput, config: Config) -> TokenStream {
     let name = &input.ident;
     let trait_name = format_ident!("{}SelfBuilder", name);
     let fields = match &input.data {
         Data::Struct(s) => s.fields.iter().map(FieldInfo::from).map(|mut f| {
-            if strip_option {
+            if config.strip_option {
                 f.strip_option = true;
             }
             f
@@ -22,7 +24,7 @@ pub(crate) fn self_builder(input: TokenStream, for_self: bool, strip_option: boo
         _ => return TokenStream::new(),
     };
     let impls_signs = fields
-        .flat_map(|f| construct_impl_sign(f, for_self))
+        .flat_map(|f| construct_impl_sign(f, config.for_self))
         .collect::<Vec<_>>();
 
     let mut impls = Vec::with_capacity(impls_signs.len());
@@ -32,7 +34,7 @@ pub(crate) fn self_builder(input: TokenStream, for_self: bool, strip_option: boo
         signs.push(sign);
     }
 
-    if for_self {
+    if config.for_self {
         (quote! {
             impl #name {
                 #(
