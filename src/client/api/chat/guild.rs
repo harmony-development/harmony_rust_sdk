@@ -24,7 +24,7 @@ impl From<CreateGuild> for CreateGuildRequest {
     fn from(o: CreateGuild) -> Self {
         Self {
             name: o.guild_name,
-            picture: o.picture_url.map_or_else(String::default, Into::into),
+            picture: o.picture_url.map(Into::into),
             metadata: o.metadata,
         }
     }
