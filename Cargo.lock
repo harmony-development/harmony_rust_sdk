@@ -96,9 +96,9 @@ dependencies = [
 
 [[package]]
 name = "bumpalo"
-version = "3.7.1"
+version = "3.8.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d9df67f7bf9ef8498769f994239c45613ef0c5899415fb58e9add412d2c1a538"
+checksum = "8f1e260c3a9040a7c19a12468758f4c16f31a81a1fe087482be9570ec864bb6c"
 
 [[package]]
 name = "bytecheck"
@@ -485,9 +485,9 @@ dependencies = [
 
 [[package]]
 name = "hrpc"
-version = "0.22.0"
+version = "0.23.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b8e2f7d5f019c8a2f4fb770390dd361bf315272049dd8ee3aa7501a635d13927"
+checksum = "61c7473b017adc90142568c0293ab8edeca9284737e8a1853cf7a110a1e46689"
 dependencies = [
  "ahash",
  "async-trait",
@@ -496,6 +496,7 @@ dependencies = [
  "dashmap",
  "flume",
  "futures-util",
+ "hrpc-build",
  "http",
  "http-body",
  "hyper",
@@ -503,6 +504,7 @@ dependencies = [
  "matchit",
  "parking_lot",
  "prost",
+ "prost-build",
  "rustls-native-certs",
  "sha-1",
  "tokio",
@@ -515,9 +517,9 @@ dependencies = [
 
 [[package]]
 name = "hrpc-build"
-version = "0.22.0"
+version = "0.23.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e5b61554ed41144ee387d08a92b66e3d3455da1c1be2a812f6bcfb95de9754da"
+checksum = "e05322f04d4af25e619ef870f23bfcdf3335cf30cfa5958c9a686edc888bdb3c"
 dependencies = [
  "proc-macro2",
  "prost-build",
@@ -623,9 +625,9 @@ dependencies = [
 
 [[package]]
 name = "instant"
-version = "0.1.11"
+version = "0.1.12"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "716d3d89f35ac6a34fd0eed635395f4c3b76fa889338a4632e5231a8684216bd"
+checksum = "7a5bbe824c507c5da5956355e86a746d82e0e1464f65d862cc5e71da70e94b2c"
 dependencies = [
  "cfg-if",
 ]
@@ -1150,9 +1152,9 @@ dependencies = [
 
 [[package]]
 name = "reqwest"
-version = "0.11.5"
+version = "0.11.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "51c732d463dd300362ffb44b7b125f299c23d2990411a4253824630ebc7467fb"
+checksum = "66d2927ca2f685faf0fc620ac4834690d29e7abb153add10f5812eef20b5e280"
 dependencies = [
  "base64",
  "bytes",
@@ -1590,9 +1592,9 @@ dependencies = [
 
 [[package]]
 name = "tower"
-version = "0.4.9"
+version = "0.4.10"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d15a6b60cdff0cb039d81d3b37f8bc3d7e53dca09069aae3ef2502ca4834fe30"
+checksum = "c00e500fff5fa1131c866b246041a6bf96da9c965f8fe4128cb1421f23e93c00"
 dependencies = [
  "futures-core",
  "futures-util",
