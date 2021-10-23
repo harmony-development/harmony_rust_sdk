@@ -2,7 +2,7 @@
 name = "harmony_rust_sdk"
 version = "0.6.1"
 authors = ["Yusuf Bera Ertan <y.bera003.06@protonmail.com>"]
-edition = "2018"
+edition = "2021"
 license = "MIT"
 description = "Rust library to work with the Harmony chat protocol."
 repository = "https://github.com/harmony-development/harmony_rust_sdk"
@@ -13,6 +13,7 @@ exclude = ["*.nix", "flake.lock", ".github/*"]
 
 [workspace]
 members = ["harmony_derive"]
+resolver = "2"
 
 [package.metadata.docs.rs]
 all-features = true
