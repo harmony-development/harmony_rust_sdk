@@ -23,7 +23,7 @@ jobs:
   all:
     strategy:
       matrix:
-        rust: ['1.54.0', '1.55.0']
+        rust: ['1.55.0', '1.56.0']
     runs-on: ubuntu-latest
     steps:
     - name: Checkout repo
