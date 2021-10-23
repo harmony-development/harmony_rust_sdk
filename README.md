@@ -2,7 +2,7 @@
 [![crates.io](https://img.shields.io/crates/v/harmony_rust_sdk)](https://crates.io/crates/harmony_rust_sdk)
 [![docs.rs](https://docs.rs/harmony_rust_sdk/badge.svg)](https://docs.rs/harmony_rust_sdk)
 [![docs.rs](https://img.shields.io/badge/docs-master-blue)](https://harmonyapp.io/harmony_rust_sdk)
-![MSRV](https://img.shields.io/badge/MSRV-previous%20stable-red)
+![MSRV](https://img.shields.io/badge/MSRV-current%20stable-red)
 
 Rust implementation of [the Harmony chat protocol](https://github.com/harmony-development).
 Currently implements a lightweight client and a client API (powered by [hrpc](https://crates.io/crates/hrpc)), along with auto generated API via [hrpc-build](https://crates.io/crates/hrpc-build).
@@ -42,6 +42,6 @@ Currently implements a lightweight client and a client API (powered by [hrpc](ht
   - (Default) Enable the `gen_batch` feature to generate batch service code.
 
 ## MSRV
-Minimum Supported Rust Version: previous stable.
+Minimum Supported Rust Version: current stable.
 
 Changing MSRV is not considered a semver-breaking change.
