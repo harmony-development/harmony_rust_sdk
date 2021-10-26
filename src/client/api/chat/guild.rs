@@ -52,8 +52,8 @@ impl From<UpdateGuildInformation> for UpdateGuildInformationRequest {
     fn from(o: UpdateGuildInformation) -> Self {
         Self {
             guild_id: o.guild_id,
-            new_guild_name: o.new_guild_name,
-            new_guild_picture: o
+            new_name: o.new_guild_name,
+            new_picture: o
                 .new_guild_picture
                 .map(|p| p.map_or_else(String::default, Into::into)),
             new_metadata: o.metadata.map(|m| m.unwrap_or_default()),
