@@ -57,17 +57,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "async-trait"
-version = "0.1.51"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "44318e776df68115a881de9a8fd1b9e53368d7a4a5ce4cc48517da3393233a5e"
-dependencies = [
- "proc-macro2",
- "quote",
- "syn",
-]
-
-[[package]]
 name = "autocfg"
 version = "1.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -485,18 +474,18 @@ dependencies = [
 
 [[package]]
 name = "hrpc"
-version = "0.25.0"
+version = "0.26.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "76f21e95f7b55a55be96315271ffb68cfb5f693d6f2b65b7dc08a49c4a74f5ab"
+checksum = "e33c22b8134da089b7e1a92cf541c26be881a489ba91346200da9addbd6147f1"
 dependencies = [
  "ahash",
- "async-trait",
  "base64",
  "bytes",
  "dashmap",
  "flume",
  "futures-util",
  "hrpc-build",
+ "hrpc-proc-macro",
  "http",
  "http-body",
  "hyper",
@@ -517,15 +506,21 @@ dependencies = [
 
 [[package]]
 name = "hrpc-build"
-version = "0.25.0"
+version = "0.26.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e0c228bf1bd29d9441aa80a54e099a14c5081c8e697c6c4a25c3a48d465d9606"
+checksum = "252278e3a58560fd626214ac4d2b19219a83bdbe2af9bcd07b97045938347cac"
 dependencies = [
  "proc-macro2",
  "prost-build",
  "quote",
  "syn",
 ]
+
+[[package]]
+name = "hrpc-proc-macro"
+version = "0.26.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "01132ada63771d99a9a325215b8627db2ab3005c0bc5d33b271a0b33423469c0"
 
 [[package]]
 name = "http"

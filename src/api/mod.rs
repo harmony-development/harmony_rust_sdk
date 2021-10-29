@@ -346,7 +346,6 @@ impl FromStr for HomeserverIdentifier {
 }
 
 /// A trait to facilitate easy request execution.
-#[hrpc::exports::async_trait]
 pub trait Endpoint {
     /// The response type of this endpoint request.
     type Response;
@@ -356,8 +355,11 @@ pub trait Endpoint {
 
     #[cfg(feature = "client")]
     /// Execute the request using the provided client.
-    async fn call_with(
+    fn call_with(
         self,
         client: &crate::client::Client,
-    ) -> crate::client::error::ClientResult<Self::Response>;
+    ) -> hrpc::exports::futures_util::future::BoxFuture<
+        '_,
+        crate::client::error::ClientResult<Self::Response>,
+    >;
 }

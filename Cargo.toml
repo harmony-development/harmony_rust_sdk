@@ -22,7 +22,7 @@ all-features = true
 prost = "0.9"
 derive-new = "0.5"
 derive_more = "0.99"
-hrpc = { version="0.25", default-features=false }
+hrpc = { version="0.26", default-features=false }
 
 harmony_derive = { version="0.1.2", path="harmony_derive", optional=true }
 reqwest = { version="0.11", default-features=false, features=[
@@ -41,7 +41,7 @@ parking_lot = "0.11"
 rkyv = { version="0.7", optional=true }
 
 [build-dependencies]
-hrpc-build = { version="0.25", default-features=false }
+hrpc-build = { version="0.26", default-features=false }
 prost-build = "0.9"
 regex = "1"
 walkdir = "2"
