@@ -428,7 +428,7 @@ dependencies = [
  "derive_more",
  "harmony_derive",
  "hrpc",
- "hrpc-build",
+ "hrpc-build 0.27.0",
  "http",
  "parking_lot",
  "paste",
@@ -484,7 +484,7 @@ dependencies = [
  "dashmap",
  "flume",
  "futures-util",
- "hrpc-build",
+ "hrpc-build 0.26.0",
  "hrpc-proc-macro",
  "http",
  "http-body",
@@ -509,6 +509,18 @@ name = "hrpc-build"
 version = "0.26.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "252278e3a58560fd626214ac4d2b19219a83bdbe2af9bcd07b97045938347cac"
+dependencies = [
+ "proc-macro2",
+ "prost-build",
+ "quote",
+ "syn",
+]
+
+[[package]]
+name = "hrpc-build"
+version = "0.27.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "dc0800a60e95b15d6439ff2a2d1935aab99cc687ab2ccd371b2de6e4242e28ae"
 dependencies = [
  "proc-macro2",
  "prost-build",
