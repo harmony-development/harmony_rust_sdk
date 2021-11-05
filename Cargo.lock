@@ -474,9 +474,9 @@ dependencies = [
 
 [[package]]
 name = "hrpc"
-version = "0.27.0"
+version = "0.27.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1bf078894fe892018625986c8dd5b94230ada0cd04477edd87dedead6adbd616"
+checksum = "7b6f8c28ee4cab4ed80115d48301f3406b2dbfcc9115678624f002d14b2269ea"
 dependencies = [
  "ahash",
  "base64",
