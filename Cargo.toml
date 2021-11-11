@@ -41,7 +41,7 @@ parking_lot = "0.11"
 rkyv = { version="0.7", optional=true }
 
 [build-dependencies]
-hrpc-build = { version="0.27", default-features=false }
+hrpc-build = { version="0.28", default-features=false }
 prost-build = "0.9"
 regex = "1"
 walkdir = "2"
