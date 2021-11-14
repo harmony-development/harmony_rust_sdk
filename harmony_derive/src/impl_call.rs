@@ -24,7 +24,7 @@ pub(crate) fn impl_call(input: TokenStream) -> TokenStream {
 
     let call_with = if cfg!(feature = "client") {
         quote! {
-            fn call_with(self, client: &crate::client::Client) -> hrpc::exports::futures_util::future::BoxFuture<'_, crate::client::error::ClientResult<Self::Response>> {
+            fn call_with(self, client: &crate::client::Client) -> ::hrpc::exports::futures_util::future::BoxFuture<'_, crate::client::error::ClientResult<::hrpc::Response<Self::Response>>> {
                 Box::pin(async move { client. #service () .await. #method (self) .await.map_err(Into::into) })
             }
         }

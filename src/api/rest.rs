@@ -3,8 +3,7 @@ use std::{convert::TryInto, error::Error as StdError, str::FromStr};
 use super::Hmc;
 use derive_more::{Display, From, Into, IntoIterator};
 use derive_new::new;
-use hrpc::exports::http::Uri;
-use http::HeaderValue;
+use http::{HeaderValue, Uri};
 use serde::{Deserialize, Serialize};
 
 /// Kind of the file downloaded.

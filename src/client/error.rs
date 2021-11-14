@@ -3,18 +3,23 @@ use std::{
     fmt::{self, Display, Formatter},
 };
 
-pub use crate::api::HmcParseError;
-pub use hrpc::client::error::ClientError as InternalClientError;
-pub use hrpc::exports::http::uri::InvalidUri as UrlError;
+use hrpc::decode::DecodeBodyError;
 use prost::DecodeError;
+
+pub use crate::api::HmcParseError;
+pub use hrpc::proto::Error as HrpcError;
+pub use http::uri::InvalidUri as UrlError;
 pub use reqwest::Error as ReqwestError;
 
 /// Result type used by many `Client` methods.
 pub type ClientResult<T> = Result<T, ClientError>;
+pub type InternalClientError =
+    hrpc::client::error::ClientError<hrpc::client::transport::http::HyperError>;
 
 /// Error type used by `Client`.
 #[derive(Debug)]
 pub enum ClientError {
+    /// Returned if the internal hRPC client returns an error.
     Internal(InternalClientError),
     /// Returned if an error occurs with the HTTP client.
     Reqwest(ReqwestError),
@@ -26,6 +31,8 @@ pub enum ClientError {
     Unauthenticated,
     /// Returned if a response from the server has invalid / empty value(s) according to the protocol.
     UnexpectedResponse(String),
+    /// Returned if a socket returns an error.
+    SocketError(HrpcError),
 }
 
 impl ClientError {
@@ -43,6 +50,7 @@ impl Display for ClientError {
             ClientError::NoAuthId => write!(f, "No authentication session is in progress, but client tries to call auth API methods that need it"),
             ClientError::Unauthenticated => write!(f, "Client is not authenticated, but the API it tries to call requires authentication"),
             ClientError::UnexpectedResponse(msg) => write!(f, "Server responded with unexpected value: {}", msg),
+            ClientError::SocketError(err) => write!(f, "socket error: {}", err),
         }
     }
 }
@@ -68,8 +76,20 @@ impl From<InternalClientError> for ClientError {
 impl From<DecodeError> for ClientError {
     fn from(e: DecodeError) -> Self {
         Self::Internal(InternalClientError::MessageDecode(
-            hrpc::DecodeBodyError::InvalidProtoMessage(e),
+            DecodeBodyError::InvalidProtoMessage(e),
         ))
+    }
+}
+
+impl From<DecodeBodyError> for ClientError {
+    fn from(e: DecodeBodyError) -> Self {
+        Self::Internal(InternalClientError::MessageDecode(e))
+    }
+}
+
+impl From<HrpcError> for ClientError {
+    fn from(e: HrpcError) -> Self {
+        Self::SocketError(e)
     }
 }
 

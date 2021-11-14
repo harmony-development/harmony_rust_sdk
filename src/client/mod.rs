@@ -22,23 +22,24 @@ use error::*;
 use std::{convert::TryFrom, sync::Arc};
 
 use hrpc::{
-    encode_protobuf_message,
-    exports::{
-        bytes::{Bytes, BytesMut},
-        http::Uri,
-    },
+    client::transport::http::Hyper,
+    encode::encode_protobuf_message,
+    exports::bytes::{Bytes, BytesMut},
+    request::BoxRequest,
+    Response,
 };
+use http::Uri;
 use parking_lot::{Mutex, MutexGuard};
 use reqwest::Client as HttpClient;
 use tokio::sync::Mutex as AsyncMutex;
 
-type AuthService = crate::api::auth::auth_service_client::AuthServiceClient;
-type ChatService = crate::api::chat::chat_service_client::ChatServiceClient;
+type AuthService = crate::api::auth::auth_service_client::AuthServiceClient<Hyper>;
+type ChatService = crate::api::chat::chat_service_client::ChatServiceClient<Hyper>;
 type MediaProxyService =
-    crate::api::mediaproxy::media_proxy_service_client::MediaProxyServiceClient;
-type ProfileService = crate::api::profile::profile_service_client::ProfileServiceClient;
-type EmoteService = crate::api::emote::emote_service_client::EmoteServiceClient;
-type BatchService = crate::api::batch::batch_service_client::BatchServiceClient;
+    crate::api::mediaproxy::media_proxy_service_client::MediaProxyServiceClient<Hyper>;
+type ProfileService = crate::api::profile::profile_service_client::ProfileServiceClient<Hyper>;
+type EmoteService = crate::api::emote::emote_service_client::EmoteServiceClient<Hyper>;
+type BatchService = crate::api::batch::batch_service_client::BatchServiceClient<Hyper>;
 
 /// Represents an authentication state in which a [`Client`] can be.
 #[derive(Debug, Clone)]
@@ -183,10 +184,10 @@ impl Client {
 
         let modify_with = Arc::new({
             let auth_status = auth_status.clone();
-            Box::new(move |header_map: &mut http::HeaderMap| {
+            Box::new(move |req: &mut BoxRequest| {
                 let guard = auth_status.lock();
                 if guard.0.is_authenticated() {
-                    header_map.insert(
+                    req.get_or_insert_header_map().insert(
                         http::header::AUTHORIZATION,
                         // This is safe on the assumption that servers will never send session tokens
                         // with invalid-byte(s). If they do, they aren't respecting the protocol
@@ -196,8 +197,10 @@ impl Client {
             })
         });
 
-        let inner = hrpc::client::Client::new(homeserver_url.clone())?
-            .modify_request_headers_with(modify_with.clone());
+        let transport = Hyper::new(homeserver_url.clone())
+            .map_err(|err| ClientError::Internal(InternalClientError::Transport(err)))?;
+        let inner =
+            hrpc::client::Client::new(transport).modify_request_preflight_with(modify_with.clone());
 
         let auth = AuthService::new_inner(inner.clone());
         let chat = ChatService::new_inner(inner.clone());
@@ -288,7 +291,19 @@ impl Client {
     }
 
     /// Execute the given request.
-    pub async fn call<Req: Endpoint>(&self, request: Req) -> ClientResult<Req::Response> {
+    pub async fn call<Req>(&self, request: Req) -> ClientResult<Req::Response>
+    where
+        Req: Endpoint,
+        Req::Response: prost::Message + Default,
+    {
+        Ok(request.call_with(self).await?.into_message().await?)
+    }
+
+    /// Execute the given request, but return a [`hrpc::Response`].
+    pub async fn call_response<Req: Endpoint>(
+        &self,
+        request: Req,
+    ) -> ClientResult<Response<Req::Response>> {
         request.call_with(self).await
     }
 
@@ -307,7 +322,7 @@ impl Client {
         use prost::Message;
 
         let encoded = requests
-            .into_iter()
+            .iter()
             .map(encode_protobuf_message)
             .map(BytesMut::freeze);
         let batch_req = crate::api::batch::BatchSameRequest {
@@ -399,6 +414,8 @@ impl Client {
             .await
             .begin_auth(BeginAuthRequest {})
             .await?
+            .into_message()
+            .await?
             .auth_id;
         self.auth_status_lock().0 = AuthStatus::InProgress(auth_id);
         Ok(())
@@ -430,6 +447,8 @@ impl Client {
                 .auth()
                 .await
                 .next_step(AuthResponse::new(auth_id, response))
+                .await?
+                .into_message()
                 .await?;
 
             Ok(
@@ -468,7 +487,13 @@ impl Client {
     /// ```
     pub async fn prev_auth_step(&self) -> ClientResult<StepBackResponse> {
         if let AuthStatus::InProgress(auth_id) = self.auth_status() {
-            Ok(self.auth().await.step_back(AuthId::new(auth_id)).await?)
+            Ok(self
+                .auth()
+                .await
+                .step_back(AuthId::new(auth_id))
+                .await?
+                .into_message()
+                .await?)
         } else {
             Err(ClientError::NoAuthId)
         }

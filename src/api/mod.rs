@@ -5,8 +5,10 @@ use std::{
     str::FromStr,
 };
 
-use hrpc::exports::http::{uri::InvalidUri as UrlParseError, Uri};
-use http::uri::{Parts, Scheme};
+use http::{
+    uri::{InvalidUri as UrlParseError, Parts, Scheme},
+    Uri,
+};
 
 /// Rest API common types.
 pub mod rest;
@@ -360,6 +362,6 @@ pub trait Endpoint {
         client: &crate::client::Client,
     ) -> hrpc::exports::futures_util::future::BoxFuture<
         '_,
-        crate::client::error::ClientResult<Self::Response>,
+        crate::client::error::ClientResult<hrpc::Response<Self::Response>>,
     >;
 }

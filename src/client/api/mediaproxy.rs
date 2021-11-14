@@ -4,7 +4,7 @@ pub use crate::api::mediaproxy::{
     FetchLinkMetadataRequest, FetchLinkMetadataResponse, InstantViewRequest, SiteMetadata,
 };
 
-use hrpc::exports::http::Uri;
+use http::Uri;
 
 impl From<Uri> for FetchLinkMetadataRequest {
     fn from(o: Uri) -> FetchLinkMetadataRequest {

@@ -56,11 +56,11 @@ fn impl_into_req(input: &DeriveInput, req: Ident) -> TokenStream2 {
             }
         }
 
-        impl ::hrpc::IntoRequest<#req> for #name {
+        impl ::hrpc::request::IntoRequest<#req> for #name {
             fn into_request(self) -> ::hrpc::Request<#req> {
-                (#req {
+                ::hrpc::request::IntoRequest::into_request(#req {
                     #(#fields: self.#fields.into(),)*
-                }).into_request()
+                })
             }
         }
     }
@@ -70,9 +70,9 @@ pub(crate) fn impl_into_req_from(ty: TokenStream) -> TokenStream {
     let ty = Ident::new(ty.to_string().as_str(), Span::call_site());
     let req = quote::format_ident!("{}Request", ty);
     (quote! {
-        impl IntoRequest<#req> for #ty {
-            fn into_request(self) -> Request<#req> {
-                #req ::from(self).into_request()
+        impl ::hrpc::request::IntoRequest<#req> for #ty {
+            fn into_request(self) -> ::hrpc::Request<#req> {
+                ::hrpc::request::IntoRequest::into_request(#req ::from(self))
             }
         }
     })
