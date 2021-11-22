@@ -21,7 +21,7 @@ pub struct GetChannelMessages {
     guild_id: u64,
     channel_id: u64,
     #[new(default)]
-    message_id: u64,
+    message_id: Option<u64>,
     #[new(default)]
     #[builder(setter(strip_option))]
     direction: Option<Direction>,

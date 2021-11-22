@@ -11,7 +11,7 @@ pub trait MessageExt {
     /// Get the text content of the message if it has one.
     fn text(&self) -> Option<&str>;
     /// Get the embed content of the message if it has one.
-    fn embeds(&self) -> Option<&Embed>;
+    fn embeds(&self) -> Option<&[Embed]>;
     /// Get the file content of the message if it has one.
     fn files(&self) -> Option<&[Attachment]>;
 }
@@ -24,9 +24,9 @@ impl MessageExt for Message {
         }
     }
 
-    fn embeds(&self) -> Option<&Embed> {
+    fn embeds(&self) -> Option<&[Embed]> {
         match self.content.as_ref()?.content.as_ref()? {
-            content::Content::EmbedMessage(embeds) => embeds.embed.as_deref(),
+            content::Content::EmbedMessage(embeds) => Some(&embeds.embeds),
             _ => None,
         }
     }
@@ -79,9 +79,9 @@ impl SendMessage {
         self
     }
 
-    pub fn embed(mut self, embed: impl Into<Embed>) -> Self {
+    pub fn embed(mut self, embed: impl Into<Vec<Embed>>) -> Self {
         self.content.content = Some(content::Content::EmbedMessage(EmbedContent {
-            embed: Some(Box::new(embed.into())),
+            embeds: embed.into(),
         }));
         self
     }
