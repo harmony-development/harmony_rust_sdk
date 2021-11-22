@@ -19,13 +19,19 @@ use crate::api::{
 use api::{auth::*, chat::EventSource, Hmc, HmcFromStrError};
 use error::*;
 
-use std::{convert::TryFrom, sync::Arc};
+use std::{
+    convert::TryFrom,
+    fmt::{self, Debug, Formatter},
+    sync::Arc,
+};
 
 use hrpc::{
-    client::transport::http::Hyper,
+    client::transport::{http::Hyper, TransportRequest, TransportResponse},
     encode::encode_protobuf_message,
-    exports::bytes::{Bytes, BytesMut},
-    request::BoxRequest,
+    exports::{
+        bytes::{Bytes, BytesMut},
+        tower::Service,
+    },
     Response,
 };
 use http::Uri;
@@ -33,13 +39,14 @@ use parking_lot::{Mutex, MutexGuard};
 use reqwest::Client as HttpClient;
 use tokio::sync::Mutex as AsyncMutex;
 
-type AuthService = crate::api::auth::auth_service_client::AuthServiceClient<Hyper>;
-type ChatService = crate::api::chat::chat_service_client::ChatServiceClient<Hyper>;
+type AuthService = crate::api::auth::auth_service_client::AuthServiceClient<AddAuth<Hyper>>;
+type ChatService = crate::api::chat::chat_service_client::ChatServiceClient<AddAuth<Hyper>>;
 type MediaProxyService =
-    crate::api::mediaproxy::media_proxy_service_client::MediaProxyServiceClient<Hyper>;
-type ProfileService = crate::api::profile::profile_service_client::ProfileServiceClient<Hyper>;
-type EmoteService = crate::api::emote::emote_service_client::EmoteServiceClient<Hyper>;
-type BatchService = crate::api::batch::batch_service_client::BatchServiceClient<Hyper>;
+    crate::api::mediaproxy::media_proxy_service_client::MediaProxyServiceClient<AddAuth<Hyper>>;
+type ProfileService =
+    crate::api::profile::profile_service_client::ProfileServiceClient<AddAuth<Hyper>>;
+type EmoteService = crate::api::emote::emote_service_client::EmoteServiceClient<AddAuth<Hyper>>;
+type BatchService = crate::api::batch::batch_service_client::BatchServiceClient<AddAuth<Hyper>>;
 
 /// Represents an authentication state in which a [`Client`] can be.
 #[derive(Debug, Clone)]
@@ -182,25 +189,13 @@ impl Client {
         });
         let auth_status = Arc::new(Mutex::new((session, token_bytes)));
 
-        let modify_with = Arc::new({
-            let auth_status = auth_status.clone();
-            Box::new(move |req: &mut BoxRequest| {
-                let guard = auth_status.lock();
-                if guard.0.is_authenticated() {
-                    req.get_or_insert_header_map().insert(
-                        http::header::AUTHORIZATION,
-                        // This is safe on the assumption that servers will never send session tokens
-                        // with invalid-byte(s). If they do, they aren't respecting the protocol
-                        unsafe { http::HeaderValue::from_maybe_shared_unchecked(guard.1.clone()) },
-                    );
-                }
-            })
-        });
-
         let transport = Hyper::new(homeserver_url.clone())
             .map_err(|err| ClientError::Internal(InternalClientError::Transport(err)))?;
-        let inner =
-            hrpc::client::Client::new(transport).modify_request_preflight_with(modify_with.clone());
+        let transport = AddAuth {
+            inner: transport,
+            auth_status: auth_status.clone(),
+        };
+        let inner = hrpc::client::Client::new(transport);
 
         let auth = AuthService::new_inner(inner.clone());
         let chat = ChatService::new_inner(inner.clone());
@@ -387,7 +382,7 @@ impl Client {
     /// # Ok(())
     /// # }
     /// ```
-    pub fn make_hmc(&self, id: impl std::fmt::Display) -> Result<Hmc, HmcFromStrError> {
+    pub fn make_hmc(&self, id: impl fmt::Display) -> Result<Hmc, HmcFromStrError> {
         let url = &self.data.homeserver_url;
         Hmc::new(
             format!("{}:{}", url.host().unwrap(), url.port().unwrap()),
@@ -550,8 +545,50 @@ impl Client {
     }
 }
 
-/// Event subscription socket.
+/// Auth middleware for [`Client`].
 #[derive(Debug, Clone)]
+pub struct AddAuth<S> {
+    inner: S,
+    auth_status: Arc<Mutex<(AuthStatus, Bytes)>>,
+}
+
+impl<S> Service<TransportRequest> for AddAuth<S>
+where
+    S: Service<TransportRequest, Response = TransportResponse>,
+{
+    type Response = S::Response;
+
+    type Error = S::Error;
+
+    type Future = S::Future;
+
+    fn poll_ready(
+        &mut self,
+        cx: &mut std::task::Context<'_>,
+    ) -> std::task::Poll<Result<(), Self::Error>> {
+        Service::poll_ready(&mut self.inner, cx)
+    }
+
+    fn call(&mut self, mut req: TransportRequest) -> Self::Future {
+        let guard = self.auth_status.lock();
+        if guard.0.is_authenticated() {
+            let req = match &mut req {
+                TransportRequest::Unary(req) => req,
+                TransportRequest::Socket(req) => req,
+            };
+            req.get_or_insert_header_map().insert(
+                http::header::AUTHORIZATION,
+                // This is safe on the assumption that servers will never send session tokens
+                // with invalid-byte(s). If they do, they aren't respecting the protocol
+                unsafe { http::HeaderValue::from_maybe_shared_unchecked(guard.1.clone()) },
+            );
+        }
+
+        Service::call(&mut self.inner, req)
+    }
+}
+
+/// Event subscription socket.
 pub struct EventsSocket {
     inner: hrpc::client::socket::Socket<
         crate::api::chat::StreamEventsRequest,
@@ -578,13 +615,18 @@ impl EventsSocket {
     }
 
     /// Close this socket.
-    pub async fn close(self) {
-        self.inner.close().await
+    pub async fn close(self) -> ClientResult<()> {
+        self.inner.close().await.map_err(Into::into)
+    }
+}
+
+impl Debug for EventsSocket {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        f.write_str("EventsSocket")
     }
 }
 
 /// Auth steps subscription socket.
-#[derive(Debug, Clone)]
 pub struct AuthSocket {
     inner: hrpc::client::socket::Socket<
         crate::api::auth::StreamStepsRequest,
@@ -603,7 +645,13 @@ impl AuthSocket {
     }
 
     /// Close this socket.
-    pub async fn close(self) {
-        self.inner.close().await
+    pub async fn close(self) -> ClientResult<()> {
+        self.inner.close().await.map_err(Into::into)
+    }
+}
+
+impl Debug for AuthSocket {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        f.write_str("AuthSocket")
     }
 }

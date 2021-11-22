@@ -7,7 +7,7 @@ use hrpc::decode::DecodeBodyError;
 use prost::DecodeError;
 
 pub use crate::api::HmcParseError;
-pub use hrpc::proto::Error as HrpcError;
+pub use hrpc::client::socket::SocketError;
 pub use http::uri::InvalidUri as UrlError;
 pub use reqwest::Error as ReqwestError;
 
@@ -32,7 +32,7 @@ pub enum ClientError {
     /// Returned if a response from the server has invalid / empty value(s) according to the protocol.
     UnexpectedResponse(String),
     /// Returned if a socket returns an error.
-    SocketError(HrpcError),
+    SocketError(SocketError),
 }
 
 impl ClientError {
@@ -87,8 +87,8 @@ impl From<DecodeBodyError> for ClientError {
     }
 }
 
-impl From<HrpcError> for ClientError {
-    fn from(e: HrpcError) -> Self {
+impl From<SocketError> for ClientError {
+    fn from(e: SocketError) -> Self {
         Self::SocketError(e)
     }
 }
