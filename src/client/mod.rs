@@ -535,8 +535,11 @@ impl Client {
         &self,
         subscriptions: Vec<EventSource>,
     ) -> ClientResult<EventsSocket> {
-        let inner = self.chat().await.stream_events(()).await?;
-        let mut socket = EventsSocket { inner };
+        let (tx, rx) = self.chat().await.stream_events(()).await?.split();
+        let mut socket = EventsSocket {
+            write: EventsWriteSocket { inner: tx },
+            read: EventsReadSocket { inner: rx },
+        };
         for source in subscriptions {
             socket.add_source(source).await?;
         }
@@ -590,22 +593,47 @@ where
 
 /// Event subscription socket.
 pub struct EventsSocket {
-    inner: hrpc::client::socket::Socket<
-        crate::api::chat::StreamEventsRequest,
-        crate::api::chat::StreamEventsResponse,
-    >,
+    read: EventsReadSocket,
+    write: EventsWriteSocket,
 }
 
 impl EventsSocket {
     /// Get an event.
+    #[inline]
     pub async fn get_event(&mut self) -> ClientResult<Option<crate::api::chat::Event>> {
-        let resp = self.inner.receive_message().await?;
-        Ok(resp
-            .event
-            .map(|a| crate::api::chat::Event::try_from(a).ok())
-            .flatten())
+        self.read.get_event().await
     }
 
+    /// Add a new event source.
+    #[inline]
+    pub async fn add_source(&mut self, source: EventSource) -> ClientResult<()> {
+        self.write.add_source(source).await
+    }
+
+    /// Close this socket.
+    #[inline]
+    pub async fn close(self) -> ClientResult<()> {
+        self.write.close().await
+    }
+
+    /// Split this socket into the read and write half.
+    pub fn split(self) -> (EventsWriteSocket, EventsReadSocket) {
+        (self.write, self.read)
+    }
+}
+
+impl Debug for EventsSocket {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        f.write_str("EventsSocket")
+    }
+}
+
+/// Write half of the event subscription socket.
+pub struct EventsWriteSocket {
+    inner: hrpc::client::socket::WriteSocket<crate::api::chat::StreamEventsRequest>,
+}
+
+impl EventsWriteSocket {
     /// Add a new event source.
     pub async fn add_source(&mut self, source: EventSource) -> ClientResult<()> {
         self.inner
@@ -620,9 +648,31 @@ impl EventsSocket {
     }
 }
 
-impl Debug for EventsSocket {
+impl Debug for EventsWriteSocket {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
-        f.write_str("EventsSocket")
+        f.write_str("EventsWriteSocket")
+    }
+}
+
+/// Read half of the event subscription socket.
+pub struct EventsReadSocket {
+    inner: hrpc::client::socket::ReadSocket<crate::api::chat::StreamEventsResponse>,
+}
+
+impl EventsReadSocket {
+    /// Get an event.
+    pub async fn get_event(&mut self) -> ClientResult<Option<crate::api::chat::Event>> {
+        let resp = self.inner.receive_message().await?;
+        Ok(resp
+            .event
+            .map(|a| crate::api::chat::Event::try_from(a).ok())
+            .flatten())
+    }
+}
+
+impl Debug for EventsReadSocket {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        f.write_str("EventsReadSocket")
     }
 }
 
