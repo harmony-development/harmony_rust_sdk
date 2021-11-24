@@ -665,8 +665,7 @@ impl EventsReadSocket {
         let resp = self.inner.receive_message().await?;
         Ok(resp
             .event
-            .map(|a| crate::api::chat::Event::try_from(a).ok())
-            .flatten())
+            .and_then(|a| crate::api::chat::Event::try_from(a).ok()))
     }
 }
 
