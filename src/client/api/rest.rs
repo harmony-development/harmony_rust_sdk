@@ -1,7 +1,7 @@
 use super::*;
 use crate::client::error::ClientError;
 
-use http::{uri::PathAndQuery, Uri};
+use http::Uri;
 use prost::bytes::Bytes;
 use reqwest::{multipart::*, Response};
 use serde::Deserialize;
@@ -56,19 +56,10 @@ pub async fn upload(
     response.error_for_status().map_err(Into::into)
 }
 
-/// Downloads a file using a file ID.
-///
-/// This endpoint does not require authentication.
-/// See [API documentation](https://github.com/harmony-development/protocol/blob/master/rest/rest.md#get-_harmonymediadownloadfile_id).
-pub async fn download(client: &Client, file_id: impl Into<FileId>) -> ClientResult<Response> {
+fn make_download_uri(homeserver_url: &Uri, file_id: impl Into<FileId>) -> String {
     const ENDPOINT: &str = "/_harmony/media/download/";
 
-    let endpoint = {
-        let mut parts = client.homeserver_url().clone().into_parts();
-        parts.path_and_query = Some(PathAndQuery::from_static(ENDPOINT));
-        Uri::from_parts(parts).unwrap().to_string()
-    };
-    let uri = match file_id.into() {
+    match file_id.into() {
         FileId::Hmc(hmc) => format!(
             "https://{}:{}{}{}",
             hmc.server(),
@@ -78,13 +69,27 @@ pub async fn download(client: &Client, file_id: impl Into<FileId>) -> ClientResu
         )
         .parse()
         .unwrap(),
-        FileId::Id(id) => format!("{}/{}", endpoint, id),
+        FileId::Id(id) => format!(
+            "{}{}{}",
+            homeserver_url,
+            ENDPOINT.trim_start_matches('/'),
+            id
+        ),
         FileId::External(uri) => format!(
-            "{}/{}",
-            endpoint,
+            "{}{}{}",
+            homeserver_url,
+            ENDPOINT.trim_start_matches('/'),
             urlencoding::encode(uri.to_string().as_str())
         ),
-    };
+    }
+}
+
+/// Downloads a file using a file ID.
+///
+/// This endpoint does not require authentication.
+/// See [API documentation](https://github.com/harmony-development/protocol/blob/master/rest/rest.md#get-_harmonymediadownloadfile_id).
+pub async fn download(client: &Client, file_id: impl Into<FileId>) -> ClientResult<Response> {
+    let uri = make_download_uri(client.homeserver_url(), file_id);
 
     let request = client.data.http.get(uri.as_str()).build()?;
     #[cfg(debug_assertions)]
@@ -184,13 +189,57 @@ pub async fn download_extract_file(
 mod tests {
     use super::*;
 
+    fn homeserver_uri() -> Uri {
+        Uri::from_static("https://chat.harmonyapp.io:2289")
+    }
+
     #[test]
     fn join_upload_path() {
         // [tag:upload_path_create]
-        let uri = Uri::from_static("https://chat.harmonyapp.io");
         assert_eq!(
-            format!("{}_harmony/media/upload", uri),
-            "https://chat.harmonyapp.io/_harmony/media/upload"
+            format!("{}_harmony/media/upload", homeserver_uri()),
+            "https://chat.harmonyapp.io:2289/_harmony/media/upload",
+        );
+    }
+
+    #[test]
+    fn make_download_uri_with_id() {
+        let id = "test_id_asdfasdfa";
+        let uri = make_download_uri(&homeserver_uri(), FileId::Id(id.to_string()));
+        assert_eq!(
+            uri,
+            format!(
+                "https://chat.harmonyapp.io:2289/_harmony/media/download/{}",
+                id
+            ),
+        );
+    }
+
+    #[test]
+    fn make_download_uri_with_hmc() {
+        let id = "test_hmc_asdfasdfa";
+        let hmc = Hmc::new("chat.harmonyapp.io:2289", id).expect("failed to create hmc");
+        let uri = make_download_uri(&homeserver_uri(), FileId::Hmc(hmc));
+        assert_eq!(
+            uri,
+            format!(
+                "https://chat.harmonyapp.io:2289/_harmony/media/download/{}",
+                id
+            ),
+        );
+    }
+
+    #[test]
+    fn make_download_uri_with_url() {
+        let ext_url_str = "https://cdn.discordapp.com/emojis/849034023640104980.png";
+        let ext_url = Uri::from_static(ext_url_str);
+        let uri = make_download_uri(&homeserver_uri(), FileId::External(ext_url));
+        assert_eq!(
+            uri,
+            format!(
+                "https://chat.harmonyapp.io:2289/_harmony/media/download/{}",
+                urlencoding::encode(ext_url_str)
+            ),
         );
     }
 }
