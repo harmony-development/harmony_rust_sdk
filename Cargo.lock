@@ -374,9 +374,9 @@ dependencies = [
 
 [[package]]
 name = "hrpc"
-version = "0.31.0"
+version = "0.31.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "254c47ad3266357d181946fec0817ad4881b8d8fc124777ac00ebda016af8ca4"
+checksum = "c59f91c32e9b1a144e883983a2af5942fb54b4030b2d052b9e62a6ca155c778c"
 dependencies = [
  "bytes",
  "futures-util",
