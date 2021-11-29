@@ -365,6 +365,7 @@
 <span id="365">365</span>
 <span id="366">366</span>
 <span id="367">367</span>
+<span id="368">368</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std</span>::{
     <span class="ident">convert::TryFrom</span>,
     <span class="ident">error::Error</span> <span class="kw">as</span> <span class="ident">StdError</span>,
@@ -378,6 +379,7 @@
 };
 
 <span class="doccomment">/// Rest API common types.</span>
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rest&quot;</span>)]</span>
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">rest</span>;
 
 <span class="doccomment">/// Chat service API.</span>
