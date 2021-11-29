@@ -11,6 +11,7 @@ use http::{
 };
 
 /// Rest API common types.
+#[cfg(feature = "rest")]
 pub mod rest;
 
 /// Chat service API.

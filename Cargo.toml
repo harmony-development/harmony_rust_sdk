@@ -30,13 +30,12 @@ reqwest = { version="0.11", default-features=false, features=[
 	"multipart",
 ], optional=true }
 tracing = { version="0.1", optional=true }
-paste = { version="1.0", optional=true }
-serde = { version="1.0", features=["derive"] }
+serde = { version="1.0", features=["derive"], optional = true }
 tokio = { version="1.14", features=["sync", "parking_lot"], optional=true }
 
 urlencoding = { version="2.1", optional=true }
-http = "0.2"
-parking_lot = "0.11"
+http = { version = "0.2", optional = true }
+parking_lot = { version = "0.11", optional = true }
 rkyv = { version="0.7", optional=true }
 
 [build-dependencies]
@@ -56,6 +55,7 @@ default = [
 	"gen_batch",
 	"gen_profile",
 	"gen_emote",
+	"rest",
 ]
 client_web = [
 	"_client_common",
@@ -73,11 +73,12 @@ _client_common = [
 	"gen_voice",
 	"gen_harmonytypes",
 	"gen_client",
+	"rest",
 	"reqwest",
 	"tokio",
-	"paste",
 	"tracing",
 	"urlencoding",
+	"parking_lot",
 	"harmony_derive/client",
 ]
 gen_client = ["hrpc/client", "hrpc-build/client"]
@@ -92,6 +93,7 @@ gen_sync = []
 gen_batch = []
 gen_profile = []
 gen_emote = []
+rest = ["serde", "http"]
 
 [dev-dependencies]
 tokio = { version="1.14", features=["rt", "macros", "fs"] }
