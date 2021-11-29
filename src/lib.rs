@@ -48,5 +48,5 @@ Changing MSRV is not considered a semver-breaking change.
 /// Harmony protocol API.
 pub mod api;
 
-#[cfg(feature = "client")]
+#[cfg(feature = "_client_common")]
 pub mod client;

@@ -58,9 +58,11 @@ default = [
 	"gen_emote",
 ]
 client_web = [
+	"_client_common",
 	"hrpc/http_wasm_client",
 ]
 client_native = [
+	"_client_common",
 	"hrpc/http_hyper_client",
 	"reqwest/rustls-tls-native-roots",
 ]
