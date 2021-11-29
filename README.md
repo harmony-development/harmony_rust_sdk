@@ -28,7 +28,8 @@ Currently implements a lightweight client and a client API (powered by [hrpc](ht
 
 ## Crate features
 - By default, only a bare-bones common API of all services is generated. You can customize the crate to your needs by enabling feature(s) listed below:
-  - Enable the `client` feature for a lightweight client implementation and the client API.
+  - Enable the `client_native` feature for a lightweight client implementation that uses `hyper` and works on native platforms.
+  - Enable the `client_web` feature for a lightweight client implementation that works on web platforms (WASM).
   - Enable the `gen_client` feature to generate client service code.
   - Enable the `gen_server` feature to generate server service code.
   - (Default) Enable the `gen_chat` feature to generate chat service code.
