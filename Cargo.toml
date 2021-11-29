@@ -98,15 +98,15 @@ ctrlc = "3.1.8"
 
 [[example]]
 name = "echo_bot"
-required-features = ["client"]
+required-features = ["client_native"]
 
 [[example]]
 name = "message_log"
-required-features = ["client"]
+required-features = ["client_native"]
 
 [[example]]
 name = "cmd_bot"
-required-features = ["client"]
+required-features = ["client_native"]
 
 [package.metadata.nix]
 build = true
