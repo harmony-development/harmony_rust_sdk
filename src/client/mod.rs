@@ -26,7 +26,7 @@ use std::{
 };
 
 use hrpc::{
-    client::transport::{http::Hyper, TransportRequest, TransportResponse},
+    client::transport::{self as client_transport, TransportRequest, TransportResponse},
     encode::encode_protobuf_message,
     exports::{
         bytes::{Bytes, BytesMut},
@@ -39,14 +39,17 @@ use parking_lot::{Mutex, MutexGuard};
 use reqwest::Client as HttpClient;
 use tokio::sync::Mutex as AsyncMutex;
 
-type AuthService = crate::api::auth::auth_service_client::AuthServiceClient<AddAuth<Hyper>>;
-type ChatService = crate::api::chat::chat_service_client::ChatServiceClient<AddAuth<Hyper>>;
+type GenericClientTransport = client_transport::http::Hyper;
+type GenericClient = AddAuth<GenericClientTransport>;
+
+type AuthService = crate::api::auth::auth_service_client::AuthServiceClient<GenericClient>;
+type ChatService = crate::api::chat::chat_service_client::ChatServiceClient<GenericClient>;
 type MediaProxyService =
-    crate::api::mediaproxy::media_proxy_service_client::MediaProxyServiceClient<AddAuth<Hyper>>;
+    crate::api::mediaproxy::media_proxy_service_client::MediaProxyServiceClient<GenericClient>;
 type ProfileService =
-    crate::api::profile::profile_service_client::ProfileServiceClient<AddAuth<Hyper>>;
-type EmoteService = crate::api::emote::emote_service_client::EmoteServiceClient<AddAuth<Hyper>>;
-type BatchService = crate::api::batch::batch_service_client::BatchServiceClient<AddAuth<Hyper>>;
+    crate::api::profile::profile_service_client::ProfileServiceClient<GenericClient>;
+type EmoteService = crate::api::emote::emote_service_client::EmoteServiceClient<GenericClient>;
+type BatchService = crate::api::batch::batch_service_client::BatchServiceClient<GenericClient>;
 
 /// Represents an authentication state in which a [`Client`] can be.
 #[derive(Debug, Clone)]
