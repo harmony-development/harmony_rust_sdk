@@ -1,0 +1,1 @@
+initSidebarItems({"enum":[["ArchivedReason","An archived [`Reason`]"],["Reason","the reason for overriding username and avatar."],["ReasonResolver","The resolver for an archived [`Reason`]"]]});

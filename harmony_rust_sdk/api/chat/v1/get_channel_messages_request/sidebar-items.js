@@ -1,1 +1,1 @@
-initSidebarItems({"enum":[["Direction","The direction relative to the `message_id` message to get messages from."]]});
+initSidebarItems({"enum":[["ArchivedDirection","An archived [`Direction`]"],["Direction","The direction relative to the `message_id` message to get messages from."],["DirectionResolver","The resolver for an archived [`Direction`]"]]});

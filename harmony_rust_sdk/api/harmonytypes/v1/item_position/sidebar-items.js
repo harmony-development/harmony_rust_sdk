@@ -1,1 +1,1 @@
-initSidebarItems({"enum":[["Position","Position of this item."]],"struct":[["Between","An object that represents a place between two items in an ordered list."],["Bottom","An object that represents the bottom of an ordered list."],["Top","An object that represents the top of an ordered list."]]});
+initSidebarItems({"enum":[["ArchivedPosition","An archived [`Position`]"],["Position","The position"],["PositionResolver","The resolver for an archived [`Position`]"]]});

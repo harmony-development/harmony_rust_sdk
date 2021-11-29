@@ -1,1 +1,1 @@
-initSidebarItems({"enum":[["Event","The event type."]]});
+initSidebarItems({"enum":[["ArchivedEvent","An archived [`Event`]"],["Event","The event type."],["EventResolver","The resolver for an archived [`Event`]"]]});

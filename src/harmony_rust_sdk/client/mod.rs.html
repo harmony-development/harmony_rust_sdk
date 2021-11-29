@@ -1,7 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/client/mod.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>mod.rs - source</title><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../light.css"  id="themeStyle"><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled ><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled ><script id="default-settings"></script><script src="../../../storage.js"></script><script src="../../../crates.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">
-<link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png">
-<link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><style type="text/css">#crate-search{background-image:url("../../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu" role="button">&#9776;</div><a href='../../../harmony_rust_sdk/index.html'><div class='logo-container rust-logo'><img src='../../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu"><img src="../../../brush.svg" width="18" height="18" alt="Pick another theme!"></button><div id="theme-choices" role="menu"></div></div><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><button type="button" class="help-button">?</button>
-                <a id="settings-menu" href="../../../settings.html"><img src="../../../wheel.svg" width="18" height="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src&#x2F;client&#x2F;mod.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>mod.rs - source</title><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../light.css"  id="themeStyle"><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled ><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled ><script id="default-settings" ></script><script src="../../../storage.js"></script><script src="../../../crates.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"><style type="text/css">#crate-search{background-image:url("../../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu" role="button">&#9776;</div><a href='../../../harmony_rust_sdk/index.html'><div class='logo-container rust-logo'><img src='../../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu" title="themes"><img width="18" height="18" alt="Pick another theme!" src="../../../brush.svg"></button><div id="theme-choices" role="menu"></div></div><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><button type="button" id="help-button" title="help">?</button><a id="settings-menu" href="../../../settings.html" title="settings"><img width="18" height="18" alt="Change settings" src="../../../wheel.svg"></a></div></form></nav><section id="main" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">  1</span>
 <span id="2">  2</span>
 <span id="3">  3</span>
 <span id="4">  4</span>
@@ -538,8 +535,182 @@
 <span id="535">535</span>
 <span id="536">536</span>
 <span id="537">537</span>
-</pre><div class="example-wrap"><pre class="rust ">
-<span class="doccomment">//! Rust client implementation for Harmony, powered by [`hrpc`].</span>
+<span id="538">538</span>
+<span id="539">539</span>
+<span id="540">540</span>
+<span id="541">541</span>
+<span id="542">542</span>
+<span id="543">543</span>
+<span id="544">544</span>
+<span id="545">545</span>
+<span id="546">546</span>
+<span id="547">547</span>
+<span id="548">548</span>
+<span id="549">549</span>
+<span id="550">550</span>
+<span id="551">551</span>
+<span id="552">552</span>
+<span id="553">553</span>
+<span id="554">554</span>
+<span id="555">555</span>
+<span id="556">556</span>
+<span id="557">557</span>
+<span id="558">558</span>
+<span id="559">559</span>
+<span id="560">560</span>
+<span id="561">561</span>
+<span id="562">562</span>
+<span id="563">563</span>
+<span id="564">564</span>
+<span id="565">565</span>
+<span id="566">566</span>
+<span id="567">567</span>
+<span id="568">568</span>
+<span id="569">569</span>
+<span id="570">570</span>
+<span id="571">571</span>
+<span id="572">572</span>
+<span id="573">573</span>
+<span id="574">574</span>
+<span id="575">575</span>
+<span id="576">576</span>
+<span id="577">577</span>
+<span id="578">578</span>
+<span id="579">579</span>
+<span id="580">580</span>
+<span id="581">581</span>
+<span id="582">582</span>
+<span id="583">583</span>
+<span id="584">584</span>
+<span id="585">585</span>
+<span id="586">586</span>
+<span id="587">587</span>
+<span id="588">588</span>
+<span id="589">589</span>
+<span id="590">590</span>
+<span id="591">591</span>
+<span id="592">592</span>
+<span id="593">593</span>
+<span id="594">594</span>
+<span id="595">595</span>
+<span id="596">596</span>
+<span id="597">597</span>
+<span id="598">598</span>
+<span id="599">599</span>
+<span id="600">600</span>
+<span id="601">601</span>
+<span id="602">602</span>
+<span id="603">603</span>
+<span id="604">604</span>
+<span id="605">605</span>
+<span id="606">606</span>
+<span id="607">607</span>
+<span id="608">608</span>
+<span id="609">609</span>
+<span id="610">610</span>
+<span id="611">611</span>
+<span id="612">612</span>
+<span id="613">613</span>
+<span id="614">614</span>
+<span id="615">615</span>
+<span id="616">616</span>
+<span id="617">617</span>
+<span id="618">618</span>
+<span id="619">619</span>
+<span id="620">620</span>
+<span id="621">621</span>
+<span id="622">622</span>
+<span id="623">623</span>
+<span id="624">624</span>
+<span id="625">625</span>
+<span id="626">626</span>
+<span id="627">627</span>
+<span id="628">628</span>
+<span id="629">629</span>
+<span id="630">630</span>
+<span id="631">631</span>
+<span id="632">632</span>
+<span id="633">633</span>
+<span id="634">634</span>
+<span id="635">635</span>
+<span id="636">636</span>
+<span id="637">637</span>
+<span id="638">638</span>
+<span id="639">639</span>
+<span id="640">640</span>
+<span id="641">641</span>
+<span id="642">642</span>
+<span id="643">643</span>
+<span id="644">644</span>
+<span id="645">645</span>
+<span id="646">646</span>
+<span id="647">647</span>
+<span id="648">648</span>
+<span id="649">649</span>
+<span id="650">650</span>
+<span id="651">651</span>
+<span id="652">652</span>
+<span id="653">653</span>
+<span id="654">654</span>
+<span id="655">655</span>
+<span id="656">656</span>
+<span id="657">657</span>
+<span id="658">658</span>
+<span id="659">659</span>
+<span id="660">660</span>
+<span id="661">661</span>
+<span id="662">662</span>
+<span id="663">663</span>
+<span id="664">664</span>
+<span id="665">665</span>
+<span id="666">666</span>
+<span id="667">667</span>
+<span id="668">668</span>
+<span id="669">669</span>
+<span id="670">670</span>
+<span id="671">671</span>
+<span id="672">672</span>
+<span id="673">673</span>
+<span id="674">674</span>
+<span id="675">675</span>
+<span id="676">676</span>
+<span id="677">677</span>
+<span id="678">678</span>
+<span id="679">679</span>
+<span id="680">680</span>
+<span id="681">681</span>
+<span id="682">682</span>
+<span id="683">683</span>
+<span id="684">684</span>
+<span id="685">685</span>
+<span id="686">686</span>
+<span id="687">687</span>
+<span id="688">688</span>
+<span id="689">689</span>
+<span id="690">690</span>
+<span id="691">691</span>
+<span id="692">692</span>
+<span id="693">693</span>
+<span id="694">694</span>
+<span id="695">695</span>
+<span id="696">696</span>
+<span id="697">697</span>
+<span id="698">698</span>
+<span id="699">699</span>
+<span id="700">700</span>
+<span id="701">701</span>
+<span id="702">702</span>
+<span id="703">703</span>
+<span id="704">704</span>
+<span id="705">705</span>
+<span id="706">706</span>
+<span id="707">707</span>
+<span id="708">708</span>
+<span id="709">709</span>
+<span id="710">710</span>
+<span id="711">711</span>
+<span id="712">712</span>
+</pre><pre class="rust"><code><span class="doccomment">//! Rust client implementation for Harmony, powered by [`hrpc`].</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! See the `examples` directory in the repository on how to use this.</span>
 
@@ -553,27 +724,47 @@
     <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">reqwest</span>;
 }
 
-<span class="kw">use</span> <span class="kw">crate</span><span class="ident">::api</span>::{
+<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::api</span>::{
     <span class="ident">auth</span>::{<span class="ident">BeginAuthRequest</span>, <span class="ident">NextStepResponse</span>, <span class="ident">StepBackResponse</span>},
     <span class="ident">Endpoint</span>,
 };
 <span class="kw">use</span> <span class="ident">api</span>::{<span class="ident">auth</span>::<span class="kw-2">*</span>, <span class="ident">chat::EventSource</span>, <span class="ident">Hmc</span>, <span class="ident">HmcFromStrError</span>};
 <span class="kw">use</span> <span class="ident">error</span>::<span class="kw-2">*</span>;
 
-<span class="kw">use</span> <span class="ident">std</span>::{<span class="ident">convert::TryFrom</span>, <span class="ident">sync::Arc</span>};
+<span class="kw">use</span> <span class="ident">std</span>::{
+    <span class="ident">convert::TryFrom</span>,
+    <span class="ident">fmt</span>::{<span class="self">self</span>, <span class="ident">Debug</span>, <span class="ident">Formatter</span>},
+    <span class="ident">sync::Arc</span>,
+};
 
-<span class="kw">use</span> <span class="ident">hrpc</span>::{<span class="ident">bytes::Bytes</span>, <span class="ident">url::Url</span>};
+<span class="kw">use</span> <span class="ident">hrpc</span>::{
+    <span class="ident">client::transport</span>::{<span class="self">self</span> <span class="kw">as</span> <span class="ident">client_transport</span>, <span class="ident">TransportRequest</span>, <span class="ident">TransportResponse</span>},
+    <span class="ident">encode::encode_protobuf_message</span>,
+    <span class="ident">exports</span>::{
+        <span class="ident">bytes</span>::{<span class="ident">Bytes</span>, <span class="ident">BytesMut</span>},
+        <span class="ident">tower::Service</span>,
+    },
+    <span class="ident">Response</span>,
+};
+<span class="kw">use</span> <span class="ident">http::Uri</span>;
 <span class="kw">use</span> <span class="ident">parking_lot</span>::{<span class="ident">Mutex</span>, <span class="ident">MutexGuard</span>};
 <span class="kw">use</span> <span class="ident">reqwest::Client</span> <span class="kw">as</span> <span class="ident">HttpClient</span>;
 <span class="kw">use</span> <span class="ident">tokio::sync::Mutex</span> <span class="kw">as</span> <span class="ident">AsyncMutex</span>;
 
-<span class="kw">type</span> <span class="ident">AuthService</span> <span class="op">=</span> <span class="kw">crate</span><span class="ident">::api::auth::auth_service_client::AuthServiceClient</span>;
-<span class="kw">type</span> <span class="ident">ChatService</span> <span class="op">=</span> <span class="kw">crate</span><span class="ident">::api::chat::chat_service_client::ChatServiceClient</span>;
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;client_web&quot;</span>)]</span>
+<span class="kw">type</span> <span class="ident">GenericClientTransport</span> <span class="op">=</span> <span class="ident">client_transport::http::Wasm</span>;
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">all</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;client_native&quot;</span>, <span class="ident">not</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;client_web&quot;</span>)))]</span>
+<span class="kw">type</span> <span class="ident">GenericClientTransport</span> <span class="op">=</span> <span class="ident">client_transport::http::Hyper</span>;
+<span class="kw">type</span> <span class="ident">GenericClient</span> <span class="op">=</span> <span class="ident">AddAuth</span><span class="op">&lt;</span><span class="ident">GenericClientTransport</span><span class="op">&gt;</span>;
+
+<span class="kw">type</span> <span class="ident">AuthService</span> <span class="op">=</span> <span class="ident"><span class="kw">crate</span>::api::auth::auth_service_client::AuthServiceClient</span><span class="op">&lt;</span><span class="ident">GenericClient</span><span class="op">&gt;</span>;
+<span class="kw">type</span> <span class="ident">ChatService</span> <span class="op">=</span> <span class="ident"><span class="kw">crate</span>::api::chat::chat_service_client::ChatServiceClient</span><span class="op">&lt;</span><span class="ident">GenericClient</span><span class="op">&gt;</span>;
 <span class="kw">type</span> <span class="ident">MediaProxyService</span> <span class="op">=</span>
-    <span class="kw">crate</span><span class="ident">::api::mediaproxy::media_proxy_service_client::MediaProxyServiceClient</span>;
-<span class="kw">type</span> <span class="ident">ProfileService</span> <span class="op">=</span> <span class="kw">crate</span><span class="ident">::api::profile::profile_service_client::ProfileServiceClient</span>;
-<span class="kw">type</span> <span class="ident">EmoteService</span> <span class="op">=</span> <span class="kw">crate</span><span class="ident">::api::emote::emote_service_client::EmoteServiceClient</span>;
-<span class="kw">type</span> <span class="ident">BatchService</span> <span class="op">=</span> <span class="kw">crate</span><span class="ident">::api::batch::batch_service_client::BatchServiceClient</span>;
+    <span class="ident"><span class="kw">crate</span>::api::mediaproxy::media_proxy_service_client::MediaProxyServiceClient</span><span class="op">&lt;</span><span class="ident">GenericClient</span><span class="op">&gt;</span>;
+<span class="kw">type</span> <span class="ident">ProfileService</span> <span class="op">=</span>
+    <span class="ident"><span class="kw">crate</span>::api::profile::profile_service_client::ProfileServiceClient</span><span class="op">&lt;</span><span class="ident">GenericClient</span><span class="op">&gt;</span>;
+<span class="kw">type</span> <span class="ident">EmoteService</span> <span class="op">=</span> <span class="ident"><span class="kw">crate</span>::api::emote::emote_service_client::EmoteServiceClient</span><span class="op">&lt;</span><span class="ident">GenericClient</span><span class="op">&gt;</span>;
+<span class="kw">type</span> <span class="ident">BatchService</span> <span class="op">=</span> <span class="ident"><span class="kw">crate</span>::api::batch::batch_service_client::BatchServiceClient</span><span class="op">&lt;</span><span class="ident">GenericClient</span><span class="op">&gt;</span>;
 
 <span class="doccomment">/// Represents an authentication state in which a [`Client`] can be.</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
@@ -618,7 +809,7 @@
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>)]</span>
 <span class="kw">struct</span> <span class="ident">ClientData</span> {
-    <span class="ident">homeserver_url</span>: <span class="ident">Url</span>,
+    <span class="ident">homeserver_url</span>: <span class="ident">Uri</span>,
     <span class="ident">auth_status</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Mutex</span><span class="op">&lt;</span>(<span class="ident">AuthStatus</span>, <span class="ident">Bytes</span>)<span class="op">&gt;</span><span class="op">&gt;</span>,
     <span class="ident">chat</span>: <span class="ident">AsyncMutex</span><span class="op">&lt;</span><span class="ident">ChatService</span><span class="op">&gt;</span>,
     <span class="ident">auth</span>: <span class="ident">AsyncMutex</span><span class="op">&lt;</span><span class="ident">AuthService</span><span class="op">&gt;</span>,
@@ -636,7 +827,7 @@
 }
 
 <span class="kw">impl</span> <span class="ident">Client</span> {
-    <span class="doccomment">/// Create a new [`Client`] from a homeserver [`Url`] (URL) and an (optional) session.</span>
+    <span class="doccomment">/// Create a new [`Client`] from a homeserver [`Uri`] and an (optional) session.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// If port is not specified in the URL, this will add the default port `2289` to it.</span>
     <span class="doccomment">/// If scheme is not specified, this will assume the scheme is `https`.</span>
@@ -650,10 +841,14 @@
     <span class="doccomment">/// # Ok(())</span>
     <span class="doccomment">/// # }</span>
     <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="kw-2">mut</span> <span class="ident">homeserver_url</span>: <span class="ident">Url</span>, <span class="ident">session</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Session</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">ClientResult</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="kw-2">mut</span> <span class="ident">homeserver_url</span>: <span class="ident">Uri</span>, <span class="ident">session</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Session</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">ClientResult</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> {
         <span class="comment">// Add the default scheme if not specified</span>
-        <span class="kw">if</span> <span class="op">!</span><span class="macro">matches!</span>(<span class="ident">homeserver_url</span>.<span class="ident">scheme</span>(), <span class="string">&quot;http&quot;</span> <span class="op">|</span> <span class="string">&quot;https&quot;</span>) {
-            <span class="ident">homeserver_url</span>.<span class="ident">set_scheme</span>(<span class="string">&quot;https&quot;</span>).<span class="ident">unwrap</span>();
+        <span class="kw">if</span> <span class="op">!</span><span class="macro">matches!</span>(<span class="ident">homeserver_url</span>.<span class="ident">scheme_str</span>(), <span class="prelude-val">Some</span>(<span class="string">&quot;http&quot;</span> <span class="op">|</span> <span class="string">&quot;https&quot;</span>)) {
+            <span class="ident">homeserver_url</span> <span class="op">=</span> {
+                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">parts</span> <span class="op">=</span> <span class="ident">homeserver_url</span>.<span class="ident">into_parts</span>();
+                <span class="ident">parts</span>.<span class="ident">scheme</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="string">&quot;https&quot;</span>.<span class="ident">parse</span>().<span class="ident">unwrap</span>());
+                <span class="ident">Uri::from_parts</span>(<span class="ident">parts</span>).<span class="ident">unwrap</span>()
+            };
         }
 
         <span class="kw">let</span> <span class="ident">http</span> <span class="op">=</span> <span class="ident">HttpClient::builder</span>().<span class="ident">build</span>()<span class="question-mark">?</span>;
@@ -668,7 +863,11 @@
                 <span class="ident">server</span>: <span class="ident">String</span>,
             }
 
-            <span class="kw">let</span> <span class="ident">url</span> <span class="op">=</span> <span class="ident">homeserver_url</span>.<span class="ident">join</span>(<span class="string">&quot;/_harmony/server&quot;</span>).<span class="ident">unwrap</span>();
+            <span class="kw">let</span> <span class="ident">url</span> <span class="op">=</span> {
+                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">parts</span> <span class="op">=</span> <span class="ident">homeserver_url</span>.<span class="ident">clone</span>().<span class="ident">into_parts</span>();
+                <span class="ident">parts</span>.<span class="ident">path_and_query</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="string">&quot;/_harmony/server&quot;</span>.<span class="ident">parse</span>().<span class="ident">unwrap</span>());
+                <span class="ident">Uri::from_parts</span>(<span class="ident">parts</span>).<span class="ident">unwrap</span>()
+            };
 
             <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Ok</span>(<span class="ident">response</span>) <span class="op">=</span> <span class="ident">http</span>
                 .<span class="ident">get</span>(<span class="kw-2">&amp;</span><span class="ident">url</span>.<span class="ident">to_string</span>())
@@ -677,16 +876,22 @@
                 .<span class="ident">json</span>::<span class="op">&lt;</span><span class="ident">Server</span><span class="op">&gt;</span>()
                 .<span class="kw">await</span>
             {
-                <span class="kw">let</span> <span class="ident">host</span>: <span class="ident">Url</span> <span class="op">=</span> <span class="ident">response</span>.<span class="ident">server</span>.<span class="ident">parse</span>().<span class="ident">unwrap</span>();
+                <span class="kw">let</span> <span class="ident">host</span>: <span class="ident">Uri</span> <span class="op">=</span> <span class="ident">response</span>.<span class="ident">server</span>.<span class="ident">parse</span>().<span class="ident">unwrap</span>();
                 <span class="ident">homeserver_url</span> <span class="op">=</span> <span class="ident">host</span>;
             }
         };
 
         <span class="comment">// Add the default port if not specified</span>
         <span class="kw">if</span> <span class="ident">homeserver_url</span>.<span class="ident">port</span>().<span class="ident">is_none</span>() {
-            <span class="comment">// These unwraps are safe since we use `Url` everywhere and we are sure that our `new_authority` is</span>
-            <span class="comment">// indeed a correct authority.</span>
-            <span class="ident">homeserver_url</span>.<span class="ident">set_port</span>(<span class="prelude-val">Some</span>(<span class="number">2289</span>)).<span class="ident">unwrap</span>();
+            <span class="ident">homeserver_url</span> <span class="op">=</span> {
+                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">parts</span> <span class="op">=</span> <span class="ident">homeserver_url</span>.<span class="ident">into_parts</span>();
+                <span class="ident">parts</span>.<span class="ident">authority</span> <span class="op">=</span> <span class="prelude-val">Some</span>(
+                    <span class="macro">format!</span>(<span class="string">&quot;{}:2289&quot;</span>, <span class="ident">parts</span>.<span class="ident">authority</span>.<span class="ident">unwrap</span>().<span class="ident">as_str</span>())
+                        .<span class="ident">parse</span>()
+                        .<span class="ident">unwrap</span>(),
+                );
+                <span class="ident">Uri::from_parts</span>(<span class="ident">parts</span>).<span class="ident">unwrap</span>()
+            }
         }
 
         <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">debug_assertions</span>)]</span>
@@ -702,22 +907,13 @@
         });
         <span class="kw">let</span> <span class="ident">auth_status</span> <span class="op">=</span> <span class="ident">Arc::new</span>(<span class="ident">Mutex::new</span>((<span class="ident">session</span>, <span class="ident">token_bytes</span>)));
 
-        <span class="kw">let</span> <span class="ident">modify_with</span> <span class="op">=</span> <span class="ident">Arc::new</span>({
-            <span class="kw">let</span> <span class="ident">auth_status</span> <span class="op">=</span> <span class="ident">auth_status</span>.<span class="ident">clone</span>();
-            <span class="ident">Box::new</span>(<span class="kw">move</span> <span class="op">|</span><span class="ident">header_map</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">http::HeaderMap</span><span class="op">|</span> {
-                <span class="kw">let</span> <span class="ident">guard</span> <span class="op">=</span> <span class="ident">auth_status</span>.<span class="ident">lock</span>();
-                <span class="kw">if</span> <span class="ident">guard</span>.<span class="number">0</span>.<span class="ident">is_authenticated</span>() {
-                    <span class="ident">header_map</span>.<span class="ident">insert</span>(
-                        <span class="ident">http::header::AUTHORIZATION</span>,
-                        <span class="comment">// This is safe on the assumption that servers will never send session tokens</span>
-                        <span class="comment">// with invalid-byte(s). If they do, they aren&#39;t respecting the protocol</span>
-                        <span class="kw">unsafe</span> { <span class="ident">http::HeaderValue::from_maybe_shared_unchecked</span>(<span class="ident">guard</span>.<span class="number">1</span>.<span class="ident">clone</span>()) },
-                    );
-                }
-            })
-        });
-        <span class="kw">let</span> <span class="ident">inner</span> <span class="op">=</span> <span class="ident">hrpc::client::Client::new</span>(<span class="ident">http</span>.<span class="ident">clone</span>(), <span class="ident">homeserver_url</span>.<span class="ident">clone</span>())<span class="question-mark">?</span>
-            .<span class="ident">modify_request_headers_with</span>(<span class="ident">modify_with</span>);
+        <span class="kw">let</span> <span class="ident">transport</span> <span class="op">=</span> <span class="ident">GenericClientTransport::new</span>(<span class="ident">homeserver_url</span>.<span class="ident">clone</span>())
+            .<span class="ident">map_err</span>(<span class="op">|</span><span class="ident">err</span><span class="op">|</span> <span class="ident">ClientError::Internal</span>(<span class="ident">InternalClientError::Transport</span>(<span class="ident">err</span>)))<span class="question-mark">?</span>;
+        <span class="kw">let</span> <span class="ident">transport</span> <span class="op">=</span> <span class="ident">AddAuth</span> {
+            <span class="ident">inner</span>: <span class="ident">transport</span>,
+            <span class="ident">auth_status</span>: <span class="ident">auth_status</span>.<span class="ident">clone</span>(),
+        };
+        <span class="kw">let</span> <span class="ident">inner</span> <span class="op">=</span> <span class="ident">hrpc::client::Client::new</span>(<span class="ident">transport</span>);
 
         <span class="kw">let</span> <span class="ident">auth</span> <span class="op">=</span> <span class="ident">AuthService::new_inner</span>(<span class="ident">inner</span>.<span class="ident">clone</span>());
         <span class="kw">let</span> <span class="ident">chat</span> <span class="op">=</span> <span class="ident">ChatService::new_inner</span>(<span class="ident">inner</span>.<span class="ident">clone</span>());
@@ -755,19 +951,18 @@
     ) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">ClientError</span><span class="op">&gt;</span>
     <span class="kw">where</span>
         <span class="ident">Fut</span>: <span class="ident">std::future::Future</span><span class="op">&lt;</span><span class="ident">Output</span> <span class="op">=</span> <span class="ident">ClientResult</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="op">+</span> <span class="lifetime">&#39;a</span>,
-        <span class="ident">Hndlr</span>: <span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Client</span>, <span class="kw">crate</span><span class="ident">::api::chat::Event</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Fut</span>,
+        <span class="ident">Hndlr</span>: <span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Client</span>, <span class="ident"><span class="kw">crate</span>::api::chat::Event</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Fut</span>,
     {
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">sock</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">subscribe_events</span>(<span class="ident">subs</span>).<span class="kw">await</span><span class="question-mark">?</span>;
         <span class="kw">loop</span> {
-            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">res</span>) <span class="op">=</span> <span class="ident">sock</span>.<span class="ident">get_event</span>().<span class="kw">await</span> {
-                <span class="kw">match</span> <span class="ident">res</span> {
-                    <span class="prelude-val">Ok</span>(<span class="ident">event</span>) <span class="op">=</span><span class="op">&gt;</span> {
-                        <span class="kw">if</span> <span class="ident">handler</span>(<span class="self">self</span>, <span class="ident">event</span>).<span class="kw">await</span><span class="question-mark">?</span> {
-                            <span class="kw">return</span> <span class="prelude-val">Ok</span>(());
-                        }
+            <span class="kw">match</span> <span class="ident">sock</span>.<span class="ident">get_event</span>().<span class="kw">await</span> {
+                <span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>(<span class="ident">ev</span>)) <span class="op">=</span><span class="op">&gt;</span> {
+                    <span class="kw">if</span> <span class="ident">handler</span>(<span class="self">self</span>, <span class="ident">ev</span>).<span class="kw">await</span><span class="question-mark">?</span> {
+                        <span class="kw">return</span> <span class="prelude-val">Ok</span>(());
                     }
-                    <span class="prelude-val">Err</span>(<span class="ident">err</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="macro">tracing::error!</span>(<span class="string">&quot;{}&quot;</span>, <span class="ident">err</span>),
                 }
+                <span class="prelude-val">Err</span>(<span class="ident">err</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="macro">tracing::error!</span>(<span class="string">&quot;{}&quot;</span>, <span class="ident">err</span>),
+                <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">std::hint::spin_loop</span>(),
             }
         }
     }
@@ -809,8 +1004,51 @@
     }
 
     <span class="doccomment">/// Execute the given request.</span>
-    <span class="kw">pub</span> <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">call</span><span class="op">&lt;</span><span class="ident">Req</span>: <span class="ident">Endpoint</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">request</span>: <span class="ident">Req</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">ClientResult</span><span class="op">&lt;</span><span class="ident">Req::Response</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">call</span><span class="op">&lt;</span><span class="ident">Req</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">request</span>: <span class="ident">Req</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">ClientResult</span><span class="op">&lt;</span><span class="ident">Req::Response</span><span class="op">&gt;</span>
+    <span class="kw">where</span>
+        <span class="ident">Req</span>: <span class="ident">Endpoint</span>,
+        <span class="ident">Req::Response</span>: <span class="ident">prost::Message</span> <span class="op">+</span> <span class="ident">Default</span>,
+    {
+        <span class="prelude-val">Ok</span>(<span class="ident">request</span>.<span class="ident">call_with</span>(<span class="self">self</span>).<span class="kw">await</span><span class="question-mark">?</span>.<span class="ident">into_message</span>().<span class="kw">await</span><span class="question-mark">?</span>)
+    }
+
+    <span class="doccomment">/// Execute the given request, but return a [`hrpc::Response`].</span>
+    <span class="kw">pub</span> <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">call_response</span><span class="op">&lt;</span><span class="ident">Req</span>: <span class="ident">Endpoint</span><span class="op">&gt;</span>(
+        <span class="kw-2">&amp;</span><span class="self">self</span>,
+        <span class="ident">request</span>: <span class="ident">Req</span>,
+    ) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">ClientResult</span><span class="op">&lt;</span><span class="ident">Response</span><span class="op">&lt;</span><span class="ident">Req::Response</span><span class="op">&gt;</span><span class="op">&gt;</span> {
         <span class="ident">request</span>.<span class="ident">call_with</span>(<span class="self">self</span>).<span class="kw">await</span>
+    }
+
+    <span class="doccomment">/// Execute the given requests a batch (same) request.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Note that this does not support the convenience types defined in the [`api`] module.</span>
+    <span class="doccomment">/// You will need to convert them to the corresponding request type with `Request::from`.</span>
+    <span class="kw">pub</span> <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">batch_call</span><span class="op">&lt;</span><span class="ident">Req</span><span class="op">&gt;</span>(
+        <span class="kw-2">&amp;</span><span class="self">self</span>,
+        <span class="ident">requests</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Req</span><span class="op">&gt;</span>,
+    ) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">ClientResult</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="op">&lt;</span><span class="ident">Req</span> <span class="kw">as</span> <span class="ident">Endpoint</span><span class="op">&gt;</span><span class="ident">::Response</span><span class="op">&gt;</span><span class="op">&gt;</span>
+    <span class="kw">where</span>
+        <span class="ident">Req</span>: <span class="ident">Endpoint</span> <span class="op">+</span> <span class="ident">prost::Message</span>,
+        <span class="op">&lt;</span><span class="ident">Req</span> <span class="kw">as</span> <span class="ident">Endpoint</span><span class="op">&gt;</span><span class="ident">::Response</span>: <span class="ident">prost::Message</span> <span class="op">+</span> <span class="ident">Default</span>,
+    {
+        <span class="kw">use</span> <span class="ident">prost::Message</span>;
+
+        <span class="kw">let</span> <span class="ident">encoded</span> <span class="op">=</span> <span class="ident">requests</span>
+            .<span class="ident">iter</span>()
+            .<span class="ident">map</span>(<span class="ident">encode_protobuf_message</span>)
+            .<span class="ident">map</span>(<span class="ident">BytesMut::freeze</span>);
+        <span class="kw">let</span> <span class="ident">batch_req</span> <span class="op">=</span> <span class="ident"><span class="kw">crate</span>::api::batch::BatchSameRequest</span> {
+            <span class="ident">endpoint</span>: <span class="ident">Req::ENDPOINT_PATH</span>.<span class="ident">to_string</span>(),
+            <span class="ident">requests</span>: <span class="ident">encoded</span>.<span class="ident">collect</span>(),
+        };
+        <span class="kw">let</span> <span class="ident">responses</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">call</span>(<span class="ident">batch_req</span>).<span class="kw">await</span><span class="question-mark">?</span>.<span class="ident">responses</span>;
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">decoded</span> <span class="op">=</span> <span class="ident">Vec::with_capacity</span>(<span class="ident">responses</span>.<span class="ident">len</span>());
+        <span class="kw">for</span> <span class="ident">response</span> <span class="kw">in</span> <span class="ident">responses</span> {
+            <span class="kw">let</span> <span class="ident">decoded_msg</span> <span class="op">=</span> <span class="op">&lt;</span><span class="ident">Req</span> <span class="kw">as</span> <span class="ident">Endpoint</span><span class="op">&gt;</span><span class="ident">::Response::decode</span>(<span class="ident">response</span>.<span class="ident">as_ref</span>())<span class="question-mark">?</span>;
+            <span class="ident">decoded</span>.<span class="ident">push</span>(<span class="ident">decoded_msg</span>);
+        }
+        <span class="prelude-val">Ok</span>(<span class="ident">decoded</span>)
     }
 
     <span class="attribute">#[<span class="ident">inline</span>(<span class="ident">always</span>)]</span>
@@ -846,7 +1084,7 @@
     <span class="doccomment">/// # Ok(())</span>
     <span class="doccomment">/// # }</span>
     <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">homeserver_url</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="kw-2">&amp;</span><span class="ident">Url</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">homeserver_url</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="kw-2">&amp;</span><span class="ident">Uri</span> {
         <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">data</span>.<span class="ident">homeserver_url</span>
     }
 
@@ -862,7 +1100,7 @@
     <span class="doccomment">/// # Ok(())</span>
     <span class="doccomment">/// # }</span>
     <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">make_hmc</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">id</span>: <span class="kw">impl</span> <span class="ident">std::fmt::Display</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Hmc</span>, <span class="ident">HmcFromStrError</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">make_hmc</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">id</span>: <span class="kw">impl</span> <span class="ident">fmt::Display</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Hmc</span>, <span class="ident">HmcFromStrError</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="ident">url</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">data</span>.<span class="ident">homeserver_url</span>;
         <span class="ident">Hmc::new</span>(
             <span class="macro">format!</span>(<span class="string">&quot;{}:{}&quot;</span>, <span class="ident">url</span>.<span class="ident">host</span>().<span class="ident">unwrap</span>(), <span class="ident">url</span>.<span class="ident">port</span>().<span class="ident">unwrap</span>()),
@@ -888,6 +1126,8 @@
             .<span class="ident">auth</span>()
             .<span class="kw">await</span>
             .<span class="ident">begin_auth</span>(<span class="ident">BeginAuthRequest</span> {})
+            .<span class="kw">await</span><span class="question-mark">?</span>
+            .<span class="ident">into_message</span>()
             .<span class="kw">await</span><span class="question-mark">?</span>
             .<span class="ident">auth_id</span>;
         <span class="self">self</span>.<span class="ident">auth_status_lock</span>().<span class="number">0</span> <span class="op">=</span> <span class="ident">AuthStatus::InProgress</span>(<span class="ident">auth_id</span>);
@@ -920,6 +1160,8 @@
                 .<span class="ident">auth</span>()
                 .<span class="kw">await</span>
                 .<span class="ident">next_step</span>(<span class="ident">AuthResponse::new</span>(<span class="ident">auth_id</span>, <span class="ident">response</span>))
+                .<span class="kw">await</span><span class="question-mark">?</span>
+                .<span class="ident">into_message</span>()
                 .<span class="kw">await</span><span class="question-mark">?</span>;
 
             <span class="prelude-val">Ok</span>(
@@ -958,7 +1200,13 @@
     <span class="doccomment">/// ```</span>
     <span class="kw">pub</span> <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">prev_auth_step</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">ClientResult</span><span class="op">&lt;</span><span class="ident">StepBackResponse</span><span class="op">&gt;</span> {
         <span class="kw">if</span> <span class="kw">let</span> <span class="ident">AuthStatus::InProgress</span>(<span class="ident">auth_id</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">auth_status</span>() {
-            <span class="prelude-val">Ok</span>(<span class="self">self</span>.<span class="ident">auth</span>().<span class="kw">await</span>.<span class="ident">step_back</span>(<span class="ident">AuthId::new</span>(<span class="ident">auth_id</span>)).<span class="kw">await</span><span class="question-mark">?</span>)
+            <span class="prelude-val">Ok</span>(<span class="self">self</span>
+                .<span class="ident">auth</span>()
+                .<span class="kw">await</span>
+                .<span class="ident">step_back</span>(<span class="ident">AuthId::new</span>(<span class="ident">auth_id</span>))
+                .<span class="kw">await</span><span class="question-mark">?</span>
+                .<span class="ident">into_message</span>()
+                .<span class="kw">await</span><span class="question-mark">?</span>)
         } <span class="kw">else</span> {
             <span class="prelude-val">Err</span>(<span class="ident">ClientError::NoAuthId</span>)
         }
@@ -1005,8 +1253,11 @@
         <span class="kw-2">&amp;</span><span class="self">self</span>,
         <span class="ident">subscriptions</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">EventSource</span><span class="op">&gt;</span>,
     ) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">ClientResult</span><span class="op">&lt;</span><span class="ident">EventsSocket</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">inner</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">chat</span>().<span class="kw">await</span>.<span class="ident">stream_events</span>(()).<span class="kw">await</span><span class="question-mark">?</span>;
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">socket</span> <span class="op">=</span> <span class="ident">EventsSocket</span> { <span class="ident">inner</span> };
+        <span class="kw">let</span> (<span class="ident">tx</span>, <span class="ident">rx</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">chat</span>().<span class="kw">await</span>.<span class="ident">stream_events</span>(()).<span class="kw">await</span><span class="question-mark">?</span>.<span class="ident">split</span>();
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">socket</span> <span class="op">=</span> <span class="ident">EventsSocket</span> {
+            <span class="ident">write</span>: <span class="ident">EventsWriteSocket</span> { <span class="ident">inner</span>: <span class="ident">tx</span> },
+            <span class="ident">read</span>: <span class="ident">EventsReadSocket</span> { <span class="ident">inner</span>: <span class="ident">rx</span> },
+        };
         <span class="kw">for</span> <span class="ident">source</span> <span class="kw">in</span> <span class="ident">subscriptions</span> {
             <span class="ident">socket</span>.<span class="ident">add_source</span>(<span class="ident">source</span>).<span class="kw">await</span><span class="question-mark">?</span>;
         }
@@ -1015,29 +1266,92 @@
     }
 }
 
-<span class="doccomment">/// Event subscription socket.</span>
+<span class="doccomment">/// Auth middleware for [`Client`].</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">AddAuth</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span> {
+    <span class="ident">inner</span>: <span class="ident">S</span>,
+    <span class="ident">auth_status</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Mutex</span><span class="op">&lt;</span>(<span class="ident">AuthStatus</span>, <span class="ident">Bytes</span>)<span class="op">&gt;</span><span class="op">&gt;</span>,
+}
+
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span> <span class="ident">Service</span><span class="op">&lt;</span><span class="ident">TransportRequest</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">AddAuth</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span>
+<span class="kw">where</span>
+    <span class="ident">S</span>: <span class="ident">Service</span><span class="op">&lt;</span><span class="ident">TransportRequest</span>, <span class="ident">Response</span> <span class="op">=</span> <span class="ident">TransportResponse</span><span class="op">&gt;</span>,
+{
+    <span class="kw">type</span> <span class="ident">Response</span> <span class="op">=</span> <span class="ident">S::Response</span>;
+
+    <span class="kw">type</span> <span class="ident">Error</span> <span class="op">=</span> <span class="ident">S::Error</span>;
+
+    <span class="kw">type</span> <span class="ident">Future</span> <span class="op">=</span> <span class="ident">S::Future</span>;
+
+    <span class="kw">fn</span> <span class="ident">poll_ready</span>(
+        <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
+        <span class="ident">cx</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">std::task::Context</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>,
+    ) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">std::task::Poll</span><span class="op">&lt;</span><span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident"><span class="self">Self</span>::Error</span><span class="op">&gt;</span><span class="op">&gt;</span> {
+        <span class="ident">Service::poll_ready</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>.<span class="ident">inner</span>, <span class="ident">cx</span>)
+    }
+
+    <span class="kw">fn</span> <span class="ident">call</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="kw-2">mut</span> <span class="ident">req</span>: <span class="ident">TransportRequest</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident"><span class="self">Self</span>::Future</span> {
+        <span class="kw">let</span> <span class="ident">guard</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">auth_status</span>.<span class="ident">lock</span>();
+        <span class="kw">if</span> <span class="ident">guard</span>.<span class="number">0</span>.<span class="ident">is_authenticated</span>() {
+            <span class="kw">let</span> <span class="ident">req</span> <span class="op">=</span> <span class="kw">match</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">req</span> {
+                <span class="ident">TransportRequest::Unary</span>(<span class="ident">req</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">req</span>,
+                <span class="ident">TransportRequest::Socket</span>(<span class="ident">req</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">req</span>,
+            };
+            <span class="ident">req</span>.<span class="ident">get_or_insert_header_map</span>().<span class="ident">insert</span>(
+                <span class="ident">http::header::AUTHORIZATION</span>,
+                <span class="comment">// This is safe on the assumption that servers will never send session tokens</span>
+                <span class="comment">// with invalid-byte(s). If they do, they aren&#39;t respecting the protocol</span>
+                <span class="kw">unsafe</span> { <span class="ident">http::HeaderValue::from_maybe_shared_unchecked</span>(<span class="ident">guard</span>.<span class="number">1</span>.<span class="ident">clone</span>()) },
+            );
+        }
+
+        <span class="ident">Service::call</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>.<span class="ident">inner</span>, <span class="ident">req</span>)
+    }
+}
+
+<span class="doccomment">/// Event subscription socket.</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">EventsSocket</span> {
-    <span class="ident">inner</span>: <span class="ident">hrpc::client::socket::Socket</span><span class="op">&lt;</span>
-        <span class="kw">crate</span><span class="ident">::api::chat::StreamEventsRequest</span>,
-        <span class="kw">crate</span><span class="ident">::api::chat::StreamEventsResponse</span>,
-    <span class="op">&gt;</span>,
+    <span class="ident">read</span>: <span class="ident">EventsReadSocket</span>,
+    <span class="ident">write</span>: <span class="ident">EventsWriteSocket</span>,
 }
 
 <span class="kw">impl</span> <span class="ident">EventsSocket</span> {
     <span class="doccomment">/// Get an event.</span>
-    <span class="kw">pub</span> <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">get_event</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ClientResult</span><span class="op">&lt;</span><span class="kw">crate</span><span class="ident">::api::chat::Event</span><span class="op">&gt;</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">get_message</span>().<span class="kw">await</span><span class="question-mark">?</span>;
-        <span class="kw">match</span> <span class="ident">res</span> {
-            <span class="prelude-val">Ok</span>(<span class="ident">resp</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">resp</span>
-                .<span class="ident">event</span>
-                .<span class="ident">map</span>(<span class="op">|</span><span class="ident">a</span><span class="op">|</span> <span class="kw">crate</span><span class="ident">::api::chat::Event::try_from</span>(<span class="ident">a</span>).<span class="ident">ok</span>())
-                .<span class="ident">flatten</span>()
-                .<span class="ident">map</span>(<span class="prelude-val">Ok</span>),
-            <span class="prelude-val">Err</span>(<span class="ident">err</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">Some</span>(<span class="prelude-val">Err</span>(<span class="ident">err</span>.<span class="ident">into</span>())),
-        }
+    <span class="attribute">#[<span class="ident">inline</span>]</span>
+    <span class="kw">pub</span> <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">get_event</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">ClientResult</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident"><span class="kw">crate</span>::api::chat::Event</span><span class="op">&gt;</span><span class="op">&gt;</span> {
+        <span class="self">self</span>.<span class="ident">read</span>.<span class="ident">get_event</span>().<span class="kw">await</span>
     }
 
+    <span class="doccomment">/// Add a new event source.</span>
+    <span class="attribute">#[<span class="ident">inline</span>]</span>
+    <span class="kw">pub</span> <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">add_source</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">source</span>: <span class="ident">EventSource</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">ClientResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
+        <span class="self">self</span>.<span class="ident">write</span>.<span class="ident">add_source</span>(<span class="ident">source</span>).<span class="kw">await</span>
+    }
+
+    <span class="doccomment">/// Close this socket.</span>
+    <span class="attribute">#[<span class="ident">inline</span>]</span>
+    <span class="kw">pub</span> <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">close</span>(<span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">ClientResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
+        <span class="self">self</span>.<span class="ident">write</span>.<span class="ident">close</span>().<span class="kw">await</span>
+    }
+
+    <span class="doccomment">/// Split this socket into the read and write half.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">split</span>(<span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> (<span class="ident">EventsWriteSocket</span>, <span class="ident">EventsReadSocket</span>) {
+        (<span class="self">self</span>.<span class="ident">write</span>, <span class="self">self</span>.<span class="ident">read</span>)
+    }
+}
+
+<span class="kw">impl</span> <span class="ident">Debug</span> <span class="kw">for</span> <span class="ident">EventsSocket</span> {
+    <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Formatter</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">fmt::Result</span> {
+        <span class="ident">f</span>.<span class="ident">write_str</span>(<span class="string">&quot;EventsSocket&quot;</span>)
+    }
+}
+
+<span class="doccomment">/// Write half of the event subscription socket.</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">EventsWriteSocket</span> {
+    <span class="ident">inner</span>: <span class="ident">hrpc::client::socket::WriteSocket</span><span class="op">&lt;</span><span class="ident"><span class="kw">crate</span>::api::chat::StreamEventsRequest</span><span class="op">&gt;</span>,
+}
+
+<span class="kw">impl</span> <span class="ident">EventsWriteSocket</span> {
     <span class="doccomment">/// Add a new event source.</span>
     <span class="kw">pub</span> <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">add_source</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">source</span>: <span class="ident">EventSource</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">ClientResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
         <span class="self">self</span>.<span class="ident">inner</span>
@@ -1052,23 +1366,49 @@
     }
 }
 
+<span class="kw">impl</span> <span class="ident">Debug</span> <span class="kw">for</span> <span class="ident">EventsWriteSocket</span> {
+    <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Formatter</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">fmt::Result</span> {
+        <span class="ident">f</span>.<span class="ident">write_str</span>(<span class="string">&quot;EventsWriteSocket&quot;</span>)
+    }
+}
+
+<span class="doccomment">/// Read half of the event subscription socket.</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">EventsReadSocket</span> {
+    <span class="ident">inner</span>: <span class="ident">hrpc::client::socket::ReadSocket</span><span class="op">&lt;</span><span class="ident"><span class="kw">crate</span>::api::chat::StreamEventsResponse</span><span class="op">&gt;</span>,
+}
+
+<span class="kw">impl</span> <span class="ident">EventsReadSocket</span> {
+    <span class="doccomment">/// Get an event.</span>
+    <span class="kw">pub</span> <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">get_event</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">ClientResult</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident"><span class="kw">crate</span>::api::chat::Event</span><span class="op">&gt;</span><span class="op">&gt;</span> {
+        <span class="kw">let</span> <span class="ident">resp</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">receive_message</span>().<span class="kw">await</span><span class="question-mark">?</span>;
+        <span class="prelude-val">Ok</span>(<span class="ident">resp</span>
+            .<span class="ident">event</span>
+            .<span class="ident">and_then</span>(<span class="op">|</span><span class="ident">a</span><span class="op">|</span> <span class="ident"><span class="kw">crate</span>::api::chat::Event::try_from</span>(<span class="ident">a</span>).<span class="ident">ok</span>()))
+    }
+}
+
+<span class="kw">impl</span> <span class="ident">Debug</span> <span class="kw">for</span> <span class="ident">EventsReadSocket</span> {
+    <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Formatter</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">fmt::Result</span> {
+        <span class="ident">f</span>.<span class="ident">write_str</span>(<span class="string">&quot;EventsReadSocket&quot;</span>)
+    }
+}
+
 <span class="doccomment">/// Auth steps subscription socket.</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">AuthSocket</span> {
-    <span class="ident">inner</span>: <span class="ident">hrpc::client::socket::ReadSocket</span><span class="op">&lt;</span>
-        <span class="kw">crate</span><span class="ident">::api::auth::StreamStepsRequest</span>,
-        <span class="kw">crate</span><span class="ident">::api::auth::StreamStepsResponse</span>,
+    <span class="ident">inner</span>: <span class="ident">hrpc::client::socket::Socket</span><span class="op">&lt;</span>
+        <span class="ident"><span class="kw">crate</span>::api::auth::StreamStepsRequest</span>,
+        <span class="ident"><span class="kw">crate</span>::api::auth::StreamStepsResponse</span>,
     <span class="op">&gt;</span>,
 }
 
 <span class="kw">impl</span> <span class="ident">AuthSocket</span> {
     <span class="doccomment">/// Get an auth step.</span>
-    <span class="kw">pub</span> <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">get_step</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ClientResult</span><span class="op">&lt;</span><span class="kw">crate</span><span class="ident">::api::auth::AuthStep</span><span class="op">&gt;</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">get_message</span>().<span class="kw">await</span><span class="question-mark">?</span>;
-        <span class="kw">match</span> <span class="ident">res</span> {
-            <span class="prelude-val">Ok</span>(<span class="ident">resp</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">resp</span>.<span class="ident">step</span>.<span class="ident">map</span>(<span class="prelude-val">Ok</span>),
-            <span class="prelude-val">Err</span>(<span class="ident">err</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">Some</span>(<span class="prelude-val">Err</span>(<span class="ident">err</span>.<span class="ident">into</span>())),
-        }
+    <span class="kw">pub</span> <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">get_step</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">ClientResult</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident"><span class="kw">crate</span>::api::auth::AuthStep</span><span class="op">&gt;</span><span class="op">&gt;</span> {
+        <span class="self">self</span>.<span class="ident">inner</span>
+            .<span class="ident">receive_message</span>()
+            .<span class="kw">await</span>
+            .<span class="ident">map</span>(<span class="op">|</span><span class="ident">s</span><span class="op">|</span> <span class="ident">s</span>.<span class="ident">step</span>)
+            .<span class="ident">map_err</span>(<span class="ident">Into::into</span>)
     }
 
     <span class="doccomment">/// Close this socket.</span>
@@ -1076,6 +1416,13 @@
         <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">close</span>().<span class="kw">await</span>.<span class="ident">map_err</span>(<span class="ident">Into::into</span>)
     }
 }
-</pre></div>
+
+<span class="kw">impl</span> <span class="ident">Debug</span> <span class="kw">for</span> <span class="ident">AuthSocket</span> {
+    <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Formatter</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">fmt::Result</span> {
+        <span class="ident">f</span>.<span class="ident">write_str</span>(<span class="string">&quot;AuthSocket&quot;</span>)
+    }
+}
+</code></pre></div>
 </section><section id="search" class="content hidden"></section><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="harmony_rust_sdk" data-search-index-js="../../../search-index.js" data-search-js="../../../search.js"></div>
-    <script src="../../../main.js"></script><script src="../../../source-script.js"></script><script src="../../../source-files.js"></script></body></html>
+    <script src="../../../main.js"></script><script src="../../../source-script.js"></script><script src="../../../source-files.js"></script>
+</body></html>

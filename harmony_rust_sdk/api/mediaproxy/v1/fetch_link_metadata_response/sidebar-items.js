@@ -1,1 +1,1 @@
-initSidebarItems({"enum":[["Data","Data of the metadata."]]});
+initSidebarItems({"enum":[["ArchivedData","An archived [`Data`]"],["Data","Data of the metadata."],["DataResolver","The resolver for an archived [`Data`]"]]});
