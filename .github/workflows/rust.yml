@@ -48,37 +48,39 @@ jobs:
         args: --all-targets
         name: "clippy(${{ matrix.rust }}): default"
     
-    - name: Clippy default + client features
+    - name: Clippy default + client_native features
       uses: actions-rs/clippy-check@v1
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
-        args: --all-targets --features client
-        name: "clippy(${{ matrix.rust }}): default + client"
+        args: --all-targets --features client_native
+        name: "clippy(${{ matrix.rust }}): default + client_native"
 
-    - name: Clippy all features
+    - name: Clippy default + client_web features
       uses: actions-rs/clippy-check@v1
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
-        args: --all-targets --all-features
-        name: "clippy(${{ matrix.rust }}): all"
+        args: --all-targets --features client_web
+        name: "clippy(${{ matrix.rust }}): default + client_web"
 
-    - name: Test all features
-      if: ${{ matrix.rust == '1.53.0' }}
-      run: RUST_LOG=debug cargo test --all-features --verbose
+    - name: Test client_native
+      run: RUST_LOG=debug cargo test --all-targets --features client_native
+    
+    - name: Test client_web
+      run: RUST_LOG=debug cargo test --all-targets --features client_web
 
     - name: Doc
-      if: ${{ matrix.rust == '1.53.0' }}
+      if: ${{ matrix.rust == '1.56.1' }}
       run: cargo doc --no-deps --all-features --verbose
 
     - name: Finalize documentation
-      if: ${{ github.ref == 'refs/heads/master' && matrix.rust == '1.53.0' && github.event_name == 'push' }}
+      if: ${{ github.ref == 'refs/heads/master' && matrix.rust == '1.56.1' && github.event_name == 'push' }}
       run: |
         CRATE_NAME=$(echo '${{ github.repository }}' | tr '[:upper:]' '[:lower:]' | cut -f2 -d"/")
         echo "<meta http-equiv=\"refresh\" content=\"0; url=${CRATE_NAME/-/_}\">" > target/doc/index.html
         touch target/doc/.nojekyll
 
     - name: Publish docs
-      if: ${{ github.ref == 'refs/heads/master' && matrix.rust == '1.53.0' && github.event_name == 'push' }}
+      if: ${{ github.ref == 'refs/heads/master' && matrix.rust == '1.56.1' && github.event_name == 'push' }}
       uses: peaceiris/actions-gh-pages@v3
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
@@ -86,7 +88,7 @@ jobs:
         publish_branch: gh-pages
 
     - name: Trigger integration testing
-      if: ${{ github.ref == 'refs/heads/master' && matrix.rust == '1.53.0' && github.event_name == 'push' }}
+      if: ${{ github.ref == 'refs/heads/master' && matrix.rust == '1.56.1' && github.event_name == 'push' }}
       uses: peter-evans/repository-dispatch@v1
       with:
         token: ${{ secrets.INTEGRATION_TEST_PAT }}
