@@ -13,6 +13,10 @@ pub use reqwest::Error as ReqwestError;
 
 /// Result type used by many `Client` methods.
 pub type ClientResult<T> = Result<T, ClientError>;
+#[cfg(feature = "client_web")]
+pub type InternalClientError =
+    hrpc::client::error::ClientError<hrpc::client::transport::http::WasmError>;
+#[cfg(all(feature = "client_native", not(feature = "client_web")))]
 pub type InternalClientError =
     hrpc::client::error::ClientError<hrpc::client::transport::http::HyperError>;
 

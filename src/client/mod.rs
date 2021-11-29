@@ -41,7 +41,7 @@ use tokio::sync::Mutex as AsyncMutex;
 
 #[cfg(feature = "client_web")]
 type GenericClientTransport = client_transport::http::Wasm;
-#[cfg(feature = "client_native")]
+#[cfg(all(feature = "client_native", not(feature = "client_web")))]
 type GenericClientTransport = client_transport::http::Hyper;
 type GenericClient = AddAuth<GenericClientTransport>;
 
@@ -195,7 +195,7 @@ impl Client {
         });
         let auth_status = Arc::new(Mutex::new((session, token_bytes)));
 
-        let transport = Hyper::new(homeserver_url.clone())
+        let transport = GenericClientTransport::new(homeserver_url.clone())
             .map_err(|err| ClientError::Internal(InternalClientError::Transport(err)))?;
         let transport = AddAuth {
             inner: transport,

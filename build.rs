@@ -53,7 +53,7 @@ fn main() {
     #[cfg(feature = "gen_emote")]
     protos.push("emote/v1/emote.proto");
 
-    if cfg!(feature = "client") {
+    if cfg!(feature = "_client_common") {
         let add_impl_call_req = |builder: hrpc_build::Builder, service: &str| {
             builder.type_attribute(
                 format!(".protocol.{}.v1", service),

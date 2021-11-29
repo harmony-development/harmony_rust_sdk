@@ -355,12 +355,12 @@ pub trait Endpoint {
     /// The endpoint path of this request.
     const ENDPOINT_PATH: &'static str;
 
-    #[cfg(feature = "client")]
+    #[cfg(feature = "_client_common")]
     /// Execute the request using the provided client.
     fn call_with(
         self,
         client: &crate::client::Client,
-    ) -> hrpc::exports::futures_util::future::BoxFuture<
+    ) -> hrpc::exports::futures_util::future::LocalBoxFuture<
         '_,
         crate::client::error::ClientResult<hrpc::Response<Self::Response>>,
     >;
