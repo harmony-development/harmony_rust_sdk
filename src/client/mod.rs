@@ -39,6 +39,9 @@ use parking_lot::{Mutex, MutexGuard};
 use reqwest::Client as HttpClient;
 use tokio::sync::Mutex as AsyncMutex;
 
+#[cfg(feature = "client_web")]
+type GenericClientTransport = client_transport::http::Wasm;
+#[cfg(feature = "client_native")]
 type GenericClientTransport = client_transport::http::Hyper;
 type GenericClient = AddAuth<GenericClientTransport>;
 
