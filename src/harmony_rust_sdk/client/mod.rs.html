@@ -706,6 +706,12 @@
 <span id="706">706</span>
 <span id="707">707</span>
 <span id="708">708</span>
+<span id="709">709</span>
+<span id="710">710</span>
+<span id="711">711</span>
+<span id="712">712</span>
+<span id="713">713</span>
+<span id="714">714</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Rust client implementation for Harmony, powered by [`hrpc`].</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! See the `examples` directory in the repository on how to use this.</span>
@@ -730,6 +736,7 @@
 <span class="kw">use</span> <span class="ident">std</span>::{
     <span class="ident">convert::TryFrom</span>,
     <span class="ident">fmt</span>::{<span class="self">self</span>, <span class="ident">Debug</span>, <span class="ident">Formatter</span>},
+    <span class="ident">future</span>::{<span class="self">self</span>, <span class="ident">Future</span>},
     <span class="ident">sync::Arc</span>,
 };
 
@@ -738,6 +745,7 @@
     <span class="ident">encode::encode_protobuf_message</span>,
     <span class="ident">exports</span>::{
         <span class="ident">bytes</span>::{<span class="ident">Bytes</span>, <span class="ident">BytesMut</span>},
+        <span class="ident">futures_util</span>::{<span class="ident">future::Either</span>, <span class="ident">FutureExt</span>, <span class="ident">TryFutureExt</span>},
         <span class="ident">tower::Service</span>,
     },
     <span class="ident">Response</span>,
@@ -1116,16 +1124,18 @@
     <span class="doccomment">/// # Ok(())</span>
     <span class="doccomment">/// # }</span>
     <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">begin_auth</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">ClientResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">auth_id</span> <span class="op">=</span> <span class="self">self</span>
-            .<span class="ident">auth</span>()
-            .<span class="ident">begin_auth</span>(<span class="ident">BeginAuthRequest</span> {})
-            .<span class="kw">await</span><span class="question-mark">?</span>
-            .<span class="ident">into_message</span>()
-            .<span class="kw">await</span><span class="question-mark">?</span>
-            .<span class="ident">auth_id</span>;
-        <span class="self">self</span>.<span class="ident">auth_status_lock</span>().<span class="number">0</span> <span class="op">=</span> <span class="ident">AuthStatus::InProgress</span>(<span class="ident">auth_id</span>);
-        <span class="prelude-val">Ok</span>(())
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">begin_auth</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="kw">impl</span> <span class="ident">Future</span><span class="op">&lt;</span><span class="ident">Output</span> <span class="op">=</span> <span class="ident">ClientResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">Send</span> <span class="op">+</span> <span class="lifetime">&#39;_</span> {
+        <span class="kw">let</span> <span class="ident">fut</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">auth</span>().<span class="ident">begin_auth</span>(<span class="ident">BeginAuthRequest</span> {});
+        <span class="ident">fut</span>.<span class="ident">map_err</span>(<span class="ident">ClientError::from</span>)
+            .<span class="ident">and_then</span>(<span class="op">|</span><span class="ident">resp</span><span class="op">|</span> {
+                <span class="ident">resp</span>.<span class="ident">into_message</span>()
+                    .<span class="ident">map_err</span>(<span class="ident">ClientError::from</span>)
+                    .<span class="ident">map_ok</span>(<span class="op">|</span><span class="ident">resp</span><span class="op">|</span> {
+                        <span class="self">self</span>.<span class="ident">auth_status_lock</span>().<span class="number">0</span> <span class="op">=</span> <span class="ident">AuthStatus::InProgress</span>(<span class="ident">resp</span>.<span class="ident">auth_id</span>);
+                        <span class="prelude-val">Ok</span>(())
+                    })
+            })
+            .<span class="ident">map</span>(<span class="op">|</span><span class="ident">res</span><span class="op">|</span> <span class="ident">res</span>.<span class="ident">and_then</span>(<span class="op">|</span><span class="ident">x</span><span class="op">|</span> <span class="ident">x</span>))
     }
 
     <span class="doccomment">/// Request the next authentication step from the server.</span>
@@ -1145,33 +1155,31 @@
     <span class="doccomment">/// # Ok(())</span>
     <span class="doccomment">/// # }</span>
     <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">next_auth_step</span>(
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">next_auth_step</span>(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
         <span class="ident">response</span>: <span class="ident">AuthStepResponse</span>,
-    ) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">ClientResult</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">NextStepResponse</span><span class="op">&gt;</span><span class="op">&gt;</span> {
+    ) <span class="op">-</span><span class="op">&gt;</span> <span class="kw">impl</span> <span class="ident">Future</span><span class="op">&lt;</span><span class="ident">Output</span> <span class="op">=</span> <span class="ident">ClientResult</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">NextStepResponse</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">Send</span> <span class="op">+</span> <span class="lifetime">&#39;_</span> {
         <span class="kw">if</span> <span class="kw">let</span> <span class="ident">AuthStatus::InProgress</span>(<span class="ident">auth_id</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">auth_status</span>() {
-            <span class="kw">let</span> <span class="ident">step</span> <span class="op">=</span> <span class="self">self</span>
-                .<span class="ident">auth</span>()
-                .<span class="ident">next_step</span>(<span class="ident">AuthResponse::new</span>(<span class="ident">auth_id</span>, <span class="ident">response</span>))
-                .<span class="kw">await</span><span class="question-mark">?</span>
-                .<span class="ident">into_message</span>()
-                .<span class="kw">await</span><span class="question-mark">?</span>;
-
-            <span class="prelude-val">Ok</span>(
-                <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">AuthStep</span> {
-                    <span class="ident">step</span>: <span class="prelude-val">Some</span>(<span class="ident">auth_step::Step::Session</span>(<span class="ident">session</span>)),
-                    ..
-                }) <span class="op">=</span> <span class="ident">step</span>.<span class="ident">step</span>
-                {
-                    <span class="kw">let</span> <span class="ident">token_bytes</span> <span class="op">=</span> <span class="ident">Bytes::copy_from_slice</span>(<span class="ident">session</span>.<span class="ident">session_token</span>.<span class="ident">as_bytes</span>());
-                    <span class="kw-2">*</span><span class="self">self</span>.<span class="ident">auth_status_lock</span>() <span class="op">=</span> (<span class="ident">AuthStatus::Complete</span>(<span class="ident">session</span>), <span class="ident">token_bytes</span>);
-                    <span class="prelude-val">None</span>
-                } <span class="kw">else</span> {
-                    <span class="prelude-val">Some</span>(<span class="ident">step</span>)
-                },
+            <span class="ident">Either::Left</span>(
+                <span class="self">self</span>.<span class="ident">call</span>(<span class="ident">NextStepRequest::new</span>(<span class="ident">auth_id</span>, <span class="ident">response</span>.<span class="ident">into</span>()))
+                    .<span class="ident">map_ok</span>(<span class="op">|</span><span class="ident">step</span><span class="op">|</span> {
+                        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">AuthStep</span> {
+                            <span class="ident">step</span>: <span class="prelude-val">Some</span>(<span class="ident">auth_step::Step::Session</span>(<span class="ident">session</span>)),
+                            ..
+                        }) <span class="op">=</span> <span class="ident">step</span>.<span class="ident">step</span>
+                        {
+                            <span class="kw">let</span> <span class="ident">token_bytes</span> <span class="op">=</span>
+                                <span class="ident">Bytes::copy_from_slice</span>(<span class="ident">session</span>.<span class="ident">session_token</span>.<span class="ident">as_bytes</span>());
+                            <span class="kw-2">*</span><span class="self">self</span>.<span class="ident">auth_status_lock</span>() <span class="op">=</span> (<span class="ident">AuthStatus::Complete</span>(<span class="ident">session</span>), <span class="ident">token_bytes</span>);
+                            <span class="prelude-val">None</span>
+                        } <span class="kw">else</span> {
+                            <span class="prelude-val">Some</span>(<span class="ident">step</span>)
+                        }
+                    })
+                    .<span class="ident">map_err</span>(<span class="ident">ClientError::from</span>),
             )
         } <span class="kw">else</span> {
-            <span class="prelude-val">Err</span>(<span class="ident">ClientError::NoAuthId</span>)
+            <span class="ident">Either::Right</span>(<span class="ident">future::ready</span>(<span class="prelude-val">Err</span>(<span class="ident">ClientError::NoAuthId</span>)))
         }
     }
 
@@ -1191,16 +1199,13 @@
     <span class="doccomment">/// # Ok(())</span>
     <span class="doccomment">/// # }</span>
     <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">prev_auth_step</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">ClientResult</span><span class="op">&lt;</span><span class="ident">StepBackResponse</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">prev_auth_step</span>(
+        <span class="kw-2">&amp;</span><span class="self">self</span>,
+    ) <span class="op">-</span><span class="op">&gt;</span> <span class="kw">impl</span> <span class="ident">Future</span><span class="op">&lt;</span><span class="ident">Output</span> <span class="op">=</span> <span class="ident">ClientResult</span><span class="op">&lt;</span><span class="ident">StepBackResponse</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">Send</span> <span class="op">+</span> <span class="lifetime">&#39;_</span> {
         <span class="kw">if</span> <span class="kw">let</span> <span class="ident">AuthStatus::InProgress</span>(<span class="ident">auth_id</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">auth_status</span>() {
-            <span class="prelude-val">Ok</span>(<span class="self">self</span>
-                .<span class="ident">auth</span>()
-                .<span class="ident">step_back</span>(<span class="ident">AuthId::new</span>(<span class="ident">auth_id</span>))
-                .<span class="kw">await</span><span class="question-mark">?</span>
-                .<span class="ident">into_message</span>()
-                .<span class="kw">await</span><span class="question-mark">?</span>)
+            <span class="ident">Either::Left</span>(<span class="self">self</span>.<span class="ident">call</span>(<span class="ident">StepBackRequest::new</span>(<span class="ident">auth_id</span>)))
         } <span class="kw">else</span> {
-            <span class="prelude-val">Err</span>(<span class="ident">ClientError::NoAuthId</span>)
+            <span class="ident">Either::Right</span>(<span class="ident">future::ready</span>(<span class="prelude-val">Err</span>(<span class="ident">ClientError::NoAuthId</span>)))
         }
     }
 
@@ -1218,12 +1223,16 @@
     <span class="doccomment">/// # Ok(())</span>
     <span class="doccomment">/// # }</span>
     <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">auth_stream</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">ClientResult</span><span class="op">&lt;</span><span class="ident">AuthSocket</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">auth_stream</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="kw">impl</span> <span class="ident">Future</span><span class="op">&lt;</span><span class="ident">Output</span> <span class="op">=</span> <span class="ident">ClientResult</span><span class="op">&lt;</span><span class="ident">AuthSocket</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">Send</span> <span class="op">+</span> <span class="lifetime">&#39;_</span> {
         <span class="kw">if</span> <span class="kw">let</span> <span class="ident">AuthStatus::InProgress</span>(<span class="ident">auth_id</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">auth_status</span>() {
-            <span class="kw">let</span> <span class="ident">inner</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">auth</span>().<span class="ident">stream_steps</span>(<span class="ident">AuthId::new</span>(<span class="ident">auth_id</span>)).<span class="kw">await</span><span class="question-mark">?</span>;
-            <span class="prelude-val">Ok</span>(<span class="ident">AuthSocket</span> { <span class="ident">inner</span> })
+            <span class="kw">let</span> <span class="ident">inner</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">auth</span>().<span class="ident">stream_steps</span>(<span class="ident">AuthId::new</span>(<span class="ident">auth_id</span>));
+            <span class="ident">Either::Left</span>(
+                <span class="ident">inner</span>
+                    .<span class="ident">map_ok</span>(<span class="op">|</span><span class="ident">inner</span><span class="op">|</span> <span class="ident">AuthSocket</span> { <span class="ident">inner</span> })
+                    .<span class="ident">map_err</span>(<span class="ident">ClientError::from</span>),
+            )
         } <span class="kw">else</span> {
-            <span class="prelude-val">Err</span>(<span class="ident">ClientError::NoAuthId</span>)
+            <span class="ident">Either::Right</span>(<span class="ident">future::ready</span>(<span class="prelude-val">Err</span>(<span class="ident">ClientError::NoAuthId</span>)))
         }
     }
 
@@ -1241,20 +1250,23 @@
     <span class="doccomment">/// # Ok(())</span>
     <span class="doccomment">/// # }</span>
     <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">subscribe_events</span>(
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">subscribe_events</span>(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
         <span class="ident">subscriptions</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">EventSource</span><span class="op">&gt;</span>,
-    ) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">ClientResult</span><span class="op">&lt;</span><span class="ident">EventsSocket</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> (<span class="ident">tx</span>, <span class="ident">rx</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">chat</span>().<span class="ident">stream_events</span>(()).<span class="kw">await</span><span class="question-mark">?</span>.<span class="ident">split</span>();
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">socket</span> <span class="op">=</span> <span class="ident">EventsSocket</span> {
-            <span class="ident">write</span>: <span class="ident">EventsWriteSocket</span> { <span class="ident">inner</span>: <span class="ident">tx</span> },
-            <span class="ident">read</span>: <span class="ident">EventsReadSocket</span> { <span class="ident">inner</span>: <span class="ident">rx</span> },
-        };
-        <span class="kw">for</span> <span class="ident">source</span> <span class="kw">in</span> <span class="ident">subscriptions</span> {
-            <span class="ident">socket</span>.<span class="ident">add_source</span>(<span class="ident">source</span>).<span class="kw">await</span><span class="question-mark">?</span>;
-        }
+    ) <span class="op">-</span><span class="op">&gt;</span> <span class="kw">impl</span> <span class="ident">Future</span><span class="op">&lt;</span><span class="ident">Output</span> <span class="op">=</span> <span class="ident">ClientResult</span><span class="op">&lt;</span><span class="ident">EventsSocket</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">Send</span> <span class="op">+</span> <span class="lifetime">&#39;_</span> {
+        <span class="kw">let</span> <span class="ident">fut</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">chat</span>().<span class="ident">stream_events</span>(());
+        <span class="kw">async</span> {
+            <span class="kw">let</span> (<span class="ident">tx</span>, <span class="ident">rx</span>) <span class="op">=</span> <span class="ident">fut</span>.<span class="kw">await</span><span class="question-mark">?</span>.<span class="ident">split</span>();
+            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">socket</span> <span class="op">=</span> <span class="ident">EventsSocket</span> {
+                <span class="ident">write</span>: <span class="ident">EventsWriteSocket</span> { <span class="ident">inner</span>: <span class="ident">tx</span> },
+                <span class="ident">read</span>: <span class="ident">EventsReadSocket</span> { <span class="ident">inner</span>: <span class="ident">rx</span> },
+            };
+            <span class="kw">for</span> <span class="ident">source</span> <span class="kw">in</span> <span class="ident">subscriptions</span> {
+                <span class="ident">socket</span>.<span class="ident">add_source</span>(<span class="ident">source</span>).<span class="kw">await</span><span class="question-mark">?</span>;
+            }
 
-        <span class="prelude-val">Ok</span>(<span class="ident">socket</span>)
+            <span class="prelude-val">Ok</span>(<span class="ident">socket</span>)
+        }
     }
 }
 
