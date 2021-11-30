@@ -228,27 +228,27 @@ impl Client {
         })
     }
 
-    /// Starts an event loop with the given handler.
+    /// Consumers self and starts an event loop with the given handler.
     ///
     /// All socket errors will be logged with tracing. If the handler
     /// function returns `Ok(true)` or `Err(err)`, the function will
     /// return, so if you don't want it to return, return `Ok(false)`.
+    #[allow(clippy::manual_async_fn)]
     pub fn event_loop<Fut, Hndlr>(
-        &self,
+        self,
         subs: Vec<EventSource>,
         handler: Hndlr,
     ) -> impl Future<Output = Result<(), ClientError>> + Send + 'static
     where
         Fut: Future<Output = ClientResult<bool>> + Send,
-        Hndlr: Fn(&Client, crate::api::chat::Event) -> Fut + Send + 'static,
+        Hndlr: Fn(&Self, crate::api::chat::Event) -> Fut + Send + 'static,
     {
-        let client = self.clone();
         async move {
-            let mut sock = client.subscribe_events(subs).await?;
+            let mut sock = self.subscribe_events(subs).await?;
             loop {
                 match sock.get_event().await {
                     Ok(Some(ev)) => {
-                        let fut = handler(&client, ev);
+                        let fut = handler(&self, ev);
                         if fut.await? {
                             return Ok(());
                         }
