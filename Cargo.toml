@@ -36,6 +36,7 @@ tokio = { version="1.14", features=["sync", "parking_lot"], optional=true }
 urlencoding = { version="2.1", optional=true }
 http = { version = "0.2", optional = true }
 parking_lot = { version = "0.11", optional = true }
+arc-swap = { version = "1.5", optional = true }
 rkyv = { version="0.7", optional=true }
 
 [build-dependencies]
@@ -79,6 +80,7 @@ _client_common = [
 	"tracing",
 	"urlencoding",
 	"parking_lot",
+	"arc-swap",
 	"harmony_derive/client",
 ]
 gen_client = ["hrpc/client", "hrpc-build/client"]

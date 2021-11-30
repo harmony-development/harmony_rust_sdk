@@ -18,12 +18,13 @@ pub async fn upload(
     content_type: String,
     data: Vec<u8>,
 ) -> ClientResult<Response> {
-    let (status, bytes) = client.auth_status_lock().clone();
-    let token_bytes = if !status.is_authenticated() {
+    let guard = client.auth_status_lock();
+    let token_bytes = if !guard.0.is_authenticated() {
         return Err(ClientError::Unauthenticated);
     } else {
-        bytes
+        guard.1.clone()
     };
+    drop(guard);
 
     // [ref:upload_path_create]
     let uri = format!("{}_harmony/media/upload", client.homeserver_url());

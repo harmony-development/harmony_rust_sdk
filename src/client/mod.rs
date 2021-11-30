@@ -26,6 +26,7 @@ use std::{
     sync::Arc,
 };
 
+use arc_swap::ArcSwap;
 use hrpc::{
     client::transport::{self as client_transport, TransportRequest, TransportResponse},
     encode::encode_protobuf_message,
@@ -99,7 +100,7 @@ impl AuthStatus {
 #[derive(Debug)]
 struct ClientData {
     homeserver_url: Uri,
-    auth_status: Arc<Mutex<(AuthStatus, Bytes)>>,
+    auth_status: Arc<ArcSwap<(AuthStatus, Bytes)>>,
     chat: Mutex<ChatService>,
     auth: Mutex<AuthService>,
     mediaproxy: Mutex<MediaProxyService>,
@@ -194,7 +195,7 @@ impl Client {
         let token_bytes = session.session().map_or_else(Bytes::new, |s| {
             Bytes::copy_from_slice(s.session_token.as_bytes())
         });
-        let auth_status = Arc::new(Mutex::new((session, token_bytes)));
+        let auth_status = Arc::new(ArcSwap::new(Arc::new((session, token_bytes))));
 
         let transport = GenericClientTransport::new(homeserver_url.clone())
             .map_err(|err| ClientError::Internal(InternalClientError::Transport(err)))?;
@@ -356,8 +357,8 @@ impl Client {
     }
 
     #[inline(always)]
-    fn auth_status_lock(&self) -> MutexGuard<(AuthStatus, Bytes)> {
-        self.data.auth_status.lock()
+    fn auth_status_lock(&self) -> arc_swap::Guard<Arc<(AuthStatus, Bytes)>> {
+        self.data.auth_status.load()
     }
 
     /// Get the current auth status.
@@ -431,7 +432,10 @@ impl Client {
 
         async move {
             let resp = fut.await?.into_message().await?;
-            auth_status_lock.lock().0 = AuthStatus::InProgress(resp.auth_id);
+            auth_status_lock.store(Arc::new((
+                AuthStatus::InProgress(resp.auth_id),
+                Bytes::new(),
+            )));
             Ok(())
         }
     }
@@ -472,7 +476,7 @@ impl Client {
                 }) = step.step
                 {
                     let token_bytes = Bytes::copy_from_slice(session.session_token.as_bytes());
-                    *auth_status_lock.lock() = (AuthStatus::Complete(session), token_bytes);
+                    auth_status_lock.store(Arc::new((AuthStatus::Complete(session), token_bytes)));
                     None
                 } else {
                     Some(step)
@@ -576,7 +580,7 @@ impl Client {
 #[derive(Debug, Clone)]
 pub struct AddAuth<S> {
     inner: S,
-    auth_status: Arc<Mutex<(AuthStatus, Bytes)>>,
+    auth_status: Arc<ArcSwap<(AuthStatus, Bytes)>>,
 }
 
 impl<S> Service<TransportRequest> for AddAuth<S>
@@ -597,7 +601,7 @@ where
     }
 
     fn call(&mut self, mut req: TransportRequest) -> Self::Future {
-        let guard = self.auth_status.lock();
+        let guard = self.auth_status.load();
         if guard.0.is_authenticated() {
             let req = match &mut req {
                 TransportRequest::Unary(req) => req,
