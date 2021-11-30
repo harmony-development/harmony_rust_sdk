@@ -37,7 +37,6 @@ use hrpc::{
 use http::Uri;
 use parking_lot::{Mutex, MutexGuard};
 use reqwest::Client as HttpClient;
-use tokio::sync::Mutex as AsyncMutex;
 
 #[cfg(feature = "client_web")]
 type GenericClientTransport = client_transport::http::Wasm;
@@ -99,12 +98,12 @@ impl AuthStatus {
 struct ClientData {
     homeserver_url: Uri,
     auth_status: Arc<Mutex<(AuthStatus, Bytes)>>,
-    chat: AsyncMutex<ChatService>,
-    auth: AsyncMutex<AuthService>,
-    mediaproxy: AsyncMutex<MediaProxyService>,
-    profile: AsyncMutex<ProfileService>,
-    emote: AsyncMutex<EmoteService>,
-    batch: AsyncMutex<BatchService>,
+    chat: Mutex<ChatService>,
+    auth: Mutex<AuthService>,
+    mediaproxy: Mutex<MediaProxyService>,
+    profile: Mutex<ProfileService>,
+    emote: Mutex<EmoteService>,
+    batch: Mutex<BatchService>,
     http: HttpClient,
 }
 
@@ -213,12 +212,12 @@ impl Client {
         let data = ClientData {
             homeserver_url,
             auth_status,
-            chat: AsyncMutex::new(chat),
-            auth: AsyncMutex::new(auth),
-            mediaproxy: AsyncMutex::new(mediaproxy),
-            profile: AsyncMutex::new(profile),
-            emote: AsyncMutex::new(emote),
-            batch: AsyncMutex::new(batch),
+            chat: Mutex::new(chat),
+            auth: Mutex::new(auth),
+            mediaproxy: Mutex::new(mediaproxy),
+            profile: Mutex::new(profile),
+            emote: Mutex::new(emote),
+            batch: Mutex::new(batch),
             http,
         };
 
@@ -257,38 +256,38 @@ impl Client {
 
     #[inline(always)]
     /// Get a mutex guard to the chat service.
-    pub async fn chat(&self) -> tokio::sync::MutexGuard<'_, ChatService> {
-        self.data.chat.lock().await
+    pub fn chat(&self) -> MutexGuard<'_, ChatService> {
+        self.data.chat.lock()
     }
 
     #[inline(always)]
     /// Get a mutex guard to the auth service.
-    pub async fn auth(&self) -> tokio::sync::MutexGuard<'_, AuthService> {
-        self.data.auth.lock().await
+    pub fn auth(&self) -> MutexGuard<'_, AuthService> {
+        self.data.auth.lock()
     }
 
     #[inline(always)]
     /// Get a mutex guard to the mediaproxy service.
-    pub async fn mediaproxy(&self) -> tokio::sync::MutexGuard<'_, MediaProxyService> {
-        self.data.mediaproxy.lock().await
+    pub fn mediaproxy(&self) -> MutexGuard<'_, MediaProxyService> {
+        self.data.mediaproxy.lock()
     }
 
     #[inline(always)]
     /// Get a mutex guard to the profile service.
-    pub async fn profile(&self) -> tokio::sync::MutexGuard<'_, ProfileService> {
-        self.data.profile.lock().await
+    pub fn profile(&self) -> MutexGuard<'_, ProfileService> {
+        self.data.profile.lock()
     }
 
     #[inline(always)]
     /// Get a mutex guard to the emote service.
-    pub async fn emote(&self) -> tokio::sync::MutexGuard<'_, EmoteService> {
-        self.data.emote.lock().await
+    pub fn emote(&self) -> MutexGuard<'_, EmoteService> {
+        self.data.emote.lock()
     }
 
     #[inline(always)]
     /// Get a mutex guard to the batch service.
-    pub async fn batch(&self) -> tokio::sync::MutexGuard<'_, BatchService> {
-        self.data.batch.lock().await
+    pub fn batch(&self) -> MutexGuard<'_, BatchService> {
+        self.data.batch.lock()
     }
 
     /// Execute the given request.
@@ -412,7 +411,6 @@ impl Client {
     pub async fn begin_auth(&self) -> ClientResult<()> {
         let auth_id = self
             .auth()
-            .await
             .begin_auth(BeginAuthRequest {})
             .await?
             .into_message()
@@ -446,7 +444,6 @@ impl Client {
         if let AuthStatus::InProgress(auth_id) = self.auth_status() {
             let step = self
                 .auth()
-                .await
                 .next_step(AuthResponse::new(auth_id, response))
                 .await?
                 .into_message()
@@ -490,7 +487,6 @@ impl Client {
         if let AuthStatus::InProgress(auth_id) = self.auth_status() {
             Ok(self
                 .auth()
-                .await
                 .step_back(AuthId::new(auth_id))
                 .await?
                 .into_message()
@@ -516,7 +512,7 @@ impl Client {
     /// ```
     pub async fn auth_stream(&self) -> ClientResult<AuthSocket> {
         if let AuthStatus::InProgress(auth_id) = self.auth_status() {
-            let inner = self.auth().await.stream_steps(AuthId::new(auth_id)).await?;
+            let inner = self.auth().stream_steps(AuthId::new(auth_id)).await?;
             Ok(AuthSocket { inner })
         } else {
             Err(ClientError::NoAuthId)
@@ -541,7 +537,7 @@ impl Client {
         &self,
         subscriptions: Vec<EventSource>,
     ) -> ClientResult<EventsSocket> {
-        let (tx, rx) = self.chat().await.stream_events(()).await?.split();
+        let (tx, rx) = self.chat().stream_events(()).await?.split();
         let mut socket = EventsSocket {
             write: EventsWriteSocket { inner: tx },
             read: EventsReadSocket { inner: rx },

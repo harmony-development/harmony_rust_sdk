@@ -361,7 +361,7 @@ pub trait Endpoint {
     fn call_with(
         self,
         client: &crate::client::Client,
-    ) -> hrpc::exports::futures_util::future::LocalBoxFuture<
+    ) -> hrpc::exports::futures_util::future::BoxFuture<
         '_,
         crate::client::error::ClientResult<hrpc::Response<Self::Response>>,
     >;
