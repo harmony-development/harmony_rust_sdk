@@ -31,7 +31,7 @@ use hrpc::{
     encode::encode_protobuf_message,
     exports::{
         bytes::{Bytes, BytesMut},
-        futures_util::{future::Either, FutureExt, TryFutureExt},
+        futures_util::{future::Either, TryFutureExt},
         tower::Service,
     },
     Response,
@@ -228,30 +228,34 @@ impl Client {
         })
     }
 
-    /// Consumes self and starts an event loop with the given handler.
+    /// Starts an event loop with the given handler.
     ///
     /// All socket errors will be logged with tracing. If the handler
     /// function returns `Ok(true)` or `Err(err)`, the function will
     /// return, so if you don't want it to return, return `Ok(false)`.
-    pub async fn event_loop<'a, Fut, Hndlr>(
-        &'a self,
+    pub fn event_loop<Fut, Hndlr>(
+        &self,
         subs: Vec<EventSource>,
         handler: Hndlr,
-    ) -> Result<(), ClientError>
+    ) -> impl Future<Output = Result<(), ClientError>> + Send + 'static
     where
-        Fut: std::future::Future<Output = ClientResult<bool>> + 'a,
-        Hndlr: Fn(&'a Client, crate::api::chat::Event) -> Fut,
+        Fut: Future<Output = ClientResult<bool>> + Send,
+        Hndlr: Fn(&Client, crate::api::chat::Event) -> Fut + Send + 'static,
     {
-        let mut sock = self.subscribe_events(subs).await?;
-        loop {
-            match sock.get_event().await {
-                Ok(Some(ev)) => {
-                    if handler(self, ev).await? {
-                        return Ok(());
+        let client = self.clone();
+        async move {
+            let mut sock = client.subscribe_events(subs).await?;
+            loop {
+                match sock.get_event().await {
+                    Ok(Some(ev)) => {
+                        let fut = handler(&client, ev);
+                        if fut.await? {
+                            return Ok(());
+                        }
                     }
+                    Err(err) => tracing::error!("{}", err),
+                    _ => std::hint::spin_loop(),
                 }
-                Err(err) => tracing::error!("{}", err),
-                _ => std::hint::spin_loop(),
             }
         }
     }
@@ -293,33 +297,41 @@ impl Client {
     }
 
     /// Execute the given request.
-    pub async fn call<Req>(&self, request: Req) -> ClientResult<Req::Response>
+    pub fn call<Req>(
+        &self,
+        request: Req,
+    ) -> impl Future<Output = ClientResult<Req::Response>> + Send + 'static
     where
         Req: Endpoint,
-        Req::Response: prost::Message + Default,
+        Req::Response: prost::Message + Default + 'static,
     {
-        Ok(request.call_with(self).await?.into_message().await?)
+        let fut = request.call_with(self);
+        async move { Ok(fut.await?.into_message().await?) }
     }
 
     /// Execute the given request, but return a [`hrpc::Response`].
-    pub async fn call_response<Req: Endpoint>(
+    pub fn call_response<Req>(
         &self,
         request: Req,
-    ) -> ClientResult<Response<Req::Response>> {
-        request.call_with(self).await
+    ) -> impl Future<Output = ClientResult<Response<Req::Response>>> + Send + 'static
+    where
+        Req: Endpoint,
+        Req::Response: 'static,
+    {
+        request.call_with(self)
     }
 
     /// Execute the given requests a batch (same) request.
     ///
     /// Note that this does not support the convenience types defined in the [`api`] module.
     /// You will need to convert them to the corresponding request type with `Request::from`.
-    pub async fn batch_call<Req>(
+    pub fn batch_call<Req>(
         &self,
         requests: Vec<Req>,
-    ) -> ClientResult<Vec<<Req as Endpoint>::Response>>
+    ) -> impl Future<Output = ClientResult<Vec<<Req as Endpoint>::Response>>> + Send + 'static
     where
         Req: Endpoint + prost::Message,
-        <Req as Endpoint>::Response: prost::Message + Default,
+        <Req as Endpoint>::Response: prost::Message + Default + 'static,
     {
         use prost::Message;
 
@@ -331,13 +343,16 @@ impl Client {
             endpoint: Req::ENDPOINT_PATH.to_string(),
             requests: encoded.collect(),
         };
-        let responses = self.call(batch_req).await?.responses;
-        let mut decoded = Vec::with_capacity(responses.len());
-        for response in responses {
-            let decoded_msg = <Req as Endpoint>::Response::decode(response.as_ref())?;
-            decoded.push(decoded_msg);
+        let fut = self.batch().batch_same(batch_req);
+        async move {
+            let responses = fut.await?.into_message().await?.responses;
+            let mut decoded = Vec::with_capacity(responses.len());
+            for response in responses {
+                let decoded_msg = <Req as Endpoint>::Response::decode(response.as_ref())?;
+                decoded.push(decoded_msg);
+            }
+            Ok(decoded)
         }
-        Ok(decoded)
     }
 
     #[inline(always)]
@@ -410,18 +425,15 @@ impl Client {
     /// # Ok(())
     /// # }
     /// ```
-    pub fn begin_auth(&self) -> impl Future<Output = ClientResult<()>> + Send + '_ {
+    pub fn begin_auth(&self) -> impl Future<Output = ClientResult<()>> + Send + 'static {
         let fut = self.auth().begin_auth(BeginAuthRequest {});
-        fut.map_err(ClientError::from)
-            .and_then(|resp| {
-                resp.into_message()
-                    .map_err(ClientError::from)
-                    .map_ok(|resp| {
-                        self.auth_status_lock().0 = AuthStatus::InProgress(resp.auth_id);
-                        Ok(())
-                    })
-            })
-            .map(|res| res.and_then(|x| x))
+        let auth_status_lock = self.data.auth_status.clone();
+
+        async move {
+            let resp = fut.await?.into_message().await?;
+            auth_status_lock.lock().0 = AuthStatus::InProgress(resp.auth_id);
+            Ok(())
+        }
     }
 
     /// Request the next authentication step from the server.
@@ -444,26 +456,30 @@ impl Client {
     pub fn next_auth_step(
         &self,
         response: AuthStepResponse,
-    ) -> impl Future<Output = ClientResult<Option<NextStepResponse>>> + Send + '_ {
+    ) -> impl Future<Output = ClientResult<Option<NextStepResponse>>> + Send + 'static {
         if let AuthStatus::InProgress(auth_id) = self.auth_status() {
-            Either::Left(
-                self.call(NextStepRequest::new(auth_id, response.into()))
-                    .map_ok(|step| {
-                        if let Some(AuthStep {
-                            step: Some(auth_step::Step::Session(session)),
-                            ..
-                        }) = step.step
-                        {
-                            let token_bytes =
-                                Bytes::copy_from_slice(session.session_token.as_bytes());
-                            *self.auth_status_lock() = (AuthStatus::Complete(session), token_bytes);
-                            None
-                        } else {
-                            Some(step)
-                        }
-                    })
-                    .map_err(ClientError::from),
-            )
+            let auth_status_lock = self.data.auth_status.clone();
+            let fut = self
+                .auth()
+                .next_step(NextStepRequest::new(auth_id, response.into()));
+
+            Either::Left(async move {
+                let step = fut.await?.into_message().await?;
+
+                let step = if let Some(AuthStep {
+                    step: Some(auth_step::Step::Session(session)),
+                    ..
+                }) = step.step
+                {
+                    let token_bytes = Bytes::copy_from_slice(session.session_token.as_bytes());
+                    *auth_status_lock.lock() = (AuthStatus::Complete(session), token_bytes);
+                    None
+                } else {
+                    Some(step)
+                };
+
+                Ok(step)
+            })
         } else {
             Either::Right(future::ready(Err(ClientError::NoAuthId)))
         }
@@ -487,9 +503,10 @@ impl Client {
     /// ```
     pub fn prev_auth_step(
         &self,
-    ) -> impl Future<Output = ClientResult<StepBackResponse>> + Send + '_ {
+    ) -> impl Future<Output = ClientResult<StepBackResponse>> + Send + 'static {
         if let AuthStatus::InProgress(auth_id) = self.auth_status() {
-            Either::Left(self.call(StepBackRequest::new(auth_id)))
+            let fut = self.auth().step_back(StepBackRequest::new(auth_id));
+            Either::Left(async move { Ok(fut.await?.into_message().await?) })
         } else {
             Either::Right(future::ready(Err(ClientError::NoAuthId)))
         }
@@ -509,12 +526,11 @@ impl Client {
     /// # Ok(())
     /// # }
     /// ```
-    pub fn auth_stream(&self) -> impl Future<Output = ClientResult<AuthSocket>> + Send + '_ {
+    pub fn auth_stream(&self) -> impl Future<Output = ClientResult<AuthSocket>> + Send + 'static {
         if let AuthStatus::InProgress(auth_id) = self.auth_status() {
-            let inner = self.auth().stream_steps(AuthId::new(auth_id));
+            let fut = self.auth().stream_steps(AuthId::new(auth_id));
             Either::Left(
-                inner
-                    .map_ok(|inner| AuthSocket { inner })
+                fut.map_ok(|inner| AuthSocket { inner })
                     .map_err(ClientError::from),
             )
         } else {
@@ -539,9 +555,9 @@ impl Client {
     pub fn subscribe_events(
         &self,
         subscriptions: Vec<EventSource>,
-    ) -> impl Future<Output = ClientResult<EventsSocket>> + Send + '_ {
+    ) -> impl Future<Output = ClientResult<EventsSocket>> + Send + 'static {
         let fut = self.chat().stream_events(());
-        async {
+        async move {
             let (tx, rx) = fut.await?.split();
             let mut socket = EventsSocket {
                 write: EventsWriteSocket { inner: tx },

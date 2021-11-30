@@ -362,7 +362,7 @@ pub trait Endpoint {
         self,
         client: &crate::client::Client,
     ) -> hrpc::exports::futures_util::future::BoxFuture<
-        '_,
+        'static,
         crate::client::error::ClientResult<hrpc::Response<Self::Response>>,
     >;
 }
