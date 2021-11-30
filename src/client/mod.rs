@@ -22,6 +22,7 @@ use error::*;
 use std::{
     convert::TryFrom,
     fmt::{self, Debug, Formatter},
+    future::{self, Future},
     sync::Arc,
 };
 
@@ -30,6 +31,7 @@ use hrpc::{
     encode::encode_protobuf_message,
     exports::{
         bytes::{Bytes, BytesMut},
+        futures_util::{future::Either, FutureExt, TryFutureExt},
         tower::Service,
     },
     Response,
@@ -408,16 +410,18 @@ impl Client {
     /// # Ok(())
     /// # }
     /// ```
-    pub async fn begin_auth(&self) -> ClientResult<()> {
-        let auth_id = self
-            .auth()
-            .begin_auth(BeginAuthRequest {})
-            .await?
-            .into_message()
-            .await?
-            .auth_id;
-        self.auth_status_lock().0 = AuthStatus::InProgress(auth_id);
-        Ok(())
+    pub fn begin_auth(&self) -> impl Future<Output = ClientResult<()>> + Send + '_ {
+        let fut = self.auth().begin_auth(BeginAuthRequest {});
+        fut.map_err(ClientError::from)
+            .and_then(|resp| {
+                resp.into_message()
+                    .map_err(ClientError::from)
+                    .map_ok(|resp| {
+                        self.auth_status_lock().0 = AuthStatus::InProgress(resp.auth_id);
+                        Ok(())
+                    })
+            })
+            .map(|res| res.and_then(|x| x))
     }
 
     /// Request the next authentication step from the server.
@@ -437,33 +441,31 @@ impl Client {
     /// # Ok(())
     /// # }
     /// ```
-    pub async fn next_auth_step(
+    pub fn next_auth_step(
         &self,
         response: AuthStepResponse,
-    ) -> ClientResult<Option<NextStepResponse>> {
+    ) -> impl Future<Output = ClientResult<Option<NextStepResponse>>> + Send + '_ {
         if let AuthStatus::InProgress(auth_id) = self.auth_status() {
-            let step = self
-                .auth()
-                .next_step(AuthResponse::new(auth_id, response))
-                .await?
-                .into_message()
-                .await?;
-
-            Ok(
-                if let Some(AuthStep {
-                    step: Some(auth_step::Step::Session(session)),
-                    ..
-                }) = step.step
-                {
-                    let token_bytes = Bytes::copy_from_slice(session.session_token.as_bytes());
-                    *self.auth_status_lock() = (AuthStatus::Complete(session), token_bytes);
-                    None
-                } else {
-                    Some(step)
-                },
+            Either::Left(
+                self.call(NextStepRequest::new(auth_id, response.into()))
+                    .map_ok(|step| {
+                        if let Some(AuthStep {
+                            step: Some(auth_step::Step::Session(session)),
+                            ..
+                        }) = step.step
+                        {
+                            let token_bytes =
+                                Bytes::copy_from_slice(session.session_token.as_bytes());
+                            *self.auth_status_lock() = (AuthStatus::Complete(session), token_bytes);
+                            None
+                        } else {
+                            Some(step)
+                        }
+                    })
+                    .map_err(ClientError::from),
             )
         } else {
-            Err(ClientError::NoAuthId)
+            Either::Right(future::ready(Err(ClientError::NoAuthId)))
         }
     }
 
@@ -483,16 +485,13 @@ impl Client {
     /// # Ok(())
     /// # }
     /// ```
-    pub async fn prev_auth_step(&self) -> ClientResult<StepBackResponse> {
+    pub fn prev_auth_step(
+        &self,
+    ) -> impl Future<Output = ClientResult<StepBackResponse>> + Send + '_ {
         if let AuthStatus::InProgress(auth_id) = self.auth_status() {
-            Ok(self
-                .auth()
-                .step_back(AuthId::new(auth_id))
-                .await?
-                .into_message()
-                .await?)
+            Either::Left(self.call(StepBackRequest::new(auth_id)))
         } else {
-            Err(ClientError::NoAuthId)
+            Either::Right(future::ready(Err(ClientError::NoAuthId)))
         }
     }
 
@@ -510,12 +509,16 @@ impl Client {
     /// # Ok(())
     /// # }
     /// ```
-    pub async fn auth_stream(&self) -> ClientResult<AuthSocket> {
+    pub fn auth_stream(&self) -> impl Future<Output = ClientResult<AuthSocket>> + Send + '_ {
         if let AuthStatus::InProgress(auth_id) = self.auth_status() {
-            let inner = self.auth().stream_steps(AuthId::new(auth_id)).await?;
-            Ok(AuthSocket { inner })
+            let inner = self.auth().stream_steps(AuthId::new(auth_id));
+            Either::Left(
+                inner
+                    .map_ok(|inner| AuthSocket { inner })
+                    .map_err(ClientError::from),
+            )
         } else {
-            Err(ClientError::NoAuthId)
+            Either::Right(future::ready(Err(ClientError::NoAuthId)))
         }
     }
 
@@ -533,20 +536,23 @@ impl Client {
     /// # Ok(())
     /// # }
     /// ```
-    pub async fn subscribe_events(
+    pub fn subscribe_events(
         &self,
         subscriptions: Vec<EventSource>,
-    ) -> ClientResult<EventsSocket> {
-        let (tx, rx) = self.chat().stream_events(()).await?.split();
-        let mut socket = EventsSocket {
-            write: EventsWriteSocket { inner: tx },
-            read: EventsReadSocket { inner: rx },
-        };
-        for source in subscriptions {
-            socket.add_source(source).await?;
-        }
+    ) -> impl Future<Output = ClientResult<EventsSocket>> + Send + '_ {
+        let fut = self.chat().stream_events(());
+        async {
+            let (tx, rx) = fut.await?.split();
+            let mut socket = EventsSocket {
+                write: EventsWriteSocket { inner: tx },
+                read: EventsReadSocket { inner: rx },
+            };
+            for source in subscriptions {
+                socket.add_source(source).await?;
+            }
 
-        Ok(socket)
+            Ok(socket)
+        }
     }
 }
 
