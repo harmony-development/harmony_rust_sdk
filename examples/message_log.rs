@@ -96,6 +96,7 @@ async fn main() -> ClientResult<()> {
     info!("In guild: {}", guild_id);
 
     client
+        .clone()
         .event_loop(
             vec![EventSource::Guild(guild_id)],
             move |_client, event| async move {

@@ -99,6 +99,7 @@ async fn main() -> ClientResult<()> {
     let self_id = client.auth_status().session().unwrap().user_id;
 
     client
+        .clone()
         .event_loop(
             vec![EventSource::Guild(guild_id)],
             move |client, event| async move {

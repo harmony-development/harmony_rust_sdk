@@ -105,6 +105,7 @@ async fn main() -> ClientResult<()> {
     let start = std::time::Instant::now();
 
     client
+        .clone()
         .event_loop(
             vec![EventSource::Guild(guild_id)],
             move |client, event| async move {
