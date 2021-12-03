@@ -27,13 +27,14 @@ use std::{
 };
 
 use hrpc::{
-    client::transport::{self as client_transport, TransportRequest, TransportResponse},
+    client::transport::{self as client_transport},
     encode::encode_protobuf_message,
     exports::{
         bytes::{Bytes, BytesMut},
         futures_util::{future::Either, TryFutureExt},
         tower::Service,
     },
+    request::BoxRequest,
     Response,
 };
 use http::Uri;
@@ -579,9 +580,9 @@ pub struct AddAuth<S> {
     auth_status: Arc<Mutex<(AuthStatus, Bytes)>>,
 }
 
-impl<S> Service<TransportRequest> for AddAuth<S>
+impl<S> Service<BoxRequest> for AddAuth<S>
 where
-    S: Service<TransportRequest, Response = TransportResponse>,
+    S: Service<BoxRequest>,
 {
     type Response = S::Response;
 
@@ -596,13 +597,9 @@ where
         Service::poll_ready(&mut self.inner, cx)
     }
 
-    fn call(&mut self, mut req: TransportRequest) -> Self::Future {
+    fn call(&mut self, mut req: BoxRequest) -> Self::Future {
         let guard = self.auth_status.lock();
         if guard.0.is_authenticated() {
-            let req = match &mut req {
-                TransportRequest::Unary(req) => req,
-                TransportRequest::Socket(req) => req,
-            };
             req.get_or_insert_header_map().insert(
                 http::header::AUTHORIZATION,
                 // This is safe on the assumption that servers will never send session tokens
