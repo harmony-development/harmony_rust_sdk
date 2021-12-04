@@ -38,7 +38,7 @@ use hrpc::{
     Response,
 };
 use http::Uri;
-use parking_lot::{Mutex, MutexGuard};
+use parking_lot::{Mutex, MutexGuard, RwLock, RwLockReadGuard};
 use reqwest::Client as HttpClient;
 
 #[cfg(feature = "client_web")]
@@ -100,7 +100,7 @@ impl AuthStatus {
 #[derive(Debug)]
 struct ClientData {
     homeserver_url: Uri,
-    auth_status: Arc<Mutex<(AuthStatus, Bytes)>>,
+    auth_status: Arc<RwLock<(AuthStatus, Bytes)>>,
     chat: Mutex<ChatService>,
     auth: Mutex<AuthService>,
     mediaproxy: Mutex<MediaProxyService>,
@@ -195,7 +195,7 @@ impl Client {
         let token_bytes = session.session().map_or_else(Bytes::new, |s| {
             Bytes::copy_from_slice(s.session_token.as_bytes())
         });
-        let auth_status = Arc::new(Mutex::new((session, token_bytes)));
+        let auth_status = Arc::new(RwLock::new((session, token_bytes)));
 
         let transport = GenericClientTransport::new(homeserver_url.clone())
             .map_err(|err| ClientError::Internal(InternalClientError::Transport(err)))?;
@@ -354,8 +354,8 @@ impl Client {
     }
 
     #[inline(always)]
-    fn auth_status_lock(&self) -> MutexGuard<(AuthStatus, Bytes)> {
-        self.data.auth_status.lock()
+    fn auth_status_lock(&self) -> RwLockReadGuard<(AuthStatus, Bytes)> {
+        self.data.auth_status.read()
     }
 
     /// Get the current auth status.
@@ -429,7 +429,7 @@ impl Client {
 
         async move {
             let resp = fut.await?.into_message().await?;
-            auth_status_lock.lock().0 = AuthStatus::InProgress(resp.auth_id);
+            auth_status_lock.write().0 = AuthStatus::InProgress(resp.auth_id);
             Ok(())
         }
     }
@@ -470,7 +470,7 @@ impl Client {
                 }) = step.step
                 {
                     let token_bytes = Bytes::copy_from_slice(session.session_token.as_bytes());
-                    *auth_status_lock.lock() = (AuthStatus::Complete(session), token_bytes);
+                    *auth_status_lock.write() = (AuthStatus::Complete(session), token_bytes);
                     None
                 } else {
                     Some(step)
@@ -574,7 +574,7 @@ impl Client {
 #[derive(Debug, Clone)]
 pub struct AddAuth<S> {
     inner: S,
-    auth_status: Arc<Mutex<(AuthStatus, Bytes)>>,
+    auth_status: Arc<RwLock<(AuthStatus, Bytes)>>,
 }
 
 impl<S> Service<BoxRequest> for AddAuth<S>
@@ -595,7 +595,7 @@ where
     }
 
     fn call(&mut self, mut req: BoxRequest) -> Self::Future {
-        let guard = self.auth_status.lock();
+        let guard = self.auth_status.read();
         if guard.0.is_authenticated() {
             req.get_or_insert_header_map().insert(
                 http::header::AUTHORIZATION,
