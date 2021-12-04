@@ -99,38 +99,39 @@ async fn main() -> ClientResult<()> {
     let self_id = client.auth_status().session().unwrap().user_id;
 
     client
-        .clone()
-        .event_loop(
-            vec![EventSource::Guild(guild_id)],
-            move |client, event| async move {
-                if DID_CTRLC.load(Ordering::Relaxed) {
-                    return Ok(true);
-                }
-                if let chat::Event::Chat(stream_event::Event::SentMessage(sent_message)) = event {
-                    if let Some(message) = sent_message.message {
-                        // Dont sent message if we sent it
-                        if message.author_id != self_id {
-                            info!("Echoing message: {}", sent_message.message_id);
+        .event_loop(vec![EventSource::Guild(guild_id)], {
+            move |client, event| {
+                async move {
+                    if DID_CTRLC.load(Ordering::Relaxed) {
+                        return Ok(true);
+                    }
+                    if let chat::Event::Chat(stream_event::Event::SentMessage(sent_message)) = event
+                    {
+                        if let Some(message) = sent_message.message {
+                            // Dont sent message if we sent it
+                            if message.author_id != self_id {
+                                info!("Echoing message: {}", sent_message.message_id);
 
-                            let mut send_message =
-                                SendMessage::new(guild_id, sent_message.channel_id)
-                                    .with_overrides(message.overrides)
-                                    .with_metadata(message.metadata);
+                                let mut send_message =
+                                    SendMessage::new(guild_id, sent_message.channel_id)
+                                        .with_overrides(message.overrides)
+                                        .with_metadata(message.metadata);
 
-                            if let Some(in_reply_to) = message.in_reply_to {
-                                send_message = send_message.with_in_reply_to(in_reply_to);
+                                if let Some(in_reply_to) = message.in_reply_to {
+                                    send_message = send_message.with_in_reply_to(in_reply_to);
+                                }
+                                if let Some(content) = message.content {
+                                    send_message = send_message.with_content(content);
+                                }
+
+                                client.call(send_message).await?;
                             }
-                            if let Some(content) = message.content {
-                                send_message = send_message.with_content(content);
-                            }
-
-                            client.call(send_message).await?;
                         }
                     }
+                    Ok(false)
                 }
-                Ok(false)
-            },
-        )
+            }
+        })
         .await?;
 
     // Change our bots status back to offline

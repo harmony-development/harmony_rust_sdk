@@ -99,7 +99,7 @@ async fn main() -> ClientResult<()> {
         .clone()
         .event_loop(
             vec![EventSource::Guild(guild_id)],
-            move |_client, event| async move {
+            move |_, event| async move {
                 if DID_CTRLC.load(Ordering::Relaxed) {
                     return Ok(true);
                 }

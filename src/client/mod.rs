@@ -229,34 +229,31 @@ impl Client {
         })
     }
 
-    /// Consumers self and starts an event loop with the given handler.
+    /// Starts an event loop with the given handler.
     ///
     /// All socket errors will be logged with tracing. If the handler
     /// function returns `Ok(true)` or `Err(err)`, the function will
     /// return, so if you don't want it to return, return `Ok(false)`.
-    #[allow(clippy::manual_async_fn)]
-    pub fn event_loop<Fut, Hndlr>(
-        self,
+    pub async fn event_loop<'a, Fut, Hndlr>(
+        &'a self,
         subs: Vec<EventSource>,
-        handler: Hndlr,
-    ) -> impl Future<Output = Result<(), ClientError>> + Send + 'static
+        mut handler: Hndlr,
+    ) -> Result<(), ClientError>
     where
-        Fut: Future<Output = ClientResult<bool>> + Send,
-        Hndlr: Fn(&Self, crate::api::chat::Event) -> Fut + Send + 'static,
+        Fut: Future<Output = ClientResult<bool>>,
+        Hndlr: FnMut(&'a Client, crate::api::chat::Event) -> Fut + Send + 'a,
     {
-        async move {
-            let mut sock = self.subscribe_events(subs).await?;
-            loop {
-                match sock.get_event().await {
-                    Ok(Some(ev)) => {
-                        let fut = handler(&self, ev);
-                        if fut.await? {
-                            return Ok(());
-                        }
+        let mut sock = self.subscribe_events(subs).await?;
+        loop {
+            match sock.get_event().await {
+                Ok(Some(ev)) => {
+                    let fut = handler(self, ev);
+                    if fut.await? {
+                        return Ok(());
                     }
-                    Err(err) => tracing::error!("{}", err),
-                    _ => std::hint::spin_loop(),
                 }
+                Err(err) => tracing::error!("{}", err),
+                _ => tokio::task::yield_now().await,
             }
         }
     }

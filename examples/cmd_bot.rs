@@ -105,9 +105,7 @@ async fn main() -> ClientResult<()> {
     let start = std::time::Instant::now();
 
     client
-        .clone()
-        .event_loop(
-            vec![EventSource::Guild(guild_id)],
+        .event_loop(vec![EventSource::Guild(guild_id)], {
             move |client, event| async move {
                 if DID_CTRLC.load(Ordering::Relaxed) {
                     return Ok(true);
@@ -164,8 +162,8 @@ async fn main() -> ClientResult<()> {
                     }
                 }
                 Ok(false)
-            },
-        )
+            }
+        })
         .await?;
 
     // Change our bots status back to offline
