@@ -712,6 +712,16 @@
 <span id="712">712</span>
 <span id="713">713</span>
 <span id="714">714</span>
+<span id="715">715</span>
+<span id="716">716</span>
+<span id="717">717</span>
+<span id="718">718</span>
+<span id="719">719</span>
+<span id="720">720</span>
+<span id="721">721</span>
+<span id="722">722</span>
+<span id="723">723</span>
+<span id="724">724</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Rust client implementation for Harmony, powered by [`hrpc`].</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! See the `examples` directory in the repository on how to use this.</span>
@@ -741,17 +751,18 @@
 };
 
 <span class="kw">use</span> <span class="ident">hrpc</span>::{
-    <span class="ident">client::transport</span>::{<span class="self">self</span> <span class="kw">as</span> <span class="ident">client_transport</span>, <span class="ident">TransportRequest</span>, <span class="ident">TransportResponse</span>},
+    <span class="ident">client::transport</span>::{<span class="self">self</span> <span class="kw">as</span> <span class="ident">client_transport</span>},
     <span class="ident">encode::encode_protobuf_message</span>,
     <span class="ident">exports</span>::{
         <span class="ident">bytes</span>::{<span class="ident">Bytes</span>, <span class="ident">BytesMut</span>},
-        <span class="ident">futures_util</span>::{<span class="ident">future::Either</span>, <span class="ident">FutureExt</span>, <span class="ident">TryFutureExt</span>},
+        <span class="ident">futures_util</span>::{<span class="ident">future::Either</span>, <span class="ident">TryFutureExt</span>},
         <span class="ident">tower::Service</span>,
     },
+    <span class="ident">request::BoxRequest</span>,
     <span class="ident">Response</span>,
 };
 <span class="kw">use</span> <span class="ident">http::Uri</span>;
-<span class="kw">use</span> <span class="ident">parking_lot</span>::{<span class="ident">Mutex</span>, <span class="ident">MutexGuard</span>};
+<span class="kw">use</span> <span class="ident">parking_lot</span>::{<span class="ident">Mutex</span>, <span class="ident">MutexGuard</span>, <span class="ident">RwLock</span>, <span class="ident">RwLockReadGuard</span>};
 <span class="kw">use</span> <span class="ident">reqwest::Client</span> <span class="kw">as</span> <span class="ident">HttpClient</span>;
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;client_web&quot;</span>)]</span>
@@ -813,7 +824,7 @@
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>)]</span>
 <span class="kw">struct</span> <span class="ident">ClientData</span> {
     <span class="ident">homeserver_url</span>: <span class="ident">Uri</span>,
-    <span class="ident">auth_status</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Mutex</span><span class="op">&lt;</span>(<span class="ident">AuthStatus</span>, <span class="ident">Bytes</span>)<span class="op">&gt;</span><span class="op">&gt;</span>,
+    <span class="ident">auth_status</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">RwLock</span><span class="op">&lt;</span>(<span class="ident">AuthStatus</span>, <span class="ident">Bytes</span>)<span class="op">&gt;</span><span class="op">&gt;</span>,
     <span class="ident">chat</span>: <span class="ident">Mutex</span><span class="op">&lt;</span><span class="ident">ChatService</span><span class="op">&gt;</span>,
     <span class="ident">auth</span>: <span class="ident">Mutex</span><span class="op">&lt;</span><span class="ident">AuthService</span><span class="op">&gt;</span>,
     <span class="ident">mediaproxy</span>: <span class="ident">Mutex</span><span class="op">&lt;</span><span class="ident">MediaProxyService</span><span class="op">&gt;</span>,
@@ -908,7 +919,7 @@
         <span class="kw">let</span> <span class="ident">token_bytes</span> <span class="op">=</span> <span class="ident">session</span>.<span class="ident">session</span>().<span class="ident">map_or_else</span>(<span class="ident">Bytes::new</span>, <span class="op">|</span><span class="ident">s</span><span class="op">|</span> {
             <span class="ident">Bytes::copy_from_slice</span>(<span class="ident">s</span>.<span class="ident">session_token</span>.<span class="ident">as_bytes</span>())
         });
-        <span class="kw">let</span> <span class="ident">auth_status</span> <span class="op">=</span> <span class="ident">Arc::new</span>(<span class="ident">Mutex::new</span>((<span class="ident">session</span>, <span class="ident">token_bytes</span>)));
+        <span class="kw">let</span> <span class="ident">auth_status</span> <span class="op">=</span> <span class="ident">Arc::new</span>(<span class="ident">RwLock::new</span>((<span class="ident">session</span>, <span class="ident">token_bytes</span>)));
 
         <span class="kw">let</span> <span class="ident">transport</span> <span class="op">=</span> <span class="ident">GenericClientTransport::new</span>(<span class="ident">homeserver_url</span>.<span class="ident">clone</span>())
             .<span class="ident">map_err</span>(<span class="op">|</span><span class="ident">err</span><span class="op">|</span> <span class="ident">ClientError::Internal</span>(<span class="ident">InternalClientError::Transport</span>(<span class="ident">err</span>)))<span class="question-mark">?</span>;
@@ -942,7 +953,7 @@
         })
     }
 
-    <span class="doccomment">/// Consumes self and starts an event loop with the given handler.</span>
+    <span class="doccomment">/// Starts an event loop with the given handler.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// All socket errors will be logged with tracing. If the handler</span>
     <span class="doccomment">/// function returns `Ok(true)` or `Err(err)`, the function will</span>
@@ -950,22 +961,23 @@
     <span class="kw">pub</span> <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">event_loop</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">Fut</span>, <span class="ident">Hndlr</span><span class="op">&gt;</span>(
         <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="self">self</span>,
         <span class="ident">subs</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">EventSource</span><span class="op">&gt;</span>,
-        <span class="ident">handler</span>: <span class="ident">Hndlr</span>,
+        <span class="kw-2">mut</span> <span class="ident">handler</span>: <span class="ident">Hndlr</span>,
     ) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">ClientError</span><span class="op">&gt;</span>
     <span class="kw">where</span>
-        <span class="ident">Fut</span>: <span class="ident">std::future::Future</span><span class="op">&lt;</span><span class="ident">Output</span> <span class="op">=</span> <span class="ident">ClientResult</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="op">+</span> <span class="lifetime">&#39;a</span>,
-        <span class="ident">Hndlr</span>: <span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Client</span>, <span class="ident"><span class="kw">crate</span>::api::chat::Event</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Fut</span>,
+        <span class="ident">Fut</span>: <span class="ident">Future</span><span class="op">&lt;</span><span class="ident">Output</span> <span class="op">=</span> <span class="ident">ClientResult</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+        <span class="ident">Hndlr</span>: <span class="ident">FnMut</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Client</span>, <span class="ident"><span class="kw">crate</span>::api::chat::Event</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Fut</span> <span class="op">+</span> <span class="ident">Send</span> <span class="op">+</span> <span class="lifetime">&#39;a</span>,
     {
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">sock</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">subscribe_events</span>(<span class="ident">subs</span>).<span class="kw">await</span><span class="question-mark">?</span>;
         <span class="kw">loop</span> {
             <span class="kw">match</span> <span class="ident">sock</span>.<span class="ident">get_event</span>().<span class="kw">await</span> {
                 <span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>(<span class="ident">ev</span>)) <span class="op">=</span><span class="op">&gt;</span> {
-                    <span class="kw">if</span> <span class="ident">handler</span>(<span class="self">self</span>, <span class="ident">ev</span>).<span class="kw">await</span><span class="question-mark">?</span> {
+                    <span class="kw">let</span> <span class="ident">fut</span> <span class="op">=</span> <span class="ident">handler</span>(<span class="self">self</span>, <span class="ident">ev</span>);
+                    <span class="kw">if</span> <span class="ident">fut</span>.<span class="kw">await</span><span class="question-mark">?</span> {
                         <span class="kw">return</span> <span class="prelude-val">Ok</span>(());
                     }
                 }
                 <span class="prelude-val">Err</span>(<span class="ident">err</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="macro">tracing::error!</span>(<span class="string">&quot;{}&quot;</span>, <span class="ident">err</span>),
-                <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">std::hint::spin_loop</span>(),
+                <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">tokio::task::yield_now</span>().<span class="kw">await</span>,
             }
         }
     }
@@ -1007,33 +1019,41 @@
     }
 
     <span class="doccomment">/// Execute the given request.</span>
-    <span class="kw">pub</span> <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">call</span><span class="op">&lt;</span><span class="ident">Req</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">request</span>: <span class="ident">Req</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">ClientResult</span><span class="op">&lt;</span><span class="ident">Req::Response</span><span class="op">&gt;</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">call</span><span class="op">&lt;</span><span class="ident">Req</span><span class="op">&gt;</span>(
+        <span class="kw-2">&amp;</span><span class="self">self</span>,
+        <span class="ident">request</span>: <span class="ident">Req</span>,
+    ) <span class="op">-</span><span class="op">&gt;</span> <span class="kw">impl</span> <span class="ident">Future</span><span class="op">&lt;</span><span class="ident">Output</span> <span class="op">=</span> <span class="ident">ClientResult</span><span class="op">&lt;</span><span class="ident">Req::Response</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">Send</span> <span class="op">+</span> <span class="lifetime">&#39;static</span>
     <span class="kw">where</span>
         <span class="ident">Req</span>: <span class="ident">Endpoint</span>,
-        <span class="ident">Req::Response</span>: <span class="ident">prost::Message</span> <span class="op">+</span> <span class="ident">Default</span>,
+        <span class="ident">Req::Response</span>: <span class="ident">prost::Message</span> <span class="op">+</span> <span class="ident">Default</span> <span class="op">+</span> <span class="lifetime">&#39;static</span>,
     {
-        <span class="prelude-val">Ok</span>(<span class="ident">request</span>.<span class="ident">call_with</span>(<span class="self">self</span>).<span class="kw">await</span><span class="question-mark">?</span>.<span class="ident">into_message</span>().<span class="kw">await</span><span class="question-mark">?</span>)
+        <span class="kw">let</span> <span class="ident">fut</span> <span class="op">=</span> <span class="ident">request</span>.<span class="ident">call_with</span>(<span class="self">self</span>);
+        <span class="kw">async</span> <span class="kw">move</span> { <span class="prelude-val">Ok</span>(<span class="ident">fut</span>.<span class="kw">await</span><span class="question-mark">?</span>.<span class="ident">into_message</span>().<span class="kw">await</span><span class="question-mark">?</span>) }
     }
 
     <span class="doccomment">/// Execute the given request, but return a [`hrpc::Response`].</span>
-    <span class="kw">pub</span> <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">call_response</span><span class="op">&lt;</span><span class="ident">Req</span>: <span class="ident">Endpoint</span><span class="op">&gt;</span>(
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">call_response</span><span class="op">&lt;</span><span class="ident">Req</span><span class="op">&gt;</span>(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
         <span class="ident">request</span>: <span class="ident">Req</span>,
-    ) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">ClientResult</span><span class="op">&lt;</span><span class="ident">Response</span><span class="op">&lt;</span><span class="ident">Req::Response</span><span class="op">&gt;</span><span class="op">&gt;</span> {
-        <span class="ident">request</span>.<span class="ident">call_with</span>(<span class="self">self</span>).<span class="kw">await</span>
+    ) <span class="op">-</span><span class="op">&gt;</span> <span class="kw">impl</span> <span class="ident">Future</span><span class="op">&lt;</span><span class="ident">Output</span> <span class="op">=</span> <span class="ident">ClientResult</span><span class="op">&lt;</span><span class="ident">Response</span><span class="op">&lt;</span><span class="ident">Req::Response</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">Send</span> <span class="op">+</span> <span class="lifetime">&#39;static</span>
+    <span class="kw">where</span>
+        <span class="ident">Req</span>: <span class="ident">Endpoint</span>,
+        <span class="ident">Req::Response</span>: <span class="lifetime">&#39;static</span>,
+    {
+        <span class="ident">request</span>.<span class="ident">call_with</span>(<span class="self">self</span>)
     }
 
     <span class="doccomment">/// Execute the given requests a batch (same) request.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// Note that this does not support the convenience types defined in the [`api`] module.</span>
     <span class="doccomment">/// You will need to convert them to the corresponding request type with `Request::from`.</span>
-    <span class="kw">pub</span> <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">batch_call</span><span class="op">&lt;</span><span class="ident">Req</span><span class="op">&gt;</span>(
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">batch_call</span><span class="op">&lt;</span><span class="ident">Req</span><span class="op">&gt;</span>(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
         <span class="ident">requests</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Req</span><span class="op">&gt;</span>,
-    ) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">ClientResult</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="op">&lt;</span><span class="ident">Req</span> <span class="kw">as</span> <span class="ident">Endpoint</span><span class="op">&gt;</span><span class="ident">::Response</span><span class="op">&gt;</span><span class="op">&gt;</span>
+    ) <span class="op">-</span><span class="op">&gt;</span> <span class="kw">impl</span> <span class="ident">Future</span><span class="op">&lt;</span><span class="ident">Output</span> <span class="op">=</span> <span class="ident">ClientResult</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="op">&lt;</span><span class="ident">Req</span> <span class="kw">as</span> <span class="ident">Endpoint</span><span class="op">&gt;</span><span class="ident">::Response</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">Send</span> <span class="op">+</span> <span class="lifetime">&#39;static</span>
     <span class="kw">where</span>
         <span class="ident">Req</span>: <span class="ident">Endpoint</span> <span class="op">+</span> <span class="ident">prost::Message</span>,
-        <span class="op">&lt;</span><span class="ident">Req</span> <span class="kw">as</span> <span class="ident">Endpoint</span><span class="op">&gt;</span><span class="ident">::Response</span>: <span class="ident">prost::Message</span> <span class="op">+</span> <span class="ident">Default</span>,
+        <span class="op">&lt;</span><span class="ident">Req</span> <span class="kw">as</span> <span class="ident">Endpoint</span><span class="op">&gt;</span><span class="ident">::Response</span>: <span class="ident">prost::Message</span> <span class="op">+</span> <span class="ident">Default</span> <span class="op">+</span> <span class="lifetime">&#39;static</span>,
     {
         <span class="kw">use</span> <span class="ident">prost::Message</span>;
 
@@ -1045,18 +1065,21 @@
             <span class="ident">endpoint</span>: <span class="ident">Req::ENDPOINT_PATH</span>.<span class="ident">to_string</span>(),
             <span class="ident">requests</span>: <span class="ident">encoded</span>.<span class="ident">collect</span>(),
         };
-        <span class="kw">let</span> <span class="ident">responses</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">call</span>(<span class="ident">batch_req</span>).<span class="kw">await</span><span class="question-mark">?</span>.<span class="ident">responses</span>;
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">decoded</span> <span class="op">=</span> <span class="ident">Vec::with_capacity</span>(<span class="ident">responses</span>.<span class="ident">len</span>());
-        <span class="kw">for</span> <span class="ident">response</span> <span class="kw">in</span> <span class="ident">responses</span> {
-            <span class="kw">let</span> <span class="ident">decoded_msg</span> <span class="op">=</span> <span class="op">&lt;</span><span class="ident">Req</span> <span class="kw">as</span> <span class="ident">Endpoint</span><span class="op">&gt;</span><span class="ident">::Response::decode</span>(<span class="ident">response</span>.<span class="ident">as_ref</span>())<span class="question-mark">?</span>;
-            <span class="ident">decoded</span>.<span class="ident">push</span>(<span class="ident">decoded_msg</span>);
+        <span class="kw">let</span> <span class="ident">fut</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">batch</span>().<span class="ident">batch_same</span>(<span class="ident">batch_req</span>);
+        <span class="kw">async</span> <span class="kw">move</span> {
+            <span class="kw">let</span> <span class="ident">responses</span> <span class="op">=</span> <span class="ident">fut</span>.<span class="kw">await</span><span class="question-mark">?</span>.<span class="ident">into_message</span>().<span class="kw">await</span><span class="question-mark">?</span>.<span class="ident">responses</span>;
+            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">decoded</span> <span class="op">=</span> <span class="ident">Vec::with_capacity</span>(<span class="ident">responses</span>.<span class="ident">len</span>());
+            <span class="kw">for</span> <span class="ident">response</span> <span class="kw">in</span> <span class="ident">responses</span> {
+                <span class="kw">let</span> <span class="ident">decoded_msg</span> <span class="op">=</span> <span class="op">&lt;</span><span class="ident">Req</span> <span class="kw">as</span> <span class="ident">Endpoint</span><span class="op">&gt;</span><span class="ident">::Response::decode</span>(<span class="ident">response</span>.<span class="ident">as_ref</span>())<span class="question-mark">?</span>;
+                <span class="ident">decoded</span>.<span class="ident">push</span>(<span class="ident">decoded_msg</span>);
+            }
+            <span class="prelude-val">Ok</span>(<span class="ident">decoded</span>)
         }
-        <span class="prelude-val">Ok</span>(<span class="ident">decoded</span>)
     }
 
     <span class="attribute">#[<span class="ident">inline</span>(<span class="ident">always</span>)]</span>
-    <span class="kw">fn</span> <span class="ident">auth_status_lock</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">MutexGuard</span><span class="op">&lt;</span>(<span class="ident">AuthStatus</span>, <span class="ident">Bytes</span>)<span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">data</span>.<span class="ident">auth_status</span>.<span class="ident">lock</span>()
+    <span class="kw">fn</span> <span class="ident">auth_status_lock</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">RwLockReadGuard</span><span class="op">&lt;</span>(<span class="ident">AuthStatus</span>, <span class="ident">Bytes</span>)<span class="op">&gt;</span> {
+        <span class="self">self</span>.<span class="ident">data</span>.<span class="ident">auth_status</span>.<span class="ident">read</span>()
     }
 
     <span class="doccomment">/// Get the current auth status.</span>
@@ -1124,18 +1147,15 @@
     <span class="doccomment">/// # Ok(())</span>
     <span class="doccomment">/// # }</span>
     <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">begin_auth</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="kw">impl</span> <span class="ident">Future</span><span class="op">&lt;</span><span class="ident">Output</span> <span class="op">=</span> <span class="ident">ClientResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">Send</span> <span class="op">+</span> <span class="lifetime">&#39;_</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">begin_auth</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="kw">impl</span> <span class="ident">Future</span><span class="op">&lt;</span><span class="ident">Output</span> <span class="op">=</span> <span class="ident">ClientResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">Send</span> <span class="op">+</span> <span class="lifetime">&#39;static</span> {
         <span class="kw">let</span> <span class="ident">fut</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">auth</span>().<span class="ident">begin_auth</span>(<span class="ident">BeginAuthRequest</span> {});
-        <span class="ident">fut</span>.<span class="ident">map_err</span>(<span class="ident">ClientError::from</span>)
-            .<span class="ident">and_then</span>(<span class="op">|</span><span class="ident">resp</span><span class="op">|</span> {
-                <span class="ident">resp</span>.<span class="ident">into_message</span>()
-                    .<span class="ident">map_err</span>(<span class="ident">ClientError::from</span>)
-                    .<span class="ident">map_ok</span>(<span class="op">|</span><span class="ident">resp</span><span class="op">|</span> {
-                        <span class="self">self</span>.<span class="ident">auth_status_lock</span>().<span class="number">0</span> <span class="op">=</span> <span class="ident">AuthStatus::InProgress</span>(<span class="ident">resp</span>.<span class="ident">auth_id</span>);
-                        <span class="prelude-val">Ok</span>(())
-                    })
-            })
-            .<span class="ident">map</span>(<span class="op">|</span><span class="ident">res</span><span class="op">|</span> <span class="ident">res</span>.<span class="ident">and_then</span>(<span class="op">|</span><span class="ident">x</span><span class="op">|</span> <span class="ident">x</span>))
+        <span class="kw">let</span> <span class="ident">auth_status_lock</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">data</span>.<span class="ident">auth_status</span>.<span class="ident">clone</span>();
+
+        <span class="kw">async</span> <span class="kw">move</span> {
+            <span class="kw">let</span> <span class="ident">resp</span> <span class="op">=</span> <span class="ident">fut</span>.<span class="kw">await</span><span class="question-mark">?</span>.<span class="ident">into_message</span>().<span class="kw">await</span><span class="question-mark">?</span>;
+            <span class="ident">auth_status_lock</span>.<span class="ident">write</span>().<span class="number">0</span> <span class="op">=</span> <span class="ident">AuthStatus::InProgress</span>(<span class="ident">resp</span>.<span class="ident">auth_id</span>);
+            <span class="prelude-val">Ok</span>(())
+        }
     }
 
     <span class="doccomment">/// Request the next authentication step from the server.</span>
@@ -1158,26 +1178,30 @@
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">next_auth_step</span>(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
         <span class="ident">response</span>: <span class="ident">AuthStepResponse</span>,
-    ) <span class="op">-</span><span class="op">&gt;</span> <span class="kw">impl</span> <span class="ident">Future</span><span class="op">&lt;</span><span class="ident">Output</span> <span class="op">=</span> <span class="ident">ClientResult</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">NextStepResponse</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">Send</span> <span class="op">+</span> <span class="lifetime">&#39;_</span> {
+    ) <span class="op">-</span><span class="op">&gt;</span> <span class="kw">impl</span> <span class="ident">Future</span><span class="op">&lt;</span><span class="ident">Output</span> <span class="op">=</span> <span class="ident">ClientResult</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">NextStepResponse</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">Send</span> <span class="op">+</span> <span class="lifetime">&#39;static</span> {
         <span class="kw">if</span> <span class="kw">let</span> <span class="ident">AuthStatus::InProgress</span>(<span class="ident">auth_id</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">auth_status</span>() {
-            <span class="ident">Either::Left</span>(
-                <span class="self">self</span>.<span class="ident">call</span>(<span class="ident">NextStepRequest::new</span>(<span class="ident">auth_id</span>, <span class="ident">response</span>.<span class="ident">into</span>()))
-                    .<span class="ident">map_ok</span>(<span class="op">|</span><span class="ident">step</span><span class="op">|</span> {
-                        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">AuthStep</span> {
-                            <span class="ident">step</span>: <span class="prelude-val">Some</span>(<span class="ident">auth_step::Step::Session</span>(<span class="ident">session</span>)),
-                            ..
-                        }) <span class="op">=</span> <span class="ident">step</span>.<span class="ident">step</span>
-                        {
-                            <span class="kw">let</span> <span class="ident">token_bytes</span> <span class="op">=</span>
-                                <span class="ident">Bytes::copy_from_slice</span>(<span class="ident">session</span>.<span class="ident">session_token</span>.<span class="ident">as_bytes</span>());
-                            <span class="kw-2">*</span><span class="self">self</span>.<span class="ident">auth_status_lock</span>() <span class="op">=</span> (<span class="ident">AuthStatus::Complete</span>(<span class="ident">session</span>), <span class="ident">token_bytes</span>);
-                            <span class="prelude-val">None</span>
-                        } <span class="kw">else</span> {
-                            <span class="prelude-val">Some</span>(<span class="ident">step</span>)
-                        }
-                    })
-                    .<span class="ident">map_err</span>(<span class="ident">ClientError::from</span>),
-            )
+            <span class="kw">let</span> <span class="ident">auth_status_lock</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">data</span>.<span class="ident">auth_status</span>.<span class="ident">clone</span>();
+            <span class="kw">let</span> <span class="ident">fut</span> <span class="op">=</span> <span class="self">self</span>
+                .<span class="ident">auth</span>()
+                .<span class="ident">next_step</span>(<span class="ident">NextStepRequest::new</span>(<span class="ident">auth_id</span>, <span class="ident">response</span>.<span class="ident">into</span>()));
+
+            <span class="ident">Either::Left</span>(<span class="kw">async</span> <span class="kw">move</span> {
+                <span class="kw">let</span> <span class="ident">step</span> <span class="op">=</span> <span class="ident">fut</span>.<span class="kw">await</span><span class="question-mark">?</span>.<span class="ident">into_message</span>().<span class="kw">await</span><span class="question-mark">?</span>;
+
+                <span class="kw">let</span> <span class="ident">step</span> <span class="op">=</span> <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">AuthStep</span> {
+                    <span class="ident">step</span>: <span class="prelude-val">Some</span>(<span class="ident">auth_step::Step::Session</span>(<span class="ident">session</span>)),
+                    ..
+                }) <span class="op">=</span> <span class="ident">step</span>.<span class="ident">step</span>
+                {
+                    <span class="kw">let</span> <span class="ident">token_bytes</span> <span class="op">=</span> <span class="ident">Bytes::copy_from_slice</span>(<span class="ident">session</span>.<span class="ident">session_token</span>.<span class="ident">as_bytes</span>());
+                    <span class="kw-2">*</span><span class="ident">auth_status_lock</span>.<span class="ident">write</span>() <span class="op">=</span> (<span class="ident">AuthStatus::Complete</span>(<span class="ident">session</span>), <span class="ident">token_bytes</span>);
+                    <span class="prelude-val">None</span>
+                } <span class="kw">else</span> {
+                    <span class="prelude-val">Some</span>(<span class="ident">step</span>)
+                };
+
+                <span class="prelude-val">Ok</span>(<span class="ident">step</span>)
+            })
         } <span class="kw">else</span> {
             <span class="ident">Either::Right</span>(<span class="ident">future::ready</span>(<span class="prelude-val">Err</span>(<span class="ident">ClientError::NoAuthId</span>)))
         }
@@ -1201,9 +1225,10 @@
     <span class="doccomment">/// ```</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">prev_auth_step</span>(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
-    ) <span class="op">-</span><span class="op">&gt;</span> <span class="kw">impl</span> <span class="ident">Future</span><span class="op">&lt;</span><span class="ident">Output</span> <span class="op">=</span> <span class="ident">ClientResult</span><span class="op">&lt;</span><span class="ident">StepBackResponse</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">Send</span> <span class="op">+</span> <span class="lifetime">&#39;_</span> {
+    ) <span class="op">-</span><span class="op">&gt;</span> <span class="kw">impl</span> <span class="ident">Future</span><span class="op">&lt;</span><span class="ident">Output</span> <span class="op">=</span> <span class="ident">ClientResult</span><span class="op">&lt;</span><span class="ident">StepBackResponse</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">Send</span> <span class="op">+</span> <span class="lifetime">&#39;static</span> {
         <span class="kw">if</span> <span class="kw">let</span> <span class="ident">AuthStatus::InProgress</span>(<span class="ident">auth_id</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">auth_status</span>() {
-            <span class="ident">Either::Left</span>(<span class="self">self</span>.<span class="ident">call</span>(<span class="ident">StepBackRequest::new</span>(<span class="ident">auth_id</span>)))
+            <span class="kw">let</span> <span class="ident">fut</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">auth</span>().<span class="ident">step_back</span>(<span class="ident">StepBackRequest::new</span>(<span class="ident">auth_id</span>));
+            <span class="ident">Either::Left</span>(<span class="kw">async</span> <span class="kw">move</span> { <span class="prelude-val">Ok</span>(<span class="ident">fut</span>.<span class="kw">await</span><span class="question-mark">?</span>.<span class="ident">into_message</span>().<span class="kw">await</span><span class="question-mark">?</span>) })
         } <span class="kw">else</span> {
             <span class="ident">Either::Right</span>(<span class="ident">future::ready</span>(<span class="prelude-val">Err</span>(<span class="ident">ClientError::NoAuthId</span>)))
         }
@@ -1223,12 +1248,11 @@
     <span class="doccomment">/// # Ok(())</span>
     <span class="doccomment">/// # }</span>
     <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">auth_stream</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="kw">impl</span> <span class="ident">Future</span><span class="op">&lt;</span><span class="ident">Output</span> <span class="op">=</span> <span class="ident">ClientResult</span><span class="op">&lt;</span><span class="ident">AuthSocket</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">Send</span> <span class="op">+</span> <span class="lifetime">&#39;_</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">auth_stream</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="kw">impl</span> <span class="ident">Future</span><span class="op">&lt;</span><span class="ident">Output</span> <span class="op">=</span> <span class="ident">ClientResult</span><span class="op">&lt;</span><span class="ident">AuthSocket</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">Send</span> <span class="op">+</span> <span class="lifetime">&#39;static</span> {
         <span class="kw">if</span> <span class="kw">let</span> <span class="ident">AuthStatus::InProgress</span>(<span class="ident">auth_id</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">auth_status</span>() {
-            <span class="kw">let</span> <span class="ident">inner</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">auth</span>().<span class="ident">stream_steps</span>(<span class="ident">AuthId::new</span>(<span class="ident">auth_id</span>));
+            <span class="kw">let</span> <span class="ident">fut</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">auth</span>().<span class="ident">stream_steps</span>(<span class="ident">AuthId::new</span>(<span class="ident">auth_id</span>));
             <span class="ident">Either::Left</span>(
-                <span class="ident">inner</span>
-                    .<span class="ident">map_ok</span>(<span class="op">|</span><span class="ident">inner</span><span class="op">|</span> <span class="ident">AuthSocket</span> { <span class="ident">inner</span> })
+                <span class="ident">fut</span>.<span class="ident">map_ok</span>(<span class="op">|</span><span class="ident">inner</span><span class="op">|</span> <span class="ident">AuthSocket</span> { <span class="ident">inner</span> })
                     .<span class="ident">map_err</span>(<span class="ident">ClientError::from</span>),
             )
         } <span class="kw">else</span> {
@@ -1253,9 +1277,9 @@
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">subscribe_events</span>(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
         <span class="ident">subscriptions</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">EventSource</span><span class="op">&gt;</span>,
-    ) <span class="op">-</span><span class="op">&gt;</span> <span class="kw">impl</span> <span class="ident">Future</span><span class="op">&lt;</span><span class="ident">Output</span> <span class="op">=</span> <span class="ident">ClientResult</span><span class="op">&lt;</span><span class="ident">EventsSocket</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">Send</span> <span class="op">+</span> <span class="lifetime">&#39;_</span> {
+    ) <span class="op">-</span><span class="op">&gt;</span> <span class="kw">impl</span> <span class="ident">Future</span><span class="op">&lt;</span><span class="ident">Output</span> <span class="op">=</span> <span class="ident">ClientResult</span><span class="op">&lt;</span><span class="ident">EventsSocket</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">Send</span> <span class="op">+</span> <span class="lifetime">&#39;static</span> {
         <span class="kw">let</span> <span class="ident">fut</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">chat</span>().<span class="ident">stream_events</span>(());
-        <span class="kw">async</span> {
+        <span class="kw">async</span> <span class="kw">move</span> {
             <span class="kw">let</span> (<span class="ident">tx</span>, <span class="ident">rx</span>) <span class="op">=</span> <span class="ident">fut</span>.<span class="kw">await</span><span class="question-mark">?</span>.<span class="ident">split</span>();
             <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">socket</span> <span class="op">=</span> <span class="ident">EventsSocket</span> {
                 <span class="ident">write</span>: <span class="ident">EventsWriteSocket</span> { <span class="ident">inner</span>: <span class="ident">tx</span> },
@@ -1274,12 +1298,12 @@
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">AddAuth</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span> {
     <span class="ident">inner</span>: <span class="ident">S</span>,
-    <span class="ident">auth_status</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Mutex</span><span class="op">&lt;</span>(<span class="ident">AuthStatus</span>, <span class="ident">Bytes</span>)<span class="op">&gt;</span><span class="op">&gt;</span>,
+    <span class="ident">auth_status</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">RwLock</span><span class="op">&lt;</span>(<span class="ident">AuthStatus</span>, <span class="ident">Bytes</span>)<span class="op">&gt;</span><span class="op">&gt;</span>,
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span> <span class="ident">Service</span><span class="op">&lt;</span><span class="ident">TransportRequest</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">AddAuth</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span>
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span> <span class="ident">Service</span><span class="op">&lt;</span><span class="ident">BoxRequest</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">AddAuth</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span>
 <span class="kw">where</span>
-    <span class="ident">S</span>: <span class="ident">Service</span><span class="op">&lt;</span><span class="ident">TransportRequest</span>, <span class="ident">Response</span> <span class="op">=</span> <span class="ident">TransportResponse</span><span class="op">&gt;</span>,
+    <span class="ident">S</span>: <span class="ident">Service</span><span class="op">&lt;</span><span class="ident">BoxRequest</span><span class="op">&gt;</span>,
 {
     <span class="kw">type</span> <span class="ident">Response</span> <span class="op">=</span> <span class="ident">S::Response</span>;
 
@@ -1294,13 +1318,9 @@
         <span class="ident">Service::poll_ready</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>.<span class="ident">inner</span>, <span class="ident">cx</span>)
     }
 
-    <span class="kw">fn</span> <span class="ident">call</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="kw-2">mut</span> <span class="ident">req</span>: <span class="ident">TransportRequest</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident"><span class="self">Self</span>::Future</span> {
-        <span class="kw">let</span> <span class="ident">guard</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">auth_status</span>.<span class="ident">lock</span>();
+    <span class="kw">fn</span> <span class="ident">call</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="kw-2">mut</span> <span class="ident">req</span>: <span class="ident">BoxRequest</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident"><span class="self">Self</span>::Future</span> {
+        <span class="kw">let</span> <span class="ident">guard</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">auth_status</span>.<span class="ident">read</span>();
         <span class="kw">if</span> <span class="ident">guard</span>.<span class="number">0</span>.<span class="ident">is_authenticated</span>() {
-            <span class="kw">let</span> <span class="ident">req</span> <span class="op">=</span> <span class="kw">match</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">req</span> {
-                <span class="ident">TransportRequest::Unary</span>(<span class="ident">req</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">req</span>,
-                <span class="ident">TransportRequest::Socket</span>(<span class="ident">req</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">req</span>,
-            };
             <span class="ident">req</span>.<span class="ident">get_or_insert_header_map</span>().<span class="ident">insert</span>(
                 <span class="ident">http::header::AUTHORIZATION</span>,
                 <span class="comment">// This is safe on the assumption that servers will never send session tokens</span>
