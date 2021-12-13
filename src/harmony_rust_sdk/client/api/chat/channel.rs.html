@@ -104,6 +104,8 @@
 <span id="104">104</span>
 <span id="105">105</span>
 <span id="106">106</span>
+<span id="107">107</span>
+<span id="108">108</span>
 </pre><pre class="rust"><code><span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::api::chat</span>::{
     <span class="ident">get_channel_messages_request::Direction</span>, <span class="ident">CreateChannelRequest</span>, <span class="ident">DeleteChannelRequest</span>,
     <span class="ident">GetChannelMessagesRequest</span>, <span class="ident">GetGuildChannelsRequest</span>, <span class="ident">UpdateChannelInformationRequest</span>,
@@ -157,7 +159,9 @@
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">CreateChannel</span> {
     <span class="ident">guild_id</span>: <span class="ident">u64</span>,
     <span class="ident">channel_name</span>: <span class="ident">String</span>,
-    <span class="ident">position</span>: <span class="ident">ItemPosition</span>,
+    <span class="attribute">#[<span class="ident">new</span>(<span class="ident">default</span>)]</span>
+    <span class="attribute">#[<span class="ident">builder</span>(<span class="ident">setter</span>(<span class="ident">strip_option</span>))]</span>
+    <span class="ident">position</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ItemPosition</span><span class="op">&gt;</span>,
     <span class="attribute">#[<span class="ident">new</span>(<span class="ident">default</span>)]</span>
     <span class="attribute">#[<span class="ident">builder</span>(<span class="ident">setter</span>(<span class="ident">strip_option</span>))]</span>
     <span class="ident">metadata</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Metadata</span><span class="op">&gt;</span>,
