@@ -51,7 +51,9 @@ impl_into_req_from!(GetChannelMessages);
 pub struct CreateChannel {
     guild_id: u64,
     channel_name: String,
-    position: ItemPosition,
+    #[new(default)]
+    #[builder(setter(strip_option))]
+    position: Option<ItemPosition>,
     #[new(default)]
     #[builder(setter(strip_option))]
     metadata: Option<Metadata>,
