@@ -253,7 +253,7 @@ impl Client {
                     }
                 }
                 Err(err) => tracing::error!("{}", err),
-                _ => tokio::task::yield_now().await,
+                _ => std::hint::spin_loop(),
             }
         }
     }

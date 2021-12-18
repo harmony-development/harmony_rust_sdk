@@ -63,6 +63,7 @@ client_web = [
 ]
 client_native = [
 	"_client_common",
+	"tokio",
 	"hrpc/http_hyper_client",
 	"reqwest/rustls-tls-native-roots",
 ]
@@ -75,7 +76,6 @@ _client_common = [
 	"gen_client",
 	"rest",
 	"reqwest",
-	"tokio",
 	"tracing",
 	"urlencoding",
 	"parking_lot",
