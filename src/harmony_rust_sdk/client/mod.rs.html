@@ -977,7 +977,7 @@
                     }
                 }
                 <span class="prelude-val">Err</span>(<span class="ident">err</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="macro">tracing::error!</span>(<span class="string">&quot;{}&quot;</span>, <span class="ident">err</span>),
-                <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">tokio::task::yield_now</span>().<span class="kw">await</span>,
+                <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">std::hint::spin_loop</span>(),
             }
         }
     }
