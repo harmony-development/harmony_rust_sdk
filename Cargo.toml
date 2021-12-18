@@ -31,7 +31,7 @@ reqwest = { version="0.11", default-features=false, features=[
 ], optional=true }
 tracing = { version="0.1", optional=true }
 serde = { version="1.0", features=["derive"], optional = true }
-tokio = { version="1.14", features=["sync", "parking_lot"], optional=true }
+tokio = { version="1.15", features=["sync", "parking_lot"], optional=true }
 
 urlencoding = { version="2.1", optional=true }
 http = { version = "0.2", optional = true }
@@ -96,7 +96,7 @@ gen_emote = []
 rest = ["serde", "http"]
 
 [dev-dependencies]
-tokio = { version="1.14", features=["rt", "macros", "fs"] }
+tokio = { version="1.15", features=["rt", "macros", "fs"] }
 tracing-subscriber = { version = "0.3", features = ["env-filter"] }
 ctrlc = "3.1.8"
 
