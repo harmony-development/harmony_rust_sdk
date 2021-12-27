@@ -722,6 +722,7 @@
 <span id="722">722</span>
 <span id="723">723</span>
 <span id="724">724</span>
+<span id="725">725</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Rust client implementation for Harmony, powered by [`hrpc`].</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! See the `examples` directory in the repository on how to use this.</span>
@@ -751,7 +752,7 @@
 };
 
 <span class="kw">use</span> <span class="ident">hrpc</span>::{
-    <span class="ident">client::transport</span>::{<span class="self">self</span> <span class="kw">as</span> <span class="ident">client_transport</span>},
+    <span class="ident">client::transport</span> <span class="kw">as</span> <span class="ident">client_transport</span>,
     <span class="ident">encode::encode_protobuf_message</span>,
     <span class="ident">exports</span>::{
         <span class="ident">bytes</span>::{<span class="ident">Bytes</span>, <span class="ident">BytesMut</span>},
@@ -762,8 +763,8 @@
     <span class="ident">Response</span>,
 };
 <span class="kw">use</span> <span class="ident">http::Uri</span>;
-<span class="kw">use</span> <span class="ident">parking_lot</span>::{<span class="ident">Mutex</span>, <span class="ident">MutexGuard</span>, <span class="ident">RwLock</span>, <span class="ident">RwLockReadGuard</span>};
 <span class="kw">use</span> <span class="ident">reqwest::Client</span> <span class="kw">as</span> <span class="ident">HttpClient</span>;
+<span class="kw">use</span> <span class="ident">std::sync</span>::{<span class="ident">Mutex</span>, <span class="ident">MutexGuard</span>, <span class="ident">RwLock</span>, <span class="ident">RwLockReadGuard</span>};
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;client_web&quot;</span>)]</span>
 <span class="kw">type</span> <span class="ident">GenericClientTransport</span> <span class="op">=</span> <span class="ident">client_transport::http::Wasm</span>;
@@ -985,37 +986,37 @@
     <span class="attribute">#[<span class="ident">inline</span>(<span class="ident">always</span>)]</span>
     <span class="doccomment">/// Get a mutex guard to the chat service.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">chat</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">MutexGuard</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">ChatService</span><span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">data</span>.<span class="ident">chat</span>.<span class="ident">lock</span>()
+        <span class="self">self</span>.<span class="ident">data</span>.<span class="ident">chat</span>.<span class="ident">lock</span>().<span class="ident">expect</span>(<span class="string">&quot;poisoned&quot;</span>)
     }
 
     <span class="attribute">#[<span class="ident">inline</span>(<span class="ident">always</span>)]</span>
     <span class="doccomment">/// Get a mutex guard to the auth service.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">auth</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">MutexGuard</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">AuthService</span><span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">data</span>.<span class="ident">auth</span>.<span class="ident">lock</span>()
+        <span class="self">self</span>.<span class="ident">data</span>.<span class="ident">auth</span>.<span class="ident">lock</span>().<span class="ident">expect</span>(<span class="string">&quot;poisoned&quot;</span>)
     }
 
     <span class="attribute">#[<span class="ident">inline</span>(<span class="ident">always</span>)]</span>
     <span class="doccomment">/// Get a mutex guard to the mediaproxy service.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">mediaproxy</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">MutexGuard</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">MediaProxyService</span><span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">data</span>.<span class="ident">mediaproxy</span>.<span class="ident">lock</span>()
+        <span class="self">self</span>.<span class="ident">data</span>.<span class="ident">mediaproxy</span>.<span class="ident">lock</span>().<span class="ident">expect</span>(<span class="string">&quot;poisoned&quot;</span>)
     }
 
     <span class="attribute">#[<span class="ident">inline</span>(<span class="ident">always</span>)]</span>
     <span class="doccomment">/// Get a mutex guard to the profile service.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">profile</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">MutexGuard</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">ProfileService</span><span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">data</span>.<span class="ident">profile</span>.<span class="ident">lock</span>()
+        <span class="self">self</span>.<span class="ident">data</span>.<span class="ident">profile</span>.<span class="ident">lock</span>().<span class="ident">expect</span>(<span class="string">&quot;poisoned&quot;</span>)
     }
 
     <span class="attribute">#[<span class="ident">inline</span>(<span class="ident">always</span>)]</span>
     <span class="doccomment">/// Get a mutex guard to the emote service.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">emote</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">MutexGuard</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">EmoteService</span><span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">data</span>.<span class="ident">emote</span>.<span class="ident">lock</span>()
+        <span class="self">self</span>.<span class="ident">data</span>.<span class="ident">emote</span>.<span class="ident">lock</span>().<span class="ident">expect</span>(<span class="string">&quot;poisoned&quot;</span>)
     }
 
     <span class="attribute">#[<span class="ident">inline</span>(<span class="ident">always</span>)]</span>
     <span class="doccomment">/// Get a mutex guard to the batch service.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">batch</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">MutexGuard</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">BatchService</span><span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">data</span>.<span class="ident">batch</span>.<span class="ident">lock</span>()
+        <span class="self">self</span>.<span class="ident">data</span>.<span class="ident">batch</span>.<span class="ident">lock</span>().<span class="ident">expect</span>(<span class="string">&quot;poisoned&quot;</span>)
     }
 
     <span class="doccomment">/// Execute the given request.</span>
@@ -1079,7 +1080,7 @@
 
     <span class="attribute">#[<span class="ident">inline</span>(<span class="ident">always</span>)]</span>
     <span class="kw">fn</span> <span class="ident">auth_status_lock</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">RwLockReadGuard</span><span class="op">&lt;</span>(<span class="ident">AuthStatus</span>, <span class="ident">Bytes</span>)<span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">data</span>.<span class="ident">auth_status</span>.<span class="ident">read</span>()
+        <span class="self">self</span>.<span class="ident">data</span>.<span class="ident">auth_status</span>.<span class="ident">read</span>().<span class="ident">unwrap</span>()
     }
 
     <span class="doccomment">/// Get the current auth status.</span>
@@ -1153,7 +1154,7 @@
 
         <span class="kw">async</span> <span class="kw">move</span> {
             <span class="kw">let</span> <span class="ident">resp</span> <span class="op">=</span> <span class="ident">fut</span>.<span class="kw">await</span><span class="question-mark">?</span>.<span class="ident">into_message</span>().<span class="kw">await</span><span class="question-mark">?</span>;
-            <span class="ident">auth_status_lock</span>.<span class="ident">write</span>().<span class="number">0</span> <span class="op">=</span> <span class="ident">AuthStatus::InProgress</span>(<span class="ident">resp</span>.<span class="ident">auth_id</span>);
+            <span class="ident">auth_status_lock</span>.<span class="ident">write</span>().<span class="ident">expect</span>(<span class="string">&quot;poisoned&quot;</span>).<span class="number">0</span> <span class="op">=</span> <span class="ident">AuthStatus::InProgress</span>(<span class="ident">resp</span>.<span class="ident">auth_id</span>);
             <span class="prelude-val">Ok</span>(())
         }
     }
@@ -1194,7 +1195,8 @@
                 }) <span class="op">=</span> <span class="ident">step</span>.<span class="ident">step</span>
                 {
                     <span class="kw">let</span> <span class="ident">token_bytes</span> <span class="op">=</span> <span class="ident">Bytes::copy_from_slice</span>(<span class="ident">session</span>.<span class="ident">session_token</span>.<span class="ident">as_bytes</span>());
-                    <span class="kw-2">*</span><span class="ident">auth_status_lock</span>.<span class="ident">write</span>() <span class="op">=</span> (<span class="ident">AuthStatus::Complete</span>(<span class="ident">session</span>), <span class="ident">token_bytes</span>);
+                    <span class="kw-2">*</span><span class="ident">auth_status_lock</span>.<span class="ident">write</span>().<span class="ident">expect</span>(<span class="string">&quot;poisoned&quot;</span>) <span class="op">=</span>
+                        (<span class="ident">AuthStatus::Complete</span>(<span class="ident">session</span>), <span class="ident">token_bytes</span>);
                     <span class="prelude-val">None</span>
                 } <span class="kw">else</span> {
                     <span class="prelude-val">Some</span>(<span class="ident">step</span>)
@@ -1319,7 +1321,7 @@
     }
 
     <span class="kw">fn</span> <span class="ident">call</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="kw-2">mut</span> <span class="ident">req</span>: <span class="ident">BoxRequest</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident"><span class="self">Self</span>::Future</span> {
-        <span class="kw">let</span> <span class="ident">guard</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">auth_status</span>.<span class="ident">read</span>();
+        <span class="kw">let</span> <span class="ident">guard</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">auth_status</span>.<span class="ident">read</span>().<span class="ident">expect</span>(<span class="string">&quot;poisoned&quot;</span>);
         <span class="kw">if</span> <span class="ident">guard</span>.<span class="number">0</span>.<span class="ident">is_authenticated</span>() {
             <span class="ident">req</span>.<span class="ident">get_or_insert_header_map</span>().<span class="ident">insert</span>(
                 <span class="ident">http::header::AUTHORIZATION</span>,
