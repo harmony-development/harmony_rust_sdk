@@ -27,7 +27,7 @@ use std::{
 };
 
 use hrpc::{
-    client::transport::{self as client_transport},
+    client::transport as client_transport,
     encode::encode_protobuf_message,
     exports::{
         bytes::{Bytes, BytesMut},
@@ -38,8 +38,8 @@ use hrpc::{
     Response,
 };
 use http::Uri;
-use parking_lot::{Mutex, MutexGuard, RwLock, RwLockReadGuard};
 use reqwest::Client as HttpClient;
+use std::sync::{Mutex, MutexGuard, RwLock, RwLockReadGuard};
 
 #[cfg(feature = "client_web")]
 type GenericClientTransport = client_transport::http::Wasm;
@@ -261,37 +261,37 @@ impl Client {
     #[inline(always)]
     /// Get a mutex guard to the chat service.
     pub fn chat(&self) -> MutexGuard<'_, ChatService> {
-        self.data.chat.lock()
+        self.data.chat.lock().expect("poisoned")
     }
 
     #[inline(always)]
     /// Get a mutex guard to the auth service.
     pub fn auth(&self) -> MutexGuard<'_, AuthService> {
-        self.data.auth.lock()
+        self.data.auth.lock().expect("poisoned")
     }
 
     #[inline(always)]
     /// Get a mutex guard to the mediaproxy service.
     pub fn mediaproxy(&self) -> MutexGuard<'_, MediaProxyService> {
-        self.data.mediaproxy.lock()
+        self.data.mediaproxy.lock().expect("poisoned")
     }
 
     #[inline(always)]
     /// Get a mutex guard to the profile service.
     pub fn profile(&self) -> MutexGuard<'_, ProfileService> {
-        self.data.profile.lock()
+        self.data.profile.lock().expect("poisoned")
     }
 
     #[inline(always)]
     /// Get a mutex guard to the emote service.
     pub fn emote(&self) -> MutexGuard<'_, EmoteService> {
-        self.data.emote.lock()
+        self.data.emote.lock().expect("poisoned")
     }
 
     #[inline(always)]
     /// Get a mutex guard to the batch service.
     pub fn batch(&self) -> MutexGuard<'_, BatchService> {
-        self.data.batch.lock()
+        self.data.batch.lock().expect("poisoned")
     }
 
     /// Execute the given request.
@@ -355,7 +355,7 @@ impl Client {
 
     #[inline(always)]
     fn auth_status_lock(&self) -> RwLockReadGuard<(AuthStatus, Bytes)> {
-        self.data.auth_status.read()
+        self.data.auth_status.read().unwrap()
     }
 
     /// Get the current auth status.
@@ -429,7 +429,7 @@ impl Client {
 
         async move {
             let resp = fut.await?.into_message().await?;
-            auth_status_lock.write().0 = AuthStatus::InProgress(resp.auth_id);
+            auth_status_lock.write().expect("poisoned").0 = AuthStatus::InProgress(resp.auth_id);
             Ok(())
         }
     }
@@ -470,7 +470,8 @@ impl Client {
                 }) = step.step
                 {
                     let token_bytes = Bytes::copy_from_slice(session.session_token.as_bytes());
-                    *auth_status_lock.write() = (AuthStatus::Complete(session), token_bytes);
+                    *auth_status_lock.write().expect("poisoned") =
+                        (AuthStatus::Complete(session), token_bytes);
                     None
                 } else {
                     Some(step)
@@ -595,7 +596,7 @@ where
     }
 
     fn call(&mut self, mut req: BoxRequest) -> Self::Future {
-        let guard = self.auth_status.read();
+        let guard = self.auth_status.read().expect("poisoned");
         if guard.0.is_authenticated() {
             req.get_or_insert_header_map().insert(
                 http::header::AUTHORIZATION,
