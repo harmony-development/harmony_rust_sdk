@@ -3074,6 +3074,19 @@
 <span id="3074">3074</span>
 <span id="3075">3075</span>
 <span id="3076">3076</span>
+<span id="3077">3077</span>
+<span id="3078">3078</span>
+<span id="3079">3079</span>
+<span id="3080">3080</span>
+<span id="3081">3081</span>
+<span id="3082">3082</span>
+<span id="3083">3083</span>
+<span id="3084">3084</span>
+<span id="3085">3085</span>
+<span id="3086">3086</span>
+<span id="3087">3087</span>
+<span id="3088">3088</span>
+<span id="3089">3089</span>
 </pre><pre class="rust"><code><span class="doccomment">/// The kind of a guild.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
 <span class="attribute">#[<span class="ident">harmony_derive::self_builder_with_new</span>]</span>
@@ -3111,7 +3124,7 @@
     <span class="doccomment">/// - Servers should &quot;upgrade&quot; this guild to a &quot;room&quot; guild if another</span>
     <span class="doccomment">/// user joins the guild. A name should be crafted using the algorithm</span>
     <span class="doccomment">/// described below:</span>
-    <span class="doccomment">///   - Get at most 3 members&#39; usernames, by their </span>
+    <span class="doccomment">///   - Get at most 3 members&#39; usernames, by their</span>
     <span class="doccomment">///   - Concat them with &quot;, &quot; as a seperator.</span>
     <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
     <span class="attribute">#[<span class="ident">harmony_derive::self_builder_with_new</span>]</span>
@@ -3164,6 +3177,19 @@
     <span class="doccomment">/// Metadata of the guild.</span>
     <span class="attribute">#[<span class="ident">prost</span>(<span class="ident">message</span>, <span class="ident">optional</span>, <span class="ident">tag</span><span class="op">=</span><span class="string">&quot;5&quot;</span>)]</span>
     <span class="kw">pub</span> <span class="ident">metadata</span>: <span class="ident">::core::option::Option</span><span class="op">&lt;</span><span class="ident"><span class="kw">super</span>::<span class="kw">super</span>::harmonytypes::v1::Metadata</span><span class="op">&gt;</span>,
+}
+<span class="doccomment">/// Object representing a guild with the ID part.</span>
+<span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
+<span class="attribute">#[<span class="ident">harmony_derive::self_builder_with_new</span>]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">rkyv::Archive</span>, <span class="ident">rkyv::Serialize</span>, <span class="ident">rkyv::Deserialize</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">GuildWithId</span> {
+    <span class="doccomment">/// The ID of the guild.</span>
+    <span class="attribute">#[<span class="ident">prost</span>(<span class="ident">uint64</span>, <span class="ident">tag</span><span class="op">=</span><span class="string">&quot;1&quot;</span>)]</span>
+    <span class="kw">pub</span> <span class="ident">guild_id</span>: <span class="ident">u64</span>,
+    <span class="doccomment">/// The guild.</span>
+    <span class="attribute">#[<span class="ident">prost</span>(<span class="ident">message</span>, <span class="ident">optional</span>, <span class="ident">tag</span><span class="op">=</span><span class="string">&quot;2&quot;</span>)]</span>
+    <span class="kw">pub</span> <span class="ident">guild</span>: <span class="ident">::core::option::Option</span><span class="op">&lt;</span><span class="ident">Guild</span><span class="op">&gt;</span>,
 }
 <span class="doccomment">/// Object representing an invite without the ID part.</span>
 <span class="attribute">#[<span class="ident">harmony_derive::impl_call_req</span>(<span class="ident">chat</span>)]</span>
