@@ -82,9 +82,12 @@ fn main() {
     let protocol_path =
         std::env::var("HARMONY_PROTOCOL_PATH").unwrap_or_else(|_| "protocol".to_string());
 
+    let stable_protos_path = format!("{}/stable", protocol_path);
+    let staging_protos_path = format!("{}/staging", protocol_path);
+
     let mut conf = prost_build::Config::new();
     conf.bytes(&[".protocol.batch.v1"]);
-    builder.compile_with_config(conf, &protos, &[protocol_path.as_str()]).expect(
+    builder.compile_with_config(conf, &protos, &[stable_protos_path.as_str(), staging_protos_path.as_str()]).expect(
         "\nProtobuf code generation failed! Are you sure you have `protoc` installed?\nIf so, please also set the PROTOC and PROTOC_INCLUDE as mentioned in the README.\nError",
     );
 
