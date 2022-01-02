@@ -12,7 +12,7 @@ pub use crate::api::rest::*;
 pub async fn about(client: &Client) -> ClientResult<About> {
     let uri = format!("{}_harmony/about", client.homeserver_url());
 
-    let request = client.data.http.post(uri.as_str()).build()?;
+    let request = client.data.http.get(uri.as_str()).build()?;
     #[cfg(debug_assertions)]
     tracing::debug!("Sending HTTP request: {:?}", request);
 
