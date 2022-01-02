@@ -8,6 +8,24 @@ use serde::Deserialize;
 
 pub use crate::api::rest::*;
 
+/// Fetch a client's homeserver's about information.
+pub async fn about(client: &Client) -> ClientResult<About> {
+    let uri = format!("{}_harmony/about", client.homeserver_url());
+
+    let request = client.data.http.post(uri.as_str()).build()?;
+    #[cfg(debug_assertions)]
+    tracing::debug!("Sending HTTP request: {:?}", request);
+
+    let response = client.data.http.execute(request).await?;
+    #[cfg(debug_assertions)]
+    tracing::debug!("Got HTTP response: {:?}", response);
+
+    let response = response.error_for_status()?;
+    let about: About = response.json().await?;
+
+    Ok(about)
+}
+
 /// Uploads a file to the homeserver.
 ///
 /// This endpoint requires authentication.
