@@ -275,7 +275,7 @@
 <span class="kw">pub</span> <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">about</span>(<span class="ident">client</span>: <span class="kw-2">&amp;</span><span class="ident">Client</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">ClientResult</span><span class="op">&lt;</span><span class="ident">About</span><span class="op">&gt;</span> {
     <span class="kw">let</span> <span class="ident">uri</span> <span class="op">=</span> <span class="macro">format!</span>(<span class="string">&quot;{}_harmony/about&quot;</span>, <span class="ident">client</span>.<span class="ident">homeserver_url</span>());
 
-    <span class="kw">let</span> <span class="ident">request</span> <span class="op">=</span> <span class="ident">client</span>.<span class="ident">data</span>.<span class="ident">http</span>.<span class="ident">post</span>(<span class="ident">uri</span>.<span class="ident">as_str</span>()).<span class="ident">build</span>()<span class="question-mark">?</span>;
+    <span class="kw">let</span> <span class="ident">request</span> <span class="op">=</span> <span class="ident">client</span>.<span class="ident">data</span>.<span class="ident">http</span>.<span class="ident">get</span>(<span class="ident">uri</span>.<span class="ident">as_str</span>()).<span class="ident">build</span>()<span class="question-mark">?</span>;
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">debug_assertions</span>)]</span>
     <span class="macro">tracing::debug!</span>(<span class="string">&quot;Sending HTTP request: {:?}&quot;</span>, <span class="ident">request</span>);
 
