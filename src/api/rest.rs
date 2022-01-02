@@ -116,7 +116,7 @@ pub fn extract_file_info_from_download_response<'a>(
 }
 
 /// Struct that implements `serde` `Deserialize` / `Serialize` and can be used for
-/// the [`/_harmony/about`](https://github.com/harmony-development/protocol/blob/main/rest/rest.md#get-_harmonyabout) endpoint.
+/// the [`/_harmony/about`](https://github.com/harmony-development/protocol/blob/main/stable/rest/rest.md#get-_harmonyabout) endpoint.
 #[derive(Debug, Clone, Hash, PartialEq, Eq, Deserialize, Serialize)]
 pub struct About {
     /// the Harmony server software being hosted.
