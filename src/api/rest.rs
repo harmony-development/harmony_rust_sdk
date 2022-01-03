@@ -86,11 +86,11 @@ pub fn extract_file_info_from_download_response<'a>(
     headers: &'a http::HeaderMap,
 ) -> Result<(&'a str, &'a HeaderValue, FileKind), &'static str> {
     let mimetype = headers
-        .get("Content-Type")
+        .get(http::header::CONTENT_TYPE)
         .ok_or("server did not respond with `Content-Type` header")?;
 
     let mut split = headers
-        .get("Content-Disposition")
+        .get(http::header::CONTENT_DISPOSITION)
         .ok_or("server did not respond with `Content-Disposition` header")?
         .to_str()
         .map_err(|_| "server responded with non ASCII content disposition")?
