@@ -18,6 +18,7 @@ use crate::api::{
 };
 use api::{auth::*, chat::EventSource, Hmc, HmcFromStrError};
 use error::*;
+use tracing::Span;
 
 use std::{
     convert::TryFrom,
@@ -28,13 +29,16 @@ use std::{
 
 use hrpc::{
     client::transport as client_transport,
+    common::layer::trace::Trace,
     encode::encode_protobuf_message,
     exports::{
         bytes::{Bytes, BytesMut},
         futures_util::{future::Either, TryFutureExt},
         tower::Service,
     },
+    proto::Error as HrpcError,
     request::BoxRequest,
+    response::BoxResponse,
     Response,
 };
 use http::Uri;
@@ -45,7 +49,12 @@ use std::sync::{Mutex, MutexGuard, RwLock, RwLockReadGuard};
 type GenericClientTransport = client_transport::http::Wasm;
 #[cfg(all(feature = "client_native", not(feature = "client_web")))]
 type GenericClientTransport = client_transport::http::Hyper;
-type GenericClient = AddAuth<GenericClientTransport>;
+type SpanFnPtr = fn(&BoxRequest) -> Span;
+type OnRequestFnPtr = fn(&BoxRequest, &Span);
+type OnSuccessFnPtr = fn(&BoxResponse, &Span);
+type OnErrorFnPtr = fn(&BoxResponse, &Span, &HrpcError);
+type GenericClient =
+    Trace<AddAuth<GenericClientTransport>, SpanFnPtr, OnRequestFnPtr, OnSuccessFnPtr, OnErrorFnPtr>;
 
 type AuthService = crate::api::auth::auth_service_client::AuthServiceClient<GenericClient>;
 type ChatService = crate::api::chat::chat_service_client::ChatServiceClient<GenericClient>;
@@ -97,7 +106,6 @@ impl AuthStatus {
     }
 }
 
-#[derive(Debug)]
 struct ClientData {
     homeserver_url: Uri,
     auth_status: Arc<RwLock<(AuthStatus, Bytes)>>,
@@ -108,6 +116,16 @@ struct ClientData {
     emote: Mutex<EmoteService>,
     batch: Mutex<BatchService>,
     http: HttpClient,
+}
+
+impl Debug for ClientData {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        f.debug_struct("ClientData")
+            .field("homeserver_url", &self.homeserver_url)
+            .field("http", &self.http)
+            .field("auth_status", &self.auth_status)
+            .finish()
+    }
 }
 
 /// Client implementation for Harmony.
@@ -203,6 +221,13 @@ impl Client {
             inner: transport,
             auth_status: auth_status.clone(),
         };
+        let transport = GenericClient::new(
+            transport,
+            |req| tracing::debug_span!("request", endpoint = %req.endpoint(), headers = ?req.header_map()),
+            |_, _| tracing::debug!("processing request"),
+            |_, _| tracing::debug!("request successful"),
+            |_, _, err| tracing::error!("request failed: {}", err),
+        );
         let inner = hrpc::client::Client::new(transport);
 
         let auth = AuthService::new_inner(inner.clone());
