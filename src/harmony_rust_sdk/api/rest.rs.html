@@ -256,11 +256,11 @@
     <span class="ident">headers</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">http::HeaderMap</span>,
 ) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">str</span>, <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">HeaderValue</span>, <span class="ident">FileKind</span>), <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span><span class="op">&gt;</span> {
     <span class="kw">let</span> <span class="ident">mimetype</span> <span class="op">=</span> <span class="ident">headers</span>
-        .<span class="ident">get</span>(<span class="string">&quot;Content-Type&quot;</span>)
+        .<span class="ident">get</span>(<span class="ident">http::header::CONTENT_TYPE</span>)
         .<span class="ident">ok_or</span>(<span class="string">&quot;server did not respond with `Content-Type` header&quot;</span>)<span class="question-mark">?</span>;
 
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">split</span> <span class="op">=</span> <span class="ident">headers</span>
-        .<span class="ident">get</span>(<span class="string">&quot;Content-Disposition&quot;</span>)
+        .<span class="ident">get</span>(<span class="ident">http::header::CONTENT_DISPOSITION</span>)
         .<span class="ident">ok_or</span>(<span class="string">&quot;server did not respond with `Content-Disposition` header&quot;</span>)<span class="question-mark">?</span>
         .<span class="ident">to_str</span>()
         .<span class="ident">map_err</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="string">&quot;server responded with non ASCII content disposition&quot;</span>)<span class="question-mark">?</span>
