@@ -28,7 +28,6 @@ use std::{
 };
 
 use hrpc::{
-    client::transport as client_transport,
     common::layer::trace::Trace,
     encode::encode_protobuf_message,
     exports::{
@@ -45,16 +44,79 @@ use http::Uri;
 use reqwest::Client as HttpClient;
 use std::sync::{Mutex, MutexGuard, RwLock, RwLockReadGuard};
 
-#[cfg(feature = "client_web")]
-type GenericClientTransport = client_transport::http::Wasm;
-#[cfg(all(feature = "client_native", not(feature = "client_web")))]
-type GenericClientTransport = client_transport::http::Hyper;
 type SpanFnPtr = fn(&BoxRequest) -> Span;
 type OnRequestFnPtr = fn(&BoxRequest, &Span);
 type OnSuccessFnPtr = fn(&BoxResponse, &Span);
 type OnErrorFnPtr = fn(&BoxResponse, &Span, &HrpcError);
-type GenericClient =
-    Trace<AddAuth<GenericClientTransport>, SpanFnPtr, OnRequestFnPtr, OnSuccessFnPtr, OnErrorFnPtr>;
+type BaseClient<Transport> =
+    Trace<AddAuth<Transport>, SpanFnPtr, OnRequestFnPtr, OnSuccessFnPtr, OnErrorFnPtr>;
+type SharedAuthStatus = Arc<RwLock<(AuthStatus, Bytes)>>;
+
+fn add_base_layers<Err, Transport>(
+    transport: Transport,
+    auth_status: SharedAuthStatus,
+) -> BaseClient<Transport>
+where
+    Transport: Service<
+        BoxRequest,
+        Response = BoxResponse,
+        Error = hrpc::client::transport::TransportError<Err>,
+    >,
+    Err: std::error::Error + 'static,
+{
+    let transport = AddAuth {
+        inner: transport,
+        auth_status,
+    };
+
+    Trace::new(
+        transport,
+        |req| tracing::debug_span!("request", endpoint = %req.endpoint(), headers = ?req.header_map()),
+        |_, _| tracing::debug!("processing request"),
+        |_, _| tracing::debug!("request successful"),
+        |_, _, err| tracing::error!("request failed: {}", err),
+    )
+}
+
+#[cfg(feature = "client_web")]
+mod transport {
+    use super::*;
+
+    pub(super) type GenericClientTransport = hrpc::client::transport::http::Wasm;
+    pub(super) type GenericClient = BaseClient<GenericClientTransport>;
+
+    pub(super) fn create_client(
+        homeserver_url: Uri,
+        auth_status: SharedAuthStatus,
+    ) -> ClientResult<GenericClient> {
+        let transport = GenericClientTransport::new(homeserver_url)
+            .map_err(|err| ClientError::Internal(InternalClientError::Transport(err)))?;
+        let transport = add_base_layers(transport, auth_status);
+        Ok(transport)
+    }
+}
+
+#[cfg(all(feature = "client_native", not(feature = "client_web")))]
+mod transport {
+    use super::*;
+    use hrpc::client::{layer::backoff::Backoff, transport::http};
+
+    pub(super) type GenericClientTransport = http::Hyper;
+    pub(super) type GenericClient = Backoff<BaseClient<GenericClientTransport>>;
+
+    pub(super) fn create_client(
+        homeserver_url: Uri,
+        auth_status: SharedAuthStatus,
+    ) -> ClientResult<GenericClient> {
+        let transport = GenericClientTransport::new(homeserver_url)
+            .map_err(|err| ClientError::Internal(InternalClientError::Transport(err)))?;
+        let transport = add_base_layers(transport, auth_status);
+        let transport = Backoff::new(transport).clone_extensions_fn(http::clone_http_extensions);
+        Ok(transport)
+    }
+}
+
+use transport::*;
 
 type AuthService = crate::api::auth::auth_service_client::AuthServiceClient<GenericClient>;
 type ChatService = crate::api::chat::chat_service_client::ChatServiceClient<GenericClient>;
@@ -108,7 +170,7 @@ impl AuthStatus {
 
 struct ClientData {
     homeserver_url: Uri,
-    auth_status: Arc<RwLock<(AuthStatus, Bytes)>>,
+    auth_status: SharedAuthStatus,
     chat: Mutex<ChatService>,
     auth: Mutex<AuthService>,
     mediaproxy: Mutex<MediaProxyService>,
@@ -215,19 +277,7 @@ impl Client {
         });
         let auth_status = Arc::new(RwLock::new((session, token_bytes)));
 
-        let transport = GenericClientTransport::new(homeserver_url.clone())
-            .map_err(|err| ClientError::Internal(InternalClientError::Transport(err)))?;
-        let transport = AddAuth {
-            inner: transport,
-            auth_status: auth_status.clone(),
-        };
-        let transport = GenericClient::new(
-            transport,
-            |req| tracing::debug_span!("request", endpoint = %req.endpoint(), headers = ?req.header_map()),
-            |_, _| tracing::debug!("processing request"),
-            |_, _| tracing::debug!("request successful"),
-            |_, _, err| tracing::error!("request failed: {}", err),
-        );
+        let transport = create_client(homeserver_url.clone(), auth_status.clone())?;
         let inner = hrpc::client::Client::new(transport);
 
         let auth = AuthService::new_inner(inner.clone());
@@ -600,7 +650,7 @@ impl Client {
 #[derive(Debug, Clone)]
 pub struct AddAuth<S> {
     inner: S,
-    auth_status: Arc<RwLock<(AuthStatus, Bytes)>>,
+    auth_status: SharedAuthStatus,
 }
 
 impl<S> Service<BoxRequest> for AddAuth<S>
