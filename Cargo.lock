@@ -410,7 +410,7 @@ dependencies = [
 
 [[package]]
 name = "harmony_rust_sdk"
-version = "0.7.0"
+version = "0.8.0"
 dependencies = [
  "ctrlc",
  "derive-new",
