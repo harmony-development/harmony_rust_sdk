@@ -36,7 +36,9 @@ jobs:
         sudo apt update -yy
         sudo apt install -yy --no-install-recommends protobuf-compiler
     - name: Install rust
-      run: rustup default ${{ matrix.rust }} && rustup component add rustfmt clippy
+      run: |
+        rustup default ${{ matrix.rust }} && rustup component add rustfmt clippy
+        rustup target add wasm32-unknown-unknown
 
     - name: Cache rust
       uses: Swatinem/rust-cache@v1
@@ -59,18 +61,18 @@ jobs:
       uses: actions-rs/clippy-check@v1
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
-        args: --all-targets --features client_web
+        args: --target wasm32-unknown-unknown --all-targets --features client_web
         name: "clippy(${{ matrix.rust }}): default + client_web"
 
     - name: Test client_native
       run: RUST_LOG=debug cargo test --all-targets --features client_native
     
     - name: Test client_web
-      run: RUST_LOG=debug cargo test --all-targets --features client_web
+      run: RUST_LOG=debug cargo test --target wasm32-unknown-unknown --all-targets --features client_web
 
     - name: Doc
       if: ${{ matrix.rust == '1.56.1' }}
-      run: cargo doc --no-deps --all-features --verbose
+      run: cargo doc --no-deps --features client_native --verbose
 
     - name: Finalize documentation
       if: ${{ github.ref == 'refs/heads/master' && matrix.rust == '1.56.1' && github.event_name == 'push' }}
