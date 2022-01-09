@@ -61,14 +61,14 @@ jobs:
       uses: actions-rs/clippy-check@v1
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
-        args: --target wasm32-unknown-unknown --all-targets --features client_web
+        args: --target wasm32-unknown-unknown --package harmony_rust_sdk --features client_web
         name: "clippy(${{ matrix.rust }}): default + client_web"
 
     - name: Test client_native
       run: RUST_LOG=debug cargo test --all-targets --features client_native
     
     - name: Test client_web
-      run: RUST_LOG=debug cargo test --target wasm32-unknown-unknown --all-targets --features client_web
+      run: RUST_LOG=debug cargo test --target wasm32-unknown-unknown --package harmony_rust_sdk --features client_web
 
     - name: Doc
       if: ${{ matrix.rust == '1.56.1' }}
