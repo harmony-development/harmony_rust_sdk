@@ -66,9 +66,6 @@ jobs:
 
     - name: Test client_native
       run: RUST_LOG=debug cargo test --all-targets --features client_native
-    
-    - name: Test client_web
-      run: RUST_LOG=debug cargo test --target wasm32-unknown-unknown --package harmony_rust_sdk --features client_web
 
     - name: Doc
       if: ${{ matrix.rust == '1.56.1' }}
