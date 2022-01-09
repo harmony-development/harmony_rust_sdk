@@ -43,6 +43,8 @@ customize the crate to your needs by enabling feature(s) listed below:
   that uses `hyper` and works on native platforms.
   - Enable the `client_web` feature for a lightweight client implementation that
   works on web platforms (WASM).
+  - Enable the `client_backoff` feature to enable request retrying on ratelimited
+  requests.
   - Enable the `gen_client` feature to generate client service code.
   - Enable the `gen_server` feature to generate server service code.
   - (Default) Enable the `gen_chat` feature to generate chat service code.
