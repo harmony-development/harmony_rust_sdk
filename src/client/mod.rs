@@ -28,6 +28,7 @@ use std::{
 };
 
 use hrpc::{
+    client::layer::backoff::Backoff,
     common::layer::trace::Trace,
     encode::encode_protobuf_message,
     exports::{
@@ -48,8 +49,9 @@ type SpanFnPtr = fn(&BoxRequest) -> Span;
 type OnRequestFnPtr = fn(&BoxRequest, &Span);
 type OnSuccessFnPtr = fn(&BoxResponse, &Span);
 type OnErrorFnPtr = fn(&BoxResponse, &Span, &HrpcError);
-type BaseClient<Transport> =
+type TraceClient<Transport> =
     Trace<AddAuth<Transport>, SpanFnPtr, OnRequestFnPtr, OnSuccessFnPtr, OnErrorFnPtr>;
+type BaseClient<Transport> = Backoff<TraceClient<Transport>>;
 type SharedAuthStatus = Arc<RwLock<(AuthStatus, Bytes)>>;
 
 fn add_base_layers<Err, Transport>(
@@ -69,13 +71,16 @@ where
         auth_status,
     };
 
-    Trace::new(
+    let transport = TraceClient::new(
         transport,
         |req| tracing::debug_span!("request", endpoint = %req.endpoint(), headers = ?req.header_map()),
         |_, _| tracing::debug!("processing request"),
         |_, _| tracing::debug!("request successful"),
         |_, _, err| tracing::error!("request failed: {}", err),
-    )
+    );
+
+    Backoff::new(transport)
+        .clone_extensions_fn(hrpc::client::transport::http::clone_http_extensions)
 }
 
 #[cfg(feature = "client_web")]
@@ -102,7 +107,7 @@ mod transport {
     use hrpc::client::{layer::backoff::Backoff, transport::http};
 
     pub(super) type GenericClientTransport = http::Hyper;
-    pub(super) type GenericClient = Backoff<BaseClient<GenericClientTransport>>;
+    pub(super) type GenericClient = BaseClient<GenericClientTransport>;
 
     pub(super) fn create_client(
         homeserver_url: Uri,
@@ -111,7 +116,6 @@ mod transport {
         let transport = GenericClientTransport::new(homeserver_url)
             .map_err(|err| ClientError::Internal(InternalClientError::Transport(err)))?;
         let transport = add_base_layers(transport, auth_status);
-        let transport = Backoff::new(transport).clone_extensions_fn(http::clone_http_extensions);
         Ok(transport)
     }
 }
