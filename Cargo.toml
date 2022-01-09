@@ -79,6 +79,7 @@ _client_common = [
 	"urlencoding",
 	"harmony_derive/client",
 ]
+client_backoff = []
 gen_client = ["hrpc/client", "hrpc-build/client"]
 gen_server = ["hrpc/server", "hrpc-build/server"]
 

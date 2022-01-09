@@ -51,6 +51,9 @@ type OnSuccessFnPtr = fn(&BoxResponse, &Span);
 type OnErrorFnPtr = fn(&BoxResponse, &Span, &HrpcError);
 type TraceClient<Transport> =
     Trace<AddAuth<Transport>, SpanFnPtr, OnRequestFnPtr, OnSuccessFnPtr, OnErrorFnPtr>;
+#[cfg(not(feature = "client_backoff"))]
+type BaseClient<Transport> = TraceClient<Transport>;
+#[cfg(feature = "client_backoff")]
 type BaseClient<Transport> = Backoff<TraceClient<Transport>>;
 type SharedAuthStatus = Arc<RwLock<(AuthStatus, Bytes)>>;
 
@@ -79,8 +82,11 @@ where
         |_, _, err| tracing::error!("request failed: {}", err),
     );
 
-    Backoff::new(transport)
-        .clone_extensions_fn(hrpc::client::transport::http::clone_http_extensions)
+    #[cfg(feature = "client_backoff")]
+    let transport = Backoff::new(transport)
+        .clone_extensions_fn(hrpc::client::transport::http::clone_http_extensions);
+
+    transport
 }
 
 #[cfg(feature = "client_web")]

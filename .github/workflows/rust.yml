@@ -57,12 +57,26 @@ jobs:
         args: --all-targets --features client_native
         name: "clippy(${{ matrix.rust }}): default + client_native"
 
+    - name: Clippy default + client_native + client_backoff features
+      uses: actions-rs/clippy-check@v1
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        args: --all-targets --features client_native,client_backoff
+        name: "clippy(${{ matrix.rust }}): default + client_native + client_backoff"
+
     - name: Clippy default + client_web features
       uses: actions-rs/clippy-check@v1
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         args: --target wasm32-unknown-unknown --package harmony_rust_sdk --features client_web
         name: "clippy(${{ matrix.rust }}): default + client_web"
+
+    - name: Clippy default + client_web + client_backoff features
+      uses: actions-rs/clippy-check@v1
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        args: --target wasm32-unknown-unknown --package harmony_rust_sdk --features client_web,client_backoff
+        name: "clippy(${{ matrix.rust }}): default + client_web + client_backoff"
 
     - name: Test client_native
       run: RUST_LOG=debug cargo test --all-targets --features client_native
