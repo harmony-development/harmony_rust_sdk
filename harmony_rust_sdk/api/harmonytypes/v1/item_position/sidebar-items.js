@@ -1,1 +1,1 @@
-initSidebarItems({"enum":[["ArchivedPosition","An archived [`Position`]"],["Position","The position"],["PositionResolver","The resolver for an archived [`Position`]"]]});
+initSidebarItems({"enum":[["Position","The position"]]});

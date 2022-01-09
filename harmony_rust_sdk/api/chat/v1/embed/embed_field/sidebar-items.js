@@ -1,1 +1,1 @@
-initSidebarItems({"enum":[["ArchivedPresentation","An archived [`Presentation`]"],["Presentation","Type representing how to present an embed field."],["PresentationResolver","The resolver for an archived [`Presentation`]"]]});
+initSidebarItems({"enum":[["Presentation","Type representing how to present an embed field."]]});

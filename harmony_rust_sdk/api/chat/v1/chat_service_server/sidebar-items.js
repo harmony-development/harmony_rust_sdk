@@ -1,1 +1,0 @@
-initSidebarItems({"struct":[["ChatServiceServer","The core of Harmony’s chat operations."]],"trait":[["ChatService","Generated trait containing hRPC methods that should be implemented for use with ChatServiceServer."]]});

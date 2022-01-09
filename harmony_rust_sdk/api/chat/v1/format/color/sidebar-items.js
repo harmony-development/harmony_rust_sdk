@@ -1,1 +1,1 @@
-initSidebarItems({"enum":[["ArchivedKind","An archived [`Kind`]"],["Kind","The kind of colour modification to apply"],["KindResolver","The resolver for an archived [`Kind`]"]]});
+initSidebarItems({"enum":[["Kind","The kind of colour modification to apply"]]});

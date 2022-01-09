@@ -1,1 +1,1 @@
-initSidebarItems({"enum":[["ArchivedField","An archived [`Field`]"],["Field","field: the data for a form field"],["FieldResolver","The resolver for an archived [`Field`]"]]});
+initSidebarItems({"enum":[["Field","field: the data for a form field"]]});

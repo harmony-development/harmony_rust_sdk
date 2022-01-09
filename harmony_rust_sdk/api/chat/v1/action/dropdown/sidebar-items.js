@@ -1,1 +1,1 @@
-initSidebarItems({"struct":[["ArchivedEntry","An archived [`Entry`]"],["Entry","An entry in the dropdown"],["EntryResolver","The resolver for an archived [`Entry`]"]]});
+initSidebarItems({"struct":[["Entry","An entry in the dropdown"]]});

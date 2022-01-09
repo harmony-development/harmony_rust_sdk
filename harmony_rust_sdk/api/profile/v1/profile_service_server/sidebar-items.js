@@ -1,1 +1,0 @@
-initSidebarItems({"struct":[["ProfileServiceServer","Harmony’s Profile service manages the profiles of the users."]],"trait":[["ProfileService","Generated trait containing hRPC methods that should be implemented for use with ProfileServiceServer."]]});

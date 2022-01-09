@@ -1,1 +1,0 @@
-initSidebarItems({"struct":[["VoiceServiceServer","Harmony service for facilitating voice operations using WebRTC."]],"trait":[["VoiceService","Generated trait containing hRPC methods that should be implemented for use with VoiceServiceServer."]]});

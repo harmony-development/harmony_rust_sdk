@@ -1,1 +1,0 @@
-initSidebarItems({"struct":[["BatchServiceServer","Service to batch requests."]],"trait":[["BatchService","Generated trait containing hRPC methods that should be implemented for use with BatchServiceServer."]]});
