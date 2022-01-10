@@ -101,7 +101,8 @@ mod transport {
         auth_status: SharedAuthStatus,
     ) -> ClientResult<GenericClient> {
         let transport = GenericClientTransport::new(homeserver_url)
-            .map_err(|err| ClientError::Internal(InternalClientError::Transport(err)))?;
+            .map_err(|err| ClientError::Internal(InternalClientError::Transport(err)))?
+            .check_spec_version(false);
         let transport = add_base_layers(transport, auth_status);
         Ok(transport)
     }
