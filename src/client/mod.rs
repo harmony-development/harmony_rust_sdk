@@ -693,16 +693,14 @@ where
 
             #[cfg(feature = "client_web")]
             if hrpc::client::transport::is_socket_request(&req) {
-                let ws_protocol_val = format!(
-                    "hrpc{},{}",
-                    hrpc::HRPC_SPEC_VERSION,
-                    std::str::from_utf8(guard.1.as_ref()).expect("auth token must be utf-8")
-                );
-                req.get_or_insert_header_map().insert(
-                    http::header::SEC_WEBSOCKET_PROTOCOL,
-                    unsafe {
-                        http::HeaderValue::from_maybe_shared_unchecked(ws_protocol_val.into_bytes())
-                    },
+                let token = std::str::from_utf8(guard.1.as_ref())
+                    .expect("auth token must be utf-8")
+                    .to_string();
+                req.extensions_mut().insert(
+                    hrpc::client::transport::http::wasm::SocketProtocols::new([
+                        hrpc::common::transport::http::ws_version(),
+                        token,
+                    ]),
                 );
             }
         }
