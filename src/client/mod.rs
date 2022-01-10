@@ -693,13 +693,15 @@ where
 
             #[cfg(feature = "client_web")]
             if hrpc::client::transport::is_socket_request(&req) {
+                use std::borrow::Cow;
+
                 let token = std::str::from_utf8(guard.1.as_ref())
                     .expect("auth token must be utf-8")
                     .to_string();
                 req.extensions_mut().insert(
-                    hrpc::client::transport::http::wasm::SocketProtocols::new([
-                        hrpc::common::transport::http::ws_version(),
-                        token,
+                    hrpc::client::transport::http::wasm::SocketProtocols::new(vec![
+                        Cow::Owned(hrpc::common::transport::http::ws_version()),
+                        Cow::Owned(token),
                     ]),
                 );
             }
