@@ -808,6 +808,7 @@
 <span id="808">808</span>
 <span id="809">809</span>
 <span id="810">810</span>
+<span id="811">811</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Rust client implementation for Harmony, powered by [`hrpc`].</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! See the `examples` directory in the repository on how to use this.</span>
@@ -911,7 +912,8 @@
         <span class="ident">auth_status</span>: <span class="ident">SharedAuthStatus</span>,
     ) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">ClientResult</span><span class="op">&lt;</span><span class="ident">GenericClient</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="ident">transport</span> <span class="op">=</span> <span class="ident">GenericClientTransport::new</span>(<span class="ident">homeserver_url</span>)
-            .<span class="ident">map_err</span>(<span class="op">|</span><span class="ident">err</span><span class="op">|</span> <span class="ident">ClientError::Internal</span>(<span class="ident">InternalClientError::Transport</span>(<span class="ident">err</span>)))<span class="question-mark">?</span>;
+            .<span class="ident">map_err</span>(<span class="op">|</span><span class="ident">err</span><span class="op">|</span> <span class="ident">ClientError::Internal</span>(<span class="ident">InternalClientError::Transport</span>(<span class="ident">err</span>)))<span class="question-mark">?</span>
+            .<span class="ident">check_spec_version</span>(<span class="bool-val">false</span>);
         <span class="kw">let</span> <span class="ident">transport</span> <span class="op">=</span> <span class="ident">add_base_layers</span>(<span class="ident">transport</span>, <span class="ident">auth_status</span>);
         <span class="prelude-val">Ok</span>(<span class="ident">transport</span>)
     }
