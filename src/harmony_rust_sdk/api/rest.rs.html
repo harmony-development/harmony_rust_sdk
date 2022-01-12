@@ -168,6 +168,9 @@
 <span id="168">168</span>
 <span id="169">169</span>
 <span id="170">170</span>
+<span id="171">171</span>
+<span id="172">172</span>
+<span id="173">173</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std</span>::{<span class="ident">convert::TryInto</span>, <span class="ident">error::Error</span> <span class="kw">as</span> <span class="ident">StdError</span>, <span class="ident">str::FromStr</span>};
 
 <span class="kw">use</span> <span class="ident"><span class="kw">super</span>::Hmc</span>;
@@ -252,6 +255,10 @@
     }
 }
 
+<span class="doccomment">/// Extracts file information from a header map.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// Will not fail on missing `Content-Disposition` and instead fallback to</span>
+<span class="doccomment">/// `attachment; filename=unknown`.</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">extract_file_info_from_download_response</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>(
     <span class="ident">headers</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">http::HeaderMap</span>,
 ) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">str</span>, <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">HeaderValue</span>, <span class="ident">FileKind</span>), <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span><span class="op">&gt;</span> {
@@ -261,8 +268,7 @@
 
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">split</span> <span class="op">=</span> <span class="ident">headers</span>
         .<span class="ident">get</span>(<span class="ident">http::header::CONTENT_DISPOSITION</span>)
-        .<span class="ident">ok_or</span>(<span class="string">&quot;server did not respond with `Content-Disposition` header&quot;</span>)<span class="question-mark">?</span>
-        .<span class="ident">to_str</span>()
+        .<span class="ident">map_or</span>(<span class="prelude-val">Ok</span>(<span class="string">&quot;attachment; filename=unknown&quot;</span>), <span class="op">|</span><span class="ident">h</span><span class="op">|</span> <span class="ident">h</span>.<span class="ident">to_str</span>())
         .<span class="ident">map_err</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="string">&quot;server responded with non ASCII content disposition&quot;</span>)<span class="question-mark">?</span>
         .<span class="ident">split</span>(<span class="string">&#39;;&#39;</span>);
     <span class="kw">let</span> <span class="ident">kind</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">split</span>
