@@ -82,6 +82,10 @@ impl From<Hmc> for FileId {
     }
 }
 
+/// Extracts file information from a header map.
+///
+/// Will not fail on missing `Content-Disposition` and instead fallback to
+/// `attachment; filename=unknown`.
 pub fn extract_file_info_from_download_response<'a>(
     headers: &'a http::HeaderMap,
 ) -> Result<(&'a str, &'a HeaderValue, FileKind), &'static str> {
@@ -91,8 +95,7 @@ pub fn extract_file_info_from_download_response<'a>(
 
     let mut split = headers
         .get(http::header::CONTENT_DISPOSITION)
-        .ok_or("server did not respond with `Content-Disposition` header")?
-        .to_str()
+        .map_or(Ok("attachment; filename=unknown"), |h| h.to_str())
         .map_err(|_| "server responded with non ASCII content disposition")?
         .split(';');
     let kind = match split
