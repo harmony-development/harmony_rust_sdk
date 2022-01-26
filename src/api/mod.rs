@@ -97,6 +97,8 @@ pub enum HmcParseError {
     ///
     /// Currently only returned if the URL path contains '/'.
     InvalidId,
+    /// Returned if the URL scheme isn't `hmc`.
+    InvalidScheme,
 }
 
 impl Display for HmcParseError {
@@ -105,6 +107,7 @@ impl Display for HmcParseError {
             HmcParseError::NoServer => write!(f, "Missing a server part in URL"),
             HmcParseError::NoId => write!(f, "Missing an ID part in URL"),
             HmcParseError::InvalidId => write!(f, "Invalid ID in URL"),
+            HmcParseError::InvalidScheme => write!(f, "Invalid scheme in URL, must be 'hmc'"),
         }
     }
 }
@@ -225,9 +228,13 @@ impl TryFrom<Uri> for Hmc {
     type Error = HmcParseError;
 
     fn try_from(value: Uri) -> Result<Self, Self::Error> {
+        if value.scheme_str() != Some("hmc") {
+            return Err(HmcParseError::InvalidScheme);
+        }
+
         if value.host().is_none() {
             return Err(HmcParseError::NoServer);
-        };
+        }
 
         // We trim the first '/' if it exists since it will always be the authority - path seperator
         let path = value.path().trim_start_matches('/');
@@ -250,6 +257,8 @@ mod test {
         "hmc://chat.harmonyapp.io:2289/fdeded13-844b-42e1-b813-34f74f9afdbc/342";
     const NO_SERVER_HMC: &str = "/fdeded13-844b-42e1-b813-34f74f9afdbc";
     const NO_ID_HMC: &str = "hmc://chat.harmonyapp.io:2289";
+    const INVALID_SCHEME_HMC: &str =
+        "https://chat.harmonyapp.io:2289/fdeded13-844b-42e1-b813-34f74f9afdbc";
 
     #[test]
     fn parse_valid_hmc() {
@@ -276,6 +285,14 @@ mod test {
     #[should_panic(expected = "NoId")]
     fn parse_no_id_hmc() {
         if let Err(e) = Hmc::try_from(NO_ID_HMC.parse::<Uri>().unwrap()) {
+            panic!("{:?}", e)
+        }
+    }
+
+    #[test]
+    #[should_panic(expected = "InvalidScheme")]
+    fn parse_invalid_scheme_hmc() {
+        if let Err(e) = Hmc::try_from(INVALID_SCHEME_HMC.parse::<Uri>().unwrap()) {
             panic!("{:?}", e)
         }
     }
