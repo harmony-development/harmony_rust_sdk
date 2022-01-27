@@ -61,6 +61,7 @@ You can customize the crate to your needs by enabling feature(s) listed below:
     - Enable the `gen_emote` feature to generate emote service code.
     - Enable the `gen_profile` feature to generate profile service code.
     - Enable the `gen_batch` feature to generate batch service code.
+    - Enable the `rest` feature to include REST API code.
   - Staging protocols (enable `gen_staging_protocols` for all):
     - Enable the `staging_gen_voice` feature to generate voice service code.
     - Enable the `staging_gen_bots` feature to generate bots service code.

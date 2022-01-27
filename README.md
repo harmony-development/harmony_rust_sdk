@@ -39,7 +39,7 @@ It will log messages to the console whenever someone posts a message.
 - By default, only a bare-bones common API types used in Harmony is generated.
 You can customize the crate to your needs by enabling feature(s) listed below:
   - You can enable `gen_all_protocols` to enable all protocols, stable and staging.
-  - hRPC codegen:
+  - customizing hRPC codegen:
     - Enable the `gen_client` feature to generate client service code for
     enabled protocols.
     - Enable the `gen_server` feature to generate server service code for
@@ -60,6 +60,7 @@ You can customize the crate to your needs by enabling feature(s) listed below:
     - Enable the `gen_emote` feature to generate emote service code.
     - Enable the `gen_profile` feature to generate profile service code.
     - Enable the `gen_batch` feature to generate batch service code.
+    - Enable the `rest` feature to include REST API code.
   - Staging protocols (enable `gen_staging_protocols` for all):
     - Enable the `staging_gen_voice` feature to generate voice service code.
     - Enable the `staging_gen_bots` feature to generate bots service code.
