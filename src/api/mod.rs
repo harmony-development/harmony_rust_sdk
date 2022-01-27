@@ -41,15 +41,6 @@ pub mod mediaproxy {
     pub use v1::*;
 }
 
-/// Voice service API.
-#[cfg(feature = "gen_voice")]
-pub mod voice {
-    pub mod v1 {
-        hrpc::include_proto!("protocol.voice.v1");
-    }
-    pub use v1::*;
-}
-
 /// Sync service API.
 #[cfg(feature = "gen_sync")]
 pub mod sync {
@@ -76,6 +67,24 @@ pub mod emote {
 pub mod batch {
     pub mod v1 {
         hrpc::include_proto!("protocol.batch.v1");
+    }
+    pub use v1::*;
+}
+
+/// Voice service API.
+#[cfg(feature = "staging_gen_voice")]
+pub mod voice {
+    pub mod v1 {
+        hrpc::include_proto!("protocol.voice.v1");
+    }
+    pub use v1::*;
+}
+
+/// Voice service API.
+#[cfg(feature = "staging_gen_bots")]
+pub mod bots {
+    pub mod v1 {
+        hrpc::include_proto!("protocol.bots.v1");
     }
     pub use v1::*;
 }

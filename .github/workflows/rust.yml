@@ -23,7 +23,7 @@ jobs:
   all:
     strategy:
       matrix:
-        rust: ['1.56.1']
+        rust: ['1.58.1', '1.57.0']
     runs-on: ubuntu-latest
     steps:
     - name: Checkout repo
@@ -49,7 +49,28 @@ jobs:
         token: ${{ secrets.GITHUB_TOKEN }}
         args: --all-targets
         name: "clippy(${{ matrix.rust }}): default"
-    
+
+    - name: Clippy stable protocols
+      uses: actions-rs/clippy-check@v1
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        args: --all-targets --features gen_stable_protocols
+        name: "clippy(${{ matrix.rust }}): default"
+
+    - name: Clippy staging protocols
+      uses: actions-rs/clippy-check@v1
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        args: --all-targets --features gen_staging_protocols
+        name: "clippy(${{ matrix.rust }}): default"
+
+    - name: Clippy all protocols
+      uses: actions-rs/clippy-check@v1
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        args: --all-targets --features gen_all_protocols
+        name: "clippy(${{ matrix.rust }}): default"
+
     - name: Clippy default + client_native features
       uses: actions-rs/clippy-check@v1
       with:
@@ -81,19 +102,22 @@ jobs:
     - name: Test client_native
       run: RUST_LOG=debug cargo test --all-targets --features client_native
 
+    - name: Test all protocols
+      run: RUST_LOG=debug cargo test --all-targets --features gen_all_protocols
+
     - name: Doc
-      if: ${{ matrix.rust == '1.56.1' }}
-      run: cargo doc --no-deps --features client_native --verbose
+      if: ${{ matrix.rust == '1.58.1' }}
+      run: cargo doc --no-deps --features client_native,gen_all_protocols --verbose
 
     - name: Finalize documentation
-      if: ${{ github.ref == 'refs/heads/master' && matrix.rust == '1.56.1' && github.event_name == 'push' }}
+      if: ${{ github.ref == 'refs/heads/master' && matrix.rust == '1.58.1' && github.event_name == 'push' }}
       run: |
         CRATE_NAME=$(echo '${{ github.repository }}' | tr '[:upper:]' '[:lower:]' | cut -f2 -d"/")
         echo "<meta http-equiv=\"refresh\" content=\"0; url=${CRATE_NAME/-/_}\">" > target/doc/index.html
         touch target/doc/.nojekyll
 
     - name: Publish docs
-      if: ${{ github.ref == 'refs/heads/master' && matrix.rust == '1.56.1' && github.event_name == 'push' }}
+      if: ${{ github.ref == 'refs/heads/master' && matrix.rust == '1.58.1' && github.event_name == 'push' }}
       uses: peaceiris/actions-gh-pages@v3
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
@@ -101,7 +125,7 @@ jobs:
         publish_branch: gh-pages
 
     - name: Trigger integration testing
-      if: ${{ github.ref == 'refs/heads/master' && matrix.rust == '1.56.1' && github.event_name == 'push' }}
+      if: ${{ github.ref == 'refs/heads/master' && matrix.rust == '1.58.1' && github.event_name == 'push' }}
       uses: peter-evans/repository-dispatch@v1
       with:
         token: ${{ secrets.INTEGRATION_TEST_PAT }}

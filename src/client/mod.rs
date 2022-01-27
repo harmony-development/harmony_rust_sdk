@@ -510,7 +510,9 @@ impl Client {
     /// # }
     /// ```
     pub fn begin_auth(&self) -> impl Future<Output = ClientResult<()>> + Send + 'static {
-        let fut = self.auth().begin_auth(BeginAuthRequest {});
+        let fut = self.auth().begin_auth(BeginAuthRequest {
+            for_guest_token: None,
+        });
         let auth_status_lock = self.data.auth_status.clone();
 
         async move {

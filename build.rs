@@ -1,4 +1,4 @@
-const ALL_SERVICES: [&str; 9] = [
+const ALL_SERVICES: [&str; 10] = [
     "chat",
     "auth",
     "profile",
@@ -8,6 +8,7 @@ const ALL_SERVICES: [&str; 9] = [
     "sync",
     "mediaproxy",
     "batch",
+    "bots",
 ];
 
 fn main() {
@@ -38,9 +39,6 @@ fn main() {
         protos.append(&mut chat_protos);
     }
 
-    #[cfg(feature = "gen_voice")]
-    protos.push("voice/v1/voice.proto");
-
     #[cfg(feature = "gen_sync")]
     protos.push("sync/v1/sync.proto");
 
@@ -52,6 +50,12 @@ fn main() {
 
     #[cfg(feature = "gen_emote")]
     protos.push("emote/v1/emote.proto");
+
+    #[cfg(feature = "staging_gen_voice")]
+    protos.push("voice/v1/voice.proto");
+
+    #[cfg(feature = "staging_gen_bots")]
+    protos.push("bots/v1/bots.proto");
 
     if cfg!(feature = "_client_common") {
         let add_impl_call_req = |builder: hrpc_build::Builder, service: &str| {
