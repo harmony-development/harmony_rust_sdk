@@ -37,25 +37,33 @@ It will log messages to the console whenever someone posts a message.
 
 ## Crate features
 
-- By default, only a bare-bones common API of all services is generated. You can
-customize the crate to your needs by enabling feature(s) listed below:
-  - Enable the `client_native` feature for a lightweight client implementation
-  that uses `hyper` and works on native platforms.
-  - Enable the `client_web` feature for a lightweight client implementation that
-  works on web platforms (WASM).
-  - Enable the `client_backoff` feature to enable request retrying on ratelimited
-  requests.
-  - Enable the `gen_client` feature to generate client service code.
-  - Enable the `gen_server` feature to generate server service code.
-  - (Default) Enable the `gen_chat` feature to generate chat service code.
-  - (Default) Enable the `gen_auth` feature to generate auth service code.
-  - (Default) Enable the `gen_voice` feature to generate voice service code.
-  - (Default) Enable the `gen_mediaproxy` feature to generate media proxy service code.
-  - (Default) Enable the `gen_harmonytypes` feature to generate common Harmony types.
-  - (Default) Enable the `gen_sync` feature to generate sync service code.
-  - (Default) Enable the `gen_emote` feature to generate emote service code.
-  - (Default) Enable the `gen_profile` feature to generate profile service code.
-  - (Default) Enable the `gen_batch` feature to generate batch service code.
+- By default, only a bare-bones common API types used in Harmony is generated.
+You can customize the crate to your needs by enabling feature(s) listed below:
+  - You can enable `gen_all_protocols` to enable all protocols, stable and staging.
+  - customizing hRPC codegen:
+    - Enable the `gen_client` feature to generate client service code for
+    enabled protocols.
+    - Enable the `gen_server` feature to generate server service code for
+    enabled protocols.
+  - Client:
+    - Enable the `client_native` feature for a lightweight client implementation
+    that uses `hyper` and works on native platforms.
+    - Enable the `client_web` feature for a lightweight client implementation that
+    works on web platforms (WASM).
+    - Enable the `client_backoff` feature to enable request retrying on ratelimited
+    requests.
+  - Stable protocols (enable `gen_stable_protocols` for all):
+    - Enable the `gen_chat` feature to generate chat service code.
+    - Enable the `gen_auth` feature to generate auth service code.
+    - Enable the `gen_mediaproxy` feature to generate media proxy service code.
+    - Enable the `gen_harmonytypes` feature to generate common Harmony types.
+    - Enable the `gen_sync` feature to generate sync service code.
+    - Enable the `gen_emote` feature to generate emote service code.
+    - Enable the `gen_profile` feature to generate profile service code.
+    - Enable the `gen_batch` feature to generate batch service code.
+  - Staging protocols (enable `gen_staging_protocols` for all):
+    - Enable the `staging_gen_voice` feature to generate voice service code.
+    - Enable the `staging_gen_bots` feature to generate bots service code.
 
 ## MSRV
 
