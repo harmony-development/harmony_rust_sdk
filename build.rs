@@ -75,6 +75,14 @@ fn main() -> Result<()> {
                     "#[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize)]",
                 )
             });
+            if cfg!(feature = "rkyv_validation") {
+                builder = builder.modify_hrpc_config(|cfg| {
+                    cfg.type_attribute(
+                        format!(".protocol.{}", service),
+                        "#[archive_attr(derive(bytecheck::CheckBytes))]",
+                    )
+                });
+            }
         }
     }
 

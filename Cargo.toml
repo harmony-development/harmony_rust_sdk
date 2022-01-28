@@ -31,9 +31,11 @@ reqwest = { version = "0.11", default-features = false, features = [
 	"multipart",
 ], optional = true }
 tracing = { version = "0.1", optional = true }
-serde = { version = "1.0", features = ["derive"], optional = true }
 tokio = { version = "1.14", features = ["sync"], optional = true }
+
+serde = { version = "1.0", features = ["derive"], optional = true }
 rkyv = { version = "0.7", optional = true }
+bytecheck = { version = "0.6", optional = true }
 
 urlencoding = { version = "2.1", optional = true }
 
@@ -114,6 +116,8 @@ staging_gen_voice = []
 staging_gen_bots = []
 # Enables all staging protocols
 gen_staging_protocols = ["staging_gen_voice", "staging_gen_bots"]
+
+rkyv_validation = ["rkyv/validation", "bytecheck"]
 
 [dev-dependencies]
 tokio = { version = "1.14", features = ["rt", "macros", "fs"] }

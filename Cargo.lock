@@ -422,6 +422,7 @@ dependencies = [
 name = "harmony_rust_sdk"
 version = "0.8.0"
 dependencies = [
+ "bytecheck",
  "ctrlc",
  "derive-new",
  "derive_more",
