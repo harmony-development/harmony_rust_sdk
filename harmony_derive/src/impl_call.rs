@@ -6,7 +6,7 @@ use syn::{parse_macro_input, DeriveInput};
 pub(crate) fn impl_call(input: TokenStream) -> TokenStream {
     let input = input.to_string();
     let mut split = input.split(',').map(str::trim);
-    let service = Ident::new(split.next().unwrap(), Span::call_site());
+    let service = split.next().unwrap();
     let method = Ident::new(split.next().unwrap(), Span::call_site());
     let req = Ident::new(split.next().unwrap(), Span::call_site());
     let resp = Ident::new(split.next().unwrap(), Span::call_site());
@@ -16,13 +16,20 @@ pub(crate) fn impl_call(input: TokenStream) -> TokenStream {
     t.push_str("Service");
 
     let endpoint_path = format!(
-        "/protocol.{}.v1.{}/{}",
+        "/protocol.{}.{}/{}",
         service,
         t,
         req.to_string().trim_end_matches("Request")
     );
 
     let call_with = if cfg!(feature = "client") {
+        let service = {
+            let mut split = service.split('.');
+            Ident::new(
+                split.next().expect("no version in service"),
+                Span::call_site(),
+            )
+        };
         quote! {
             fn call_with(self, client: &crate::client::Client) -> ::hrpc::exports::futures_util::future::BoxFuture<'static, crate::client::error::ClientResult<::hrpc::Response<Self::Response>>> {
                 let fut = client. #service () . #method (self);
@@ -48,12 +55,11 @@ pub(crate) fn impl_call(input: TokenStream) -> TokenStream {
 pub(crate) fn impl_call_action(args: TokenStream, input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input as DeriveInput);
 
-    let service: TokenStream2 = args.into();
     let action = input.ident.to_string();
 
     let method = naive_snake_case(&action);
 
-    let inputt = format!("{}, {}, {}, {}Response", service, method, action, action);
+    let inputt = format!("{}, {}, {}, {}Response", args, method, action, action);
     let stream: TokenStream2 = impl_call(inputt.parse().unwrap()).into();
     (quote! {
         #input
@@ -65,7 +71,7 @@ pub(crate) fn impl_call_action(args: TokenStream, input: TokenStream) -> TokenSt
 pub(crate) fn impl_call_req(args: TokenStream, input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input as DeriveInput);
 
-    let service: TokenStream2 = args.into();
+    let service = args;
     let req = input.ident.to_string();
 
     // HACK: remove this when prost-build gains "removing" type attrs per match

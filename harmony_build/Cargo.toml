@@ -1,0 +1,28 @@
+[package]
+name = "harmony_build"
+version = "0.1.0"
+edition = "2021"
+description = "Library to generate Rust code for the Harmony protocol."
+repository = "https://github.com/harmony-development/harmony_rust_sdk"
+homepage = "https://github.com/harmony-development/harmony_rust_sdk"
+keywords = ["harmony", "protocol", "api", "chat", "client"]
+categories = ["api-bindings"]
+
+[features]
+default = []
+
+# Enable client code generation
+client = ["hrpc-build/client"]
+# Enable server code generation
+server = ["hrpc-build/server"]
+
+# Collect all permissions and write them to a Rust file as constants
+all_permissions = ["regex", "walkdir"]
+
+[dependencies]
+hrpc-build = { version = "0.33", default-features = false }
+prost-build = "0.9"
+
+# Used for generating all_permissions file
+regex = { version = "1", optional = true }
+walkdir = { version = "2", optional = true }

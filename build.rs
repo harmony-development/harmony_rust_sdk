@@ -1,170 +1,72 @@
-const ALL_SERVICES: [&str; 10] = [
-    "chat",
-    "auth",
-    "profile",
-    "emote",
-    "harmonytypes",
-    "voice",
-    "sync",
-    "mediaproxy",
-    "batch",
-    "bots",
-];
+use std::{ops::Not, path::PathBuf};
 
-fn main() {
-    #[allow(unused_mut)]
-    let mut builder = hrpc_build::configure();
+use harmony_build::{Builder, Protocol, Result};
 
-    let mut protos = Vec::with_capacity(12);
+fn main() -> Result<()> {
+    let out_dir = PathBuf::from(
+        std::env::var_os("OUT_DIR")
+            .ok_or("Failed to get OUT_DIR! Something must be horribly wrong.")?,
+    );
 
-    #[cfg(feature = "gen_harmonytypes")]
-    protos.push("harmonytypes/v1/types.proto");
+    let protocol_path = std::env::var_os("HARMONY_PROTOCOL_PATH")
+        .map_or_else(|| PathBuf::from("protocol"), PathBuf::from);
 
-    #[cfg(feature = "gen_auth")]
-    protos.push("auth/v1/auth.proto");
+    #[rustfmt::skip]
+    let stable_svcs = [
+        #[cfg(feature = "gen_harmonytypes")] "harmonytypes.v1",
+        #[cfg(feature = "gen_auth")] "auth.v1",
+        #[cfg(feature = "gen_mediaproxy")] "mediaproxy.v1",
+        #[cfg(feature = "gen_chat")] "chat.v1",
+        #[cfg(feature = "gen_sync")] "sync.v1",
+        #[cfg(feature = "gen_batch")] "batch.v1",
+        #[cfg(feature = "gen_profile")] "profile.v1",
+        #[cfg(feature = "gen_emote")] "emote.v1",
+    ];
 
-    #[cfg(feature = "gen_mediaproxy")]
-    protos.push("mediaproxy/v1/mediaproxy.proto");
+    #[rustfmt::skip]
+    let staging_svcs = [
+        #[cfg(feature = "staging_gen_voice")] "voice.v1",
+        #[cfg(feature = "staging_gen_bots")] "bots.v1",
+    ];
 
-    #[cfg(feature = "gen_chat")]
-    {
-        let mut chat_protos = vec![
-            "chat/v1/chat.proto",
-            "chat/v1/messages.proto",
-            "chat/v1/channels.proto",
-            "chat/v1/guilds.proto",
-            "chat/v1/permissions.proto",
-            "chat/v1/stream.proto",
-        ];
-        protos.append(&mut chat_protos);
-    }
+    let protocol = Protocol::from_path(protocol_path, &stable_svcs, &staging_svcs)?;
 
-    #[cfg(feature = "gen_sync")]
-    protos.push("sync/v1/sync.proto");
-
-    #[cfg(feature = "gen_batch")]
-    protos.push("batch/v1/batch.proto");
-
-    #[cfg(feature = "gen_profile")]
-    protos.push("profile/v1/profile.proto");
-
-    #[cfg(feature = "gen_emote")]
-    protos.push("emote/v1/emote.proto");
-
-    #[cfg(feature = "staging_gen_voice")]
-    protos.push("voice/v1/voice.proto");
-
-    #[cfg(feature = "staging_gen_bots")]
-    protos.push("bots/v1/bots.proto");
+    let mut builder = harmony_build::Builder::new();
 
     if cfg!(feature = "_client_common") {
-        let add_impl_call_req = |builder: hrpc_build::Builder, service: &str| {
-            builder.type_attribute(
-                format!(".protocol.{}.v1", service),
-                format!("#[harmony_derive::impl_call_req({})]", service),
-            )
+        let add_impl_call_req = |builder: Builder, service: &str| {
+            builder.modify_hrpc_config(|cfg| {
+                cfg.type_attribute(
+                    format!(".protocol.{}", service),
+                    format!("#[harmony_derive::impl_call_req({})]", service),
+                )
+            })
         };
-        for service in ALL_SERVICES
-            .iter()
-            .filter(|a| !["harmonytypes", "sync"].contains(a))
-        {
+
+        let for_svcs = stable_svcs
+            .into_iter()
+            .chain(staging_svcs.into_iter())
+            .filter(|svc| matches!(*svc, "harmonytypes.v1" | "sync.v1").not());
+
+        for service in for_svcs {
             builder = add_impl_call_req(builder, service);
         }
     }
 
-    builder = builder.type_attribute(".", "#[harmony_derive::self_builder_with_new]");
-
-    if cfg!(feature = "rkyv") {
-        for service in ALL_SERVICES.iter().filter(|a| "batch".ne(**a)) {
-            builder = builder.type_attribute(
-                format!(".protocol.{}.v1", service),
-                "#[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize)]",
-            );
-        }
+    builder = builder.modify_hrpc_config(|cfg| {
+        cfg.type_attribute(".", "#[harmony_derive::self_builder_with_new]")
+    });
+    builder = builder.modify_prost_config(|mut cfg| {
+        cfg.bytes(&[".protocol.batch.v1"]);
+        cfg
+    });
+    if cfg!(feature = "all_permissions") {
+        builder = builder.write_permissions(true);
     }
 
-    let protocol_path =
-        std::env::var("HARMONY_PROTOCOL_PATH").unwrap_or_else(|_| "protocol".to_string());
-
-    let stable_protos_path = format!("{}/stable", protocol_path);
-    let staging_protos_path = format!("{}/staging", protocol_path);
-
-    let mut conf = prost_build::Config::new();
-    conf.bytes(&[".protocol.batch.v1"]);
-    builder.compile_with_config(conf, &protos, &[stable_protos_path.as_str(), staging_protos_path.as_str()]).expect(
-        "\nProtobuf code generation failed! Are you sure you have `protoc` installed?\nIf so, please also set the PROTOC and PROTOC_INCLUDE as mentioned in the README.\nError",
-    );
-
-    #[cfg(any(feature = "gen_chat", feature = "gen_harmonytypes"))]
-    let out_dir = std::path::PathBuf::from(
-        std::env::var_os("OUT_DIR")
-            .expect("Failed to get OUT_DIR! Something must be horribly wrong."),
-    );
-
-    #[cfg(feature = "gen_chat")]
-    {
-        // Patch chat message event
-        // We patch these because of enum variant size differences, since they will be sent more than any other
-        // event (its a realtime chat platform, so) this should help.
-        let chat_gen_path = out_dir.join("protocol.chat.v1.rs");
-        let chat_gen = std::fs::read_to_string(&chat_gen_path).expect("Failed to read from chat service generated code, are you sure you have correct permissions?");
-        let mut patched_chat_gen = chat_gen.replace(
-            "SentMessage(MessageSent),",
-            "SentMessage(Box<MessageSent>),",
-        );
-        patched_chat_gen = patched_chat_gen.replace(
-            "EditedMessage(MessageUpdated),",
-            "EditedMessage(Box<MessageUpdated>),",
-        );
-        patched_chat_gen = patched_chat_gen.replace(
-            "pub embed: ::core::option::Option<super::Embed>,",
-            "pub embed: ::core::option::Option<Box<super::Embed>>,",
-        );
-        std::fs::write(&chat_gen_path, patched_chat_gen).expect("Failed to read from chat service generated code, are you sure you have correct permissions?");
-        write_permissions_rs(&out_dir);
+    if protocol.protos().is_empty().not() {
+        builder.generate(protocol, out_dir)?;
     }
+
+    Ok(())
 }
-
-fn write_permissions_rs(out_dir: &std::path::Path) {
-    use regex::Regex;
-    use walkdir::WalkDir;
-
-    let r = Regex::new(&format!(r#"option \(harmonytypes.v1.metadata\).requires_permission_node[ {}]+=[ {}]+"(?P<perm>.+)";"#, NEWLINE, NEWLINE)).unwrap();
-
-    let mut perms = String::new();
-
-    let files = WalkDir::new("protocol")
-        .follow_links(true)
-        .into_iter()
-        .filter_map(|e| e.ok());
-
-    for entry in files {
-        let f_name = entry.file_name().to_string_lossy();
-
-        if f_name.ends_with(".proto") {
-            let text = std::fs::read_to_string(entry.path()).unwrap();
-            for m in r.captures_iter(&text).flat_map(|c| c.name("perm")) {
-                let perm = m.as_str();
-                let const_name = perm
-                    .replace(|c| ['.', '-'].contains(&c), "_")
-                    .to_uppercase();
-                let perm_const = format!(
-                    "/// `{}` permission\npub const {}: &str = \"{}\";\n",
-                    perm, const_name, perm
-                );
-                if !perms.contains(&perm_const) {
-                    perms.push_str(&perm_const);
-                }
-            }
-        }
-    }
-
-    let perms_path = out_dir.join("permissions.rs");
-    std::fs::write(perms_path, perms).unwrap();
-}
-
-const NEWLINE: &str = if cfg!(target_os = "windows") {
-    "\r\n"
-} else {
-    "\n"
-};

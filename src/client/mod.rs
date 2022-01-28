@@ -27,8 +27,9 @@ use std::{
     sync::Arc,
 };
 
+#[cfg(feature = "client_backoff")]
+use hrpc::client::layer::backoff::Backoff;
 use hrpc::{
-    client::layer::backoff::Backoff,
     common::layer::trace::Trace,
     encode::encode_protobuf_message,
     exports::{
@@ -111,7 +112,7 @@ mod transport {
 #[cfg(all(feature = "client_native", not(feature = "client_web")))]
 mod transport {
     use super::*;
-    use hrpc::client::{layer::backoff::Backoff, transport::http};
+    use hrpc::client::transport::http;
 
     pub(super) type GenericClientTransport = http::Hyper;
     pub(super) type GenericClient = BaseClient<GenericClientTransport>;

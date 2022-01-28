@@ -9,6 +9,7 @@ pub mod v1 {
     hrpc::include_proto!("protocol.chat.v1");
 
     /// All chat permissions.
+    #[cfg(feature = "all_permissions")]
     pub mod all_permissions {
         #![allow(clippy::unit_arg)]
         hrpc::include_proto!("permissions");
