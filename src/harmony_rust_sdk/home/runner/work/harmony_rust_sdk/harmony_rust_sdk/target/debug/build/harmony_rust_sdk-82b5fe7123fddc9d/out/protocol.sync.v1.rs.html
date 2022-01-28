@@ -1,0 +1,273 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `&#x2F;home&#x2F;runner&#x2F;work&#x2F;harmony_rust_sdk&#x2F;harmony_rust_sdk&#x2F;target&#x2F;debug&#x2F;build&#x2F;harmony_rust_sdk-82b5fe7123fddc9d&#x2F;out&#x2F;protocol.sync.v1.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>protocol.sync.v1.rs - source</title><link rel="stylesheet" type="text/css" href="../../../../../../../../../../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../../../../../../../../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../../../../../../../../../../light.css"  id="themeStyle"><link rel="stylesheet" type="text/css" href="../../../../../../../../../../../../dark.css" disabled ><link rel="stylesheet" type="text/css" href="../../../../../../../../../../../../ayu.css" disabled ><script id="default-settings" ></script><script src="../../../../../../../../../../../../storage.js"></script><script src="../../../../../../../../../../../../crates.js"></script><script defer src="../../../../../../../../../../../../main.js"></script><script defer src="../../../../../../../../../../../../source-script.js"></script><script defer src="../../../../../../../../../../../../source-files.js"></script>
+    <noscript><link rel="stylesheet" href="../../../../../../../../../../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../../../../../../../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../../../../../../../../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../../../../../../../../../../favicon.svg"><style type="text/css">#crate-search{background-image:url("../../../../../../../../../../../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu" role="button">&#9776;</div><a href='../../../../../../../../../../../../harmony_rust_sdk/index.html'><div class='logo-container rust-logo'><img src='../../../../../../../../../../../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu" title="themes"><img width="18" height="18" alt="Pick another theme!" src="../../../../../../../../../../../../brush.svg"></button><div id="theme-choices" role="menu"></div></div><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><button type="button" id="help-button" title="help">?</button><a id="settings-menu" href="../../../../../../../../../../../../settings.html" title="settings"><img width="18" height="18" alt="Change settings" src="../../../../../../../../../../../../wheel.svg"></a></div></form></nav><section id="main" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">  1</span>
+<span id="2">  2</span>
+<span id="3">  3</span>
+<span id="4">  4</span>
+<span id="5">  5</span>
+<span id="6">  6</span>
+<span id="7">  7</span>
+<span id="8">  8</span>
+<span id="9">  9</span>
+<span id="10"> 10</span>
+<span id="11"> 11</span>
+<span id="12"> 12</span>
+<span id="13"> 13</span>
+<span id="14"> 14</span>
+<span id="15"> 15</span>
+<span id="16"> 16</span>
+<span id="17"> 17</span>
+<span id="18"> 18</span>
+<span id="19"> 19</span>
+<span id="20"> 20</span>
+<span id="21"> 21</span>
+<span id="22"> 22</span>
+<span id="23"> 23</span>
+<span id="24"> 24</span>
+<span id="25"> 25</span>
+<span id="26"> 26</span>
+<span id="27"> 27</span>
+<span id="28"> 28</span>
+<span id="29"> 29</span>
+<span id="30"> 30</span>
+<span id="31"> 31</span>
+<span id="32"> 32</span>
+<span id="33"> 33</span>
+<span id="34"> 34</span>
+<span id="35"> 35</span>
+<span id="36"> 36</span>
+<span id="37"> 37</span>
+<span id="38"> 38</span>
+<span id="39"> 39</span>
+<span id="40"> 40</span>
+<span id="41"> 41</span>
+<span id="42"> 42</span>
+<span id="43"> 43</span>
+<span id="44"> 44</span>
+<span id="45"> 45</span>
+<span id="46"> 46</span>
+<span id="47"> 47</span>
+<span id="48"> 48</span>
+<span id="49"> 49</span>
+<span id="50"> 50</span>
+<span id="51"> 51</span>
+<span id="52"> 52</span>
+<span id="53"> 53</span>
+<span id="54"> 54</span>
+<span id="55"> 55</span>
+<span id="56"> 56</span>
+<span id="57"> 57</span>
+<span id="58"> 58</span>
+<span id="59"> 59</span>
+<span id="60"> 60</span>
+<span id="61"> 61</span>
+<span id="62"> 62</span>
+<span id="63"> 63</span>
+<span id="64"> 64</span>
+<span id="65"> 65</span>
+<span id="66"> 66</span>
+<span id="67"> 67</span>
+<span id="68"> 68</span>
+<span id="69"> 69</span>
+<span id="70"> 70</span>
+<span id="71"> 71</span>
+<span id="72"> 72</span>
+<span id="73"> 73</span>
+<span id="74"> 74</span>
+<span id="75"> 75</span>
+<span id="76"> 76</span>
+<span id="77"> 77</span>
+<span id="78"> 78</span>
+<span id="79"> 79</span>
+<span id="80"> 80</span>
+<span id="81"> 81</span>
+<span id="82"> 82</span>
+<span id="83"> 83</span>
+<span id="84"> 84</span>
+<span id="85"> 85</span>
+<span id="86"> 86</span>
+<span id="87"> 87</span>
+<span id="88"> 88</span>
+<span id="89"> 89</span>
+<span id="90"> 90</span>
+<span id="91"> 91</span>
+<span id="92"> 92</span>
+<span id="93"> 93</span>
+<span id="94"> 94</span>
+<span id="95"> 95</span>
+<span id="96"> 96</span>
+<span id="97"> 97</span>
+<span id="98"> 98</span>
+<span id="99"> 99</span>
+<span id="100">100</span>
+<span id="101">101</span>
+<span id="102">102</span>
+<span id="103">103</span>
+<span id="104">104</span>
+<span id="105">105</span>
+<span id="106">106</span>
+<span id="107">107</span>
+<span id="108">108</span>
+<span id="109">109</span>
+<span id="110">110</span>
+<span id="111">111</span>
+<span id="112">112</span>
+<span id="113">113</span>
+<span id="114">114</span>
+<span id="115">115</span>
+<span id="116">116</span>
+<span id="117">117</span>
+<span id="118">118</span>
+<span id="119">119</span>
+<span id="120">120</span>
+<span id="121">121</span>
+<span id="122">122</span>
+<span id="123">123</span>
+<span id="124">124</span>
+<span id="125">125</span>
+<span id="126">126</span>
+<span id="127">127</span>
+<span id="128">128</span>
+<span id="129">129</span>
+<span id="130">130</span>
+<span id="131">131</span>
+<span id="132">132</span>
+<span id="133">133</span>
+<span id="134">134</span>
+<span id="135">135</span>
+</pre><pre class="rust"><code><span class="doccomment">/// Authentication data that will be sent in a `harmonytypes.v1.Token`.</span>
+<span class="attribute">#[<span class="ident">harmony_derive::self_builder_with_new</span>]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">AuthData</span> {
+    <span class="doccomment">/// The server ID of the server initiating the transaction. For Pull,</span>
+    <span class="doccomment">/// this tells the server being connected to which homeservers&#39; events it should send.</span>
+    <span class="doccomment">/// For Push, this tells the server being connected to which homeservers&#39; events it is</span>
+    <span class="doccomment">/// receiving.</span>
+    <span class="attribute">#[<span class="ident">prost</span>(<span class="ident">string</span>, <span class="ident">tag</span><span class="op">=</span><span class="string">&quot;1&quot;</span>)]</span>
+    <span class="kw">pub</span> <span class="ident">server_id</span>: <span class="ident">::prost::alloc::string::String</span>,
+    <span class="doccomment">/// The UTC UNIX time in seconds of when the request is started. Servers should reject</span>
+    <span class="doccomment">/// tokens with a time too far from the current time, at their discretion. A recommended</span>
+    <span class="doccomment">/// variance is 1 minute.</span>
+    <span class="attribute">#[<span class="ident">prost</span>(<span class="ident">uint64</span>, <span class="ident">tag</span><span class="op">=</span><span class="string">&quot;2&quot;</span>)]</span>
+    <span class="kw">pub</span> <span class="ident">time</span>: <span class="ident">u64</span>,
+}
+<span class="doccomment">/// Object representing a postbox event.</span>
+<span class="attribute">#[<span class="ident">harmony_derive::self_builder_with_new</span>]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Event</span> {
+    <span class="doccomment">/// The kind and data of this event.</span>
+    <span class="attribute">#[<span class="ident">prost</span>(<span class="ident">oneof</span><span class="op">=</span><span class="string">&quot;event::Kind&quot;</span>, <span class="ident">tags</span><span class="op">=</span><span class="string">&quot;1, 2, 3, 4&quot;</span>)]</span>
+    <span class="kw">pub</span> <span class="ident">kind</span>: <span class="ident">::core::option::Option</span><span class="op">&lt;</span><span class="ident">event::Kind</span><span class="op">&gt;</span>,
+}
+<span class="doccomment">/// Nested message and enum types in `Event`.</span>
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">event</span> {
+    <span class="doccomment">/// Event sent when a user is removed from a guild.</span>
+    <span class="attribute">#[<span class="ident">harmony_derive::self_builder_with_new</span>]</span>
+    <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
+    <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">UserRemovedFromGuild</span> {
+        <span class="doccomment">/// User ID of the user that was removed.</span>
+        <span class="attribute">#[<span class="ident">prost</span>(<span class="ident">uint64</span>, <span class="ident">tag</span><span class="op">=</span><span class="string">&quot;1&quot;</span>)]</span>
+        <span class="kw">pub</span> <span class="ident">user_id</span>: <span class="ident">u64</span>,
+        <span class="doccomment">/// Guild ID of the guild where the user was.</span>
+        <span class="attribute">#[<span class="ident">prost</span>(<span class="ident">uint64</span>, <span class="ident">tag</span><span class="op">=</span><span class="string">&quot;2&quot;</span>)]</span>
+        <span class="kw">pub</span> <span class="ident">guild_id</span>: <span class="ident">u64</span>,
+    }
+    <span class="doccomment">/// Event sent when a user is added to a guild.</span>
+    <span class="attribute">#[<span class="ident">harmony_derive::self_builder_with_new</span>]</span>
+    <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
+    <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">UserAddedToGuild</span> {
+        <span class="doccomment">/// User ID of the user that was added.</span>
+        <span class="attribute">#[<span class="ident">prost</span>(<span class="ident">uint64</span>, <span class="ident">tag</span><span class="op">=</span><span class="string">&quot;1&quot;</span>)]</span>
+        <span class="kw">pub</span> <span class="ident">user_id</span>: <span class="ident">u64</span>,
+        <span class="doccomment">/// Guild ID of the guild where the user will be.</span>
+        <span class="attribute">#[<span class="ident">prost</span>(<span class="ident">uint64</span>, <span class="ident">tag</span><span class="op">=</span><span class="string">&quot;2&quot;</span>)]</span>
+        <span class="kw">pub</span> <span class="ident">guild_id</span>: <span class="ident">u64</span>,
+    }
+    <span class="doccomment">/// Event sent when a user is invited to a guild.</span>
+    <span class="attribute">#[<span class="ident">harmony_derive::self_builder_with_new</span>]</span>
+    <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
+    <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">UserInvited</span> {
+        <span class="doccomment">/// User ID of the invitee.</span>
+        <span class="attribute">#[<span class="ident">prost</span>(<span class="ident">uint64</span>, <span class="ident">tag</span><span class="op">=</span><span class="string">&quot;1&quot;</span>)]</span>
+        <span class="kw">pub</span> <span class="ident">user_id</span>: <span class="ident">u64</span>,
+        <span class="doccomment">/// User ID of the user that invited.</span>
+        <span class="attribute">#[<span class="ident">prost</span>(<span class="ident">uint64</span>, <span class="ident">tag</span><span class="op">=</span><span class="string">&quot;2&quot;</span>)]</span>
+        <span class="kw">pub</span> <span class="ident">inviter_id</span>: <span class="ident">u64</span>,
+        <span class="doccomment">/// The unique identifier of a user&#39;s invite to another</span>
+        <span class="doccomment">/// user to join a given guild.</span>
+        <span class="attribute">#[<span class="ident">prost</span>(<span class="ident">string</span>, <span class="ident">tag</span><span class="op">=</span><span class="string">&quot;3&quot;</span>)]</span>
+        <span class="kw">pub</span> <span class="ident">invite_id</span>: <span class="ident">::prost::alloc::string::String</span>,
+    }
+    <span class="doccomment">/// Event sent when a user rejects a guild invitation.</span>
+    <span class="attribute">#[<span class="ident">harmony_derive::self_builder_with_new</span>]</span>
+    <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
+    <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">UserRejectedInvite</span> {
+        <span class="doccomment">/// Guild ID of the guild the invitee rejected an invite for.</span>
+        <span class="attribute">#[<span class="ident">prost</span>(<span class="ident">uint64</span>, <span class="ident">tag</span><span class="op">=</span><span class="string">&quot;1&quot;</span>)]</span>
+        <span class="kw">pub</span> <span class="ident">guild_id</span>: <span class="ident">u64</span>,
+        <span class="doccomment">/// User ID of the invitee that rejected the invitation.</span>
+        <span class="attribute">#[<span class="ident">prost</span>(<span class="ident">uint64</span>, <span class="ident">tag</span><span class="op">=</span><span class="string">&quot;2&quot;</span>)]</span>
+        <span class="kw">pub</span> <span class="ident">user_id</span>: <span class="ident">u64</span>,
+        <span class="doccomment">/// Invite ID of the invite that was rejected.</span>
+        <span class="attribute">#[<span class="ident">prost</span>(<span class="ident">string</span>, <span class="ident">tag</span><span class="op">=</span><span class="string">&quot;3&quot;</span>)]</span>
+        <span class="kw">pub</span> <span class="ident">invite_id</span>: <span class="ident">::prost::alloc::string::String</span>,
+    }
+    <span class="doccomment">/// The kind and data of this event.</span>
+    <span class="attribute">#[<span class="ident">harmony_derive::self_builder_with_new</span>]</span>
+    <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Oneof</span>)]</span>
+    <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">Kind</span> {
+        <span class="doccomment">/// User removed from a guild.</span>
+        <span class="attribute">#[<span class="ident">prost</span>(<span class="ident">message</span>, <span class="ident">tag</span><span class="op">=</span><span class="string">&quot;1&quot;</span>)]</span>
+        <span class="ident">UserRemovedFromGuild</span>(<span class="ident">UserRemovedFromGuild</span>),
+        <span class="doccomment">/// User added to a guild.</span>
+        <span class="attribute">#[<span class="ident">prost</span>(<span class="ident">message</span>, <span class="ident">tag</span><span class="op">=</span><span class="string">&quot;2&quot;</span>)]</span>
+        <span class="ident">UserAddedToGuild</span>(<span class="ident">UserAddedToGuild</span>),
+        <span class="doccomment">/// User invited to a guild.</span>
+        <span class="attribute">#[<span class="ident">prost</span>(<span class="ident">message</span>, <span class="ident">tag</span><span class="op">=</span><span class="string">&quot;3&quot;</span>)]</span>
+        <span class="ident">UserInvited</span>(<span class="ident">UserInvited</span>),
+        <span class="doccomment">/// User rejected a guild invitation.</span>
+        <span class="attribute">#[<span class="ident">prost</span>(<span class="ident">message</span>, <span class="ident">tag</span><span class="op">=</span><span class="string">&quot;4&quot;</span>)]</span>
+        <span class="ident">UserRejectedInvite</span>(<span class="ident">UserRejectedInvite</span>),
+    }
+}
+<span class="doccomment">/// Used in `Pull` endpoint.</span>
+<span class="attribute">#[<span class="ident">harmony_derive::self_builder_with_new</span>]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">PullRequest</span> {
+}
+<span class="doccomment">/// Used in `Pull` endpoint.</span>
+<span class="attribute">#[<span class="ident">harmony_derive::self_builder_with_new</span>]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">PullResponse</span> {
+    <span class="doccomment">/// The events that were not processed yet.</span>
+    <span class="attribute">#[<span class="ident">prost</span>(<span class="ident">message</span>, <span class="ident">repeated</span>, <span class="ident">tag</span><span class="op">=</span><span class="string">&quot;1&quot;</span>)]</span>
+    <span class="kw">pub</span> <span class="ident">event_queue</span>: <span class="ident">::prost::alloc::vec::Vec</span><span class="op">&lt;</span><span class="ident">Event</span><span class="op">&gt;</span>,
+}
+<span class="doccomment">/// Used in `Push` endpoint.</span>
+<span class="attribute">#[<span class="ident">harmony_derive::self_builder_with_new</span>]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">PushRequest</span> {
+    <span class="doccomment">/// The event to push to the server.</span>
+    <span class="attribute">#[<span class="ident">prost</span>(<span class="ident">message</span>, <span class="ident">optional</span>, <span class="ident">tag</span><span class="op">=</span><span class="string">&quot;1&quot;</span>)]</span>
+    <span class="kw">pub</span> <span class="ident">event</span>: <span class="ident">::core::option::Option</span><span class="op">&lt;</span><span class="ident">Event</span><span class="op">&gt;</span>,
+}
+<span class="doccomment">/// Used in `Push` endpoint.</span>
+<span class="attribute">#[<span class="ident">harmony_derive::self_builder_with_new</span>]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">PushResponse</span> {
+}
+<span class="doccomment">/// Used in `NotifyNewId` endpoint.</span>
+<span class="attribute">#[<span class="ident">harmony_derive::self_builder_with_new</span>]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">NotifyNewIdRequest</span> {
+    <span class="doccomment">/// The new server ID of the server.</span>
+    <span class="attribute">#[<span class="ident">prost</span>(<span class="ident">string</span>, <span class="ident">tag</span><span class="op">=</span><span class="string">&quot;1&quot;</span>)]</span>
+    <span class="kw">pub</span> <span class="ident">new_server_id</span>: <span class="ident">::prost::alloc::string::String</span>,
+}
+<span class="doccomment">/// Used in `NotifyNewId` endpoint.</span>
+<span class="attribute">#[<span class="ident">harmony_derive::self_builder_with_new</span>]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">::prost::Message</span>)]</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">NotifyNewIdResponse</span> {
+}
+# [<span class="ident">doc</span> <span class="op">=</span> <span class="string">r&quot; Generated client implementations.&quot;</span>] # [<span class="ident">allow</span> (<span class="ident">dead_code</span> , <span class="ident">unused_imports</span>)] <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">postbox_service_client</span> { <span class="kw">use</span> <span class="ident">hrpc</span> :: <span class="ident">client</span> :: <span class="ident">prelude</span> :: <span class="op">*</span> ; # [<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot; # Postbox&quot;</span>] # [<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot;&quot;</span>] # [<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot; The postbox service forms the core of Harmony&#39;s server &lt;-&gt; server communications.&quot;</span>] # [<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot;&quot;</span>] # [<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot; It concerns the transfer of Events between servers, as well as ensuring reliable&quot;</span>] # [<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot; delivery of them.&quot;</span>] # [<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot;&quot;</span>] # [<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot; The semantics of events are documented in the event types. The postbox service&quot;</span>] # [<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot; is solely reliable for reliable pushing and pulling.&quot;</span>] # [<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot;&quot;</span>] # [<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot; ## Server Identification&quot;</span>] # [<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot;&quot;</span>] # [<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot; Servers are identified using their domain, and the port which they serve. This is&quot;</span>] # [<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot; called the \&quot;server ID\&quot;, and must be formatted as `domain:port`. The port is NOT&quot;</span>] # [<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot; optional. Converting this ID to a URL for communicating can simply be done via&quot;</span>] # [<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot; prefixing the ID with a protocol, eg. `https://`.&quot;</span>] # [<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot;&quot;</span>] # [<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot; ## Authorisation&quot;</span>] # [<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot;&quot;</span>] # [<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot; Requests are authorised using a serialized `harmonytypes.v1.Token` in the Authorization HTTP header.&quot;</span>] # [<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot; The `data` field of the token will be a serialized `AuthData` message.&quot;</span>] # [<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot; The private key used to sign is the homeserver&#39;s private key.&quot;</span>] # [<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot;&quot;</span>] # [<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot; ## Events&quot;</span>] # [<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot;&quot;</span>] # [<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot; In this section, we will use sender and recipient to refer to the servers&quot;</span>] # [<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot; sending the events and the server receiving the events respectively.&quot;</span>] # [<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot;&quot;</span>] # [<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot; At PostboxService startup, a sender should first Pull all receivers it had&quot;</span>] # [<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot; federated from before. If a receiver makes a Push to the sender while a Pull&quot;</span>] # [<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot; is going on, the Push should be processed after the Pull is completed.&quot;</span>] # [<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot;&quot;</span>] # [<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot; The sender will attempt to Push to the receiver. If the Push RPC fails more&quot;</span>] # [<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot; than X times (a recommended retry count is 5), the event will be dispatched&quot;</span>] # [<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot; to the sender&#39;s queue for the receiver. Unless the receiver pulls these events,&quot;</span>] # [<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot; all new events should be dispatched to the queue. No new Push RPC should be made&quot;</span>] # [<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot; before the queue is emptied. This ensures that events are always received in the&quot;</span>] # [<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot; right order.&quot;</span>] # [<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot;&quot;</span>] # [<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot; It is recommended that receivers try pulling periodically, for example, every&quot;</span>] # [<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot; 1 minute after the last Push RPC by the sender. This ensures that events are recieved.&quot;</span>] # [<span class="ident">derive</span> (<span class="ident">Debug</span> , <span class="ident">Clone</span>)] <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">PostboxServiceClient</span> <span class="op">&lt;</span> <span class="ident">Inner</span> <span class="op">&gt;</span> { <span class="ident">inner</span> : <span class="ident">Client</span> <span class="op">&lt;</span> <span class="ident">Inner</span> <span class="op">&gt;</span> , } <span class="kw">impl</span> <span class="op">&lt;</span> <span class="ident">Inner</span> , <span class="ident">InnerErr</span> <span class="op">&gt;</span> <span class="ident">PostboxServiceClient</span> <span class="op">&lt;</span> <span class="ident">Inner</span> <span class="op">&gt;</span> <span class="kw">where</span> <span class="ident">Inner</span> : <span class="ident">Service</span> <span class="op">&lt;</span> <span class="ident">BoxRequest</span> , <span class="ident">Response</span> <span class="op">=</span> <span class="ident">BoxResponse</span> , <span class="ident">Error</span> <span class="op">=</span> <span class="ident">TransportError</span> <span class="op">&lt;</span> <span class="ident">InnerErr</span> <span class="op">&gt;</span><span class="op">&gt;</span> <span class="op">+</span> <span class="lifetime">&#39;static</span> , <span class="ident">InnerErr</span> : <span class="lifetime">&#39;static</span> , { # [<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot; Endpoint to pull events.&quot;</span>] <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">pull</span> <span class="op">&lt;</span> <span class="ident">Req</span> <span class="op">&gt;</span> (<span class="op">&amp;</span> <span class="kw-2">mut</span> <span class="self">self</span> , <span class="ident">req</span> : <span class="ident">Req</span>) -&gt; <span class="kw">impl</span> <span class="ident">Future</span> <span class="op">&lt;</span> <span class="ident">Output</span> <span class="op">=</span> <span class="ident">ClientResult</span> <span class="op">&lt;</span> <span class="ident">Response</span> <span class="op">&lt;</span> <span class="kw">super</span> :: <span class="ident">PullResponse</span> <span class="op">&gt;</span> , <span class="ident">InnerErr</span> <span class="op">&gt;</span><span class="op">&gt;</span> <span class="op">+</span> <span class="lifetime">&#39;static</span> <span class="kw">where</span> <span class="ident">Req</span> : <span class="ident">IntoRequest</span> <span class="op">&lt;</span> <span class="kw">super</span> :: <span class="ident">PullRequest</span> <span class="op">&gt;</span> , { <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">req</span> <span class="op">=</span> <span class="ident">req</span> . <span class="ident">into_request</span> () ; <span class="op">*</span> <span class="ident">req</span> . <span class="ident">endpoint_mut</span> () <span class="op">=</span> <span class="ident">Cow</span> :: <span class="ident">Borrowed</span> (<span class="string">&quot;/protocol.sync.v1.PostboxService/Pull&quot;</span>) ; <span class="self">self</span> . <span class="ident">inner</span> . <span class="ident">execute_request</span> (<span class="ident">req</span>) } # [<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot; Endpoint to push events.&quot;</span>] <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">push</span> <span class="op">&lt;</span> <span class="ident">Req</span> <span class="op">&gt;</span> (<span class="op">&amp;</span> <span class="kw-2">mut</span> <span class="self">self</span> , <span class="ident">req</span> : <span class="ident">Req</span>) -&gt; <span class="kw">impl</span> <span class="ident">Future</span> <span class="op">&lt;</span> <span class="ident">Output</span> <span class="op">=</span> <span class="ident">ClientResult</span> <span class="op">&lt;</span> <span class="ident">Response</span> <span class="op">&lt;</span> <span class="kw">super</span> :: <span class="ident">PushResponse</span> <span class="op">&gt;</span> , <span class="ident">InnerErr</span> <span class="op">&gt;</span><span class="op">&gt;</span> <span class="op">+</span> <span class="lifetime">&#39;static</span> <span class="kw">where</span> <span class="ident">Req</span> : <span class="ident">IntoRequest</span> <span class="op">&lt;</span> <span class="kw">super</span> :: <span class="ident">PushRequest</span> <span class="op">&gt;</span> , { <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">req</span> <span class="op">=</span> <span class="ident">req</span> . <span class="ident">into_request</span> () ; <span class="op">*</span> <span class="ident">req</span> . <span class="ident">endpoint_mut</span> () <span class="op">=</span> <span class="ident">Cow</span> :: <span class="ident">Borrowed</span> (<span class="string">&quot;/protocol.sync.v1.PostboxService/Push&quot;</span>) ; <span class="self">self</span> . <span class="ident">inner</span> . <span class="ident">execute_request</span> (<span class="ident">req</span>) } # [<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot; Endpoint to notify a server of a server ID change. It is called by the server&quot;</span>] # [<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot; that had it&#39;s server ID changed for all servers it has federated with.&quot;</span>] <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">notify_new_id</span> <span class="op">&lt;</span> <span class="ident">Req</span> <span class="op">&gt;</span> (<span class="op">&amp;</span> <span class="kw-2">mut</span> <span class="self">self</span> , <span class="ident">req</span> : <span class="ident">Req</span>) -&gt; <span class="kw">impl</span> <span class="ident">Future</span> <span class="op">&lt;</span> <span class="ident">Output</span> <span class="op">=</span> <span class="ident">ClientResult</span> <span class="op">&lt;</span> <span class="ident">Response</span> <span class="op">&lt;</span> <span class="kw">super</span> :: <span class="ident">NotifyNewIdResponse</span> <span class="op">&gt;</span> , <span class="ident">InnerErr</span> <span class="op">&gt;</span><span class="op">&gt;</span> <span class="op">+</span> <span class="lifetime">&#39;static</span> <span class="kw">where</span> <span class="ident">Req</span> : <span class="ident">IntoRequest</span> <span class="op">&lt;</span> <span class="kw">super</span> :: <span class="ident">NotifyNewIdRequest</span> <span class="op">&gt;</span> , { <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">req</span> <span class="op">=</span> <span class="ident">req</span> . <span class="ident">into_request</span> () ; <span class="op">*</span> <span class="ident">req</span> . <span class="ident">endpoint_mut</span> () <span class="op">=</span> <span class="ident">Cow</span> :: <span class="ident">Borrowed</span> (<span class="string">&quot;/protocol.sync.v1.PostboxService/NotifyNewId&quot;</span>) ; <span class="self">self</span> . <span class="ident">inner</span> . <span class="ident">execute_request</span> (<span class="ident">req</span>) } } <span class="kw">impl</span> <span class="op">&lt;</span> <span class="ident">Inner</span> <span class="op">&gt;</span> <span class="ident">PostboxServiceClient</span> <span class="op">&lt;</span> <span class="ident">Inner</span> <span class="op">&gt;</span> { # [<span class="ident">doc</span> <span class="op">=</span> <span class="string">r&quot; Create a new client using the provided transport.&quot;</span>] <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new_transport</span> (<span class="ident">transport</span> : <span class="ident">Inner</span>) -&gt; <span class="self">Self</span> { <span class="self">Self</span> { <span class="ident">inner</span> : <span class="ident">Client</span> :: <span class="ident">new</span> (<span class="ident">transport</span>) } } # [<span class="ident">doc</span> <span class="op">=</span> <span class="string">r&quot; Create a new client using the provided generic client.&quot;</span>] <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new_inner</span> (<span class="ident">client</span> : <span class="ident">Client</span> <span class="op">&lt;</span> <span class="ident">Inner</span> <span class="op">&gt;</span>) -&gt; <span class="self">Self</span> { <span class="self">Self</span> { <span class="ident">inner</span> : <span class="ident">client</span> , } } } }</code></pre></div>
+</section><section id="search" class="content hidden"></section><div id="rustdoc-vars" data-root-path="../../../../../../../../../../../../" data-current-crate="harmony_rust_sdk" data-search-index-js="../../../../../../../../../../../../search-index.js" data-search-js="../../../../../../../../../../../../search.js"></div>
+</body></html>
