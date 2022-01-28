@@ -29,6 +29,11 @@ fn main() -> Result<()> {
         #[cfg(feature = "staging_gen_bots")] "bots.v1",
     ];
 
+    let all_services = stable_svcs
+        .into_iter()
+        .chain(staging_svcs.into_iter())
+        .collect::<Vec<_>>();
+
     let protocol = Protocol::from_path(protocol_path, &stable_svcs, &staging_svcs)?;
 
     let mut builder = harmony_build::Builder::new();
@@ -43,10 +48,9 @@ fn main() -> Result<()> {
             })
         };
 
-        let for_svcs = stable_svcs
-            .into_iter()
-            .chain(staging_svcs.into_iter())
-            .filter(|svc| matches!(*svc, "harmonytypes.v1" | "sync.v1").not());
+        let for_svcs = all_services
+            .iter()
+            .filter(|svc| matches!(**svc, "harmonytypes.v1" | "sync.v1").not());
 
         for service in for_svcs {
             builder = add_impl_call_req(builder, service);
@@ -62,6 +66,16 @@ fn main() -> Result<()> {
     });
     if cfg!(feature = "all_permissions") {
         builder = builder.write_permissions(true);
+    }
+    if cfg!(feature = "rkyv") {
+        for service in all_services.iter().filter(|a| "batch.v1".ne(**a)) {
+            builder = builder.modify_hrpc_config(|cfg| {
+                cfg.type_attribute(
+                    format!(".protocol.{}", service),
+                    "#[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize)]",
+                )
+            });
+        }
     }
 
     if protocol.protos().is_empty().not() {

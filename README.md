@@ -38,7 +38,9 @@ It will log messages to the console whenever someone posts a message.
 
 - By default, only a bare-bones common API types used in Harmony is generated.
 You can customize the crate to your needs by enabling feature(s) listed below:
-  - You can enable `gen_all_protocols` to enable all protocols, stable and staging.
+  - Enable `gen_all_protocols` to enable all protocols, stable and staging.
+  - Enable `rkyv` feature to derive `rkyv::{Archive, Deserialize, Serialize}`
+  for all Harmony API types (except the `batch` service).
   - customizing hRPC codegen:
     - Enable the `gen_client` feature to generate client service code for
     enabled protocols.
