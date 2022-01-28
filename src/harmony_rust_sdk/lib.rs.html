@@ -80,6 +80,8 @@
 <span id="79">79</span>
 <span id="80">80</span>
 <span id="81">81</span>
+<span id="82">82</span>
+<span id="83">83</span>
 </pre><pre class="rust"><code><span class="doccomment">/*!
 ![GitHub Workflow Status](https://img.shields.io/github/workflow/status/yusdacra/harmony_rust_sdk/Rust)
 [![crates.io](https://img.shields.io/crates/v/harmony_rust_sdk)](https://crates.io/crates/harmony_rust_sdk)
@@ -121,7 +123,9 @@ It will log messages to the console whenever someone posts a message.
 
 - By default, only a bare-bones common API types used in Harmony is generated.
 You can customize the crate to your needs by enabling feature(s) listed below:
-  - You can enable `gen_all_protocols` to enable all protocols, stable and staging.
+  - Enable `gen_all_protocols` to enable all protocols, stable and staging.
+  - Enable `rkyv` feature to derive `rkyv::{Archive, Deserialize, Serialize}`
+  for all Harmony API types (except the `batch` service).
   - customizing hRPC codegen:
     - Enable the `gen_client` feature to generate client service code for
     enabled protocols.
