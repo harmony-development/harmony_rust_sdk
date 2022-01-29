@@ -316,35 +316,6 @@ impl Client {
         })
     }
 
-    /// Starts an event loop with the given handler.
-    ///
-    /// All socket errors will be logged with tracing. If the handler
-    /// function returns `Ok(true)` or `Err(err)`, the function will
-    /// return, so if you don't want it to return, return `Ok(false)`.
-    pub async fn event_loop<'a, Fut, Hndlr>(
-        &'a self,
-        subs: Vec<EventSource>,
-        mut handler: Hndlr,
-    ) -> Result<(), ClientError>
-    where
-        Fut: Future<Output = ClientResult<bool>>,
-        Hndlr: FnMut(&'a Client, crate::api::chat::Event) -> Fut + Send + 'a,
-    {
-        let mut sock = self.subscribe_events(subs).await?;
-        loop {
-            match sock.get_event().await {
-                Ok(Some(ev)) => {
-                    let fut = handler(self, ev);
-                    if fut.await? {
-                        return Ok(());
-                    }
-                }
-                Err(err) => tracing::error!("{}", err),
-                _ => std::hint::spin_loop(),
-            }
-        }
-    }
-
     #[inline(always)]
     /// Get a mutex guard to the chat service.
     pub fn chat(&self) -> MutexGuard<'_, ChatService> {
@@ -381,7 +352,8 @@ impl Client {
         self.data.batch.lock().expect("poisoned")
     }
 
-    /// Execute the given request.
+    /// Execute the given request, await the response and return the
+    /// deserialized body type.
     pub fn call<Req>(
         &self,
         request: Req,
@@ -394,7 +366,7 @@ impl Client {
         async move { Ok(fut.await?.into_message().await?) }
     }
 
-    /// Execute the given request, but return a [`hrpc::Response`].
+    /// Execute the given request, return a [`hrpc::Response`].
     pub fn call_response<Req>(
         &self,
         request: Req,
