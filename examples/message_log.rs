@@ -13,7 +13,7 @@ use harmony_rust_sdk::{
         Client,
     },
 };
-
+use tokio::sync::oneshot;
 use tracing::info;
 use tracing_subscriber::EnvFilter;
 
@@ -24,8 +24,6 @@ const HOMESERVER: &str = "https://chat.harmonyapp.io:2289";
 
 const GUILD_ID_FILE: &str = "guild_id";
 
-static DID_CTRLC: AtomicBool = AtomicBool::new(false);
-
 #[tokio::main(flavor = "current_thread")]
 async fn main() -> ClientResult<()> {
     // Init logging
@@ -35,8 +33,13 @@ async fn main() -> ClientResult<()> {
         )
         .init();
 
-    ctrlc::set_handler(|| {
-        DID_CTRLC.store(true, Ordering::Relaxed);
+    // Create channels for ctrl-c shutdown
+    let (exit_tx, exit_rx) = oneshot::channel::<()>();
+
+    ctrlc::set_handler(move || {
+        // we ignore errors, since if the rx is dropped
+        // it means we already exited
+        let _ = exit_tx.send(());
     })
     .expect("Can't set Ctrl-C handler");
 
@@ -95,14 +98,14 @@ async fn main() -> ClientResult<()> {
         .unwrap();
     info!("In guild: {}", guild_id);
 
-    client
-        .clone()
-        .event_loop(
-            vec![EventSource::Guild(guild_id)],
-            move |_, event| async move {
-                if DID_CTRLC.load(Ordering::Relaxed) {
-                    return Ok(true);
-                }
+    let mut socket = client.subscribe_events(false).await?;
+    socket.add_source(EventSource::Guild(guild_id)).await?;
+
+    // Start the main event loop
+    loop {
+        tokio::select! {
+            // Handle events from our socket
+            Some(event) = socket.get_event() => {
                 if let chat::Event::Chat(stream_event::Event::SentMessage(sent_message)) = event {
                     if let Some(message) = sent_message.message {
                         info!("Received new message: {:?}", message);
@@ -116,10 +119,12 @@ async fn main() -> ClientResult<()> {
                         );
                     }
                 }
-                Ok(false)
-            },
-        )
-        .await?;
+            }
+            // We will break from the loop when ctrl-c is pressed
+            _ = &mut exit_rx => break,
+            else => break,
+        }
+    }
 
     // Change our bots status back to offline
     client

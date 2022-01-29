@@ -22,14 +22,8 @@ env variable.
 
 ## Examples
 
-- `echo_bot`: Showcases a simple message echo bot that operates in a guild.
-It will repost messages whenever someone else posts a message.
 - `message_log`: Showcases a simple message log bot that operates in a guild.
 It will log messages to the console whenever someone posts a message.
-- `cmd_bot`: A more complex bot that responds to "commands". The commands are:
-  - r!ping: responds with "Pong! Took X secs."
-  - r!hello: responds with "Hello, username!"
-  - r!uptime: responds with "Been running for X secs."
 - Bot run instructions:
   - Run bots with `GUILD_INVITE=invite cargo run --example example_name`.
   - Make sure the bot has necessary permissions to view channels / send messages etc.
