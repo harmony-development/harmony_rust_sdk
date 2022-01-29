@@ -80,7 +80,7 @@ pub mod voice {
     pub use v1::*;
 }
 
-/// Voice service API.
+/// Bots service API.
 #[cfg(feature = "staging_gen_bots")]
 pub mod bots {
     pub mod v1 {
@@ -307,7 +307,7 @@ mod test {
     }
 }
 
-/// An homeserver identifier containg a domain and a port.
+/// A homeserver identifier containg a domain and a port.
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct HomeserverIdentifier {
     domain: String,
@@ -321,6 +321,18 @@ impl HomeserverIdentifier {
         parts.scheme = Some(Scheme::from_str("https").unwrap());
         parts.authority = Some(format!("{}:{}", self.domain, self.port).parse().unwrap());
         Uri::from_parts(parts).unwrap()
+    }
+
+    /// Get the domain of this homeserver identifier.
+    #[inline(always)]
+    pub fn domain(&self) -> &str {
+        &self.domain
+    }
+
+    /// Get the port of this homeserver identifier.
+    #[inline(always)]
+    pub fn port(&self) -> u16 {
+        self.port
     }
 }
 

@@ -74,10 +74,10 @@ pub async fn upload(
     response.error_for_status().map_err(Into::into)
 }
 
-fn make_download_uri(homeserver_url: &Uri, file_id: impl Into<FileId>) -> String {
+pub fn make_download_uri(homeserver_url: &Uri, file_id: impl AsRef<FileId>) -> String {
     const ENDPOINT: &str = "/_harmony/media/download/";
 
-    match file_id.into() {
+    match file_id.as_ref() {
         FileId::Hmc(hmc) => format!(
             "https://{}:{}{}{}",
             hmc.server(),
@@ -107,7 +107,7 @@ fn make_download_uri(homeserver_url: &Uri, file_id: impl Into<FileId>) -> String
 /// This endpoint does not require authentication.
 /// See [API documentation](https://github.com/harmony-development/protocol/blob/master/rest/rest.md#get-_harmonymediadownloadfile_id).
 pub async fn download(client: &Client, file_id: impl Into<FileId>) -> ClientResult<Response> {
-    let uri = make_download_uri(client.homeserver_url(), file_id);
+    let uri = make_download_uri(client.homeserver_url(), file_id.into());
 
     let request = client.data.http.get(uri.as_str()).build()?;
     #[cfg(debug_assertions)]

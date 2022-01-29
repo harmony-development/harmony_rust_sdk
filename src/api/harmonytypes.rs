@@ -4,7 +4,7 @@ pub mod v1 {
 pub use v1::*;
 
 impl ItemPosition {
-    /// Create a place between two other places.
+    /// Create a place after another place.
     ///
     /// # Example
     /// ```
@@ -24,7 +24,7 @@ impl ItemPosition {
         matches!(self.position(), item_position::Position::After).then(|| self.item_id)
     }
 
-    /// Create a place between two other places.
+    /// Create a place before another place.
     ///
     /// # Example
     /// ```

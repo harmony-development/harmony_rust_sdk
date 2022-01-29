@@ -18,10 +18,28 @@ pub enum FileKind {
 pub enum FileId {
     /// A HMC describing where the file is.
     Hmc(Hmc),
-    /// A plain ID. When you use this for a request, the `Client`s homeserver will be used.
+    /// A plain ID. When you use this in a request, the `Client`s homeserver will be used.
     Id(String),
-    /// An external URL. This MUST be an image according to the protocol.
+    /// An external URL.
     External(Uri),
+}
+
+impl From<Uri> for FileId {
+    fn from(uri: Uri) -> Self {
+        Self::External(uri)
+    }
+}
+
+impl From<Hmc> for FileId {
+    fn from(hmc: Hmc) -> Self {
+        Self::Hmc(hmc)
+    }
+}
+
+impl AsRef<FileId> for FileId {
+    fn as_ref(&self) -> &FileId {
+        self
+    }
 }
 
 impl From<FileId> for String {
@@ -34,7 +52,7 @@ impl From<FileId> for String {
     }
 }
 
-/// Error that maybe produced while parsing a string as a [`FileId`].
+/// Error that may be produced while parsing a string as a [`FileId`].
 #[derive(Debug, Clone, Display)]
 #[display(fmt = "Specified string is not a valid FileId.")]
 pub struct InvalidFileId;
@@ -73,12 +91,6 @@ pub struct FileIds(Vec<FileId>);
 impl From<FileIds> for Vec<String> {
     fn from(o: FileIds) -> Vec<String> {
         o.into_iter().map(|id| id.to_string()).collect()
-    }
-}
-
-impl From<Hmc> for FileId {
-    fn from(hmc: Hmc) -> Self {
-        Self::Hmc(hmc)
     }
 }
 

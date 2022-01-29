@@ -1,3 +1,4 @@
+use derive_more::*;
 use harmony_derive::into_request;
 use std::{
     convert::TryFrom,
@@ -17,6 +18,102 @@ pub mod v1 {
 }
 pub use v1::*;
 
+impl From<String> for FormattedText {
+    fn from(text: String) -> Self {
+        FormattedText::new(text, Vec::new())
+    }
+}
+
+impl SendMessageRequest {
+    /// Set the `content` field of this request to a text content containing
+    /// the passed text.
+    pub fn with_text_content(mut self, text: impl Into<FormattedText>) -> Self {
+        self.content = Some(Content::new(
+            content::Content::TextMessage(content::TextContent::new(text.into().into())).into(),
+        ));
+        self
+    }
+
+    /// Set the `content` field of this request to an attachment content
+    /// containing the passed attachment(s).
+    pub fn with_attachment_content(mut self, files: impl Into<Vec<Attachment>>) -> Self {
+        self.content = Some(Content::new(
+            content::Content::AttachmentMessage(content::AttachmentContent::new(files.into()))
+                .into(),
+        ));
+        self
+    }
+
+    /// Set the `content` field of this request to a photo content containing
+    /// the passed photo(s).
+    pub fn with_photo_content(mut self, photos: impl Into<Vec<Photo>>) -> Self {
+        self.content = Some(Content::new(
+            content::Content::PhotoMessage(content::PhotoContent::new(photos.into())).into(),
+        ));
+        self
+    }
+
+    /// Set the `content` field of this request to a embed content containing
+    /// the passed embed(s).
+    pub fn with_embed_content(mut self, embeds: impl Into<Vec<Embed>>) -> Self {
+        self.content = Some(Content::new(
+            content::Content::EmbedMessage(content::EmbedContent::new(embeds.into())).into(),
+        ));
+        self
+    }
+}
+
+impl Message {
+    /// Shorthand to get the content of this message.
+    pub fn get_content(&self) -> Option<&content::Content> {
+        self.content.as_ref().and_then(|c| c.content.as_ref())
+    }
+
+    /// Shorthand to get the text content of this message.
+    pub fn get_text_content(&self) -> Option<&FormattedText> {
+        self.get_content().and_then(|c| {
+            if let content::Content::TextMessage(text) = c {
+                text.content.as_ref()
+            } else {
+                None
+            }
+        })
+    }
+
+    /// Shorthand to get the photo content of this message.
+    pub fn get_photo_content(&self) -> Option<&[Photo]> {
+        self.get_content().and_then(|c| {
+            if let content::Content::PhotoMessage(photo) = c {
+                Some(photo.photos.as_slice())
+            } else {
+                None
+            }
+        })
+    }
+
+    /// Shorthand to get the attachment content of this message.
+    pub fn get_attachment_content(&self) -> Option<&[Attachment]> {
+        self.get_content().and_then(|c| {
+            if let content::Content::AttachmentMessage(attach) = c {
+                Some(attach.files.as_slice())
+            } else {
+                None
+            }
+        })
+    }
+
+    /// Shorthand to get the embed content of this message.
+    pub fn get_embed_content(&self) -> Option<&[Embed]> {
+        self.get_content().and_then(|c| {
+            if let content::Content::EmbedMessage(embed) = c {
+                Some(embed.embeds.as_slice())
+            } else {
+                None
+            }
+        })
+    }
+}
+
 /// A stream event.
 #[derive(Debug, Clone, PartialEq)]
 pub enum Event {
@@ -26,7 +123,14 @@ pub enum Event {
 }
 
 /// Error returned if the [`StreamEventsResponse`] did not have valid fields.
+///
+/// For example, this could occur if one of the fields expected to be sent were
+/// empty.
+#[derive(Debug, Display)]
+#[display(fmt = "event contains invalid fields")]
 pub struct EventFromResponseError;
+
+impl std::error::Error for EventFromResponseError {}
 
 impl TryFrom<stream_events_response::Event> for Event {
     type Error = EventFromResponseError;
@@ -131,7 +235,8 @@ impl Display for InviteId {
 
 /// Functions for working with color in Harmony API.
 pub mod color {
-    /// Encode an RGB value.
+    /// Encode an RGB value. Expects an array where values are `u8` and
+    /// structured as `[red, green, blue]`.
     pub fn encode_rgb(color: impl Into<[u8; 3]>) -> i32 {
         let color = color.into();
         let mut c = color[0] as i32;
@@ -140,7 +245,7 @@ pub mod color {
         c as i32
     }
 
-    /// Decode an RGB value.
+    /// Decode an RGB value. Returns `[red, green, blue]` where values are `u8`.
     pub fn decode_rgb(color: impl Into<i32>) -> [u8; 3] {
         let color = color.into();
         [
@@ -162,6 +267,22 @@ pub mod color {
         #[test]
         fn decode() {
             assert_eq!(decode_rgb(0), [0, 0, 0]);
+        }
+
+        #[test]
+        fn encode_decode() {
+            let value = [45, 12, 43];
+            let encoded = encode_rgb(value);
+            let decoded = decode_rgb(encoded);
+            assert_eq!(decoded, value);
+        }
+
+        #[test]
+        fn decode_encode() {
+            let value = 727;
+            let decoded = decode_rgb(value);
+            let encoded = encode_rgb(decoded);
+            assert_eq!(encoded, value);
         }
     }
 }
