@@ -211,8 +211,12 @@ pub struct Client {
 impl Client {
     /// Create a new [`Client`] from a homeserver [`Uri`] and an (optional) session.
     ///
-    /// If port is not specified in the URL, this will add the default port `2289` to it.
-    /// If scheme is not specified, this will assume the scheme is `https`.
+    /// - If port is not specified in the URL, this will:
+    ///   1. try to do name resolution according to the protocol,
+    ///   2. if there still isn't a port, add the default port `2289` to it
+    ///
+    /// - If scheme is not specified (or is not `http` or `https`), this will
+    /// assume the scheme is `https`.
     ///
     /// # Example
     /// ```
