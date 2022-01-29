@@ -69,7 +69,6 @@ _client_common = [
 	"gen_client",
 	"reqwest",
 	"tracing",
-	"urlencoding",
 	"harmony_derive/client",
 ]
 # Enable client backoff feature
@@ -81,7 +80,7 @@ gen_client = ["hrpc/client", "harmony_build/client"]
 gen_server = ["hrpc/server", "harmony_build/server"]
 
 # Enable REST API code
-rest = ["serde"]
+rest = ["serde", "urlencoding"]
 
 # Enable generation of an "all permissions" module in `chat`
 all_permissions = ["harmony_build/all_permissions"]
