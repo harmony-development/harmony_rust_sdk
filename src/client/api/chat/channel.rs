@@ -15,7 +15,7 @@ use super::{
 /// means the server should return the latest messages.
 ///
 /// Note that the number of messages returned may be limited by servers.
-#[impl_call_action(chat)]
+#[impl_call_action(chat.v1)]
 #[derive(Debug, new, Clone, self_builder)]
 pub struct GetChannelMessages {
     guild_id: u64,
@@ -45,7 +45,7 @@ impl From<GetChannelMessages> for GetChannelMessagesRequest {
 impl_into_req_from!(GetChannelMessages);
 
 /// Convenience type to create a valid [`CreateChannelRequest`].
-#[impl_call_action(chat)]
+#[impl_call_action(chat.v1)]
 #[into_request("CreateChannelRequest")]
 #[derive(Debug, new, Clone, self_builder)]
 pub struct CreateChannel {
@@ -62,7 +62,7 @@ pub struct CreateChannel {
 }
 
 /// Convenience type to create a valid [`DeleteChannelRequest`].
-#[impl_call_action(chat)]
+#[impl_call_action(chat.v1)]
 #[into_request("DeleteChannelRequest")]
 #[derive(Debug, Clone, new)]
 pub struct DeleteChannel {
@@ -71,7 +71,7 @@ pub struct DeleteChannel {
 }
 
 /// Convenience type to create a valid [`UpdateChannelInformationRequest`].
-#[impl_call_action(chat)]
+#[impl_call_action(chat.v1)]
 #[derive(Debug, Clone, new, self_builder)]
 pub struct UpdateChannelInformation {
     guild_id: u64,
@@ -98,7 +98,7 @@ impl From<UpdateChannelInformation> for UpdateChannelInformationRequest {
 impl_into_req_from!(UpdateChannelInformation);
 
 /// Convenience type to create a valid [`UpdateChannelOrderRequest`].
-#[impl_call_action(chat)]
+#[impl_call_action(chat.v1)]
 #[into_request("UpdateChannelOrderRequest")]
 #[derive(Debug, Clone, new)]
 pub struct UpdateChannelOrder {

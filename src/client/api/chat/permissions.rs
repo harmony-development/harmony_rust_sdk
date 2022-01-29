@@ -7,7 +7,7 @@ pub use crate::api::chat::{
 use super::{harmonytypes::ItemPosition, *};
 
 /// Convenience type to create a valid [`GetPermissionsRequest`].
-#[impl_call_action(chat)]
+#[impl_call_action(chat.v1)]
 #[into_request("GetPermissionsRequest")]
 #[derive(Debug, Clone, new, self_builder)]
 pub struct GetPermissions {
@@ -18,7 +18,7 @@ pub struct GetPermissions {
 }
 
 /// Convenience type to create a valid [`QueryHasPermissionRequest`].
-#[impl_call_action(chat)]
+#[impl_call_action(chat.v1)]
 #[into_request("QueryHasPermissionRequest")]
 #[derive(Debug, Clone, new, self_builder)]
 pub struct QueryHasPermission {
@@ -31,7 +31,7 @@ pub struct QueryHasPermission {
 }
 
 /// Convenience type to create a valid [`SetPermissionsRequest`].
-#[impl_call_action(chat)]
+#[impl_call_action(chat.v1)]
 #[into_request("SetPermissionsRequest")]
 #[derive(Debug, Clone, self_builder, new)]
 pub struct SetPermissions {
@@ -44,7 +44,7 @@ pub struct SetPermissions {
 }
 
 /// Convenience type to create a valid [`AddGuildRoleRequest`].
-#[impl_call_action(chat)]
+#[impl_call_action(chat.v1)]
 #[into_request("AddGuildRoleRequest")]
 #[derive(Debug, Clone, self_builder, new)]
 pub struct AddGuildRole {
@@ -59,7 +59,7 @@ pub struct AddGuildRole {
 }
 
 /// Convenience type to create a valid [`DeleteGuildRoleRequest`].
-#[impl_call_action(chat)]
+#[impl_call_action(chat.v1)]
 #[into_request("DeleteGuildRoleRequest")]
 #[derive(Debug, Clone, new)]
 pub struct DeleteGuildRole {
@@ -69,7 +69,7 @@ pub struct DeleteGuildRole {
 
 // TODO: Make a `RoleUpdate` struct for this
 /// Convenience type to create a valid [`ModifyGuildRoleRequest`].
-#[impl_call_action(chat)]
+#[impl_call_action(chat.v1)]
 #[into_request("ModifyGuildRoleRequest")]
 #[derive(Debug, Clone, new, self_builder)]
 pub struct ModifyGuildRole {
@@ -90,7 +90,7 @@ pub struct ModifyGuildRole {
 }
 
 /// Convenience type to create a valid [`MoveRoleRequest`].
-#[impl_call_action(chat)]
+#[impl_call_action(chat.v1)]
 #[into_request("MoveRoleRequest")]
 #[derive(Debug, Clone, new)]
 pub struct MoveRole {
@@ -100,7 +100,7 @@ pub struct MoveRole {
 }
 
 /// Convenience type to create a valid [`ManageUserRolesRequest`].
-#[impl_call_action(chat)]
+#[impl_call_action(chat.v1)]
 #[into_request("ManageUserRolesRequest")]
 #[derive(Debug, Clone, new, self_builder)]
 pub struct ManageUserRoles {
@@ -113,7 +113,7 @@ pub struct ManageUserRoles {
 }
 
 /// Convenience type to create a valid [`GetUserRolesRequest`].
-#[impl_call_action(chat)]
+#[impl_call_action(chat.v1)]
 #[into_request("GetUserRolesRequest")]
 #[derive(Debug, Clone, new)]
 pub struct GetUserRoles {

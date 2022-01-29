@@ -40,7 +40,7 @@ impl MessageExt for Message {
 }
 
 /// Convenience type to create a valid [`SendMessageRequest`].
-#[impl_call_action(chat)]
+#[impl_call_action(chat.v1)]
 #[into_request("SendMessageRequest")]
 #[derive(new, Debug, Clone, self_builder)]
 pub struct SendMessage {

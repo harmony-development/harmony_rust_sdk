@@ -20,7 +20,7 @@ pub struct PackId {
 }
 
 /// Convenience type to create a valid [`CreateEmotePackRequest`].
-#[impl_call_action(emote)]
+#[impl_call_action(emote.v1)]
 #[into_request("CreateEmotePackRequest")]
 #[derive(Debug, Clone, new)]
 pub struct CreateEmotePack {
@@ -28,7 +28,7 @@ pub struct CreateEmotePack {
 }
 
 /// Convenience type to create a valid [`AddEmoteToPackRequest`].
-#[impl_call_action(emote)]
+#[impl_call_action(emote.v1)]
 #[into_request("AddEmoteToPackRequest")]
 #[derive(Debug, Clone, new)]
 pub struct AddEmoteToPack {
@@ -37,7 +37,7 @@ pub struct AddEmoteToPack {
 }
 
 /// Convenience type to create a valid [`DeleteEmoteFromPackRequest`].
-#[impl_call_action(emote)]
+#[impl_call_action(emote.v1)]
 #[into_request("DeleteEmoteFromPackRequest")]
 #[derive(Debug, Clone, new)]
 pub struct DeleteEmoteFromPack {

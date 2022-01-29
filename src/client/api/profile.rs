@@ -14,7 +14,7 @@ pub struct AppId {
 }
 
 /// Convenience type to create a valid [`UpdateProfileRequest`].
-#[impl_call_action(profile)]
+#[impl_call_action(profile.v1)]
 #[derive(Debug, Clone, Default, new, self_builder)]
 pub struct UpdateProfile {
     #[builder(setter(strip_option))]

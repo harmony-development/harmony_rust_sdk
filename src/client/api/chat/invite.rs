@@ -5,7 +5,7 @@ pub use crate::api::chat::{
 use super::*;
 
 /// Convenience type to create a valid [`CreateInviteRequest`].
-#[impl_call_action(chat)]
+#[impl_call_action(chat.v1)]
 #[into_request("CreateInviteRequest")]
 #[derive(Debug, Clone, new)]
 pub struct CreateInvite {
@@ -15,7 +15,7 @@ pub struct CreateInvite {
 }
 
 /// Convenience type to create a valid [`DeleteInviteRequest`].
-#[impl_call_action(chat)]
+#[impl_call_action(chat.v1)]
 #[into_request("DeleteInviteRequest")]
 #[derive(Debug, Clone, new)]
 pub struct DeleteInvite {
