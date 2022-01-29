@@ -7,29 +7,30 @@ pub(crate) fn impl_call(input: TokenStream) -> TokenStream {
     let input = input.to_string();
     let mut split = input.split(',').map(str::trim);
     let service = split.next().unwrap();
+    let (service_name, service_version) = {
+        let mut split = service.split('.');
+        let service_name = split.next().unwrap();
+        let service_version = split.next().unwrap();
+        (service_name, service_version)
+    };
     let method = Ident::new(split.next().unwrap(), Span::call_site());
     let req = Ident::new(split.next().unwrap(), Span::call_site());
     let resp = Ident::new(split.next().unwrap(), Span::call_site());
-    let mut temp = service.to_string().chars().collect::<Vec<_>>();
+    let mut temp = service_name.to_string().chars().collect::<Vec<_>>();
     temp[0] = temp[0].to_ascii_uppercase();
     let mut t = temp.into_iter().collect::<String>();
     t.push_str("Service");
 
     let endpoint_path = format!(
-        "/protocol.{}.{}/{}",
-        service,
+        "/protocol.{}.{}.{}/{}",
+        service_name,
+        service_version,
         t,
         req.to_string().trim_end_matches("Request")
     );
 
     let call_with = if cfg!(feature = "client") {
-        let service = {
-            let mut split = service.split('.');
-            Ident::new(
-                split.next().expect("no version in service"),
-                Span::call_site(),
-            )
-        };
+        let service = Ident::new(service_name, Span::call_site());
         quote! {
             fn call_with(self, client: &crate::client::Client) -> ::hrpc::exports::futures_util::future::BoxFuture<'static, crate::client::error::ClientResult<::hrpc::Response<Self::Response>>> {
                 let fut = client. #service () . #method (self);
