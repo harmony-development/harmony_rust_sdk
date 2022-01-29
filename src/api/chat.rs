@@ -170,6 +170,9 @@ pub enum EventSource {
     Homeserver,
     /// Subscription to action events.
     Action,
+    /// Subscription to disable auto subscription and remove all current
+    /// subscriptions.
+    Unsubscribe,
 }
 
 impl From<EventSource> for StreamEventsRequest {
@@ -186,6 +189,9 @@ impl From<EventSource> for StreamEventsRequest {
                 }
                 EventSource::Action => stream_events_request::Request::SubscribeToActions(
                     stream_events_request::SubscribeToActions {},
+                ),
+                EventSource::Unsubscribe => stream_events_request::Request::UnsubscribeFromAll(
+                    stream_events_request::UnsubscribeFromAll {},
                 ),
             }),
         }

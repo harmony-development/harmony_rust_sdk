@@ -34,7 +34,7 @@ use hrpc::{
     encode::encode_protobuf_message,
     exports::{
         bytes::{Bytes, BytesMut},
-        futures_util::{future::Either, TryFutureExt},
+        futures_util::{future::Either, FutureExt, TryFutureExt},
         tower::Service,
     },
     proto::Error as HrpcError,
@@ -602,7 +602,11 @@ impl Client {
         }
     }
 
-    /// Subscribe to events coming from specified event sources.
+    /// Subscribe to events.
+    ///
+    /// If `unsubcribe` is `true`, after the socket is connected, an
+    /// [`EventSource::Unsubscribe`] source will be sent to disable automatic
+    /// subscription.
     ///
     /// # Example
     /// ```no_run
@@ -611,14 +615,14 @@ impl Client {
     /// # async fn main() -> error::ClientResult<()> {
     /// # let client = Client::new("chat.harmonyapp.io:2289".parse().unwrap(), None).await?;
     /// // Auth here
-    /// let event_stream = client.subscribe_events(vec![EventSource::Homeserver, EventSource::Action]).await?;
-    /// // Do more auth stuff here
+    /// let event_stream = client.subscribe_events(false).await?;
+    /// // Do more stuff here
     /// # Ok(())
     /// # }
     /// ```
     pub fn subscribe_events(
         &self,
-        subscriptions: Vec<EventSource>,
+        unsubscribe: bool,
     ) -> impl Future<Output = ClientResult<EventsSocket>> + Send + 'static {
         let fut = self.chat().stream_events(());
         async move {
@@ -627,8 +631,12 @@ impl Client {
                 write: EventsWriteSocket { inner: tx },
                 read: EventsReadSocket { inner: rx },
             };
-            for source in subscriptions {
-                socket.add_source(source).await?;
+            if unsubscribe {
+                socket.add_source(EventSource::Unsubscribe).await?;
+                // Try to exhaust events the server already sent
+                // this probably doesn't work well considering the events might
+                // not have even arrived yet...
+                while socket.get_event().now_or_never().is_some() {}
             }
 
             Ok(socket)
