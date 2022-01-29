@@ -646,7 +646,7 @@ impl Client {
 
 /// Auth middleware for [`Client`].
 #[derive(Debug, Clone)]
-struct AddAuth<S> {
+pub struct AddAuth<S> {
     inner: S,
     auth_status: SharedAuthStatus,
 }
