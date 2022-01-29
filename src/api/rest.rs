@@ -24,6 +24,42 @@ pub enum FileId {
     External(Uri),
 }
 
+impl FileId {
+    /// Create a download URL for download a file, from a file ID.
+    ///
+    /// The `homeserver_url` argument is used for [`FileId::Id`] and [`FileId::External`]
+    /// variants, where a homeserver URL is needed for proxying the request through it.
+    ///
+    /// The returned string will always be a valid [`Uri`].
+    pub fn make_download_url(&self, homeserver_url: &Uri) -> String {
+        const ENDPOINT: &str = "/_harmony/media/download/";
+
+        match self {
+            FileId::Hmc(hmc) => format!(
+                "https://{}:{}{}{}",
+                hmc.server(),
+                hmc.port(),
+                ENDPOINT,
+                hmc.id()
+            )
+            .parse()
+            .unwrap(),
+            FileId::Id(id) => format!(
+                "{}{}{}",
+                homeserver_url,
+                ENDPOINT.trim_start_matches('/'),
+                id
+            ),
+            FileId::External(uri) => format!(
+                "{}{}{}",
+                homeserver_url,
+                ENDPOINT.trim_start_matches('/'),
+                urlencoding::encode(uri.to_string().as_str())
+            ),
+        }
+    }
+}
+
 impl From<Uri> for FileId {
     fn from(uri: Uri) -> Self {
         Self::External(uri)
@@ -181,5 +217,59 @@ mod tests {
     fn parse_empty() {
         const EMPTY: &str = "";
         FileId::from_str(EMPTY).expect("file id parse");
+    }
+
+    fn homeserver_uri() -> Uri {
+        Uri::from_static("https://chat.harmonyapp.io:2289")
+    }
+
+    #[test]
+    fn join_upload_path() {
+        // [tag:upload_path_create]
+        assert_eq!(
+            format!("{}_harmony/media/upload", homeserver_uri()),
+            "https://chat.harmonyapp.io:2289/_harmony/media/upload",
+        );
+    }
+
+    #[test]
+    fn make_download_uri_with_id() {
+        let id = "test_id_asdfasdfa";
+        let uri = FileId::Id(id.to_string()).make_download_url(&homeserver_uri());
+        assert_eq!(
+            uri,
+            format!(
+                "https://chat.harmonyapp.io:2289/_harmony/media/download/{}",
+                id
+            ),
+        );
+    }
+
+    #[test]
+    fn make_download_uri_with_hmc() {
+        let id = "test_hmc_asdfasdfa";
+        let hmc = Hmc::new("chat.harmonyapp.io:2289", id).expect("failed to create hmc");
+        let uri = FileId::Hmc(hmc).make_download_url(&homeserver_uri());
+        assert_eq!(
+            uri,
+            format!(
+                "https://chat.harmonyapp.io:2289/_harmony/media/download/{}",
+                id
+            ),
+        );
+    }
+
+    #[test]
+    fn make_download_uri_with_url() {
+        let ext_url_str = "https://cdn.discordapp.com/emojis/849034023640104980.png";
+        let ext_url = Uri::from_static(ext_url_str);
+        let uri = FileId::External(ext_url).make_download_url(&homeserver_uri());
+        assert_eq!(
+            uri,
+            format!(
+                "https://chat.harmonyapp.io:2289/_harmony/media/download/{}",
+                urlencoding::encode(ext_url_str)
+            ),
+        );
     }
 }
