@@ -199,11 +199,18 @@ impl Builder {
 
         self.hrpc_config = self.hrpc_config.out_dir(out_dir);
 
-        self.hrpc_config.compile_with_config(
+        let compile_result = self.hrpc_config.compile_with_config(
             self.prost_config,
             &protocol.protos,
             &protocol.includes,
-        )?;
+        );
+        if let Err(err) = compile_result {
+            eprintln!("protocol path: {:?}", protocol.path());
+            eprintln!("includes paths: {:?}", protocol.includes());
+            eprintln!("protos paths: {:?}", protocol.protos());
+            let _ = list_dir_all(protocol.path().to_path_buf());
+            return Err(Box::new(err));
+        }
 
         #[cfg(feature = "all_permissions")]
         if self.write_all_permissions {
@@ -212,6 +219,22 @@ impl Builder {
 
         Ok(())
     }
+}
+
+fn list_dir_all(path: PathBuf) -> std::io::Result<()> {
+    use std::fs;
+
+    let dir = fs::read_dir(path)?;
+    for entry in dir {
+        let entry = entry?;
+        let ty = entry.file_type()?;
+        if ty.is_dir() {
+            list_dir_all(entry.path())?;
+        } else {
+            eprintln!("{:?}", entry.path());
+        }
+    }
+    Ok(())
 }
 
 /// Writes all permissions collected from the given protocol path to `out_dir`.
