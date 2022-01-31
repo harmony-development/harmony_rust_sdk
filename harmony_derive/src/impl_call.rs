@@ -18,6 +18,9 @@ pub(crate) fn impl_call(input: TokenStream) -> TokenStream {
     let resp = Ident::new(split.next().unwrap(), Span::call_site());
     let mut temp = service_name.to_string().chars().collect::<Vec<_>>();
     temp[0] = temp[0].to_ascii_uppercase();
+    if service_name == "mediaproxy" {
+        temp[5] = temp[5].to_ascii_uppercase();
+    }
     let mut t = temp.into_iter().collect::<String>();
     t.push_str("Service");
 
