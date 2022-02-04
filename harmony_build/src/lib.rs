@@ -1,3 +1,4 @@
+#![deny(missing_docs)]
 //! This crate helps you compile the Harmony protocol into Rust code.
 //!
 //! Note that you will need to include `prost` in your crate dependencies
@@ -9,7 +10,9 @@ use std::path::{Path, PathBuf};
 use hrpc_build::Builder as HrpcConfig;
 use prost_build::Config as ProstConfig;
 
+/// A boxed object that implements [`std::error::Error`].
 pub type BoxError = Box<dyn std::error::Error>;
+/// Shorthand for `Result<T, BoxError>`.
 pub type Result<T> = std::result::Result<T, BoxError>;
 
 /// Contains paths for protocol includes and protos to compile.
@@ -135,6 +138,7 @@ impl Protocol {
     }
 }
 
+/// Type containing configuration for building a [`Protocol`].
 #[derive(Debug)]
 pub struct Builder {
     prost_config: ProstConfig,
