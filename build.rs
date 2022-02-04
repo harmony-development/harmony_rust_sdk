@@ -67,6 +67,16 @@ fn main() -> Result<()> {
     if cfg!(feature = "all_permissions") {
         builder = builder.write_permissions(true);
     }
+    if cfg!(feature = "valuable") {
+        for service in all_services.iter().filter(|a| "batch.v1".ne(**a)) {
+            builder = builder.modify_hrpc_config(|cfg| {
+                cfg.type_attribute(
+                    format!(".protocol.{}", service),
+                    "#[derive(valuable::Valuable)]",
+                )
+            });
+        }
+    }
     if cfg!(feature = "serde_derive") {
         for service in all_services.iter().filter(|a| "batch.v1".ne(**a)) {
             builder = builder.modify_hrpc_config(|cfg| {
