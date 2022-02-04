@@ -12,11 +12,9 @@ pub async fn about(client: &Client) -> ClientResult<About> {
     let uri = format!("{}_harmony/about", client.homeserver_url());
 
     let request = client.data.http.get(uri.as_str()).build()?;
-    #[cfg(debug_assertions)]
     tracing::debug!("Sending HTTP request: {:?}", request);
 
     let response = client.data.http.execute(request).await?;
-    #[cfg(debug_assertions)]
     tracing::debug!("Got HTTP response: {:?}", response);
 
     let response = response.error_for_status()?;
@@ -62,11 +60,9 @@ pub async fn upload(
             http::HeaderValue::from_maybe_shared(token_bytes).expect("auth token must be UTF-8"),
         )
         .build()?;
-    #[cfg(debug_assertions)]
     tracing::debug!("Sending HTTP request: {:?}", request);
 
     let response = client.data.http.execute(request).await?;
-    #[cfg(debug_assertions)]
     tracing::debug!("Got HTTP response: {:?}", response);
 
     response.error_for_status().map_err(Into::into)
@@ -80,11 +76,9 @@ pub async fn download(client: &Client, file_id: impl Into<FileId>) -> ClientResu
     let uri = file_id.into().make_download_url(client.homeserver_url());
 
     let request = client.data.http.get(uri.as_str()).build()?;
-    #[cfg(debug_assertions)]
     tracing::debug!("Sending HTTP request: {:?}", request);
 
     let response = client.data.http.execute(request).await?;
-    #[cfg(debug_assertions)]
     tracing::debug!("Got HTTP response: {:?}", response);
 
     response.error_for_status().map_err(Into::into)
