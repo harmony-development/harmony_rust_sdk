@@ -64,8 +64,8 @@ impl Protocol {
         let mut process_svcs = |svcs: &[S], include: &Path| {
             for service in svcs {
                 let mut split = service.as_ref().split('.');
-                let svc_name = split.next().expect("expected service name");
-                let svc_version = split.next().expect("expected version");
+                let svc_name = split.next().ok_or("expected service name")?;
+                let svc_version = split.next().ok_or("expected version")?;
 
                 let svc_dir = include.join(svc_name).join(svc_version);
                 for res in std::fs::read_dir(svc_dir)? {
