@@ -673,9 +673,8 @@ where
         if guard.0.is_authenticated() {
             req.get_or_insert_header_map().insert(
                 http::header::AUTHORIZATION,
-                // This is safe on the assumption that servers will never send session tokens
-                // with invalid-byte(s). If they do, they aren't respecting the protocol
-                unsafe { http::HeaderValue::from_maybe_shared_unchecked(guard.1.clone()) },
+                http::HeaderValue::from_maybe_shared(guard.1.clone())
+                    .expect("auth token must be UTF-8"),
             );
 
             #[cfg(feature = "client_web")]
@@ -683,7 +682,7 @@ where
                 use std::borrow::Cow;
 
                 let token = std::str::from_utf8(guard.1.as_ref())
-                    .expect("auth token must be utf-8")
+                    .expect("auth token must be UTF-8")
                     .to_string();
                 req.extensions_mut().insert(
                     hrpc::client::transport::http::wasm::SocketProtocols::new(vec![

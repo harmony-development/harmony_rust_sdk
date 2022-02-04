@@ -1,4 +1,4 @@
-#![deny(missing_docs)]
+#![deny(missing_docs, unsafe_code)]
 //! This crate helps you compile the Harmony protocol into Rust code.
 //!
 //! Note that you will need to include `prost` in your crate dependencies

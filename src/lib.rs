@@ -1,3 +1,4 @@
+#![deny(missing_docs, unsafe_code)]
 /*!
 ![GitHub Workflow Status](https://img.shields.io/github/workflow/status/yusdacra/harmony_rust_sdk/Rust)
 [![crates.io](https://img.shields.io/crates/v/harmony_rust_sdk)](https://crates.io/crates/harmony_rust_sdk)

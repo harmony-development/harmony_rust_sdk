@@ -57,11 +57,10 @@ pub async fn upload(
         .http
         .post(uri.as_str())
         .multipart(form)
-        .header(http::header::AUTHORIZATION, unsafe {
-            // This is safe on the assumption that servers will never send session tokens
-            // with invalid-byte(s). If they do, they aren't respecting the protocol
-            http::HeaderValue::from_maybe_shared_unchecked(token_bytes)
-        })
+        .header(
+            http::header::AUTHORIZATION,
+            http::HeaderValue::from_maybe_shared(token_bytes).expect("auth token must be UTF-8"),
+        )
         .build()?;
     #[cfg(debug_assertions)]
     tracing::debug!("Sending HTTP request: {:?}", request);
