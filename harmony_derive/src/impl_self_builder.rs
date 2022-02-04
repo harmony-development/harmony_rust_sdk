@@ -44,8 +44,9 @@ pub(crate) fn self_builder(input: &DeriveInput, config: Config) -> TokenStream {
         })
         .into()
     } else {
+        let doc_msg = format!("Builder trait for {}.", name);
         (quote! {
-            /// Builder trait for #name.
+            #[doc = #doc_msg]
             pub trait #trait_name {
                 #(
                     #signs
