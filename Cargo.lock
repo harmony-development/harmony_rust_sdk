@@ -423,7 +423,6 @@ name = "harmony_rust_sdk"
 version = "0.8.0"
 dependencies = [
  "bytecheck",
- "ctrlc",
  "derive-new",
  "derive_more",
  "harmony_build",
@@ -436,7 +435,6 @@ dependencies = [
  "serde",
  "tokio",
  "tracing",
- "tracing-subscriber",
  "urlencoding",
  "valuable",
 ]
@@ -700,6 +698,16 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "5aa361d4faea93603064a027415f07bd8e1d5c88c9fbf68bf56a285428fd79ce"
 dependencies = [
  "autocfg",
+]
+
+[[package]]
+name = "message_log"
+version = "0.1.0"
+dependencies = [
+ "ctrlc",
+ "harmony_rust_sdk",
+ "tokio",
+ "tracing-subscriber",
 ]
 
 [[package]]

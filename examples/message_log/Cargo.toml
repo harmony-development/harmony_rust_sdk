@@ -1,0 +1,23 @@
+[package]
+name = "message_log"
+version = "0.1.0"
+authors = ["Yusuf Bera Ertan <y.bera003.06@protonmail.com>"]
+edition = "2021"
+homepage = "https://github.com/harmony-development/harmony_rust_sdk"
+repository = "https://github.com/harmony-development/harmony_rust_sdk"
+license = "MIT"
+default-run = "main"
+
+[dependencies]
+harmony_rust_sdk = { path = "../../crates/sdk", features = ["client_native"] }
+tokio = { version = "1.14", features = ["rt", "macros", "fs"] }
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+ctrlc = "3.1.8"
+
+[package.metadata.nix]
+build = true
+library = true
+
+[[bin]]
+name = "main"
+path = "main.rs"

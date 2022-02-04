@@ -25,7 +25,7 @@ env variable.
 - `message_log`: Showcases a simple message log bot that operates in a guild.
 It will log messages to the console whenever someone posts a message.
 - Bot run instructions:
-  - Run bots with `GUILD_INVITE=invite cargo run --example example_name`.
+  - Run bots with `GUILD_INVITE=invite cargo run --package example_name`.
   - Make sure the bot has necessary permissions to view channels / send messages etc.
 
 ## Crate features

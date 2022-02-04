@@ -9,7 +9,7 @@ fn main() -> Result<()> {
     );
 
     let protocol_path = std::env::var_os("HARMONY_PROTOCOL_PATH")
-        .map_or_else(|| PathBuf::from("protocol"), PathBuf::from);
+        .map_or_else(|| PathBuf::from("../../protocol"), PathBuf::from);
 
     #[rustfmt::skip]
     let stable_svcs = [
