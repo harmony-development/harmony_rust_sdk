@@ -1,4 +1,6 @@
+/// v1 of profile service.
 pub mod v1 {
+    #![allow(missing_docs)]
     hrpc::include_proto!("protocol.profile.v1");
 }
 pub use v1::*;

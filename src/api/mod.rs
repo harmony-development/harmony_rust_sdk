@@ -21,8 +21,9 @@ pub mod chat;
 /// Auth service API.
 #[cfg(feature = "gen_auth")]
 pub mod auth {
+    /// v1 of auth service.
     pub mod v1 {
-        #![allow(clippy::unit_arg)]
+        #![allow(clippy::unit_arg, missing_docs)]
         hrpc::include_proto!("protocol.auth.v1");
     }
     pub use v1::*;
@@ -35,7 +36,9 @@ pub mod harmonytypes;
 /// Media proxy service API.
 #[cfg(feature = "gen_mediaproxy")]
 pub mod mediaproxy {
+    /// v1 of mediaproxy service.
     pub mod v1 {
+        #![allow(missing_docs)]
         hrpc::include_proto!("protocol.mediaproxy.v1");
     }
     pub use v1::*;
@@ -44,7 +47,9 @@ pub mod mediaproxy {
 /// Sync service API.
 #[cfg(feature = "gen_sync")]
 pub mod sync {
+    /// v1 of sync service.
     pub mod v1 {
+        #![allow(missing_docs)]
         hrpc::include_proto!("protocol.sync.v1");
     }
     pub use v1::*;
@@ -57,7 +62,9 @@ pub mod profile;
 /// Emote service API.
 #[cfg(feature = "gen_emote")]
 pub mod emote {
+    /// v1 of emote service.
     pub mod v1 {
+        #![allow(missing_docs)]
         hrpc::include_proto!("protocol.emote.v1");
     }
     pub use v1::*;
@@ -65,7 +72,9 @@ pub mod emote {
 /// Batch service API.
 #[cfg(feature = "gen_batch")]
 pub mod batch {
+    /// v1 of batch service.
     pub mod v1 {
+        #![allow(missing_docs)]
         hrpc::include_proto!("protocol.batch.v1");
     }
     pub use v1::*;
@@ -74,7 +83,9 @@ pub mod batch {
 /// Voice service API.
 #[cfg(feature = "staging_gen_voice")]
 pub mod voice {
+    /// v1 of voice service.
     pub mod v1 {
+        #![allow(missing_docs)]
         hrpc::include_proto!("protocol.voice.v1");
     }
     pub use v1::*;
@@ -83,7 +94,9 @@ pub mod voice {
 /// Bots service API.
 #[cfg(feature = "staging_gen_bots")]
 pub mod bots {
+    /// v1 of bots service.
     pub mod v1 {
+        #![allow(missing_docs)]
         hrpc::include_proto!("protocol.bots.v1");
     }
     pub use v1::*;

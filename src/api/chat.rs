@@ -5,8 +5,9 @@ use std::{
     fmt::{self, Display, Formatter},
 };
 
+/// v1 of chat service.
 pub mod v1 {
-    #![allow(clippy::unit_arg)]
+    #![allow(clippy::unit_arg, missing_docs)]
     hrpc::include_proto!("protocol.chat.v1");
 
     /// All chat permissions.

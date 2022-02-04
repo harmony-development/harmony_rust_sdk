@@ -1,4 +1,6 @@
+/// v1 of harmonytypes.
 pub mod v1 {
+    #![allow(missing_docs)]
     hrpc::include_proto!("protocol.harmonytypes.v1");
 }
 pub use v1::*;
