@@ -2,8 +2,6 @@
 //!
 //! See the `examples` directory in the repository on how to use this.
 
-/// [`Client`] API implementations.
-pub mod api;
 /// Error related code used by [`Client`].
 pub mod error;
 
@@ -12,11 +10,7 @@ pub mod exports {
     pub use reqwest;
 }
 
-use crate::api::{
-    auth::{BeginAuthRequest, NextStepResponse, StepBackResponse},
-    Endpoint,
-};
-use api::{auth::*, chat::EventSource, Hmc, HmcFromStrError};
+use crate::api::{auth::*, chat::EventSource, Endpoint, Hmc, HmcFromStrError};
 use error::*;
 use tracing::Span;
 
@@ -592,7 +586,7 @@ impl Client {
     /// ```
     pub fn auth_stream(&self) -> impl Future<Output = ClientResult<AuthSocket>> + Send + 'static {
         if let AuthStatus::InProgress(auth_id) = self.auth_status() {
-            let fut = self.auth().stream_steps(AuthId::new(auth_id));
+            let fut = self.auth().stream_steps(StreamStepsRequest::new(auth_id));
             Either::Left(
                 fut.map_ok(|inner| AuthSocket { inner })
                     .map_err(ClientError::from),

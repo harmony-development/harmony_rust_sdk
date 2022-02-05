@@ -11,11 +11,13 @@ pub use hrpc::client::socket::SocketError;
 pub use http::uri::InvalidUri as UrlError;
 pub use reqwest::Error as ReqwestError;
 
-/// Result type used by many `Client` methods.
+/// Result type used by all `Client` methods.
 pub type ClientResult<T> = Result<T, ClientError>;
+/// Alias for an internal hRPC client error.
 #[cfg(feature = "client_web")]
 pub type InternalClientError =
     hrpc::client::error::ClientError<hrpc::client::transport::http::WasmError>;
+/// Alias for an internal hRPC client error.
 #[cfg(all(feature = "client_native", not(feature = "client_web")))]
 pub type InternalClientError =
     hrpc::client::error::ClientError<hrpc::client::transport::http::HyperError>;

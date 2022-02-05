@@ -2,16 +2,12 @@
 use std::sync::atomic::{AtomicBool, Ordering};
 
 use harmony_rust_sdk::{
-    api::chat::{self, stream_event, JoinGuildRequest},
-    client::{
-        api::{
-            auth::AuthStepResponse,
-            chat::{message::MessageExt, EventSource},
-            profile::{UpdateProfile, UserStatus},
-        },
-        error::ClientResult,
-        Client,
+    api::{
+        auth::AuthStepResponse,
+        chat::{self, stream_event, EventSource, JoinGuildRequest},
+        profile::{UpdateProfileRequest, UserStatus},
     },
+    client::{error::ClientResult, Client},
 };
 use tokio::sync::oneshot;
 use tracing::info;

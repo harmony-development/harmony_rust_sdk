@@ -707,6 +707,7 @@ dependencies = [
  "ctrlc",
  "harmony_rust_sdk",
  "tokio",
+ "tracing",
  "tracing-subscriber",
 ]
 

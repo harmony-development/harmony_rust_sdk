@@ -20,14 +20,7 @@ pub mod chat;
 
 /// Auth service API.
 #[cfg(feature = "gen_auth")]
-pub mod auth {
-    /// v1 of auth service.
-    pub mod v1 {
-        #![allow(clippy::unit_arg, missing_docs)]
-        hrpc::include_proto!("protocol.auth.v1");
-    }
-    pub use v1::*;
-}
+pub mod auth;
 
 /// Common types used in other services.
 #[cfg(feature = "gen_harmonytypes")]
