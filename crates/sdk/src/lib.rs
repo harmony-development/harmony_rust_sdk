@@ -37,6 +37,12 @@ You can customize the crate to your needs by enabling feature(s) listed below:
   - Enable `gen_all_protocols` to enable all protocols, stable and staging.
   - Enable `rkyv` feature to derive `rkyv::{Archive, Deserialize, Serialize}`
   for all Harmony API types (except the `batch` service).
+    - Enable `rkyv_validation` to derive `bytecheck::CheckBytes` for all Harmony
+    API types and enable `rkyv/validation`.
+  - Enable `serde_derive` feature to derive `serde::{Deserialize, Serialize}`
+  for all Harmony API types (except the `batch` service).
+  - Enable `valuable` feature to derive `valuable::Valuable` for all Harmony
+  API types (except the `batch` service).
   - customizing hRPC codegen:
     - Enable the `gen_client` feature to generate client service code for
     enabled protocols.
