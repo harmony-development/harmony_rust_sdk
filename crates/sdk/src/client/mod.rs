@@ -4,6 +4,8 @@
 
 /// Error related code used by [`Client`].
 pub mod error;
+/// Implements the REST client API.
+pub mod rest;
 
 /// Some crates exported for user convenience.
 pub mod exports {
