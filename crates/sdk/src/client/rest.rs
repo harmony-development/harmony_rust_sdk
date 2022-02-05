@@ -142,7 +142,7 @@ impl Client {
 }
 
 /// A downloaded file.
-#[derive(Debug, Clone)]
+#[derive(Debug)]
 #[non_exhaustive]
 pub struct DownloadedFile {
     /// Data of the downloaded file.

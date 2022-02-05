@@ -1,12 +1,11 @@
 use std::{convert::TryInto, error::Error as StdError, str::FromStr};
 
 use super::Hmc;
-use derive_more::{Display, From, Into, IntoIterator};
-use derive_new::new;
+use derive_more::Display;
 use http::{HeaderValue, Uri};
 use serde::{Deserialize, Serialize};
 
-/// Kind of the file downloaded.
+/// Kind of a file.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
 pub enum FileKind {
     /// An attachment file.
@@ -117,18 +116,6 @@ impl FromStr for FileId {
                 _ => Ok(FileId::Id(s.to_owned())),
             }
         }
-    }
-}
-
-/// Wrapper type for `Vec<FileId>` so we can implement some traits.
-///
-/// You don't need to create this manually, since it implements `From<Vec<FileId>>`.
-#[derive(new, Debug, Default, Clone, Into, From, IntoIterator)]
-pub struct FileIds(Vec<FileId>);
-
-impl From<FileIds> for Vec<String> {
-    fn from(o: FileIds) -> Vec<String> {
-        o.into_iter().map(|id| id.to_string()).collect()
     }
 }
 
