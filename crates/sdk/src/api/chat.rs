@@ -118,8 +118,11 @@ impl Message {
 /// A stream event.
 #[derive(Debug, Clone, PartialEq)]
 pub enum Event {
+    /// A chat service event.
     Chat(stream_event::Event),
+    /// A profile service event.
     Profile(super::profile::stream_event::Event),
+    /// An emote service event.
     Emote(super::emote::stream_event::Event),
 }
 

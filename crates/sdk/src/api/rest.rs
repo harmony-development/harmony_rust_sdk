@@ -9,7 +9,9 @@ use serde::{Deserialize, Serialize};
 /// Kind of the file downloaded.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
 pub enum FileKind {
+    /// An attachment file.
     Attachment,
+    /// An inline file.
     Inline,
 }
 
