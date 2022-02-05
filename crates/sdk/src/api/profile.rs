@@ -7,9 +7,9 @@ pub use v1::*;
 
 use std::fmt::{self, Display, Formatter};
 
-impl Into<Option<i32>> for UserStatus {
-    fn into(self) -> Option<i32> {
-        Some(self.into())
+impl From<UserStatus> for Option<i32> {
+    fn from(status: UserStatus) -> Self {
+        Some(status.into())
     }
 }
 

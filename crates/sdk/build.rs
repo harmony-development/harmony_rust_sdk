@@ -48,9 +48,13 @@ fn main() -> Result<()> {
             })
         };
 
-        let for_svcs = all_services
-            .iter()
-            .filter(|svc| matches!(**svc, "harmonytypes.v1" | "sync.v1").not());
+        let for_svcs = all_services.iter().filter(|svc| {
+            matches!(
+                **svc,
+                "harmonytypes.v1" | "sync.v1" | "voice.v1" | "bots.v1"
+            )
+            .not()
+        });
 
         for service in for_svcs {
             builder = add_impl_call_req(builder, service);

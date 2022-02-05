@@ -54,23 +54,25 @@ client_native = [
 ]
 # Internal feature used for common client features
 _client_common = [
-	# Harmony protocols enabled
-	"gen_chat",
 	"gen_auth",
-	"gen_mediaproxy",
-	"gen_harmonytypes",
-	"gen_batch",
-	"gen_profile",
-	"gen_emote",
-	"rest",
 	# Generate client code
 	"gen_client",
 	"reqwest",
 	"tracing",
 	"harmony_derive/client",
+	"serde",
 ]
 # Enable client backoff feature
 client_backoff = []
+# Enable recommended protocols that the client implements
+client_recommended = [
+	"gen_chat",
+	"gen_profile",
+	"gen_emote",
+	"gen_batch",
+	"gen_mediaproxy",
+	"rest",
+]
 
 # Generate client code for communication with the network
 gen_client = ["hrpc/client", "harmony_build/client"]
@@ -88,10 +90,10 @@ gen_all_protocols = ["gen_stable_protocols", "gen_staging_protocols"]
 
 ## Stable protocols ##
 gen_chat = ["gen_harmonytypes", "gen_profile", "gen_emote"]
-gen_auth = []
+gen_auth = ["gen_harmonytypes"]
 gen_mediaproxy = ["gen_harmonytypes"]
 gen_harmonytypes = []
-gen_sync = []
+gen_sync = ["gen_harmonytypes"]
 gen_batch = []
 gen_profile = []
 gen_emote = []

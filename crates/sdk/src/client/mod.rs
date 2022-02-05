@@ -5,6 +5,7 @@
 /// Error related code used by [`Client`].
 pub mod error;
 /// Implements the REST client API.
+#[cfg(feature = "rest")]
 pub mod rest;
 
 /// Some crates exported for user convenience.
@@ -12,7 +13,7 @@ pub mod exports {
     pub use reqwest;
 }
 
-use crate::api::{auth::*, chat::EventSource, Endpoint, Hmc, HmcFromStrError};
+use crate::api::{auth::*, Endpoint, Hmc, HmcFromStrError};
 use error::*;
 use tracing::Span;
 
@@ -127,12 +128,17 @@ mod transport {
 use transport::*;
 
 type AuthService = crate::api::auth::auth_service_client::AuthServiceClient<GenericClient>;
+#[cfg(feature = "gen_chat")]
 type ChatService = crate::api::chat::chat_service_client::ChatServiceClient<GenericClient>;
+#[cfg(feature = "gen_mediaproxy")]
 type MediaProxyService =
     crate::api::mediaproxy::media_proxy_service_client::MediaProxyServiceClient<GenericClient>;
+#[cfg(feature = "gen_profile")]
 type ProfileService =
     crate::api::profile::profile_service_client::ProfileServiceClient<GenericClient>;
+#[cfg(feature = "gen_emote")]
 type EmoteService = crate::api::emote::emote_service_client::EmoteServiceClient<GenericClient>;
+#[cfg(feature = "gen_batch")]
 type BatchService = crate::api::batch::batch_service_client::BatchServiceClient<GenericClient>;
 
 /// Represents an authentication state in which a [`Client`] can be.
@@ -179,11 +185,16 @@ impl AuthStatus {
 struct ClientData {
     homeserver_url: Uri,
     auth_status: SharedAuthStatus,
-    chat: Mutex<ChatService>,
     auth: Mutex<AuthService>,
+    #[cfg(feature = "gen_chat")]
+    chat: Mutex<ChatService>,
+    #[cfg(feature = "gen_mediaproxy")]
     mediaproxy: Mutex<MediaProxyService>,
+    #[cfg(feature = "gen_profile")]
     profile: Mutex<ProfileService>,
+    #[cfg(feature = "gen_emote")]
     emote: Mutex<EmoteService>,
+    #[cfg(feature = "gen_batch")]
     batch: Mutex<BatchService>,
     http: HttpClient,
 }
@@ -292,21 +303,31 @@ impl Client {
         let transport = create_client(homeserver_url.clone(), auth_status.clone())?;
         let inner = hrpc::client::Client::new(transport);
 
-        let auth = AuthService::new_inner(inner.clone());
+        #[cfg(feature = "gen_chat")]
         let chat = ChatService::new_inner(inner.clone());
+        #[cfg(feature = "gen_mediaproxy")]
         let mediaproxy = MediaProxyService::new_inner(inner.clone());
+        #[cfg(feature = "gen_profile")]
         let profile = ProfileService::new_inner(inner.clone());
+        #[cfg(feature = "gen_emote")]
         let emote = EmoteService::new_inner(inner.clone());
-        let batch = BatchService::new_inner(inner);
+        #[cfg(feature = "gen_batch")]
+        let batch = BatchService::new_inner(inner.clone());
+        let auth = AuthService::new_inner(inner);
 
         let data = ClientData {
             homeserver_url,
             auth_status,
-            chat: Mutex::new(chat),
             auth: Mutex::new(auth),
+            #[cfg(feature = "gen_chat")]
+            chat: Mutex::new(chat),
+            #[cfg(feature = "gen_mediaproxy")]
             mediaproxy: Mutex::new(mediaproxy),
+            #[cfg(feature = "gen_profile")]
             profile: Mutex::new(profile),
+            #[cfg(feature = "gen_emote")]
             emote: Mutex::new(emote),
+            #[cfg(feature = "gen_batch")]
             batch: Mutex::new(batch),
             http,
         };
@@ -316,38 +337,43 @@ impl Client {
         })
     }
 
-    #[inline(always)]
-    /// Get a mutex guard to the chat service.
-    pub fn chat(&self) -> MutexGuard<'_, ChatService> {
-        self.data.chat.lock().expect("poisoned")
-    }
-
-    #[inline(always)]
     /// Get a mutex guard to the auth service.
+    #[inline(always)]
     pub fn auth(&self) -> MutexGuard<'_, AuthService> {
         self.data.auth.lock().expect("poisoned")
     }
 
+    /// Get a mutex guard to the chat service.
+    #[cfg(feature = "gen_chat")]
     #[inline(always)]
+    pub fn chat(&self) -> MutexGuard<'_, ChatService> {
+        self.data.chat.lock().expect("poisoned")
+    }
+
     /// Get a mutex guard to the mediaproxy service.
+    #[cfg(feature = "gen_mediaproxy")]
+    #[inline(always)]
     pub fn mediaproxy(&self) -> MutexGuard<'_, MediaProxyService> {
         self.data.mediaproxy.lock().expect("poisoned")
     }
 
-    #[inline(always)]
     /// Get a mutex guard to the profile service.
+    #[cfg(feature = "gen_profile")]
+    #[inline(always)]
     pub fn profile(&self) -> MutexGuard<'_, ProfileService> {
         self.data.profile.lock().expect("poisoned")
     }
 
-    #[inline(always)]
     /// Get a mutex guard to the emote service.
+    #[cfg(feature = "gen_emote")]
+    #[inline(always)]
     pub fn emote(&self) -> MutexGuard<'_, EmoteService> {
         self.data.emote.lock().expect("poisoned")
     }
 
-    #[inline(always)]
     /// Get a mutex guard to the batch service.
+    #[cfg(feature = "gen_batch")]
+    #[inline(always)]
     pub fn batch(&self) -> MutexGuard<'_, BatchService> {
         self.data.batch.lock().expect("poisoned")
     }
@@ -382,6 +408,7 @@ impl Client {
     ///
     /// Note that this does not support the convenience types defined in the [`api`] module.
     /// You will need to convert them to the corresponding request type with `Request::from`.
+    #[cfg(feature = "gen_batch")]
     pub fn batch_call<Req>(
         &self,
         requests: Vec<Req>,
@@ -424,13 +451,29 @@ impl Client {
     /// # use harmony_rust_sdk::client::*;
     /// # #[tokio::main(flavor = "current_thread")]
     /// # async fn main() -> error::ClientResult<()> {
-    /// # let client = Client::new("https://chat.harmonyapp.io:2289".parse().unwrap(), None).await?;
+    /// let client = Client::new("https://chat.harmonyapp.io:2289".parse().unwrap(), None).await?;
     /// assert!(!client.auth_status().is_authenticated());
     /// # Ok(())
     /// # }
     /// ```
     pub fn auth_status(&self) -> AuthStatus {
         self.auth_status_lock().0.clone()
+    }
+
+    /// Get the user ID of the current authenticated user, if one exists.
+    ///
+    /// # Example
+    /// ```
+    /// # use harmony_rust_sdk::client::*;
+    /// # #[tokio::main(flavor = "current_thread")]
+    /// # async fn main() -> error::ClientResult<()> {
+    /// let client = Client::new("https://chat.harmonyapp.io:2289".parse().unwrap(), None).await?;
+    /// assert!(client.user_id().is_none());
+    /// # Ok(())
+    /// # }
+    /// ```
+    pub fn user_id(&self) -> Option<u64> {
+        self.auth_status_lock().0.session().map(|s| s.user_id)
     }
 
     /// Get the stored homeserver URL.
@@ -440,7 +483,7 @@ impl Client {
     /// # use harmony_rust_sdk::client::*;
     /// # #[tokio::main(flavor = "current_thread")]
     /// # async fn main() -> error::ClientResult<()> {
-    /// # let client = Client::new("https://chat.harmonyapp.io:2289".parse().unwrap(), None).await?;
+    /// let client = Client::new("https://chat.harmonyapp.io:2289".parse().unwrap(), None).await?;
     /// assert_eq!(&client.homeserver_url().to_string(), "https://chat.harmonyapp.io:2289/");
     /// # Ok(())
     /// # }
@@ -456,7 +499,7 @@ impl Client {
     /// # use harmony_rust_sdk::{api::Hmc, client::*};
     /// # #[tokio::main(flavor = "current_thread")]
     /// # async fn main() -> error::ClientResult<()> {
-    /// # let client = Client::new("https://chat.harmonyapp.io:2289".parse().unwrap(), None).await?;
+    /// let client = Client::new("https://chat.harmonyapp.io:2289".parse().unwrap(), None).await?;
     /// assert_eq!(client.make_hmc("404").unwrap(), Hmc::new("chat.harmonyapp.io:2289", "404").unwrap());
     /// # Ok(())
     /// # }
@@ -476,7 +519,7 @@ impl Client {
     /// # use harmony_rust_sdk::client::*;
     /// # #[tokio::main(flavor = "current_thread")]
     /// # async fn main() -> error::ClientResult<()> {
-    /// # let client = Client::new("chat.harmonyapp.io:2289".parse().unwrap(), None).await?;
+    /// let client = Client::new("chat.harmonyapp.io:2289".parse().unwrap(), None).await?;
     /// client.begin_auth().await?;
     /// // Do auth stuff here
     /// # Ok(())
@@ -505,7 +548,7 @@ impl Client {
     /// # use harmony_rust_sdk::client::{*, api::auth::*};
     /// # #[tokio::main(flavor = "current_thread")]
     /// # async fn main() -> error::ClientResult<()> {
-    /// # let client = Client::new("chat.harmonyapp.io:2289".parse().unwrap(), None).await?;
+    /// let client = Client::new("chat.harmonyapp.io:2289".parse().unwrap(), None).await?;
     /// client.begin_auth().await?;
     /// let next_step = client.next_auth_step(AuthStepResponse::Initial).await?;
     /// // Do more auth stuff here
@@ -552,7 +595,7 @@ impl Client {
     /// # use harmony_rust_sdk::client::{*, api::auth::*};
     /// # #[tokio::main(flavor = "current_thread")]
     /// # async fn main() -> error::ClientResult<()> {
-    /// # let client = Client::new("chat.harmonyapp.io:2289".parse().unwrap(), None).await?;
+    /// let client = Client::new("chat.harmonyapp.io:2289".parse().unwrap(), None).await?;
     /// client.begin_auth().await?;
     /// // Call next step and whatnot here
     /// // Oops, user wants to do something else, lets go back
@@ -579,7 +622,7 @@ impl Client {
     /// # use harmony_rust_sdk::client::*;
     /// # #[tokio::main(flavor = "current_thread")]
     /// # async fn main() -> error::ClientResult<()> {
-    /// # let client = Client::new("chat.harmonyapp.io:2289".parse().unwrap(), None).await?;
+    /// let client = Client::new("chat.harmonyapp.io:2289".parse().unwrap(), None).await?;
     /// client.begin_auth().await?;
     /// let auth_steps_stream = client.auth_stream().await?;
     /// // Do auth stuff here
@@ -606,16 +649,17 @@ impl Client {
     ///
     /// # Example
     /// ```no_run
-    /// # use harmony_rust_sdk::client::{*, api::chat::EventSource};
+    /// # use harmony_rust_sdk::client::*;
     /// # #[tokio::main(flavor = "current_thread")]
     /// # async fn main() -> error::ClientResult<()> {
-    /// # let client = Client::new("chat.harmonyapp.io:2289".parse().unwrap(), None).await?;
+    /// let client = Client::new("chat.harmonyapp.io:2289".parse().unwrap(), None).await?;
     /// // Auth here
     /// let event_stream = client.subscribe_events(false).await?;
     /// // Do more stuff here
     /// # Ok(())
     /// # }
     /// ```
+    #[cfg(feature = "gen_chat")]
     pub fn subscribe_events(
         &self,
         unsubscribe: bool,
@@ -628,7 +672,9 @@ impl Client {
                 read: EventsReadSocket { inner: rx },
             };
             if unsubscribe {
-                socket.add_source(EventSource::Unsubscribe).await?;
+                socket
+                    .add_source(crate::api::chat::EventSource::Unsubscribe)
+                    .await?;
                 // Try to exhaust events the server already sent
                 // this probably doesn't work well considering the events might
                 // not have even arrived yet...
@@ -693,90 +739,6 @@ where
     }
 }
 
-/// Event subscription socket.
-pub struct EventsSocket {
-    read: EventsReadSocket,
-    write: EventsWriteSocket,
-}
-
-impl EventsSocket {
-    /// Get an event.
-    #[inline]
-    pub async fn get_event(&mut self) -> ClientResult<Option<crate::api::chat::Event>> {
-        self.read.get_event().await
-    }
-
-    /// Add a new event source.
-    #[inline]
-    pub async fn add_source(&mut self, source: EventSource) -> ClientResult<()> {
-        self.write.add_source(source).await
-    }
-
-    /// Close this socket.
-    #[inline]
-    pub async fn close(self) -> ClientResult<()> {
-        self.write.close().await
-    }
-
-    /// Split this socket into the read and write half.
-    pub fn split(self) -> (EventsWriteSocket, EventsReadSocket) {
-        (self.write, self.read)
-    }
-}
-
-impl Debug for EventsSocket {
-    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
-        f.write_str("EventsSocket")
-    }
-}
-
-/// Write half of the event subscription socket.
-pub struct EventsWriteSocket {
-    inner: hrpc::client::socket::WriteSocket<crate::api::chat::StreamEventsRequest>,
-}
-
-impl EventsWriteSocket {
-    /// Add a new event source.
-    pub async fn add_source(&mut self, source: EventSource) -> ClientResult<()> {
-        self.inner
-            .send_message(source.into())
-            .await
-            .map_err(Into::into)
-    }
-
-    /// Close this socket.
-    pub async fn close(self) -> ClientResult<()> {
-        self.inner.close().await.map_err(Into::into)
-    }
-}
-
-impl Debug for EventsWriteSocket {
-    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
-        f.write_str("EventsWriteSocket")
-    }
-}
-
-/// Read half of the event subscription socket.
-pub struct EventsReadSocket {
-    inner: hrpc::client::socket::ReadSocket<crate::api::chat::StreamEventsResponse>,
-}
-
-impl EventsReadSocket {
-    /// Get an event.
-    pub async fn get_event(&mut self) -> ClientResult<Option<crate::api::chat::Event>> {
-        let resp = self.inner.receive_message().await?;
-        Ok(resp
-            .event
-            .and_then(|a| crate::api::chat::Event::try_from(a).ok()))
-    }
-}
-
-impl Debug for EventsReadSocket {
-    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
-        f.write_str("EventsReadSocket")
-    }
-}
-
 /// Auth steps subscription socket.
 pub struct AuthSocket {
     inner: hrpc::client::socket::Socket<
@@ -804,5 +766,96 @@ impl AuthSocket {
 impl Debug for AuthSocket {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         f.write_str("AuthSocket")
+    }
+}
+
+#[cfg(feature = "gen_chat")]
+pub use event_socket::*;
+#[cfg(feature = "gen_chat")]
+mod event_socket {
+    use super::*;
+    use crate::api::chat::{Event, EventSource, StreamEventsRequest, StreamEventsResponse};
+    use hrpc::client::socket::{ReadSocket, WriteSocket};
+
+    /// Event subscription socket.
+    pub struct EventsSocket {
+        pub(super) read: EventsReadSocket,
+        pub(super) write: EventsWriteSocket,
+    }
+
+    impl EventsSocket {
+        /// Get an event.
+        #[inline]
+        pub async fn get_event(&mut self) -> ClientResult<Option<Event>> {
+            self.read.get_event().await
+        }
+
+        /// Add a new event source.
+        #[inline]
+        pub async fn add_source(&mut self, source: EventSource) -> ClientResult<()> {
+            self.write.add_source(source).await
+        }
+
+        /// Close this socket.
+        #[inline]
+        pub async fn close(self) -> ClientResult<()> {
+            self.write.close().await
+        }
+
+        /// Split this socket into the read and write half.
+        pub fn split(self) -> (EventsWriteSocket, EventsReadSocket) {
+            (self.write, self.read)
+        }
+    }
+
+    impl Debug for EventsSocket {
+        fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+            f.write_str("EventsSocket")
+        }
+    }
+
+    /// Write half of the event subscription socket.
+    pub struct EventsWriteSocket {
+        pub(super) inner: WriteSocket<StreamEventsRequest>,
+    }
+
+    impl EventsWriteSocket {
+        /// Add a new event source.
+        pub async fn add_source(&mut self, source: EventSource) -> ClientResult<()> {
+            self.inner
+                .send_message(source.into())
+                .await
+                .map_err(Into::into)
+        }
+
+        /// Close this socket.
+        pub async fn close(self) -> ClientResult<()> {
+            self.inner.close().await.map_err(Into::into)
+        }
+    }
+
+    impl Debug for EventsWriteSocket {
+        fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+            f.write_str("EventsWriteSocket")
+        }
+    }
+
+    /// Read half of the event subscription socket.
+    pub struct EventsReadSocket {
+        pub(super) inner: ReadSocket<StreamEventsResponse>,
+    }
+
+    impl EventsReadSocket {
+        /// Get an event.
+        pub async fn get_event(&mut self) -> ClientResult<Option<Event>> {
+            let resp = self.inner.receive_message().await?;
+            Ok(resp.event.and_then(|a| Event::try_from(a).ok()))
+        }
+    }
+
+    impl Debug for EventsReadSocket {
+        fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+            f.write_str("EventsReadSocket")
+        }
     }
 }
