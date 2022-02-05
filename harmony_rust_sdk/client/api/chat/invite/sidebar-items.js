@@ -1,1 +1,0 @@
-initSidebarItems({"struct":[["CreateInvite","Convenience type to create a valid [`CreateInviteRequest`]."],["DeleteInvite","Convenience type to create a valid [`DeleteInviteRequest`]."]]});

@@ -1,1 +1,0 @@
-initSidebarItems({"struct":[["AddEmoteToPack","Convenience type to create a valid [`AddEmoteToPackRequest`]."],["CreateEmotePack","Convenience type to create a valid [`CreateEmotePackRequest`]."],["DeleteEmoteFromPack","Convenience type to create a valid [`DeleteEmoteFromPackRequest`]."],["PackId","Wrapper around an emote pack ID which can be used as multiple requests."]]});

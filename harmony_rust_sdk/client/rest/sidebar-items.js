@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["DownloadedFile","A downloaded file."]]});

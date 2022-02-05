@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src&#x2F;client&#x2F;mod.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>mod.rs - source</title><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../light.css"  id="themeStyle"><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled ><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled ><script id="default-settings" ></script><script src="../../../storage.js"></script><script src="../../../crates.js"></script><script defer src="../../../main.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `crates&#x2F;sdk&#x2F;src&#x2F;client&#x2F;mod.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>mod.rs - source</title><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../light.css"  id="themeStyle"><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled ><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled ><script id="default-settings" ></script><script src="../../../storage.js"></script><script src="../../../crates.js"></script><script defer src="../../../main.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script>
     <noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"><style type="text/css">#crate-search{background-image:url("../../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu" role="button">&#9776;</div><a href='../../../harmony_rust_sdk/index.html'><div class='logo-container rust-logo'><img src='../../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu" title="themes"><img width="18" height="18" alt="Pick another theme!" src="../../../brush.svg"></button><div id="theme-choices" role="menu"></div></div><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><button type="button" id="help-button" title="help">?</button><a id="settings-menu" href="../../../settings.html" title="settings"><img width="18" height="18" alt="Change settings" src="../../../wheel.svg"></a></div></form></nav><section id="main" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">  1</span>
 <span id="2">  2</span>
 <span id="3">  3</span>
@@ -828,25 +828,54 @@
 <span id="827">827</span>
 <span id="828">828</span>
 <span id="829">829</span>
+<span id="830">830</span>
+<span id="831">831</span>
+<span id="832">832</span>
+<span id="833">833</span>
+<span id="834">834</span>
+<span id="835">835</span>
+<span id="836">836</span>
+<span id="837">837</span>
+<span id="838">838</span>
+<span id="839">839</span>
+<span id="840">840</span>
+<span id="841">841</span>
+<span id="842">842</span>
+<span id="843">843</span>
+<span id="844">844</span>
+<span id="845">845</span>
+<span id="846">846</span>
+<span id="847">847</span>
+<span id="848">848</span>
+<span id="849">849</span>
+<span id="850">850</span>
+<span id="851">851</span>
+<span id="852">852</span>
+<span id="853">853</span>
+<span id="854">854</span>
+<span id="855">855</span>
+<span id="856">856</span>
+<span id="857">857</span>
+<span id="858">858</span>
+<span id="859">859</span>
+<span id="860">860</span>
+<span id="861">861</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Rust client implementation for Harmony, powered by [`hrpc`].</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! See the `examples` directory in the repository on how to use this.</span>
 
-<span class="doccomment">/// [`Client`] API implementations.</span>
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">api</span>;
 <span class="doccomment">/// Error related code used by [`Client`].</span>
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">error</span>;
+<span class="doccomment">/// Implements the REST client API.</span>
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rest&quot;</span>)]</span>
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">rest</span>;
 
 <span class="doccomment">/// Some crates exported for user convenience.</span>
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">exports</span> {
     <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">reqwest</span>;
 }
 
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::api</span>::{
-    <span class="ident">auth</span>::{<span class="ident">BeginAuthRequest</span>, <span class="ident">NextStepResponse</span>, <span class="ident">StepBackResponse</span>},
-    <span class="ident">Endpoint</span>,
-};
-<span class="kw">use</span> <span class="ident">api</span>::{<span class="ident">auth</span>::<span class="kw-2">*</span>, <span class="ident">chat::EventSource</span>, <span class="ident">Hmc</span>, <span class="ident">HmcFromStrError</span>};
+<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::api</span>::{<span class="ident">auth</span>::<span class="kw-2">*</span>, <span class="ident">Endpoint</span>, <span class="ident">Hmc</span>, <span class="ident">HmcFromStrError</span>};
 <span class="kw">use</span> <span class="ident">error</span>::<span class="kw-2">*</span>;
 <span class="kw">use</span> <span class="ident">tracing::Span</span>;
 
@@ -864,7 +893,7 @@
     <span class="ident">encode::encode_protobuf_message</span>,
     <span class="ident">exports</span>::{
         <span class="ident">bytes</span>::{<span class="ident">Bytes</span>, <span class="ident">BytesMut</span>},
-        <span class="ident">futures_util</span>::{<span class="ident">future::Either</span>, <span class="ident">TryFutureExt</span>},
+        <span class="ident">futures_util</span>::{<span class="ident">future::Either</span>, <span class="ident">FutureExt</span>, <span class="ident">TryFutureExt</span>},
         <span class="ident">tower::Service</span>,
     },
     <span class="ident">proto::Error</span> <span class="kw">as</span> <span class="ident">HrpcError</span>,
@@ -961,12 +990,17 @@
 <span class="kw">use</span> <span class="ident">transport</span>::<span class="kw-2">*</span>;
 
 <span class="kw">type</span> <span class="ident">AuthService</span> <span class="op">=</span> <span class="ident"><span class="kw">crate</span>::api::auth::auth_service_client::AuthServiceClient</span><span class="op">&lt;</span><span class="ident">GenericClient</span><span class="op">&gt;</span>;
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;gen_chat&quot;</span>)]</span>
 <span class="kw">type</span> <span class="ident">ChatService</span> <span class="op">=</span> <span class="ident"><span class="kw">crate</span>::api::chat::chat_service_client::ChatServiceClient</span><span class="op">&lt;</span><span class="ident">GenericClient</span><span class="op">&gt;</span>;
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;gen_mediaproxy&quot;</span>)]</span>
 <span class="kw">type</span> <span class="ident">MediaProxyService</span> <span class="op">=</span>
     <span class="ident"><span class="kw">crate</span>::api::mediaproxy::media_proxy_service_client::MediaProxyServiceClient</span><span class="op">&lt;</span><span class="ident">GenericClient</span><span class="op">&gt;</span>;
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;gen_profile&quot;</span>)]</span>
 <span class="kw">type</span> <span class="ident">ProfileService</span> <span class="op">=</span>
     <span class="ident"><span class="kw">crate</span>::api::profile::profile_service_client::ProfileServiceClient</span><span class="op">&lt;</span><span class="ident">GenericClient</span><span class="op">&gt;</span>;
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;gen_emote&quot;</span>)]</span>
 <span class="kw">type</span> <span class="ident">EmoteService</span> <span class="op">=</span> <span class="ident"><span class="kw">crate</span>::api::emote::emote_service_client::EmoteServiceClient</span><span class="op">&lt;</span><span class="ident">GenericClient</span><span class="op">&gt;</span>;
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;gen_batch&quot;</span>)]</span>
 <span class="kw">type</span> <span class="ident">BatchService</span> <span class="op">=</span> <span class="ident"><span class="kw">crate</span>::api::batch::batch_service_client::BatchServiceClient</span><span class="op">&lt;</span><span class="ident">GenericClient</span><span class="op">&gt;</span>;
 
 <span class="doccomment">/// Represents an authentication state in which a [`Client`] can be.</span>
@@ -1013,11 +1047,16 @@
 <span class="kw">struct</span> <span class="ident">ClientData</span> {
     <span class="ident">homeserver_url</span>: <span class="ident">Uri</span>,
     <span class="ident">auth_status</span>: <span class="ident">SharedAuthStatus</span>,
-    <span class="ident">chat</span>: <span class="ident">Mutex</span><span class="op">&lt;</span><span class="ident">ChatService</span><span class="op">&gt;</span>,
     <span class="ident">auth</span>: <span class="ident">Mutex</span><span class="op">&lt;</span><span class="ident">AuthService</span><span class="op">&gt;</span>,
+    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;gen_chat&quot;</span>)]</span>
+    <span class="ident">chat</span>: <span class="ident">Mutex</span><span class="op">&lt;</span><span class="ident">ChatService</span><span class="op">&gt;</span>,
+    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;gen_mediaproxy&quot;</span>)]</span>
     <span class="ident">mediaproxy</span>: <span class="ident">Mutex</span><span class="op">&lt;</span><span class="ident">MediaProxyService</span><span class="op">&gt;</span>,
+    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;gen_profile&quot;</span>)]</span>
     <span class="ident">profile</span>: <span class="ident">Mutex</span><span class="op">&lt;</span><span class="ident">ProfileService</span><span class="op">&gt;</span>,
+    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;gen_emote&quot;</span>)]</span>
     <span class="ident">emote</span>: <span class="ident">Mutex</span><span class="op">&lt;</span><span class="ident">EmoteService</span><span class="op">&gt;</span>,
+    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;gen_batch&quot;</span>)]</span>
     <span class="ident">batch</span>: <span class="ident">Mutex</span><span class="op">&lt;</span><span class="ident">BatchService</span><span class="op">&gt;</span>,
     <span class="ident">http</span>: <span class="ident">HttpClient</span>,
 }
@@ -1041,8 +1080,12 @@
 <span class="kw">impl</span> <span class="ident">Client</span> {
     <span class="doccomment">/// Create a new [`Client`] from a homeserver [`Uri`] and an (optional) session.</span>
     <span class="doccomment">///</span>
-    <span class="doccomment">/// If port is not specified in the URL, this will add the default port `2289` to it.</span>
-    <span class="doccomment">/// If scheme is not specified, this will assume the scheme is `https`.</span>
+    <span class="doccomment">/// - If port is not specified in the URL, this will:</span>
+    <span class="doccomment">///   1. try to do name resolution according to the protocol,</span>
+    <span class="doccomment">///   2. if there still isn&#39;t a port, add the default port `2289` to it</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// - If scheme is not specified (or is not `http` or `https`), this will</span>
+    <span class="doccomment">/// assume the scheme is `https`.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// # Example</span>
     <span class="doccomment">/// ```</span>
@@ -1122,21 +1165,31 @@
         <span class="kw">let</span> <span class="ident">transport</span> <span class="op">=</span> <span class="ident">create_client</span>(<span class="ident">homeserver_url</span>.<span class="ident">clone</span>(), <span class="ident">auth_status</span>.<span class="ident">clone</span>())<span class="question-mark">?</span>;
         <span class="kw">let</span> <span class="ident">inner</span> <span class="op">=</span> <span class="ident">hrpc::client::Client::new</span>(<span class="ident">transport</span>);
 
-        <span class="kw">let</span> <span class="ident">auth</span> <span class="op">=</span> <span class="ident">AuthService::new_inner</span>(<span class="ident">inner</span>.<span class="ident">clone</span>());
+        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;gen_chat&quot;</span>)]</span>
         <span class="kw">let</span> <span class="ident">chat</span> <span class="op">=</span> <span class="ident">ChatService::new_inner</span>(<span class="ident">inner</span>.<span class="ident">clone</span>());
+        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;gen_mediaproxy&quot;</span>)]</span>
         <span class="kw">let</span> <span class="ident">mediaproxy</span> <span class="op">=</span> <span class="ident">MediaProxyService::new_inner</span>(<span class="ident">inner</span>.<span class="ident">clone</span>());
+        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;gen_profile&quot;</span>)]</span>
         <span class="kw">let</span> <span class="ident">profile</span> <span class="op">=</span> <span class="ident">ProfileService::new_inner</span>(<span class="ident">inner</span>.<span class="ident">clone</span>());
+        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;gen_emote&quot;</span>)]</span>
         <span class="kw">let</span> <span class="ident">emote</span> <span class="op">=</span> <span class="ident">EmoteService::new_inner</span>(<span class="ident">inner</span>.<span class="ident">clone</span>());
-        <span class="kw">let</span> <span class="ident">batch</span> <span class="op">=</span> <span class="ident">BatchService::new_inner</span>(<span class="ident">inner</span>);
+        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;gen_batch&quot;</span>)]</span>
+        <span class="kw">let</span> <span class="ident">batch</span> <span class="op">=</span> <span class="ident">BatchService::new_inner</span>(<span class="ident">inner</span>.<span class="ident">clone</span>());
+        <span class="kw">let</span> <span class="ident">auth</span> <span class="op">=</span> <span class="ident">AuthService::new_inner</span>(<span class="ident">inner</span>);
 
         <span class="kw">let</span> <span class="ident">data</span> <span class="op">=</span> <span class="ident">ClientData</span> {
             <span class="ident">homeserver_url</span>,
             <span class="ident">auth_status</span>,
-            <span class="ident">chat</span>: <span class="ident">Mutex::new</span>(<span class="ident">chat</span>),
             <span class="ident">auth</span>: <span class="ident">Mutex::new</span>(<span class="ident">auth</span>),
+            <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;gen_chat&quot;</span>)]</span>
+            <span class="ident">chat</span>: <span class="ident">Mutex::new</span>(<span class="ident">chat</span>),
+            <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;gen_mediaproxy&quot;</span>)]</span>
             <span class="ident">mediaproxy</span>: <span class="ident">Mutex::new</span>(<span class="ident">mediaproxy</span>),
+            <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;gen_profile&quot;</span>)]</span>
             <span class="ident">profile</span>: <span class="ident">Mutex::new</span>(<span class="ident">profile</span>),
+            <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;gen_emote&quot;</span>)]</span>
             <span class="ident">emote</span>: <span class="ident">Mutex::new</span>(<span class="ident">emote</span>),
+            <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;gen_batch&quot;</span>)]</span>
             <span class="ident">batch</span>: <span class="ident">Mutex::new</span>(<span class="ident">batch</span>),
             <span class="ident">http</span>,
         };
@@ -1146,72 +1199,49 @@
         })
     }
 
-    <span class="doccomment">/// Starts an event loop with the given handler.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// All socket errors will be logged with tracing. If the handler</span>
-    <span class="doccomment">/// function returns `Ok(true)` or `Err(err)`, the function will</span>
-    <span class="doccomment">/// return, so if you don&#39;t want it to return, return `Ok(false)`.</span>
-    <span class="kw">pub</span> <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">event_loop</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">Fut</span>, <span class="ident">Hndlr</span><span class="op">&gt;</span>(
-        <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="self">self</span>,
-        <span class="ident">subs</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">EventSource</span><span class="op">&gt;</span>,
-        <span class="kw-2">mut</span> <span class="ident">handler</span>: <span class="ident">Hndlr</span>,
-    ) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">ClientError</span><span class="op">&gt;</span>
-    <span class="kw">where</span>
-        <span class="ident">Fut</span>: <span class="ident">Future</span><span class="op">&lt;</span><span class="ident">Output</span> <span class="op">=</span> <span class="ident">ClientResult</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-        <span class="ident">Hndlr</span>: <span class="ident">FnMut</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Client</span>, <span class="ident"><span class="kw">crate</span>::api::chat::Event</span>) -&gt; <span class="ident">Fut</span> <span class="op">+</span> <span class="ident">Send</span> <span class="op">+</span> <span class="lifetime">&#39;a</span>,
-    {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">sock</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">subscribe_events</span>(<span class="ident">subs</span>).<span class="kw">await</span><span class="question-mark">?</span>;
-        <span class="kw">loop</span> {
-            <span class="kw">match</span> <span class="ident">sock</span>.<span class="ident">get_event</span>().<span class="kw">await</span> {
-                <span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>(<span class="ident">ev</span>)) =&gt; {
-                    <span class="kw">let</span> <span class="ident">fut</span> <span class="op">=</span> <span class="ident">handler</span>(<span class="self">self</span>, <span class="ident">ev</span>);
-                    <span class="kw">if</span> <span class="ident">fut</span>.<span class="kw">await</span><span class="question-mark">?</span> {
-                        <span class="kw">return</span> <span class="prelude-val">Ok</span>(());
-                    }
-                }
-                <span class="prelude-val">Err</span>(<span class="ident">err</span>) =&gt; <span class="macro">tracing::error!</span>(<span class="string">&quot;{}&quot;</span>, <span class="ident">err</span>),
-                <span class="kw">_</span> =&gt; <span class="ident">std::hint::spin_loop</span>(),
-            }
-        }
-    }
-
-    <span class="attribute">#[<span class="ident">inline</span>(<span class="ident">always</span>)]</span>
-    <span class="doccomment">/// Get a mutex guard to the chat service.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">chat</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">MutexGuard</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">ChatService</span><span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">data</span>.<span class="ident">chat</span>.<span class="ident">lock</span>().<span class="ident">expect</span>(<span class="string">&quot;poisoned&quot;</span>)
-    }
-
-    <span class="attribute">#[<span class="ident">inline</span>(<span class="ident">always</span>)]</span>
     <span class="doccomment">/// Get a mutex guard to the auth service.</span>
+    <span class="attribute">#[<span class="ident">inline</span>(<span class="ident">always</span>)]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">auth</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">MutexGuard</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">AuthService</span><span class="op">&gt;</span> {
         <span class="self">self</span>.<span class="ident">data</span>.<span class="ident">auth</span>.<span class="ident">lock</span>().<span class="ident">expect</span>(<span class="string">&quot;poisoned&quot;</span>)
     }
 
+    <span class="doccomment">/// Get a mutex guard to the chat service.</span>
+    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;gen_chat&quot;</span>)]</span>
     <span class="attribute">#[<span class="ident">inline</span>(<span class="ident">always</span>)]</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">chat</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">MutexGuard</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">ChatService</span><span class="op">&gt;</span> {
+        <span class="self">self</span>.<span class="ident">data</span>.<span class="ident">chat</span>.<span class="ident">lock</span>().<span class="ident">expect</span>(<span class="string">&quot;poisoned&quot;</span>)
+    }
+
     <span class="doccomment">/// Get a mutex guard to the mediaproxy service.</span>
+    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;gen_mediaproxy&quot;</span>)]</span>
+    <span class="attribute">#[<span class="ident">inline</span>(<span class="ident">always</span>)]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">mediaproxy</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">MutexGuard</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">MediaProxyService</span><span class="op">&gt;</span> {
         <span class="self">self</span>.<span class="ident">data</span>.<span class="ident">mediaproxy</span>.<span class="ident">lock</span>().<span class="ident">expect</span>(<span class="string">&quot;poisoned&quot;</span>)
     }
 
-    <span class="attribute">#[<span class="ident">inline</span>(<span class="ident">always</span>)]</span>
     <span class="doccomment">/// Get a mutex guard to the profile service.</span>
+    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;gen_profile&quot;</span>)]</span>
+    <span class="attribute">#[<span class="ident">inline</span>(<span class="ident">always</span>)]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">profile</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">MutexGuard</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">ProfileService</span><span class="op">&gt;</span> {
         <span class="self">self</span>.<span class="ident">data</span>.<span class="ident">profile</span>.<span class="ident">lock</span>().<span class="ident">expect</span>(<span class="string">&quot;poisoned&quot;</span>)
     }
 
-    <span class="attribute">#[<span class="ident">inline</span>(<span class="ident">always</span>)]</span>
     <span class="doccomment">/// Get a mutex guard to the emote service.</span>
+    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;gen_emote&quot;</span>)]</span>
+    <span class="attribute">#[<span class="ident">inline</span>(<span class="ident">always</span>)]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">emote</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">MutexGuard</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">EmoteService</span><span class="op">&gt;</span> {
         <span class="self">self</span>.<span class="ident">data</span>.<span class="ident">emote</span>.<span class="ident">lock</span>().<span class="ident">expect</span>(<span class="string">&quot;poisoned&quot;</span>)
     }
 
-    <span class="attribute">#[<span class="ident">inline</span>(<span class="ident">always</span>)]</span>
     <span class="doccomment">/// Get a mutex guard to the batch service.</span>
+    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;gen_batch&quot;</span>)]</span>
+    <span class="attribute">#[<span class="ident">inline</span>(<span class="ident">always</span>)]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">batch</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">MutexGuard</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">BatchService</span><span class="op">&gt;</span> {
         <span class="self">self</span>.<span class="ident">data</span>.<span class="ident">batch</span>.<span class="ident">lock</span>().<span class="ident">expect</span>(<span class="string">&quot;poisoned&quot;</span>)
     }
 
-    <span class="doccomment">/// Execute the given request.</span>
+    <span class="doccomment">/// Execute the given request, await the response and return the</span>
+    <span class="doccomment">/// deserialized body type.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">call</span><span class="op">&lt;</span><span class="ident">Req</span><span class="op">&gt;</span>(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
         <span class="ident">request</span>: <span class="ident">Req</span>,
@@ -1224,7 +1254,7 @@
         <span class="kw">async</span> <span class="kw">move</span> { <span class="prelude-val">Ok</span>(<span class="ident">fut</span>.<span class="kw">await</span><span class="question-mark">?</span>.<span class="ident">into_message</span>().<span class="kw">await</span><span class="question-mark">?</span>) }
     }
 
-    <span class="doccomment">/// Execute the given request, but return a [`hrpc::Response`].</span>
+    <span class="doccomment">/// Execute the given request, return a [`hrpc::Response`].</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">call_response</span><span class="op">&lt;</span><span class="ident">Req</span><span class="op">&gt;</span>(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
         <span class="ident">request</span>: <span class="ident">Req</span>,
@@ -1240,6 +1270,7 @@
     <span class="doccomment">///</span>
     <span class="doccomment">/// Note that this does not support the convenience types defined in the [`api`] module.</span>
     <span class="doccomment">/// You will need to convert them to the corresponding request type with `Request::from`.</span>
+    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;gen_batch&quot;</span>)]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">batch_call</span><span class="op">&lt;</span><span class="ident">Req</span><span class="op">&gt;</span>(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
         <span class="ident">requests</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Req</span><span class="op">&gt;</span>,
@@ -1282,13 +1313,29 @@
     <span class="doccomment">/// # use harmony_rust_sdk::client::*;</span>
     <span class="doccomment">/// # #[tokio::main(flavor = &quot;current_thread&quot;)]</span>
     <span class="doccomment">/// # async fn main() -&gt; error::ClientResult&lt;()&gt; {</span>
-    <span class="doccomment">/// # let client = Client::new(&quot;https://chat.harmonyapp.io:2289&quot;.parse().unwrap(), None).await?;</span>
+    <span class="doccomment">/// let client = Client::new(&quot;https://chat.harmonyapp.io:2289&quot;.parse().unwrap(), None).await?;</span>
     <span class="doccomment">/// assert!(!client.auth_status().is_authenticated());</span>
     <span class="doccomment">/// # Ok(())</span>
     <span class="doccomment">/// # }</span>
     <span class="doccomment">/// ```</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">auth_status</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">AuthStatus</span> {
         <span class="self">self</span>.<span class="ident">auth_status_lock</span>().<span class="number">0</span>.<span class="ident">clone</span>()
+    }
+
+    <span class="doccomment">/// Get the user ID of the current authenticated user, if one exists.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// # Example</span>
+    <span class="doccomment">/// ```</span>
+    <span class="doccomment">/// # use harmony_rust_sdk::client::*;</span>
+    <span class="doccomment">/// # #[tokio::main(flavor = &quot;current_thread&quot;)]</span>
+    <span class="doccomment">/// # async fn main() -&gt; error::ClientResult&lt;()&gt; {</span>
+    <span class="doccomment">/// let client = Client::new(&quot;https://chat.harmonyapp.io:2289&quot;.parse().unwrap(), None).await?;</span>
+    <span class="doccomment">/// assert!(client.user_id().is_none());</span>
+    <span class="doccomment">/// # Ok(())</span>
+    <span class="doccomment">/// # }</span>
+    <span class="doccomment">/// ```</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">user_id</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u64</span><span class="op">&gt;</span> {
+        <span class="self">self</span>.<span class="ident">auth_status_lock</span>().<span class="number">0</span>.<span class="ident">session</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">s</span><span class="op">|</span> <span class="ident">s</span>.<span class="ident">user_id</span>)
     }
 
     <span class="doccomment">/// Get the stored homeserver URL.</span>
@@ -1298,7 +1345,7 @@
     <span class="doccomment">/// # use harmony_rust_sdk::client::*;</span>
     <span class="doccomment">/// # #[tokio::main(flavor = &quot;current_thread&quot;)]</span>
     <span class="doccomment">/// # async fn main() -&gt; error::ClientResult&lt;()&gt; {</span>
-    <span class="doccomment">/// # let client = Client::new(&quot;https://chat.harmonyapp.io:2289&quot;.parse().unwrap(), None).await?;</span>
+    <span class="doccomment">/// let client = Client::new(&quot;https://chat.harmonyapp.io:2289&quot;.parse().unwrap(), None).await?;</span>
     <span class="doccomment">/// assert_eq!(&amp;client.homeserver_url().to_string(), &quot;https://chat.harmonyapp.io:2289/&quot;);</span>
     <span class="doccomment">/// # Ok(())</span>
     <span class="doccomment">/// # }</span>
@@ -1314,7 +1361,7 @@
     <span class="doccomment">/// # use harmony_rust_sdk::{api::Hmc, client::*};</span>
     <span class="doccomment">/// # #[tokio::main(flavor = &quot;current_thread&quot;)]</span>
     <span class="doccomment">/// # async fn main() -&gt; error::ClientResult&lt;()&gt; {</span>
-    <span class="doccomment">/// # let client = Client::new(&quot;https://chat.harmonyapp.io:2289&quot;.parse().unwrap(), None).await?;</span>
+    <span class="doccomment">/// let client = Client::new(&quot;https://chat.harmonyapp.io:2289&quot;.parse().unwrap(), None).await?;</span>
     <span class="doccomment">/// assert_eq!(client.make_hmc(&quot;404&quot;).unwrap(), Hmc::new(&quot;chat.harmonyapp.io:2289&quot;, &quot;404&quot;).unwrap());</span>
     <span class="doccomment">/// # Ok(())</span>
     <span class="doccomment">/// # }</span>
@@ -1334,7 +1381,7 @@
     <span class="doccomment">/// # use harmony_rust_sdk::client::*;</span>
     <span class="doccomment">/// # #[tokio::main(flavor = &quot;current_thread&quot;)]</span>
     <span class="doccomment">/// # async fn main() -&gt; error::ClientResult&lt;()&gt; {</span>
-    <span class="doccomment">/// # let client = Client::new(&quot;chat.harmonyapp.io:2289&quot;.parse().unwrap(), None).await?;</span>
+    <span class="doccomment">/// let client = Client::new(&quot;chat.harmonyapp.io:2289&quot;.parse().unwrap(), None).await?;</span>
     <span class="doccomment">/// client.begin_auth().await?;</span>
     <span class="doccomment">/// // Do auth stuff here</span>
     <span class="doccomment">/// # Ok(())</span>
@@ -1363,7 +1410,7 @@
     <span class="doccomment">/// # use harmony_rust_sdk::client::{*, api::auth::*};</span>
     <span class="doccomment">/// # #[tokio::main(flavor = &quot;current_thread&quot;)]</span>
     <span class="doccomment">/// # async fn main() -&gt; error::ClientResult&lt;()&gt; {</span>
-    <span class="doccomment">/// # let client = Client::new(&quot;chat.harmonyapp.io:2289&quot;.parse().unwrap(), None).await?;</span>
+    <span class="doccomment">/// let client = Client::new(&quot;chat.harmonyapp.io:2289&quot;.parse().unwrap(), None).await?;</span>
     <span class="doccomment">/// client.begin_auth().await?;</span>
     <span class="doccomment">/// let next_step = client.next_auth_step(AuthStepResponse::Initial).await?;</span>
     <span class="doccomment">/// // Do more auth stuff here</span>
@@ -1410,7 +1457,7 @@
     <span class="doccomment">/// # use harmony_rust_sdk::client::{*, api::auth::*};</span>
     <span class="doccomment">/// # #[tokio::main(flavor = &quot;current_thread&quot;)]</span>
     <span class="doccomment">/// # async fn main() -&gt; error::ClientResult&lt;()&gt; {</span>
-    <span class="doccomment">/// # let client = Client::new(&quot;chat.harmonyapp.io:2289&quot;.parse().unwrap(), None).await?;</span>
+    <span class="doccomment">/// let client = Client::new(&quot;chat.harmonyapp.io:2289&quot;.parse().unwrap(), None).await?;</span>
     <span class="doccomment">/// client.begin_auth().await?;</span>
     <span class="doccomment">/// // Call next step and whatnot here</span>
     <span class="doccomment">/// // Oops, user wants to do something else, lets go back</span>
@@ -1437,7 +1484,7 @@
     <span class="doccomment">/// # use harmony_rust_sdk::client::*;</span>
     <span class="doccomment">/// # #[tokio::main(flavor = &quot;current_thread&quot;)]</span>
     <span class="doccomment">/// # async fn main() -&gt; error::ClientResult&lt;()&gt; {</span>
-    <span class="doccomment">/// # let client = Client::new(&quot;chat.harmonyapp.io:2289&quot;.parse().unwrap(), None).await?;</span>
+    <span class="doccomment">/// let client = Client::new(&quot;chat.harmonyapp.io:2289&quot;.parse().unwrap(), None).await?;</span>
     <span class="doccomment">/// client.begin_auth().await?;</span>
     <span class="doccomment">/// let auth_steps_stream = client.auth_stream().await?;</span>
     <span class="doccomment">/// // Do auth stuff here</span>
@@ -1446,7 +1493,7 @@
     <span class="doccomment">/// ```</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">auth_stream</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw">impl</span> <span class="ident">Future</span><span class="op">&lt;</span><span class="ident">Output</span> <span class="op">=</span> <span class="ident">ClientResult</span><span class="op">&lt;</span><span class="ident">AuthSocket</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">Send</span> <span class="op">+</span> <span class="lifetime">&#39;static</span> {
         <span class="kw">if</span> <span class="kw">let</span> <span class="ident">AuthStatus::InProgress</span>(<span class="ident">auth_id</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">auth_status</span>() {
-            <span class="kw">let</span> <span class="ident">fut</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">auth</span>().<span class="ident">stream_steps</span>(<span class="ident">AuthId::new</span>(<span class="ident">auth_id</span>));
+            <span class="kw">let</span> <span class="ident">fut</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">auth</span>().<span class="ident">stream_steps</span>(<span class="ident">StreamStepsRequest::new</span>(<span class="ident">auth_id</span>));
             <span class="ident">Either::Left</span>(
                 <span class="ident">fut</span>.<span class="ident">map_ok</span>(<span class="op">|</span><span class="ident">inner</span><span class="op">|</span> <span class="ident">AuthSocket</span> { <span class="ident">inner</span> })
                     .<span class="ident">map_err</span>(<span class="ident">ClientError::from</span>),
@@ -1456,23 +1503,28 @@
         }
     }
 
-    <span class="doccomment">/// Subscribe to events coming from specified event sources.</span>
+    <span class="doccomment">/// Subscribe to events.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// If `unsubcribe` is `true`, after the socket is connected, an</span>
+    <span class="doccomment">/// [`EventSource::Unsubscribe`] source will be sent to disable automatic</span>
+    <span class="doccomment">/// subscription.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// # Example</span>
     <span class="doccomment">/// ```no_run</span>
-    <span class="doccomment">/// # use harmony_rust_sdk::client::{*, api::chat::EventSource};</span>
+    <span class="doccomment">/// # use harmony_rust_sdk::client::*;</span>
     <span class="doccomment">/// # #[tokio::main(flavor = &quot;current_thread&quot;)]</span>
     <span class="doccomment">/// # async fn main() -&gt; error::ClientResult&lt;()&gt; {</span>
-    <span class="doccomment">/// # let client = Client::new(&quot;chat.harmonyapp.io:2289&quot;.parse().unwrap(), None).await?;</span>
+    <span class="doccomment">/// let client = Client::new(&quot;chat.harmonyapp.io:2289&quot;.parse().unwrap(), None).await?;</span>
     <span class="doccomment">/// // Auth here</span>
-    <span class="doccomment">/// let event_stream = client.subscribe_events(vec![EventSource::Homeserver, EventSource::Action]).await?;</span>
-    <span class="doccomment">/// // Do more auth stuff here</span>
+    <span class="doccomment">/// let event_stream = client.subscribe_events(false).await?;</span>
+    <span class="doccomment">/// // Do more stuff here</span>
     <span class="doccomment">/// # Ok(())</span>
     <span class="doccomment">/// # }</span>
     <span class="doccomment">/// ```</span>
+    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;gen_chat&quot;</span>)]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">subscribe_events</span>(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
-        <span class="ident">subscriptions</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">EventSource</span><span class="op">&gt;</span>,
+        <span class="ident">unsubscribe</span>: <span class="ident">bool</span>,
     ) -&gt; <span class="kw">impl</span> <span class="ident">Future</span><span class="op">&lt;</span><span class="ident">Output</span> <span class="op">=</span> <span class="ident">ClientResult</span><span class="op">&lt;</span><span class="ident">EventsSocket</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">Send</span> <span class="op">+</span> <span class="lifetime">&#39;static</span> {
         <span class="kw">let</span> <span class="ident">fut</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">chat</span>().<span class="ident">stream_events</span>(());
         <span class="kw">async</span> <span class="kw">move</span> {
@@ -1481,8 +1533,14 @@
                 <span class="ident">write</span>: <span class="ident">EventsWriteSocket</span> { <span class="ident">inner</span>: <span class="ident">tx</span> },
                 <span class="ident">read</span>: <span class="ident">EventsReadSocket</span> { <span class="ident">inner</span>: <span class="ident">rx</span> },
             };
-            <span class="kw">for</span> <span class="ident">source</span> <span class="kw">in</span> <span class="ident">subscriptions</span> {
-                <span class="ident">socket</span>.<span class="ident">add_source</span>(<span class="ident">source</span>).<span class="kw">await</span><span class="question-mark">?</span>;
+            <span class="kw">if</span> <span class="ident">unsubscribe</span> {
+                <span class="ident">socket</span>
+                    .<span class="ident">add_source</span>(<span class="ident"><span class="kw">crate</span>::api::chat::EventSource::Unsubscribe</span>)
+                    .<span class="kw">await</span><span class="question-mark">?</span>;
+                <span class="comment">// Try to exhaust events the server already sent</span>
+                <span class="comment">// this probably doesn&#39;t work well considering the events might</span>
+                <span class="comment">// not have even arrived yet...</span>
+                <span class="kw">while</span> <span class="ident">socket</span>.<span class="ident">get_event</span>().<span class="ident">now_or_never</span>().<span class="ident">is_some</span>() {}
             }
 
             <span class="prelude-val">Ok</span>(<span class="ident">socket</span>)
@@ -1519,9 +1577,8 @@
         <span class="kw">if</span> <span class="ident">guard</span>.<span class="number">0</span>.<span class="ident">is_authenticated</span>() {
             <span class="ident">req</span>.<span class="ident">get_or_insert_header_map</span>().<span class="ident">insert</span>(
                 <span class="ident">http::header::AUTHORIZATION</span>,
-                <span class="comment">// This is safe on the assumption that servers will never send session tokens</span>
-                <span class="comment">// with invalid-byte(s). If they do, they aren&#39;t respecting the protocol</span>
-                <span class="kw">unsafe</span> { <span class="ident">http::HeaderValue::from_maybe_shared_unchecked</span>(<span class="ident">guard</span>.<span class="number">1</span>.<span class="ident">clone</span>()) },
+                <span class="ident">http::HeaderValue::from_maybe_shared</span>(<span class="ident">guard</span>.<span class="number">1</span>.<span class="ident">clone</span>())
+                    .<span class="ident">expect</span>(<span class="string">&quot;auth token must be UTF-8&quot;</span>),
             );
 
             <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;client_web&quot;</span>)]</span>
@@ -1529,7 +1586,7 @@
                 <span class="kw">use</span> <span class="ident">std::borrow::Cow</span>;
 
                 <span class="kw">let</span> <span class="ident">token</span> <span class="op">=</span> <span class="ident">std::str::from_utf8</span>(<span class="ident">guard</span>.<span class="number">1</span>.<span class="ident">as_ref</span>())
-                    .<span class="ident">expect</span>(<span class="string">&quot;auth token must be utf-8&quot;</span>)
+                    .<span class="ident">expect</span>(<span class="string">&quot;auth token must be UTF-8&quot;</span>)
                     .<span class="ident">to_string</span>();
                 <span class="ident">req</span>.<span class="ident">extensions_mut</span>().<span class="ident">insert</span>(
                     <span class="ident">hrpc::client::transport::http::wasm::SocketProtocols::new</span>(<span class="macro">vec!</span>[
@@ -1541,90 +1598,6 @@
         }
 
         <span class="ident">Service::call</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>.<span class="ident">inner</span>, <span class="ident">req</span>)
-    }
-}
-
-<span class="doccomment">/// Event subscription socket.</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">EventsSocket</span> {
-    <span class="ident">read</span>: <span class="ident">EventsReadSocket</span>,
-    <span class="ident">write</span>: <span class="ident">EventsWriteSocket</span>,
-}
-
-<span class="kw">impl</span> <span class="ident">EventsSocket</span> {
-    <span class="doccomment">/// Get an event.</span>
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="kw">pub</span> <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">get_event</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="ident">ClientResult</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident"><span class="kw">crate</span>::api::chat::Event</span><span class="op">&gt;</span><span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">read</span>.<span class="ident">get_event</span>().<span class="kw">await</span>
-    }
-
-    <span class="doccomment">/// Add a new event source.</span>
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="kw">pub</span> <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">add_source</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">source</span>: <span class="ident">EventSource</span>) -&gt; <span class="ident">ClientResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">write</span>.<span class="ident">add_source</span>(<span class="ident">source</span>).<span class="kw">await</span>
-    }
-
-    <span class="doccomment">/// Close this socket.</span>
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="kw">pub</span> <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">close</span>(<span class="self">self</span>) -&gt; <span class="ident">ClientResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">write</span>.<span class="ident">close</span>().<span class="kw">await</span>
-    }
-
-    <span class="doccomment">/// Split this socket into the read and write half.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">split</span>(<span class="self">self</span>) -&gt; (<span class="ident">EventsWriteSocket</span>, <span class="ident">EventsReadSocket</span>) {
-        (<span class="self">self</span>.<span class="ident">write</span>, <span class="self">self</span>.<span class="ident">read</span>)
-    }
-}
-
-<span class="kw">impl</span> <span class="ident">Debug</span> <span class="kw">for</span> <span class="ident">EventsSocket</span> {
-    <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Formatter</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) -&gt; <span class="ident">fmt::Result</span> {
-        <span class="ident">f</span>.<span class="ident">write_str</span>(<span class="string">&quot;EventsSocket&quot;</span>)
-    }
-}
-
-<span class="doccomment">/// Write half of the event subscription socket.</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">EventsWriteSocket</span> {
-    <span class="ident">inner</span>: <span class="ident">hrpc::client::socket::WriteSocket</span><span class="op">&lt;</span><span class="ident"><span class="kw">crate</span>::api::chat::StreamEventsRequest</span><span class="op">&gt;</span>,
-}
-
-<span class="kw">impl</span> <span class="ident">EventsWriteSocket</span> {
-    <span class="doccomment">/// Add a new event source.</span>
-    <span class="kw">pub</span> <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">add_source</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">source</span>: <span class="ident">EventSource</span>) -&gt; <span class="ident">ClientResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">inner</span>
-            .<span class="ident">send_message</span>(<span class="ident">source</span>.<span class="ident">into</span>())
-            .<span class="kw">await</span>
-            .<span class="ident">map_err</span>(<span class="ident">Into::into</span>)
-    }
-
-    <span class="doccomment">/// Close this socket.</span>
-    <span class="kw">pub</span> <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">close</span>(<span class="self">self</span>) -&gt; <span class="ident">ClientResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">close</span>().<span class="kw">await</span>.<span class="ident">map_err</span>(<span class="ident">Into::into</span>)
-    }
-}
-
-<span class="kw">impl</span> <span class="ident">Debug</span> <span class="kw">for</span> <span class="ident">EventsWriteSocket</span> {
-    <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Formatter</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) -&gt; <span class="ident">fmt::Result</span> {
-        <span class="ident">f</span>.<span class="ident">write_str</span>(<span class="string">&quot;EventsWriteSocket&quot;</span>)
-    }
-}
-
-<span class="doccomment">/// Read half of the event subscription socket.</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">EventsReadSocket</span> {
-    <span class="ident">inner</span>: <span class="ident">hrpc::client::socket::ReadSocket</span><span class="op">&lt;</span><span class="ident"><span class="kw">crate</span>::api::chat::StreamEventsResponse</span><span class="op">&gt;</span>,
-}
-
-<span class="kw">impl</span> <span class="ident">EventsReadSocket</span> {
-    <span class="doccomment">/// Get an event.</span>
-    <span class="kw">pub</span> <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">get_event</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="ident">ClientResult</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident"><span class="kw">crate</span>::api::chat::Event</span><span class="op">&gt;</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">resp</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">receive_message</span>().<span class="kw">await</span><span class="question-mark">?</span>;
-        <span class="prelude-val">Ok</span>(<span class="ident">resp</span>
-            .<span class="ident">event</span>
-            .<span class="ident">and_then</span>(<span class="op">|</span><span class="ident">a</span><span class="op">|</span> <span class="ident"><span class="kw">crate</span>::api::chat::Event::try_from</span>(<span class="ident">a</span>).<span class="ident">ok</span>()))
-    }
-}
-
-<span class="kw">impl</span> <span class="ident">Debug</span> <span class="kw">for</span> <span class="ident">EventsReadSocket</span> {
-    <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Formatter</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) -&gt; <span class="ident">fmt::Result</span> {
-        <span class="ident">f</span>.<span class="ident">write_str</span>(<span class="string">&quot;EventsReadSocket&quot;</span>)
     }
 }
 
@@ -1655,6 +1628,97 @@
 <span class="kw">impl</span> <span class="ident">Debug</span> <span class="kw">for</span> <span class="ident">AuthSocket</span> {
     <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Formatter</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) -&gt; <span class="ident">fmt::Result</span> {
         <span class="ident">f</span>.<span class="ident">write_str</span>(<span class="string">&quot;AuthSocket&quot;</span>)
+    }
+}
+
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;gen_chat&quot;</span>)]</span>
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">event_socket</span>::<span class="kw-2">*</span>;
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;gen_chat&quot;</span>)]</span>
+<span class="kw">mod</span> <span class="ident">event_socket</span> {
+    <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
+    <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::api::chat</span>::{<span class="ident">Event</span>, <span class="ident">EventSource</span>, <span class="ident">StreamEventsRequest</span>, <span class="ident">StreamEventsResponse</span>};
+    <span class="kw">use</span> <span class="ident">hrpc::client::socket</span>::{<span class="ident">ReadSocket</span>, <span class="ident">WriteSocket</span>};
+
+    <span class="doccomment">/// Event subscription socket.</span>
+    <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">EventsSocket</span> {
+        <span class="kw">pub</span>(<span class="kw">super</span>) <span class="ident">read</span>: <span class="ident">EventsReadSocket</span>,
+        <span class="kw">pub</span>(<span class="kw">super</span>) <span class="ident">write</span>: <span class="ident">EventsWriteSocket</span>,
+    }
+
+    <span class="kw">impl</span> <span class="ident">EventsSocket</span> {
+        <span class="doccomment">/// Get an event.</span>
+        <span class="attribute">#[<span class="ident">inline</span>]</span>
+        <span class="kw">pub</span> <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">get_event</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="ident">ClientResult</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Event</span><span class="op">&gt;</span><span class="op">&gt;</span> {
+            <span class="self">self</span>.<span class="ident">read</span>.<span class="ident">get_event</span>().<span class="kw">await</span>
+        }
+
+        <span class="doccomment">/// Add a new event source.</span>
+        <span class="attribute">#[<span class="ident">inline</span>]</span>
+        <span class="kw">pub</span> <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">add_source</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">source</span>: <span class="ident">EventSource</span>) -&gt; <span class="ident">ClientResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
+            <span class="self">self</span>.<span class="ident">write</span>.<span class="ident">add_source</span>(<span class="ident">source</span>).<span class="kw">await</span>
+        }
+
+        <span class="doccomment">/// Close this socket.</span>
+        <span class="attribute">#[<span class="ident">inline</span>]</span>
+        <span class="kw">pub</span> <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">close</span>(<span class="self">self</span>) -&gt; <span class="ident">ClientResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
+            <span class="self">self</span>.<span class="ident">write</span>.<span class="ident">close</span>().<span class="kw">await</span>
+        }
+
+        <span class="doccomment">/// Split this socket into the read and write half.</span>
+        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">split</span>(<span class="self">self</span>) -&gt; (<span class="ident">EventsWriteSocket</span>, <span class="ident">EventsReadSocket</span>) {
+            (<span class="self">self</span>.<span class="ident">write</span>, <span class="self">self</span>.<span class="ident">read</span>)
+        }
+    }
+
+    <span class="kw">impl</span> <span class="ident">Debug</span> <span class="kw">for</span> <span class="ident">EventsSocket</span> {
+        <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Formatter</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) -&gt; <span class="ident">fmt::Result</span> {
+            <span class="ident">f</span>.<span class="ident">write_str</span>(<span class="string">&quot;EventsSocket&quot;</span>)
+        }
+    }
+
+    <span class="doccomment">/// Write half of the event subscription socket.</span>
+    <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">EventsWriteSocket</span> {
+        <span class="kw">pub</span>(<span class="kw">super</span>) <span class="ident">inner</span>: <span class="ident">WriteSocket</span><span class="op">&lt;</span><span class="ident">StreamEventsRequest</span><span class="op">&gt;</span>,
+    }
+
+    <span class="kw">impl</span> <span class="ident">EventsWriteSocket</span> {
+        <span class="doccomment">/// Add a new event source.</span>
+        <span class="kw">pub</span> <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">add_source</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">source</span>: <span class="ident">EventSource</span>) -&gt; <span class="ident">ClientResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
+            <span class="self">self</span>.<span class="ident">inner</span>
+                .<span class="ident">send_message</span>(<span class="ident">source</span>.<span class="ident">into</span>())
+                .<span class="kw">await</span>
+                .<span class="ident">map_err</span>(<span class="ident">Into::into</span>)
+        }
+
+        <span class="doccomment">/// Close this socket.</span>
+        <span class="kw">pub</span> <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">close</span>(<span class="self">self</span>) -&gt; <span class="ident">ClientResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
+            <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">close</span>().<span class="kw">await</span>.<span class="ident">map_err</span>(<span class="ident">Into::into</span>)
+        }
+    }
+
+    <span class="kw">impl</span> <span class="ident">Debug</span> <span class="kw">for</span> <span class="ident">EventsWriteSocket</span> {
+        <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Formatter</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) -&gt; <span class="ident">fmt::Result</span> {
+            <span class="ident">f</span>.<span class="ident">write_str</span>(<span class="string">&quot;EventsWriteSocket&quot;</span>)
+        }
+    }
+
+    <span class="doccomment">/// Read half of the event subscription socket.</span>
+    <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">EventsReadSocket</span> {
+        <span class="kw">pub</span>(<span class="kw">super</span>) <span class="ident">inner</span>: <span class="ident">ReadSocket</span><span class="op">&lt;</span><span class="ident">StreamEventsResponse</span><span class="op">&gt;</span>,
+    }
+
+    <span class="kw">impl</span> <span class="ident">EventsReadSocket</span> {
+        <span class="doccomment">/// Get an event.</span>
+        <span class="kw">pub</span> <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">get_event</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="ident">ClientResult</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Event</span><span class="op">&gt;</span><span class="op">&gt;</span> {
+            <span class="kw">let</span> <span class="ident">resp</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">receive_message</span>().<span class="kw">await</span><span class="question-mark">?</span>;
+            <span class="prelude-val">Ok</span>(<span class="ident">resp</span>.<span class="ident">event</span>.<span class="ident">and_then</span>(<span class="op">|</span><span class="ident">a</span><span class="op">|</span> <span class="ident">Event::try_from</span>(<span class="ident">a</span>).<span class="ident">ok</span>()))
+        }
+    }
+
+    <span class="kw">impl</span> <span class="ident">Debug</span> <span class="kw">for</span> <span class="ident">EventsReadSocket</span> {
+        <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Formatter</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) -&gt; <span class="ident">fmt::Result</span> {
+            <span class="ident">f</span>.<span class="ident">write_str</span>(<span class="string">&quot;EventsReadSocket&quot;</span>)
+        }
     }
 }
 </code></pre></div>

@@ -1,0 +1,1 @@
+initSidebarItems({"constant":[["EMAIL",""],["GUILD_ID_FILE",""],["HOMESERVER",""],["PASSWORD",""],["USERNAME",""]],"fn":[["main",""]]});

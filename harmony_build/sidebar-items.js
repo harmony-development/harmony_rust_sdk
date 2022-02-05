@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["Builder","Type containing configuration for building a [`Protocol`]."],["Protocol","Contains paths for protocol includes and protos to compile."]],"type":[["BoxError","A boxed object that implements [`std::error::Error`]."],["Result","Shorthand for `Result<T, BoxError>`."]]});

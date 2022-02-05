@@ -1,0 +1,1 @@
+initSidebarItems({"attr":[["impl_call_action",""],["impl_call_req",""],["into_request",""],["self_builder_with_new",""]],"derive":[["builder",""],["self_builder",""],["self_builder_no_option",""]],"macro":[["impl_call",""],["impl_into_req_from",""]]});

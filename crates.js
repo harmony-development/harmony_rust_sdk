@@ -1,1 +1,1 @@
-window.ALL_CRATES = ["harmony_rust_sdk"];
+window.ALL_CRATES = ["harmony_build","harmony_derive","harmony_rust_sdk","main"];

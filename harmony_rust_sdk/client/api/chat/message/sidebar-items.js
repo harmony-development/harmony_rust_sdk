@@ -1,1 +1,0 @@
-initSidebarItems({"struct":[["SendMessage","Convenience type to create a valid [`SendMessageRequest`]."]],"trait":[["MessageExt","Trait that implements convenience methods for [`Message`] type."]]});

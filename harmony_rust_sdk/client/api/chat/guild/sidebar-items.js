@@ -1,1 +1,0 @@
-initSidebarItems({"struct":[["CreateGuild","Convenience type to create a valid [`CreateGuildRequest`]."],["UpdateGuildInformation","Convenience type to create a valid [`UpdateGuildInformationRequest`]."]]});

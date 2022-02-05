@@ -1,1 +1,1 @@
-initSidebarItems({"fn":[["decode_rgb","Decode an RGB value."],["encode_rgb","Encode an RGB value."]]});
+initSidebarItems({"fn":[["decode_rgb","Decode an RGB value. Returns `[red, green, blue]` where values are `u8`."],["encode_rgb","Encode an RGB value. Expects an array where values are `u8` and structured as `[red, green, blue]`."]]});

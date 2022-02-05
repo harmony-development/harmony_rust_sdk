@@ -1,1 +1,1 @@
-initSidebarItems({"mod":[["v1",""]]});
+initSidebarItems({"enum":[["AuthStepResponse","A response to an [`AuthStep`]."]],"mod":[["v1","v1 of auth service."]]});
