@@ -7,6 +7,12 @@ pub use v1::*;
 
 use std::fmt::{self, Display, Formatter};
 
+impl Into<Option<i32>> for UserStatus {
+    fn into(self) -> Option<i32> {
+        Some(self.into())
+    }
+}
+
 impl Display for UserStatus {
     fn fmt(&self, f: &mut Formatter) -> fmt::Result {
         let text = match self {

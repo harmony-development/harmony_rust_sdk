@@ -1,9 +1,7 @@
 //! Example showcasing a very simple message logging bot.
-use std::sync::atomic::{AtomicBool, Ordering};
-
 use harmony_rust_sdk::{
     api::{
-        auth::AuthStepResponse,
+        auth::{next_step_request::form_fields::Field, AuthStepResponse},
         chat::{self, stream_event, EventSource, JoinGuildRequest},
         profile::{UpdateProfileRequest, UserStatus},
     },
@@ -30,14 +28,23 @@ async fn main() -> ClientResult<()> {
         .init();
 
     // Create channels for ctrl-c shutdown
-    let (exit_tx, exit_rx) = oneshot::channel::<()>();
+    let (exit_tx, mut exit_rx) = oneshot::channel::<()>();
 
-    ctrlc::set_handler(move || {
-        // we ignore errors, since if the rx is dropped
-        // it means we already exited
-        let _ = exit_tx.send(());
-    })
-    .expect("Can't set Ctrl-C handler");
+    {
+        // workaround because `ctrlc::set_handler` doesn't take an `FnOnce`
+        // meaning it can't be used with `oneshot` sender since it's
+        // `send` method consumes itself, which makes the closure `FnOnce`,
+        // which doesn't implement `FnMut` since it can't be called more than once
+        let mut exit_tx = Some(exit_tx);
+        ctrlc::set_handler(move || {
+            if let Some(exit_tx) = exit_tx.take() {
+                // we ignore errors, since if the rx is dropped
+                // it means we already exited
+                let _ = exit_tx.send(());
+            }
+        })
+        .expect("Can't set Ctrl-C handler");
+    }
 
     let guild_invite = std::env::var("GUILD_INVITE");
 
@@ -49,33 +56,36 @@ async fn main() -> ClientResult<()> {
     client.begin_auth().await?;
     client.next_auth_step(AuthStepResponse::Initial).await?;
     client
-        .next_auth_step(AuthStepResponse::login_choice())
+        .next_auth_step(AuthStepResponse::choice("login"))
         .await?;
     let login_result = client
-        .next_auth_step(AuthStepResponse::login_form(EMAIL, PASSWORD))
+        .next_auth_step(AuthStepResponse::form(vec![
+            Field::String(EMAIL.to_string()),
+            Field::Bytes(PASSWORD.as_bytes().to_vec()),
+        ]))
         .await;
 
     if login_result.map_or(false, |maybe_step| maybe_step.is_some()) {
         info!("Login failed, let's try registering.");
         client.prev_auth_step().await?;
         client
-            .next_auth_step(AuthStepResponse::register_choice())
+            .next_auth_step(AuthStepResponse::choice("register"))
             .await?;
         client
-            .next_auth_step(AuthStepResponse::register_form(EMAIL, USERNAME, PASSWORD))
+            .next_auth_step(AuthStepResponse::form(vec![
+                Field::String(EMAIL.to_string()),
+                Field::String(USERNAME.to_string()),
+                Field::Bytes(PASSWORD.as_bytes().to_vec()),
+            ]))
             .await?;
         info!("Successfully registered.");
     } else {
         info!("Successfully logon.");
     }
 
-    // Change our bots status to online and make sure its marked as a bot
+    // Change our bots status to online
     client
-        .call(
-            UpdateProfile::default()
-                .with_new_status(UserStatus::Online)
-                .with_new_is_bot(true),
-        )
+        .call(UpdateProfileRequest::default().with_new_user_status(UserStatus::Online))
         .await?;
 
     // Join the guild if invite is specified
@@ -101,7 +111,7 @@ async fn main() -> ClientResult<()> {
     loop {
         tokio::select! {
             // Handle events from our socket
-            Some(event) = socket.get_event() => {
+            Ok(Some(event)) = socket.get_event() => {
                 if let chat::Event::Chat(stream_event::Event::SentMessage(sent_message)) = event {
                     if let Some(message) = sent_message.message {
                         info!("Received new message: {:?}", message);
@@ -111,7 +121,7 @@ async fn main() -> ClientResult<()> {
                             sent_message.guild_id,
                             sent_message.channel_id,
                             message.author_id,
-                            message.text().unwrap_or("<empty message>"),
+                            message.get_text_content().map_or("<empty message>", |f| f.text.as_str()),
                         );
                     }
                 }
@@ -124,7 +134,7 @@ async fn main() -> ClientResult<()> {
 
     // Change our bots status back to offline
     client
-        .call(UpdateProfile::default().with_new_status(UserStatus::OfflineUnspecified))
+        .call(UpdateProfileRequest::default().with_new_user_status(UserStatus::OfflineUnspecified))
         .await?;
 
     Ok(())
