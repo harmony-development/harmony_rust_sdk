@@ -160,6 +160,11 @@ impl StdError for HmcFromStrError {
 ///
 /// An example HMC looks like `hmc://chat.harmonyapp.io/403cb46c-49cf-4ae1-b876-f38eb26accb0`.
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
+/* blocked on Uri
+#[cfg_attr(feature = "rkyv", derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize))]
+#[cfg_attr(feature = "rkyv_validation", derive(bytecheck::CheckBytes))]
+#[cfg_attr(feature = "serde_derive", derive(serde::Serialize, serde::Deserialize))]
+*/
 pub struct Hmc {
     inner: Uri,
 }

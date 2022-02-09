@@ -117,6 +117,13 @@ impl Message {
 
 /// A stream event.
 #[derive(Debug, Clone, PartialEq)]
+#[cfg_attr(
+    feature = "rkyv",
+    derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize)
+)]
+#[cfg_attr(feature = "rkyv_validation", derive(bytecheck::CheckBytes))]
+#[cfg_attr(feature = "serde_derive", derive(serde::Serialize, serde::Deserialize))]
+#[repr(u8)]
 pub enum Event {
     /// A chat service event.
     Chat(stream_event::Event),
@@ -167,6 +174,13 @@ impl From<Event> for stream_events_response::Event {
 
 /// Describes where to subscribe for events.
 #[derive(Debug, Clone, Copy, Hash, PartialEq, Eq)]
+#[cfg_attr(
+    feature = "rkyv",
+    derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize)
+)]
+#[cfg_attr(feature = "rkyv_validation", derive(bytecheck::CheckBytes))]
+#[cfg_attr(feature = "serde_derive", derive(serde::Serialize, serde::Deserialize))]
+#[repr(u8)]
 pub enum EventSource {
     /// Subscription for a guild's events.
     Guild(u64),
@@ -205,6 +219,12 @@ impl From<EventSource> for StreamEventsRequest {
 /// An invite ID.
 #[into_request("JoinGuildRequest", "PreviewGuildRequest")]
 #[derive(Debug, Clone, Eq, PartialEq)]
+#[cfg_attr(
+    feature = "rkyv",
+    derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize)
+)]
+#[cfg_attr(feature = "rkyv_validation", derive(bytecheck::CheckBytes))]
+#[cfg_attr(feature = "serde_derive", derive(serde::Serialize, serde::Deserialize))]
 pub struct InviteId {
     invite_id: String,
 }

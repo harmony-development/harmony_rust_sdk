@@ -7,6 +7,13 @@ use serde::{Deserialize, Serialize};
 
 /// Kind of a file.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
+#[cfg_attr(
+    feature = "rkyv",
+    derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize)
+)]
+#[cfg_attr(feature = "rkyv_validation", derive(bytecheck::CheckBytes))]
+#[cfg_attr(feature = "serde_derive", derive(serde::Serialize, serde::Deserialize))]
+#[repr(u8)]
 pub enum FileKind {
     /// An attachment file.
     Attachment,
@@ -16,6 +23,12 @@ pub enum FileKind {
 
 /// A "file id", which can be a HMC URL, an external URL or a plain ID string.
 #[derive(Debug, Clone, Display, PartialEq, Eq, Hash)]
+/* blocked on Hmc
+#[cfg_attr(feature = "rkyv", derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize))]
+#[cfg_attr(feature = "rkyv_validation", derive(bytecheck::CheckBytes))]
+#[cfg_attr(feature = "serde_derive", derive(serde::Serialize, serde::Deserialize))]
+#[repr(u8)]
+*/
 pub enum FileId {
     /// A HMC describing where the file is.
     Hmc(Hmc),
@@ -158,6 +171,11 @@ pub fn extract_file_info_from_download_response<'a>(
 /// Struct that implements `serde` `Deserialize` / `Serialize` and can be used for
 /// the [`/_harmony/about`](https://github.com/harmony-development/protocol/blob/main/stable/rest/rest.md#get-_harmonyabout) endpoint.
 #[derive(Debug, Clone, Hash, PartialEq, Eq, Deserialize, Serialize)]
+#[cfg_attr(
+    feature = "rkyv",
+    derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize)
+)]
+#[cfg_attr(feature = "rkyv_validation", derive(bytecheck::CheckBytes))]
 pub struct About {
     /// the Harmony server software being hosted.
     #[serde(rename = "serverName")]

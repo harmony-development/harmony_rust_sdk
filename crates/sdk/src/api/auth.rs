@@ -9,6 +9,13 @@ use self::next_step_request::form_fields::Field;
 
 /// A response to an [`AuthStep`].
 #[derive(Debug, Clone)]
+#[cfg_attr(
+    feature = "rkyv",
+    derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize)
+)]
+#[cfg_attr(feature = "rkyv_validation", derive(bytecheck::CheckBytes))]
+#[cfg_attr(feature = "serde_derive", derive(serde::Serialize, serde::Deserialize))]
+#[repr(u8)]
 pub enum AuthStepResponse {
     /// A choice selection.
     Choice(String),
