@@ -8,8 +8,18 @@ fn main() -> Result<()> {
             .ok_or("Failed to get OUT_DIR! Something must be horribly wrong.")?,
     );
 
-    let protocol_path = std::env::var_os("HARMONY_PROTOCOL_PATH")
-        .map_or_else(|| PathBuf::from("../../protocol"), PathBuf::from);
+    let protocol_path = std::env::var_os("HARMONY_PROTOCOL_PATH").map_or_else(
+        || {
+            std::env::current_dir()
+                .expect("can't get current directory")
+                .parent()
+                .expect("expected parent")
+                .parent()
+                .expect("expected parent")
+                .join("protocol")
+        },
+        PathBuf::from,
+    );
 
     #[rustfmt::skip]
     let stable_svcs = [
