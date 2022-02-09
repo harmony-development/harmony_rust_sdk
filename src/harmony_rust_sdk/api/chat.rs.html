@@ -455,6 +455,26 @@
 <span id="454">454</span>
 <span id="455">455</span>
 <span id="456">456</span>
+<span id="457">457</span>
+<span id="458">458</span>
+<span id="459">459</span>
+<span id="460">460</span>
+<span id="461">461</span>
+<span id="462">462</span>
+<span id="463">463</span>
+<span id="464">464</span>
+<span id="465">465</span>
+<span id="466">466</span>
+<span id="467">467</span>
+<span id="468">468</span>
+<span id="469">469</span>
+<span id="470">470</span>
+<span id="471">471</span>
+<span id="472">472</span>
+<span id="473">473</span>
+<span id="474">474</span>
+<span id="475">475</span>
+<span id="476">476</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">derive_more</span>::<span class="kw-2">*</span>;
 <span class="kw">use</span> <span class="ident">harmony_derive::into_request</span>;
 <span class="kw">use</span> <span class="ident">std</span>::{
@@ -574,6 +594,13 @@
 
 <span class="doccomment">/// A stream event.</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">PartialEq</span>)]</span>
+<span class="attribute">#[<span class="ident">cfg_attr</span>(
+    <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rkyv&quot;</span>,
+    <span class="ident">derive</span>(<span class="ident">rkyv::Archive</span>, <span class="ident">rkyv::Serialize</span>, <span class="ident">rkyv::Deserialize</span>)
+)]</span>
+<span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rkyv_validation&quot;</span>, <span class="ident">derive</span>(<span class="ident">bytecheck::CheckBytes</span>))]</span>
+<span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;serde_derive&quot;</span>, <span class="ident">derive</span>(<span class="ident">serde::Serialize</span>, <span class="ident">serde::Deserialize</span>))]</span>
+<span class="attribute">#[<span class="ident">repr</span>(<span class="ident">u8</span>)]</span>
 <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">Event</span> {
     <span class="doccomment">/// A chat service event.</span>
     <span class="ident">Chat</span>(<span class="ident">stream_event::Event</span>),
@@ -624,6 +651,13 @@
 
 <span class="doccomment">/// Describes where to subscribe for events.</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">Copy</span>, <span class="ident">Hash</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>)]</span>
+<span class="attribute">#[<span class="ident">cfg_attr</span>(
+    <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rkyv&quot;</span>,
+    <span class="ident">derive</span>(<span class="ident">rkyv::Archive</span>, <span class="ident">rkyv::Serialize</span>, <span class="ident">rkyv::Deserialize</span>)
+)]</span>
+<span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rkyv_validation&quot;</span>, <span class="ident">derive</span>(<span class="ident">bytecheck::CheckBytes</span>))]</span>
+<span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;serde_derive&quot;</span>, <span class="ident">derive</span>(<span class="ident">serde::Serialize</span>, <span class="ident">serde::Deserialize</span>))]</span>
+<span class="attribute">#[<span class="ident">repr</span>(<span class="ident">u8</span>)]</span>
 <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">EventSource</span> {
     <span class="doccomment">/// Subscription for a guild&#39;s events.</span>
     <span class="ident">Guild</span>(<span class="ident">u64</span>),
@@ -662,6 +696,12 @@
 <span class="doccomment">/// An invite ID.</span>
 <span class="attribute">#[<span class="ident">into_request</span>(<span class="string">&quot;JoinGuildRequest&quot;</span>, <span class="string">&quot;PreviewGuildRequest&quot;</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">Eq</span>, <span class="ident">PartialEq</span>)]</span>
+<span class="attribute">#[<span class="ident">cfg_attr</span>(
+    <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rkyv&quot;</span>,
+    <span class="ident">derive</span>(<span class="ident">rkyv::Archive</span>, <span class="ident">rkyv::Serialize</span>, <span class="ident">rkyv::Deserialize</span>)
+)]</span>
+<span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rkyv_validation&quot;</span>, <span class="ident">derive</span>(<span class="ident">bytecheck::CheckBytes</span>))]</span>
+<span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;serde_derive&quot;</span>, <span class="ident">derive</span>(<span class="ident">serde::Serialize</span>, <span class="ident">serde::Deserialize</span>))]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">InviteId</span> {
     <span class="ident">invite_id</span>: <span class="ident">String</span>,
 }
