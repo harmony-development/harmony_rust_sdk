@@ -54,24 +54,7 @@ pub mod profile;
 
 /// Emote service API.
 #[cfg(feature = "gen_emote")]
-pub mod emote {
-    /// v1 of emote service.
-    pub mod v1 {
-        #![allow(missing_docs)]
-        hrpc::include_proto!("protocol.emote.v1");
-    }
-    pub use v1::*;
-}
-/// Batch service API.
-#[cfg(feature = "gen_batch")]
-pub mod batch {
-    /// v1 of batch service.
-    pub mod v1 {
-        #![allow(missing_docs)]
-        hrpc::include_proto!("protocol.batch.v1");
-    }
-    pub use v1::*;
-}
+pub mod emote;
 
 /// Voice service API.
 #[cfg(feature = "staging_gen_voice")]

@@ -28,7 +28,6 @@ fn main() -> Result<()> {
         #[cfg(feature = "gen_mediaproxy")] "mediaproxy.v1",
         #[cfg(feature = "gen_chat")] "chat.v1",
         #[cfg(feature = "gen_sync")] "sync.v1",
-        #[cfg(feature = "gen_batch")] "batch.v1",
         #[cfg(feature = "gen_profile")] "profile.v1",
         #[cfg(feature = "gen_emote")] "emote.v1",
     ];
@@ -74,15 +73,11 @@ fn main() -> Result<()> {
     builder = builder.modify_hrpc_config(|cfg| {
         cfg.type_attribute(".", "#[harmony_derive::self_builder_with_new]")
     });
-    builder = builder.modify_prost_config(|mut cfg| {
-        cfg.bytes(&[".protocol.batch.v1"]);
-        cfg
-    });
     if cfg!(feature = "all_permissions") {
         builder = builder.write_permissions(true);
     }
     if cfg!(feature = "valuable") {
-        for service in all_services.iter().filter(|a| "batch.v1".ne(**a)) {
+        for service in all_services.iter() {
             builder = builder.modify_hrpc_config(|cfg| {
                 cfg.type_attribute(
                     format!(".protocol.{}", service),
@@ -92,7 +87,7 @@ fn main() -> Result<()> {
         }
     }
     if cfg!(feature = "serde_derive") {
-        for service in all_services.iter().filter(|a| "batch.v1".ne(**a)) {
+        for service in all_services.iter() {
             builder = builder.modify_hrpc_config(|cfg| {
                 cfg.type_attribute(
                     format!(".protocol.{}", service),
@@ -102,7 +97,7 @@ fn main() -> Result<()> {
         }
     }
     if cfg!(feature = "rkyv") {
-        for service in all_services.iter().filter(|a| "batch.v1".ne(**a)) {
+        for service in all_services.iter() {
             builder = builder.modify_hrpc_config(|cfg| {
                 cfg.type_attribute(
                     format!(".protocol.{}", service),

@@ -28,9 +28,8 @@ use std::{
 use hrpc::client::layer::backoff::Backoff;
 use hrpc::{
     common::layer::trace::Trace,
-    encode::encode_protobuf_message,
     exports::{
-        bytes::{Bytes, BytesMut},
+        bytes::Bytes,
         futures_util::{future::Either, FutureExt, TryFutureExt},
         tower::Service,
     },
@@ -138,8 +137,6 @@ type ProfileService =
     crate::api::profile::profile_service_client::ProfileServiceClient<GenericClient>;
 #[cfg(feature = "gen_emote")]
 type EmoteService = crate::api::emote::emote_service_client::EmoteServiceClient<GenericClient>;
-#[cfg(feature = "gen_batch")]
-type BatchService = crate::api::batch::batch_service_client::BatchServiceClient<GenericClient>;
 
 /// Represents an authentication state in which a [`Client`] can be.
 #[derive(Debug, Clone)]
@@ -194,8 +191,6 @@ struct ClientData {
     profile: Mutex<ProfileService>,
     #[cfg(feature = "gen_emote")]
     emote: Mutex<EmoteService>,
-    #[cfg(feature = "gen_batch")]
-    batch: Mutex<BatchService>,
     http: HttpClient,
 }
 
@@ -311,8 +306,6 @@ impl Client {
         let profile = ProfileService::new_inner(inner.clone());
         #[cfg(feature = "gen_emote")]
         let emote = EmoteService::new_inner(inner.clone());
-        #[cfg(feature = "gen_batch")]
-        let batch = BatchService::new_inner(inner.clone());
         let auth = AuthService::new_inner(inner);
 
         let data = ClientData {
@@ -327,8 +320,6 @@ impl Client {
             profile: Mutex::new(profile),
             #[cfg(feature = "gen_emote")]
             emote: Mutex::new(emote),
-            #[cfg(feature = "gen_batch")]
-            batch: Mutex::new(batch),
             http,
         };
 
@@ -371,13 +362,6 @@ impl Client {
         self.data.emote.lock().expect("poisoned")
     }
 
-    /// Get a mutex guard to the batch service.
-    #[cfg(feature = "gen_batch")]
-    #[inline(always)]
-    pub fn batch(&self) -> MutexGuard<'_, BatchService> {
-        self.data.batch.lock().expect("poisoned")
-    }
-
     /// Execute the given request, await the response and return the
     /// deserialized body type.
     pub fn call<Req>(
@@ -402,41 +386,6 @@ impl Client {
         Req::Response: 'static,
     {
         request.call_with(self)
-    }
-
-    /// Execute the given requests a batch (same) request.
-    ///
-    /// Note that this does not support the convenience types defined in the [`api`] module.
-    /// You will need to convert them to the corresponding request type with `Request::from`.
-    #[cfg(feature = "gen_batch")]
-    pub fn batch_call<Req>(
-        &self,
-        requests: Vec<Req>,
-    ) -> impl Future<Output = ClientResult<Vec<<Req as Endpoint>::Response>>> + Send + 'static
-    where
-        Req: Endpoint + prost::Message,
-        <Req as Endpoint>::Response: prost::Message + Default + 'static,
-    {
-        use prost::Message;
-
-        let encoded = requests
-            .iter()
-            .map(encode_protobuf_message)
-            .map(BytesMut::freeze);
-        let batch_req = crate::api::batch::BatchSameRequest {
-            endpoint: Req::ENDPOINT_PATH.to_string(),
-            requests: encoded.collect(),
-        };
-        let fut = self.batch().batch_same(batch_req);
-        async move {
-            let responses = fut.await?.into_message().await?.responses;
-            let mut decoded = Vec::with_capacity(responses.len());
-            for response in responses {
-                let decoded_msg = <Req as Endpoint>::Response::decode(response.as_ref())?;
-                decoded.push(decoded_msg);
-            }
-            Ok(decoded)
-        }
     }
 
     #[inline(always)]

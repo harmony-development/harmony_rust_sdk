@@ -69,7 +69,6 @@ client_recommended = [
 	"gen_chat",
 	"gen_profile",
 	"gen_emote",
-	"gen_batch",
 	"gen_mediaproxy",
 	"rest",
 ]
@@ -94,7 +93,6 @@ gen_auth = ["gen_harmonytypes"]
 gen_mediaproxy = ["gen_harmonytypes"]
 gen_harmonytypes = []
 gen_sync = ["gen_harmonytypes"]
-gen_batch = []
 gen_profile = []
 gen_emote = []
 # Enables all stable protocols
@@ -104,7 +102,6 @@ gen_stable_protocols = [
 	"gen_mediaproxy",
 	"gen_harmonytypes",
 	"gen_sync",
-	"gen_batch",
 	"gen_profile",
 	"gen_emote",
 	"rest",

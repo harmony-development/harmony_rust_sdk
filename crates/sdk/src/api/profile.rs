@@ -26,3 +26,11 @@ impl Display for UserStatus {
         write!(f, "{}", text)
     }
 }
+
+impl GetProfileRequest {
+    /// Create a [`GetProfileRequest`] for fetching one user.
+    #[inline(always)]
+    pub fn new_one(user_id: u64) -> Self {
+        Self::new(vec![user_id])
+    }
+}

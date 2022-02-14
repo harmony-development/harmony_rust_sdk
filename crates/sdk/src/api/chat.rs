@@ -25,93 +25,109 @@ impl From<String> for FormattedText {
     }
 }
 
+impl GetGuildRequest {
+    /// Create a new [`GetGuildRequest`] for fetching one guild.
+    #[inline(always)]
+    pub fn new_one(guild_id: u64) -> Self {
+        Self::new(vec![guild_id])
+    }
+}
+
+impl GetUserRolesRequest {
+    /// Create a new [`GetUserRolesRequest`] for fetching one user's roles.
+    #[inline(always)]
+    pub fn new_one(guild_id: u64, user_id: u64) -> Self {
+        Self::new(guild_id, vec![user_id])
+    }
+}
+
 impl SendMessageRequest {
-    /// Set the `content` field of this request to a text content containing
-    /// the passed text.
-    pub fn with_text_content(mut self, text: impl Into<FormattedText>) -> Self {
-        self.content = Some(Content::new(
-            content::Content::TextMessage(content::TextContent::new(text.into().into())).into(),
-        ));
+    /// Set the text content of this request.
+    pub fn with_text(mut self, text: impl Into<FormattedText>) -> Self {
+        let text = text.into();
+        self.content = self.content.map(|mut c| {
+            c.text = text.text;
+            c.text_formats = text.format;
+            c
+        });
         self
     }
 
-    /// Set the `content` field of this request to an attachment content
-    /// containing the passed attachment(s).
-    pub fn with_attachment_content(mut self, files: impl Into<Vec<Attachment>>) -> Self {
-        self.content = Some(Content::new(
-            content::Content::AttachmentMessage(content::AttachmentContent::new(files.into()))
-                .into(),
-        ));
+    /// Set the extra content of this request to attachments.
+    pub fn with_attachments(
+        mut self,
+        files: impl Into<Vec<send_message_request::Attachment>>,
+    ) -> Self {
+        use send_message_request::content::*;
+        self.content = self.content.map(|mut c| {
+            c.extra = Some(Extra::new_attachments(Attachments::new(files.into())));
+            c
+        });
         self
     }
 
-    /// Set the `content` field of this request to a photo content containing
-    /// the passed photo(s).
-    pub fn with_photo_content(mut self, photos: impl Into<Vec<Photo>>) -> Self {
-        self.content = Some(Content::new(
-            content::Content::PhotoMessage(content::PhotoContent::new(photos.into())).into(),
-        ));
+    /// Set the extra content of this request to embeds.
+    pub fn with_embeds(mut self, embeds: impl Into<Vec<Embed>>) -> Self {
+        use send_message_request::content::*;
+        self.content = self.content.map(|mut c| {
+            c.extra = Some(Extra::new_embeds(Embeds::new(embeds.into())));
+            c
+        });
         self
     }
+}
 
-    /// Set the `content` field of this request to a embed content containing
-    /// the passed embed(s).
-    pub fn with_embed_content(mut self, embeds: impl Into<Vec<Embed>>) -> Self {
-        self.content = Some(Content::new(
-            content::Content::EmbedMessage(content::EmbedContent::new(embeds.into())).into(),
-        ));
-        self
+impl content::Extra {
+    /// Get the attachments from this extra content.
+    #[inline(always)]
+    pub fn get_attachments(&self) -> Option<&[Attachment]> {
+        if let content::Extra::Attachments(attachments) = self {
+            Some(attachments.attachments.as_slice())
+        } else {
+            None
+        }
+    }
+
+    /// Get the embeds from this extra content.
+    #[inline(always)]
+    pub fn get_embeds(&self) -> Option<&[Embed]> {
+        if let content::Extra::Embeds(embeds) = self {
+            Some(embeds.embeds.as_slice())
+        } else {
+            None
+        }
     }
 }
 
 impl Message {
     /// Shorthand to get the content of this message.
-    pub fn get_content(&self) -> Option<&content::Content> {
-        self.content.as_ref().and_then(|c| c.content.as_ref())
+    #[inline(always)]
+    pub fn get_content(&self) -> Option<&Content> {
+        self.content.as_ref()
     }
 
     /// Shorthand to get the text content of this message.
-    pub fn get_text_content(&self) -> Option<&FormattedText> {
-        self.get_content().and_then(|c| {
-            if let content::Content::TextMessage(text) = c {
-                text.content.as_ref()
-            } else {
-                None
-            }
-        })
+    pub fn get_text(&self) -> Option<&str> {
+        self.get_content().map(|c| c.text.as_str())
     }
 
-    /// Shorthand to get the photo content of this message.
-    pub fn get_photo_content(&self) -> Option<&[Photo]> {
-        self.get_content().and_then(|c| {
-            if let content::Content::PhotoMessage(photo) = c {
-                Some(photo.photos.as_slice())
-            } else {
-                None
-            }
-        })
+    /// Shorthand to get the text content of this message.
+    pub fn get_text_formats(&self) -> Option<&[Format]> {
+        self.get_content().map(|c| c.text_formats.as_slice())
     }
 
     /// Shorthand to get the attachment content of this message.
-    pub fn get_attachment_content(&self) -> Option<&[Attachment]> {
-        self.get_content().and_then(|c| {
-            if let content::Content::AttachmentMessage(attach) = c {
-                Some(attach.files.as_slice())
-            } else {
-                None
-            }
-        })
+    pub fn get_attachments(&self) -> Option<&[Attachment]> {
+        self.get_content()
+            .and_then(|c| c.extra.as_ref())
+            .and_then(|e| e.get_attachments())
     }
 
     /// Shorthand to get the embed content of this message.
-    pub fn get_embed_content(&self) -> Option<&[Embed]> {
-        self.get_content().and_then(|c| {
-            if let content::Content::EmbedMessage(embed) = c {
-                Some(embed.embeds.as_slice())
-            } else {
-                None
-            }
-        })
+    pub fn get_embeds(&self) -> Option<&[Embed]> {
+        self.get_content()
+            .and_then(|c| c.extra.as_ref())
+            .and_then(|e| e.get_embeds())
     }
 }
 

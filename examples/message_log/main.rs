@@ -121,7 +121,7 @@ async fn main() -> ClientResult<()> {
                             sent_message.guild_id,
                             sent_message.channel_id,
                             message.author_id,
-                            message.get_text_content().map_or("<empty message>", |f| f.text.as_str()),
+                            message.get_text().unwrap_or("<empty message>"),
                         );
                     }
                 }
