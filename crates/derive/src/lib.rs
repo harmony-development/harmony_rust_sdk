@@ -1,3 +1,5 @@
+use std::ops::Not;
+
 use proc_macro::TokenStream;
 
 mod impl_call;
@@ -43,27 +45,18 @@ pub fn self_builder_with_new(_: TokenStream, input: TokenStream) -> TokenStream 
         &input,
         impl_self_builder::Config {
             for_self: true,
-            ..Default::default()
+            strip_option: true,
+            impl_new: is_disc_enum.not(),
         },
     )
     .into();
 
-    if is_disc_enum {
-        (quote::quote! {
-            #input
+    (quote::quote! {
+        #input
 
-            #self_impl
-        })
-        .into()
-    } else {
-        (quote::quote! {
-            #[derive(derive_new::new)]
-            #input
-
-            #self_impl
-        })
-        .into()
-    }
+        #self_impl
+    })
+    .into()
 }
 
 #[proc_macro_derive(self_builder_no_option, attributes(builder))]
@@ -74,6 +67,7 @@ pub fn self_builder_impl_strip_option(input: TokenStream) -> TokenStream {
         impl_self_builder::Config {
             for_self: true,
             strip_option: true,
+            impl_new: true,
         },
     )
 }

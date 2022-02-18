@@ -1,4 +1,3 @@
-use derive_more::*;
 use harmony_derive::into_request;
 use std::{
     convert::TryFrom,
@@ -60,7 +59,7 @@ impl SendMessageRequest {
     ) -> Self {
         use send_message_request::content::*;
         self.content = self.content.map(|mut c| {
-            c.extra = Some(Extra::new_attachments(Attachments::new(files.into())));
+            c.extra = Some(Extra::Attachments(Attachments::new(files.into())));
             c
         });
         self
@@ -70,7 +69,7 @@ impl SendMessageRequest {
     pub fn with_embeds(mut self, embeds: impl Into<Vec<Embed>>) -> Self {
         use send_message_request::content::*;
         self.content = self.content.map(|mut c| {
-            c.extra = Some(Extra::new_embeds(Embeds::new(embeds.into())));
+            c.extra = Some(Extra::Embeds(Embeds::new(embeds.into())));
             c
         });
         self
@@ -153,9 +152,14 @@ pub enum Event {
 ///
 /// For example, this could occur if one of the fields expected to be sent were
 /// empty.
-#[derive(Debug, Display)]
-#[display(fmt = "event contains invalid fields")]
+#[derive(Debug)]
 pub struct EventFromResponseError;
+
+impl Display for EventFromResponseError {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        f.write_str("event contains invalid fields")
+    }
+}
 
 impl std::error::Error for EventFromResponseError {}
 

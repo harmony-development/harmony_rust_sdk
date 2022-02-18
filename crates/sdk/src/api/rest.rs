@@ -1,7 +1,11 @@
-use std::{convert::TryInto, error::Error as StdError, str::FromStr};
+use std::{
+    convert::TryInto,
+    error::Error as StdError,
+    fmt::{self, Display, Formatter},
+    str::FromStr,
+};
 
 use super::Hmc;
-use derive_more::Display;
 use http::{HeaderValue, Uri};
 use serde::{Deserialize, Serialize};
 
@@ -22,7 +26,7 @@ pub enum FileKind {
 }
 
 /// A "file id", which can be a HMC URL, an external URL or a plain ID string.
-#[derive(Debug, Clone, Display, PartialEq, Eq, Hash)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 /* blocked on Hmc
 #[cfg_attr(feature = "rkyv", derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize))]
 #[cfg_attr(feature = "rkyv_validation", derive(bytecheck::CheckBytes))]
@@ -102,10 +106,25 @@ impl From<FileId> for String {
     }
 }
 
+impl Display for FileId {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        match self {
+            FileId::Hmc(hmc) => write!(f, "{}", hmc),
+            FileId::Id(id) => f.write_str(id),
+            FileId::External(url) => write!(f, "{}", url),
+        }
+    }
+}
+
 /// Error that may be produced while parsing a string as a [`FileId`].
-#[derive(Debug, Clone, Display)]
-#[display(fmt = "Specified string is not a valid FileId.")]
+#[derive(Debug, Clone)]
 pub struct InvalidFileId;
+
+impl Display for InvalidFileId {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        f.write_str("Specified string is not a valid FileId.")
+    }
+}
 
 impl StdError for InvalidFileId {}
 

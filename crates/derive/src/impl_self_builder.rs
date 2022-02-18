@@ -1,4 +1,4 @@
-use std::str::FromStr;
+use std::{ops::Not, str::FromStr};
 
 use proc_macro::TokenStream;
 use proc_macro2::TokenStream as TokenStream2;
@@ -9,11 +9,16 @@ use syn::{Data, DeriveInput, Field, GenericArgument, Ident, Path, PathArguments,
 pub(crate) struct Config {
     pub(crate) for_self: bool,
     pub(crate) strip_option: bool,
+    pub(crate) impl_new: bool,
 }
 
 pub(crate) fn self_builder(input: &DeriveInput, config: Config) -> TokenStream {
     let name = &input.ident;
     let trait_name = format_ident!("{}SelfBuilder", name);
+    let new_impl = config
+        .impl_new
+        .then(|| construct_new_impl(&config, name, &input.data))
+        .unwrap_or_else(TokenStream2::new);
     let fields = match &input.data {
         Data::Struct(s) => s.fields.iter().map(FieldInfo::from).map(|mut f| {
             if config.strip_option {
@@ -37,6 +42,8 @@ pub(crate) fn self_builder(input: &DeriveInput, config: Config) -> TokenStream {
     if config.for_self {
         (quote! {
             impl #name {
+                #new_impl
+
                 #(
                     #impls
                 )*
@@ -67,6 +74,7 @@ pub(crate) fn self_builder(input: &DeriveInput, config: Config) -> TokenStream {
 struct FieldInfo {
     name: Ident,
     ty: Type,
+    is_optional: bool,
     strip_option: bool,
     skip_setter: bool,
 }
@@ -75,20 +83,77 @@ impl From<&Field> for FieldInfo {
     fn from(field: &Field) -> Self {
         let mut strip_option = false;
         let mut skip_setter = false;
+        let mut is_optional = false;
         for attr in field.attrs.iter() {
-            match attr.tokens.to_string().as_str() {
+            let attr = attr.tokens.to_string();
+            match attr.as_str() {
                 "builder(setter(strip_option))" => strip_option = true,
                 "builder(setter(skip))" => skip_setter = true,
                 _ => {}
+            }
+            if attr.contains("optional") {
+                is_optional = true;
             }
         }
 
         Self {
             name: field.ident.as_ref().expect("Expected a name").clone(),
             ty: field.ty.clone(),
+            is_optional,
             strip_option,
             skip_setter,
         }
+    }
+}
+
+fn construct_new_impl(config: &Config, name: &Ident, data: &Data) -> TokenStream2 {
+    match data {
+        Data::Struct(s) => {
+            let fields = s.fields.iter().map(FieldInfo::from).map(|mut f| {
+                if config.strip_option {
+                    f.strip_option = true;
+                }
+                f
+            });
+
+            let mut args = TokenStream2::new();
+            let mut names = TokenStream2::new();
+
+            for field_info in fields {
+                let FieldInfo {
+                    name,
+                    ty,
+                    is_optional,
+                    strip_option,
+                    ..
+                } = field_info;
+
+                if is_optional.not() {
+                    let opt_ty = extract_type_from_option(&ty);
+                    let ty = strip_option.then(|| opt_ty.clone()).flatten().unwrap_or(ty);
+                    let arg = quote! { #name : impl Into<#ty>, };
+                    let value = (opt_ty.is_some() && strip_option)
+                        .then(|| quote! { Some(#name .into()) })
+                        .unwrap_or_else(|| quote! { #name .into() });
+                    let name = quote! { #name : #value, };
+                    args.extend(arg);
+                    names.extend(name);
+                }
+            }
+
+            let doc_msg = format!("Create a new [`{}`].", name);
+
+            quote! {
+                #[doc = #doc_msg]
+                pub fn new(#args) -> Self {
+                    Self {
+                        #names
+                        ..Default::default()
+                    }
+                }
+            }
+        }
+        _ => TokenStream2::new(),
     }
 }
 
@@ -101,6 +166,7 @@ fn construct_impl_sign(
         ty,
         strip_option,
         skip_setter,
+        ..
     } = field_info;
 
     let method_name = quote::format_ident!("with_{}", name);

@@ -510,9 +510,10 @@ impl Client {
     ) -> impl Future<Output = ClientResult<Option<NextStepResponse>>> + Send + 'static {
         if let AuthStatus::InProgress(auth_id) = self.auth_status() {
             let auth_status_lock = self.data.auth_status.clone();
-            let fut = self
-                .auth()
-                .next_step(NextStepRequest::new(auth_id, response.into()));
+            let fut = self.auth().next_step(NextStepRequest {
+                auth_id,
+                step: response.into(),
+            });
 
             Either::Left(async move {
                 let step = fut.await?.into_message().await?;
