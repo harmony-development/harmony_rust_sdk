@@ -55,11 +55,10 @@ impl SendMessageRequest {
     /// Set the extra content of this request to attachments.
     pub fn with_attachments(
         mut self,
-        files: impl Into<Vec<send_message_request::Attachment>>,
+        attachments: impl Into<Vec<send_message_request::Attachment>>,
     ) -> Self {
-        use send_message_request::content::*;
         self.content = self.content.map(|mut c| {
-            c.extra = Some(Extra::Attachments(Attachments::new(files.into())));
+            c.attachments = attachments.into();
             c
         });
         self
@@ -67,34 +66,11 @@ impl SendMessageRequest {
 
     /// Set the extra content of this request to embeds.
     pub fn with_embeds(mut self, embeds: impl Into<Vec<Embed>>) -> Self {
-        use send_message_request::content::*;
         self.content = self.content.map(|mut c| {
-            c.extra = Some(Extra::Embeds(Embeds::new(embeds.into())));
+            c.embeds = embeds.into();
             c
         });
         self
-    }
-}
-
-impl content::Extra {
-    /// Get the attachments from this extra content.
-    #[inline(always)]
-    pub fn get_attachments(&self) -> Option<&[Attachment]> {
-        if let content::Extra::Attachments(attachments) = self {
-            Some(attachments.attachments.as_slice())
-        } else {
-            None
-        }
-    }
-
-    /// Get the embeds from this extra content.
-    #[inline(always)]
-    pub fn get_embeds(&self) -> Option<&[Embed]> {
-        if let content::Extra::Embeds(embeds) = self {
-            Some(embeds.embeds.as_slice())
-        } else {
-            None
-        }
     }
 }
 
@@ -117,16 +93,12 @@ impl Message {
 
     /// Shorthand to get the attachment content of this message.
     pub fn get_attachments(&self) -> Option<&[Attachment]> {
-        self.get_content()
-            .and_then(|c| c.extra.as_ref())
-            .and_then(|e| e.get_attachments())
+        self.get_content().map(|e| e.attachments.as_slice())
     }
 
     /// Shorthand to get the embed content of this message.
     pub fn get_embeds(&self) -> Option<&[Embed]> {
-        self.get_content()
-            .and_then(|c| c.extra.as_ref())
-            .and_then(|e| e.get_embeds())
+        self.get_content().map(|e| e.embeds.as_slice())
     }
 }
 
