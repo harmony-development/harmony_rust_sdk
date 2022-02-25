@@ -83,7 +83,7 @@ impl From<&Field> for FieldInfo {
     fn from(field: &Field) -> Self {
         let mut strip_option = false;
         let mut skip_setter = false;
-        let mut is_optional = false;
+        let is_optional = false;
         for attr in field.attrs.iter() {
             let attr = attr.tokens.to_string();
             match attr.as_str() {
@@ -91,9 +91,11 @@ impl From<&Field> for FieldInfo {
                 "builder(setter(skip))" => skip_setter = true,
                 _ => {}
             }
-            if attr.contains("optional") {
+            // TODO: figure out a way to reliably find whether a field
+            // is actually marked as optional in the protobuf
+            /*if attr.contains("optional") {
                 is_optional = true;
-            }
+            }*/
         }
 
         Self {
