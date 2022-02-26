@@ -77,7 +77,12 @@ impl Client {
     /// This endpoint does not require authentication.
     /// See [API documentation](https://github.com/harmony-development/protocol/blob/master/rest/rest.md#get-_harmonymediadownloadfile_id).
     pub async fn download(&self, file_id: impl Into<String>) -> ClientResult<Response> {
-        let uri = file_id.into().make_download_url(self.homeserver_url());
+        let id = file_id.into();
+        let uri = format!(
+            "{}_harmony/media/download/{}",
+            self.homeserver_url(),
+            urlencoding::encode(&id)
+        );
 
         let request = self.data.http.get(uri.as_str()).build()?;
         tracing::debug!("Sending HTTP request: {:?}", request);
