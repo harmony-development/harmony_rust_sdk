@@ -28,14 +28,7 @@ pub mod harmonytypes;
 
 /// Media proxy service API.
 #[cfg(feature = "gen_mediaproxy")]
-pub mod mediaproxy {
-    /// v1 of mediaproxy service.
-    pub mod v1 {
-        #![allow(missing_docs)]
-        hrpc::include_proto!("protocol.mediaproxy.v1");
-    }
-    pub use v1::*;
-}
+pub mod mediaproxy;
 
 /// Sync service API.
 #[cfg(feature = "gen_sync")]
