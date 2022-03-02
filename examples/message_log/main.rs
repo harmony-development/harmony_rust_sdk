@@ -3,7 +3,7 @@ use harmony_rust_sdk::{
     api::{
         auth::{next_step_request::form_fields::Field, AuthStepResponse},
         chat::{self, stream_event, EventSource, JoinGuildRequest},
-        profile::{UpdateProfileRequest, UserStatus},
+        profile::{user_status, UpdateStatusRequest},
     },
     client::{error::ClientResult, Client},
 };
@@ -85,7 +85,7 @@ async fn main() -> ClientResult<()> {
 
     // Change our bots status to online
     client
-        .call(UpdateProfileRequest::default().with_new_user_status(UserStatus::Online))
+        .call(UpdateStatusRequest::update_kind(user_status::Kind::Online))
         .await?;
 
     // Join the guild if invite is specified
@@ -134,7 +134,9 @@ async fn main() -> ClientResult<()> {
 
     // Change our bots status back to offline
     client
-        .call(UpdateProfileRequest::default().with_new_user_status(UserStatus::OfflineUnspecified))
+        .call(UpdateStatusRequest::update_kind(
+            user_status::Kind::OfflineUnspecified,
+        ))
         .await?;
 
     Ok(())

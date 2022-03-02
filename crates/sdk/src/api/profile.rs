@@ -7,23 +7,27 @@ pub use v1::*;
 
 use std::fmt::{self, Display, Formatter};
 
-impl From<UserStatus> for Option<i32> {
-    fn from(status: UserStatus) -> Self {
-        Some(status.into())
+impl Display for user_status::Kind {
+    fn fmt(&self, f: &mut Formatter) -> fmt::Result {
+        let text = match self {
+            Self::OfflineUnspecified => "Offline",
+            Self::Online => "Online",
+            Self::Idle => "Idle",
+            Self::DoNotDisturb => "Do Not Disturb",
+        };
+        f.write_str(text)
     }
 }
 
-impl Display for UserStatus {
-    fn fmt(&self, f: &mut Formatter) -> fmt::Result {
-        let text = match self {
-            UserStatus::OfflineUnspecified => "Offline",
-            UserStatus::Online => "Online",
-            UserStatus::Idle => "Idle",
-            UserStatus::DoNotDisturb => "Do Not Disturb",
-            UserStatus::Streaming => "Streaming",
-            UserStatus::Mobile => "Mobile",
-        };
-        write!(f, "{}", text)
+impl UpdateStatusRequest {
+    /// Create a [`UpdateStatusRequest`] for changing user status kind.
+    pub fn update_kind(status: user_status::Kind) -> Self {
+        Self {
+            new_status: Some(UserStatus {
+                kind: status.into(),
+                ..Default::default()
+            }),
+        }
     }
 }
 
