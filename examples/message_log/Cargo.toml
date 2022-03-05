@@ -10,7 +10,7 @@ default-run = "main"
 
 [dependencies]
 harmony_rust_sdk = { path = "../../crates/sdk", features = ["client_native", "client_recommended"] }
-tokio = { version = "1.14", features = ["rt", "macros", "fs"] }
+tokio = { version = "1.17", features = ["rt", "macros", "fs"] }
 tracing-subscriber = { version = "0.3", features = ["env-filter"] }
 ctrlc = "3.1.8"
 tracing = "0.1"
