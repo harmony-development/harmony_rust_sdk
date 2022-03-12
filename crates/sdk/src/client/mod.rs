@@ -38,7 +38,7 @@ use hrpc::{
     response::BoxResponse,
     Response,
 };
-use http::Uri;
+use http::{StatusCode, Uri};
 use reqwest::Client as HttpClient;
 use std::sync::{Mutex, MutexGuard, RwLock, RwLockReadGuard};
 
@@ -213,10 +213,8 @@ pub struct Client {
 impl Client {
     /// Create a new [`Client`] from a homeserver [`Uri`] and an (optional) session.
     ///
-    /// - If port is not specified in the URL, this will:
-    ///   1. try to do name resolution according to the protocol,
-    ///   2. if there still isn't a port, add the default port `2289` to it
-    ///
+    /// - If port is not specified in the URL, this will try to do name resolution
+    /// according to the protocol.
     /// - If scheme is not specified (or is not `http` or `https`), this will
     /// assume the scheme is `https`.
     ///
@@ -257,28 +255,17 @@ impl Client {
                 Uri::from_parts(parts).unwrap()
             };
 
-            if let Ok(response) = http
-                .get(&url.to_string())
-                .send()
-                .await?
-                .json::<Server>()
-                .await
-            {
-                let host: Uri = response.server.parse().unwrap();
-                homeserver_url = host;
-            }
-        };
+            let resp = http.get(&url.to_string()).send().await?;
 
-        // Add the default port if not specified
-        if homeserver_url.port().is_none() {
-            homeserver_url = {
-                let mut parts = homeserver_url.into_parts();
-                parts.authority = Some(
-                    format!("{}:2289", parts.authority.unwrap().as_str())
-                        .parse()
-                        .unwrap(),
+            if resp.status() == StatusCode::NOT_FOUND {
+                tracing::warn!(
+                    "attempted to name res, but the server does not specify a server file"
                 );
-                Uri::from_parts(parts).unwrap()
+            } else {
+                if let Ok(response) = resp.error_for_status()?.json::<Server>().await {
+                    let host: Uri = response.server.parse().unwrap();
+                    homeserver_url = host;
+                }
             }
         }
 
