@@ -44,6 +44,7 @@ impl SendMessageRequest {
     /// Set the text content of this request.
     pub fn with_text(mut self, text: impl Into<FormattedText>) -> Self {
         let text = text.into();
+        self.content = Some(self.content.unwrap_or_default());
         self.content = self.content.map(|mut c| {
             c.text = text.text;
             c.text_formats = text.format;
@@ -57,6 +58,7 @@ impl SendMessageRequest {
         mut self,
         attachments: impl Into<Vec<send_message_request::Attachment>>,
     ) -> Self {
+        self.content = Some(self.content.unwrap_or_default());
         self.content = self.content.map(|mut c| {
             c.attachments = attachments.into();
             c
@@ -66,6 +68,7 @@ impl SendMessageRequest {
 
     /// Set the extra content of this request to embeds.
     pub fn with_embeds(mut self, embeds: impl Into<Vec<Embed>>) -> Self {
+        self.content = Some(self.content.unwrap_or_default());
         self.content = self.content.map(|mut c| {
             c.embeds = embeds.into();
             c
