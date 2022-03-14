@@ -368,6 +368,26 @@ dependencies = [
 ]
 
 [[package]]
+name = "gloo-net"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "2899cb1a13be9020b010967adc6b2a8a343b6f1428b90238c9d53ca24decc6db"
+dependencies = [
+ "futures-channel",
+ "futures-core",
+ "futures-sink",
+ "gloo-utils",
+ "js-sys",
+ "pin-project",
+ "serde",
+ "serde_json",
+ "thiserror",
+ "wasm-bindgen",
+ "wasm-bindgen-futures",
+ "web-sys",
+]
+
+[[package]]
 name = "gloo-timers"
 version = "0.2.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -475,9 +495,9 @@ dependencies = [
 
 [[package]]
 name = "hrpc"
-version = "0.33.23"
+version = "0.33.27"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1e13cd3bc199b303c4e226eb220fd5456982d2fb20d774bd0a0ff963c8c8e48a"
+checksum = "010e31ad6a29de8242b895c7d4e2d2457a6d57bf79fc070d0e859beb557f4da6"
 dependencies = [
  "bytes",
  "futures-util",
@@ -696,9 +716,9 @@ checksum = "a3e378b66a060d48947b590737b30a1be76706c8dd7b8ba0f2fe3989c68a853f"
 
 [[package]]
 name = "matchit"
-version = "0.4.6"
+version = "0.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9376a4f0340565ad675d11fc1419227faf5f60cd7ac9cb2e7185a471f30af833"
+checksum = "73cbba799671b762df5a175adf59ce145165747bb891505c43d09aefbbf38beb"
 
 [[package]]
 name = "memchr"
@@ -1054,16 +1074,11 @@ dependencies = [
 
 [[package]]
 name = "reqwasm"
-version = "0.4.0"
+version = "0.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "34b9b71430c0b3f076a806c389b5a8f806171a1b9365692b86e9878ad1312879"
+checksum = "05b89870d729c501fa7a68c43bf4d938bbb3a8c156d333d90faa0e8b3e3212fb"
 dependencies = [
- "gloo-utils",
- "js-sys",
- "thiserror",
- "wasm-bindgen",
- "wasm-bindgen-futures",
- "web-sys",
+ "gloo-net",
 ]
 
 [[package]]
@@ -1738,6 +1753,8 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "25f1af7423d8588a3d840681122e72e6a24ddbcb3f0ec385cac0d12d24256c06"
 dependencies = [
  "cfg-if",
+ "serde",
+ "serde_json",
  "wasm-bindgen-macro",
 ]
 
