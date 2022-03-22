@@ -126,7 +126,7 @@ jobs:
 
     - name: Trigger integration testing
       if: ${{ github.ref == 'refs/heads/master' && matrix.rust == '1.58.1' && github.event_name == 'push' }}
-      uses: peter-evans/repository-dispatch@v1
+      uses: peter-evans/repository-dispatch@v2
       with:
         token: ${{ secrets.INTEGRATION_TEST_PAT }}
         repository: harmony-development/integration-testing
