@@ -21,7 +21,7 @@ all_permissions = ["regex", "walkdir"]
 
 [dependencies]
 hrpc-build = { version = "0.33", default-features = false }
-prost-build = "0.9"
+prost-build = "0.10"
 
 # Used for generating all_permissions file
 regex = { version = "1", optional = true }

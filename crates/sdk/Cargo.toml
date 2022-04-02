@@ -15,7 +15,7 @@ exclude = ["*.nix", "flake.lock", ".github/*"]
 all-features = true
 
 [dependencies]
-prost = "0.9"
+prost = "0.10"
 
 harmony_derive = { version = "0.1.3", path = "../derive" }
 
