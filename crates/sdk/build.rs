@@ -27,6 +27,7 @@ fn main() -> Result<()> {
         #[cfg(feature = "gen_auth")] "auth.v1",
         #[cfg(feature = "gen_mediaproxy")] "mediaproxy.v1",
         #[cfg(feature = "gen_chat")] "chat.v1",
+        #[cfg(feature = "gen_webrtc")] "webrtc.v1",
         #[cfg(feature = "gen_sync")] "sync.v1",
         #[cfg(feature = "gen_profile")] "profile.v1",
         #[cfg(feature = "gen_emote")] "emote.v1",
@@ -34,7 +35,6 @@ fn main() -> Result<()> {
 
     #[rustfmt::skip]
     let staging_svcs = [
-        #[cfg(feature = "staging_gen_voice")] "voice.v1",
         #[cfg(feature = "staging_gen_bots")] "bots.v1",
     ];
 
@@ -60,7 +60,7 @@ fn main() -> Result<()> {
         let for_svcs = all_services.iter().filter(|svc| {
             matches!(
                 **svc,
-                "harmonytypes.v1" | "sync.v1" | "voice.v1" | "bots.v1"
+                "harmonytypes.v1" | "sync.v1" | "webrtc.v1" | "bots.v1"
             )
             .not()
         });

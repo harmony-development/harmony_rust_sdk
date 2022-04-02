@@ -115,11 +115,14 @@ async fn main() -> ClientResult<()> {
                 if let chat::Event::Chat(stream_event::Event::SentMessage(sent_message)) = event {
                     if let Some(message) = sent_message.message {
                         info!("Received new message: {:?}", message);
+                        if let Some(guild_id) = sent_message.guild_id {
+                            println!("in guild {}, channel {}", guild_id, sent_message.channel_id);
+                        } else {
+                            println!("in private channel {}", sent_message.channel_id);
+                        }
                         println!(
-                            "Received new message with ID {}, from guild {} in channel {} sent by {}:\n{}",
+                            "Received new message with ID {} sent by {}:\n{}",
                             sent_message.message_id,
-                            sent_message.guild_id,
-                            sent_message.channel_id,
                             message.author_id,
                             message.get_text().unwrap_or("<empty message>"),
                         );

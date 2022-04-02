@@ -93,6 +93,7 @@ gen_harmonytypes = []
 gen_sync = ["gen_harmonytypes"]
 gen_profile = []
 gen_emote = []
+gen_webrtc = []
 # Enables all stable protocols
 gen_stable_protocols = [
 	"gen_chat",
@@ -102,14 +103,14 @@ gen_stable_protocols = [
 	"gen_sync",
 	"gen_profile",
 	"gen_emote",
+	"gen_webrtc",
 	"rest",
 ]
 
 ## Staging protocols ##
-staging_gen_voice = []
 staging_gen_bots = []
 # Enables all staging protocols
-gen_staging_protocols = ["staging_gen_voice", "staging_gen_bots"]
+gen_staging_protocols = ["staging_gen_bots"]
 
 # Enables rkyv validation and `bytecheck::CheckBytes` derive for Harmony API types
 rkyv_validation = ["rkyv/validation", "bytecheck"]
