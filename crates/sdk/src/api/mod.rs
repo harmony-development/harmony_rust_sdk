@@ -49,13 +49,13 @@ pub mod profile;
 #[cfg(feature = "gen_emote")]
 pub mod emote;
 
-/// Voice service API.
-#[cfg(feature = "staging_gen_voice")]
-pub mod voice {
-    /// v1 of voice service.
+/// WebRTC service API.
+#[cfg(feature = "gen_webrtc")]
+pub mod webrtc {
+    /// v1 of webrtc service.
     pub mod v1 {
         #![allow(missing_docs)]
-        hrpc::include_proto!("protocol.voice.v1");
+        hrpc::include_proto!("protocol.webrtc.v1");
     }
     pub use v1::*;
 }
