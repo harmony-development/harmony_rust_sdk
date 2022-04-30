@@ -469,9 +469,9 @@ checksum = "2540771e65fc8cb83cd6e8a237f70c319bd5c29f78ed1084ba5d50eeac86f7f9"
 
 [[package]]
 name = "hrpc"
-version = "0.33.28"
+version = "0.33.29"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ec96f52f3fcbd55e0add26fbda0bc6103b15cd3b382db644f653a25d29f9b4eb"
+checksum = "e202d7fc9f596c3dc80f3af80fdcbbc54164f42b37b2cdf119b7d22562739a0e"
 dependencies = [
  "bytes",
  "futures-util",
