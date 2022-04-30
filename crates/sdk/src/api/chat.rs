@@ -32,6 +32,14 @@ impl GetGuildRequest {
     }
 }
 
+impl GetPrivateChannelRequest {
+    /// Create a new [`GetPrivateChannelRequest`] for fetching one private channel.
+    #[inline(always)]
+    pub fn new_one(channel_id: u64) -> Self {
+        Self::new(vec![channel_id])
+    }
+}
+
 impl GetUserRolesRequest {
     /// Create a new [`GetUserRolesRequest`] for fetching one user's roles.
     #[inline(always)]
