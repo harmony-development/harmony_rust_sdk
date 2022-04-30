@@ -1,13 +1,5 @@
 {
-  inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
-    nixCargoIntegration = {
-      url = "github:yusdacra/nix-cargo-integration";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-  };
+  inputs.nci.url = "github:yusdacra/nix-cargo-integration";
 
-  outputs = inputs: inputs.nixCargoIntegration.lib.makeOutputs {
-    root = ./.;
-  };
+  outputs = inputs: inputs.nci.lib.makeOutputs {root = ./.;};
 }
