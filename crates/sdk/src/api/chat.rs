@@ -24,6 +24,19 @@ impl From<String> for FormattedText {
     }
 }
 
+impl PendingInvite {
+    /// Compares this pending invite to another pending invite
+    /// and returns whether they are the same or not.
+    ///
+    /// # Notes
+    /// This is different from the `PartialEq` implementation.
+    /// This comparison is based on what the protocol says about a
+    /// unique pending invite.
+    pub fn is_same(&self, other: &PendingInvite) -> bool {
+        self.server_id == other.server_id && self.location == other.location
+    }
+}
+
 impl GetGuildRequest {
     /// Create a new [`GetGuildRequest`] for fetching one guild.
     #[inline(always)]
