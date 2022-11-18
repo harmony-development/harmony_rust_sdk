@@ -41,7 +41,7 @@ jobs:
         rustup target add wasm32-unknown-unknown
 
     - name: Cache rust
-      uses: Swatinem/rust-cache@v1
+      uses: Swatinem/rust-cache@v2
 
     - name: Clippy default features
       uses: actions-rs/clippy-check@v1
